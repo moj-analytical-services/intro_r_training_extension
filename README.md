@@ -1,9 +1,20 @@
 Introduction to R extension
 ================
 
+This repository is for Introduction to R extension course offered by the
+DASD R Training Group.
+
+The session is intended to be accessible to anyone who is familiar with
+the content of the [Introduction to
+R](https://github.com/moj-analytical-services/IntroRTraining) training
+session.
+
+If you have any feedback on the content, please get in touch\!
+
 ## Contents
 
   - [Pre-material](#pre-material)
+  - [Learning outcomes](#learning-outcomes)
   - [Conditional statements](#conditional-statements)
   - [Iteration](#iteration)
   - [Reshaping data](#reshaping-data)
