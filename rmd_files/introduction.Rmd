@@ -1,0 +1,9 @@
+## Learning outcomes
+
+### By the end of this session you should know:
+
+* Placeholder
+
+
+## Before we start
+To follow along with the code run during this session and participate in the exercises, open the script "example_code.R" in RStudio. All the code that we'll show in this session is stored in "example_code.R", and you can edit this script to write solutions to the exercises. You may also want to have the course [read me](https://github.com/moj-analytical-services/intro_r_training_extension) open as a reference.
