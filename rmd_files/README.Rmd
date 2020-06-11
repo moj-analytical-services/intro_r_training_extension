@@ -14,6 +14,7 @@ purl_example_code <- TRUE # This variable relates to code blocks that aren't exe
 ## Contents
 
 * [Pre-material](#pre-material)
+* [Learning outcomes](#learning-outcomes)
 * [Conditional statements](#conditional-statements)
 * [Iteration](#iteration)
 * [Reshaping data](#reshaping-data)
