@@ -14,4 +14,19 @@ This course builds on the original Introduction to R training course, and covers
 
 
 ## Before we start
+
 To follow along with the code run during this session and participate in the exercises, open the script "example_code.R" in RStudio. All the code that we'll show in this session is stored in "example_code.R", and you can edit this script to write solutions to the exercises. You may also want to have the course [read me](https://github.com/moj-analytical-services/intro_r_training_extension) open as a reference.
+
+First, we need to load a few packages and an example dataset.
+
+```{r message=F, warning=F}
+# Load packages
+library(s3tools)
+library(tidyverse)
+```
+
+```{r message=F, warning=F}
+# Read data
+offenders <- s3tools::s3_path_to_full_df("alpha-r-training/intro-r-training/Offenders_Chicago_Police_Dept_Main.csv")
+```
+
