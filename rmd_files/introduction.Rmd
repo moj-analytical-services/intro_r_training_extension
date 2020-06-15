@@ -1,8 +1,16 @@
+# Introduction
+
+This course builds on the original Introduction to R training course, and covers additional programming concepts. It provides examples that demonstrate how the Tidyverse packages can assist with tasks typically encountered in DASD.
+
 ## Learning outcomes
 
-### By the end of this session you should know:
+### By the end of this session you should know how to:
 
-* Placeholder
+ - Classify a variable in a dataframe, based on a set of conditions
+ - Apply a function to multiple columns in a dataframe
+ - Search for a string pattern in a dataframe
+ - Reshape dataframes
+ - Deal with missing values in a dataframe
 
 
 ## Before we start
