@@ -1,8 +1,20 @@
 # Appendix
 
-## Table of logical operators
+## Table of operators
 
-
+| Operator | Definition |
+| :------: | :--------- |
+|    ==    | Equal to                      |
+|    !=    | Not equal to                  |
+|    >     | Greater than                  |
+|    <     | Less than                     |
+|    >=    | Greater than or equal to      |
+|    <=    | Less than or equal to         |
+|  &#448;  | Or                            |
+|    &     | And                           |
+|    !     | Not                           |
+|   %in%   | The subject appears in a list |
+| is.na()  | The subject is NA             |
 
 ## Further Reading
 
