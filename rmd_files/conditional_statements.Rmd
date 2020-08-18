@@ -86,7 +86,7 @@ str(offenders)
 
 In the `case_when()` function, each argument should be a two-sided formula. For each formula, the condition appears to the left of a '~' symbol, and on the right is the value to assign if the condition evaluates to `TRUE`.
 
-Note that the order of conditional statements in the `case_when()` function is important, and they will be evaluated in the order that they appear in. In the above example, the `case_when()` will first check if the person is under 18, then if they are under 25 (but 18 or over), and so on.
+Note that the order of conditional statements in the `case_when()` function is important if there are overlapping conditions. The conditions will be evaluated in the order that they appear in, so in the above example, the `case_when()` will first check if the person is under 18, then if they are under 25 (but 18 or over), and so on.
 
 A default value can be assigned in the event that none of the conditions are met. This is done by putting `TRUE` in the place of a condition. In the example above, if none of the conditions are met, then a value of `"Unknown"` is assigned.
 

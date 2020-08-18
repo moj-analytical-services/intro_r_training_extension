@@ -1,1 +1,43 @@
 # Reshaping data
+
+The tidyr package can help us to reshape dataframes - this can be really helpful when we need to transform between tables that are easier to read and tables that are easier to analyse.
+
+Let's look at an example with some aggregate data based on the `offenders` dataset:
+
+```{r, purl=purl_example_code}
+offenders_summary <- offenders %>%
+  group_by(REGION, SENTENCE) %>%
+  summarise(offender_count = n())
+
+offenders_summary
+```
+
+## Transforming from long to wide format
+
+The above summary dataframe could be described as being in a 'long' format - where there are minimal columns and lots of rows. This format tends not to be used in published statistics, as it is more difficult to look at and interpret. Therefore wider formats are often used to display data, where there are more columns but fewer rows. We can use the `pivot_wider()` function from tidyr to help us transform from a long format to a wide format, like so:
+
+```{r, purl=purl_example_code}
+offenders_summary <- offenders_summary %>%
+  tidyr::pivot_wider(names_from = "SENTENCE", values_from = "offender_count")
+
+offenders_summary
+```
+In the first argument of `pivot_wider()`, `names_from`, we're using the different categories from the `SENTENCE` column to create new columns - one column for each of the three categories. Then we use the `values_from` argument to specify that we want values from the `offender_count` column to go into those new columns.
+
+
+## Transforming from wide to long format
+
+In order to reverse the reshaping that we've just done, and go back from a wide format to a long format, we can use the `pivot_longer()` function:
+
+```{r, purl=purl_example_code}
+offenders_summary <- offenders_summary %>%
+  tidyr::pivot_longer(-REGION, names_to = "SENTENCE", values_to = "offender_count")
+
+offenders_summary
+```
+
+
+
+
+
+
