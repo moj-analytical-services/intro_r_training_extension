@@ -42,11 +42,22 @@ or \#intro\_r channel on [ASD slack](https://asdslack.slack.com).
 All the examples in the presentation/README are available in the R
 script example\_code.R.
 
+# Introduction
+
+This course builds on the original Introduction to R training course,
+and covers additional programming concepts. It provides examples that
+demonstrate how the Tidyverse packages can assist with tasks typically
+encountered in DASD.
+
 ## Learning outcomes
 
-### By the end of this session you should know:
+### By the end of this session you should know how to:
 
-  - Placeholder
+  - Classify a variable in a dataframe, based on a set of conditions
+  - Apply a function to multiple columns in a dataframe
+  - Search for a string pattern in a dataframe
+  - Reshape dataframes
+  - Deal with missing values in a dataframe
 
 ## Before we start
 
@@ -58,10 +69,98 @@ also want to have the course [read
 me](https://github.com/moj-analytical-services/intro_r_training_extension)
 open as a reference.
 
+First, we need to load a few packages and an example dataset.
+
+``` r
+# Load packages
+library(s3tools)
+library(tidyverse)
+```
+
+``` r
+# Read data
+offenders <- s3tools::s3_path_to_full_df("alpha-r-training/intro-r-training/Offenders_Chicago_Police_Dept_Main.csv")
+```
+
 # Conditional statements
+
+## if…else statements
+
+Conditional statements can be used when you want a piece of code to be
+executed only if a particular condition is met. The most basic form of
+these are ‘if…else’ statements. As a simple example, let’s say we wanted
+to check if a variable `x` is less than 10. We can write something like:
+
+``` r
+x <- 9
+
+if (x < 10) {
+  print("x is less than 10")
+}
+```
+
+    ## [1] "x is less than 10"
+
+We can also specify if we want something different to happen if the
+condition is not met:
+
+``` r
+x <- 11
+
+if (x < 10) {
+  print("x is less than 10")
+} else {
+  print("x is 10 or greater")
+}
+```
+
+    ## [1] "x is 10 or greater"
+
+Or if there are multiple conditions where we want different things to
+happen, we can add ‘else if’ commands:
+
+``` r
+x <- 10
+
+if (x < 10) {
+  print("x is less than 10")
+} else if (x == 10) {
+  print("x is equal to 10")
+} else if (x > 10) {
+  print("x is greater than 10")
+} else {
+  print("x is not a number")
+}
+```
+
+    ## [1] "x is equal to 10"
+
+For the conditions themselves, we can make use of any of R’s relational
+and logical operators. For a list of common operators, see the
+[appendix](#table-of-operators).
 
 # Iteration
 
 # Reshaping data
 
 # String manipulation
+
+# Appendix
+
+## Table of operators
+
+| Operator | Definition                    |
+| :------: | :---------------------------- |
+|   \==    | Equal to                      |
+|   \!=    | Not equal to                  |
+|    \>    | Greater than                  |
+|    \<    | Less than                     |
+|   \>=    | Greater than or equal to      |
+|   \<=    | Less than or equal to         |
+|    \\\|     | Or                            |
+|    &     | And                           |
+|    \!    | Not                           |
+|   %in%   | The subject appears in a list |
+| is.na()  | The subject is NA             |
+
+## Further Reading
