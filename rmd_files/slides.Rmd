@@ -32,6 +32,9 @@ If you need any help, just ask! For anyone joining remotely, we will be monitori
 ```{r source_content, child = 'conditional_statements.Rmd'}
 ```
 
+```{r source_content, child = 'missing_data.Rmd'}
+```
+
 ```{r source_content, child = 'iteration.Rmd'}
 ```
 
