@@ -1,0 +1,80 @@
+# 'Real world' examples
+
+Let's take a look at a few more examples and tackle some problems that we might encounter as an analyst in DASD. 
+
+
+## Example 1
+
+The following code is used to prepare a table that will form the basis of this example. This table will show the number of prosecutions over time for each offence group.
+
+```{r, purl=purl_example_code}
+# Create a time series table
+time_series <- prosecutions %>%
+  group_by(Year, Offence.Type, Offence.Group) %>%
+  summarise(Count = sum(Count)) %>%
+  # Select the past 5 years (to avoid the table being too wide)
+  filter(Year > max(prosecutions$Year) - 5) %>%
+  # Convert from long format to wide format
+  tidyr::pivot_wider(names_from = "Year", values_from = "Count", values_fill = c("Count" = 0)) %>%
+  arrange(Offence.Type, Offence.Group) %>%
+  ungroup()
+
+# This removes repeated row labels, to replicate how this data might be displayed in Excel
+time_series$Offence.Type[duplicated(time_series$Offence.Type)] <- NA
+
+time_series
+```
+
+Let's imagine we received a dataset in the above format, and we wanted to calculate the total number of prosecutions over the past 5 years for each offence type and group. In the current format, we'd need to sum the values in the columns `2013` - `2018`. We could do something like this: 
+
+```{r, purl=purl_example_code}
+total <- (time_series$`2014` + time_series$`2015` + time_series$`2016` +
+          time_series$`2017` + time_series$`2018`)
+
+time_series_with_total <- time_series
+time_series_with_total$Total <- total
+
+time_series_with_total
+```
+
+But what if we want to re-use the code in the future? We'd need to generalise it for different years or a different number of years. Fortunately we can restructure the data to help with this problem.
+
+First let's deal with the empty row labels in the `Offence.Type` column. Although avoiding repeated row labels looks neater in an Excel table, it can be problematic for analysis. Fortunately we can easily fill the row labels in using the `fill()` function from tidyr:
+
+```{r, purl=purl_example_code}
+time_series <- time_series %>% tidyr::fill(Offence.Type)
+time_series
+```
+
+Now we need to transform this dataframe into a long format, using `pivot_longer()`:
+
+```{r, purl=purl_example_code}
+time_series_long <- time_series %>%
+  tidyr::pivot_longer(cols = -c("Offence.Type", "Offence.Group"), names_to = "year", values_to = "count")
+
+time_series_long
+```
+
+Now we're ready to find the total for each offence group using `group_by()` and `summarise()` from dplyr:
+
+```{r, purl=purl_example_code}
+totals <- time_series_long %>%
+  group_by(Offence.Type, Offence.Group) %>%
+  summarise(Total = sum(count))
+
+totals
+```
+
+If we wanted to add these totals to our original dataframe, we can use `left_join()` from dplyr:
+
+```{r, purl=purl_example_code}
+time_series <- dplyr::left_join(time_series, totals, by=c("Offence.Type", "Offence.Group"))
+
+time_series
+```
+
+Now we've managed to calculate the total number of prosecutions over the past 5 years, without needing to hard-code the names of those years. This means that the code can be re-used in future years without needing to be edited.
+
+
+
+

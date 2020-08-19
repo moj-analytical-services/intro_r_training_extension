@@ -24,6 +24,8 @@ If you have any feedback on the content, please get in touch!
 * [Iteration](#iteration)
 * [Reshaping data](#reshaping-data)
 * [String manipulation](#string-manipulation)
+* [Real world examples](#real-world-examples)
+* [Appendix](#appendix)
 
 
 ## Pre-material
@@ -53,6 +55,9 @@ All the examples in the presentation/README are available in the R script exampl
 ```
 
 ```{r source_content, child = 'strings.Rmd'}
+```
+
+```{r source_content, child = 'examples.Rmd'}
 ```
 
 ```{r source_content, child = 'appendix.Rmd'}
