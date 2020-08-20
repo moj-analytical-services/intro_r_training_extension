@@ -108,11 +108,10 @@ df$year[duplicated(df$year)] <- NA
 df
 ```
 
-The `fill()` function from dplyr is a convenient way to do this, and can be used like this:
+The `fill()` function from tidyr is a convenient way to do this, and can be used like this:
 
 ```{r, purl=purl_example_code}
-# Construct dataframe
-df <- df %>% fill(year)
+df <- df %>% tidyr::fill(year)
 
 df
 ```
