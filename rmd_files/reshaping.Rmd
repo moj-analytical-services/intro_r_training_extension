@@ -41,5 +41,8 @@ The `cols` argument of `pivot_longer()` has been set to `-REGION`, which means t
 
 ### Exercise
 
+
+adding exercise for the pivoting functions - these are new function for the most recent versions of the tidy r package
+
 (Placeholder)
 
