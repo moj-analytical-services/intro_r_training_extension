@@ -1,26 +1,135 @@
 # Reshaping data
 
-The tidyr package can help us to reshape dataframes - this can be really helpful when we need to transform between tables that are easier to read and tables that are easier to analyse.
 
-Let's look at an example with some aggregate data based on the `offenders` dataset:
+```{r, echo=F, message=F, results=F}
 
-```{r, purl=purl_example_code}
-offenders_summary <- offenders %>%
-  group_by(REGION, SENTENCE) %>%
-  summarise(offender_count = n())
+# loading packages
+# 
+library(tidyr)
+library(dplyr)
+library(readr)
 
-offenders_summary
+
+
 ```
 
-## Transforming from long to wide format
+The tidyr package can help us to reshape dataframes - this can be really helpful when we need to transform between tables that are easier to read and tables that are easier to analyse. The aim here is to structure the resulting datasets so that they could be manipulated easier in further stages of the processing. 
 
-The above summary dataframe could be described as being in a 'long' format - where there are minimal columns and lots of rows. This format tends not to be used for presenting data, as it is more difficult to look at and interpret. Therefore wider formats are often used to display data, where there are more columns but fewer rows. We can use the `pivot_wider()` function from tidyr to help us transform from a long format to a wide format, like so:
+Let's look at an example using the `offenders` data set as presented in the previous sectrions. In many scenarios, although the data could be complete in the sense of it containing the desired variables, it is not quite in the right format requiering additional manipulation to bring it in line.
 
-```{r, purl=purl_example_code}
-offenders_summary <- offenders_summary %>%
-  tidyr::pivot_wider(names_from = "SENTENCE", values_from = "offender_count")
+This is usualy the case when the variables needed are originaly created as subcategories within a current variable. The process to extract them results to  **lengthening** or **widening** the origianl dataset and this is commonly reffered to as **pivoting**. It should also be mentioned at this point that pivoting was created to replace the existing `gather()` and `spread()` functions. This is not to say that the old versions cannot be used anymore, its just that they will no longer receive any updates from the developer given their more advance counterparts.
 
-offenders_summary
+As a general articaft of the this process, the resulting data set has either an increased number of rows or collumns respectrively. Interpretation largely depens on the project at hand where the current stage of the sytem determines the optimal structure of the data to be supplied.  
+
+
+## Lengthening the dataset
+
+Consider the `billboard` dataset supplied with tidyr (should be in you workspace when you load the package) containing  the rank of songs for the year 2000. Inspecting the dataset shows that there are in total 79 columns, one for each week (starting from Oct 1999) and also including a few additional identifiers.
+
+The aim now is to create a single variable to house the different weeks in order to create a different representation of for the data. First we start by the mapping the first motnh into a single variable.
+
+```{r}
+?billboard
+
+# notice the dimensions of the data
+dim(billboard)
+
+
+#to see the structure of the data
+billboard %>% arrange(desc(date.entered)) %>% tail()
+
+
+
+#starting by mapping a single month 
+billboard %>% pivot_longer(cols = c(wk1,wk2, wk3, wk4), names_to = "month1", values_to = "rank") 
+
+# and to see clearly the contents of the new variable
+billboard %>% pivot_longer(cols = c(wk1,wk2, wk3, wk4), names_to = "month1", values_to = "rank") %>% .$month1 %>% head()
+
+```
+
+
+The way the `pivot_longer` function works is, you specify the columns to be **gathered** followed by defining the resultant new variables to store their names and corresponding values.  
+
+### Working with multiple columns
+
+As it is evident, the problem now is that we have too many columns to pass them individually. What happens if we want all of the weeks to be transfered as subcategories to a new variable called *weeks*?
+
+In that case, the following structure comes in to play where regular expressions are used to pick all the varaibles to be mapped.
+
+
+
+```{r}
+
+
+
+#mapping all weeks to one varable called "weeks" 
+billboard %>% pivot_longer(cols = starts_with("wk"), names_to = "weeks", values_to = "rank") %>% head()
+
+
+```
+
+
+And so with this neat little trick, we've managed to bring the dataset into a better looking structure making further manipulation easier. Of courser, this is not all we can do with the data, there is a wide range of tools at our disposal to allow us not only to pick the varaibles we need but also to split the contents of them into new columns, with more on that in the following sections. 
+
+
+
+
+
+## Widening the dataset
+
+
+
+
+
+
+## separating and extracting column contents
+
+
+## Exercises 
+
+
+
+```{r}
+
+
+
+
+
+
+
+anscombe %>%
+ pivot_longer(everything(),
+   names_to = c(".value", "set"),
+   names_pattern = "(.)(.)"
+ )
+
+# extract
+df <- data.frame(x = c(NA, "a-b", "a-d", "b-c", "d-e"))
+df %>% extract(x, "A")
+df %>% extract(x, c("A", "B"), "([[:alnum:]]+)-([[:alnum:]]+)")
+
+# If no match, NA:
+df %>% extract(x, c("A", "B"), "([a-d]+)-([a-d]+)")
+
+df %>% extract(x, c("A", "B"), "(.)-([d])")
+
+
+#separate
+#
+
+
+df <- data.frame(x = c(NA, "a.b", "a.d", "b.c"))
+df %>% separate(x, c("A", "B"), sep = "\\.", remove = F)
+
+
+
+# with the offenders data set
+
+offenders %>% extract(SENTENCE,c("A","B"), regex = "(.+)_(.+)")
+
+offenders %>% separate(SENTENCE, c("A","B"), sep = "_")
+
 ```
 
 In the `names_from` argument of `pivot_wider()`, we've specifed that we want to create new columns based on the different categories in the `SENTENCE` column - so there will be one new column for each of the three categories that appear in `SENTENCE`. Then we use the `values_from` argument to specify that we want values from the `offender_count` column to go into those new columns.
@@ -30,11 +139,11 @@ In the `names_from` argument of `pivot_wider()`, we've specifed that we want to 
 
 In order to reverse the reshaping that we've just done, and go back from a wide format to a long format, we can use the `pivot_longer()` function:
 
-```{r, purl=purl_example_code}
-offenders_summary <- offenders_summary %>%
-  tidyr::pivot_longer(cols = -REGION, names_to = "SENTENCE", values_to = "offender_count")
-
-offenders_summary
+```{r}
+# offenders_summary <- offenders_summary %>%
+#   tidyr::pivot_longer(cols = -REGION, names_to = "SENTENCE", values_to = "offender_count")
+# 
+# offenders_summary
 ```
 
 The `cols` argument of `pivot_longer()` has been set to `-REGION`, which means that all columns apart from `REGION` will be reshaped. Then the `names_to` argument is used to specify that we want the names of those columns to go into a new column called `SENTENCE`, and the `values_to` argument is used to specify that we want the values in those column to go into a new column called `offender_count`.
