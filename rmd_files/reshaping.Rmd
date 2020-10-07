@@ -15,6 +15,19 @@ library(readr)
 
 The tidyr package can help us to reshape dataframes - this can be really helpful when we need to transform between tables that are easier to read and tables that are easier to analyse. The aim here is to structure the resulting datasets so that they could be manipulated easier in further stages of the processing. 
 
+#################################
+
+to mention the resourses: 
+
+the link below 
+
+https://tidyr.tidyverse.org/dev/articles/pivot.html#generate-column-name-from-multiple-variables-1
+
+and also the book R for data science.
+
+#################################
+
+
 Let's look at an example using the `offenders` data set as presented in the previous sectrions. In many scenarios, although the data could be complete in the sense of it containing the desired variables, it is not quite in the right format requiering additional manipulation to bring it in line.
 
 This is usualy the case when the variables needed are originaly created as subcategories within a current variable. The process to extract them results to  **lengthening** or **widening** the origianl dataset and this is commonly reffered to as **pivoting**. It should also be mentioned at this point that pivoting was created to replace the existing `gather()` and `spread()` functions. This is not to say that the old versions cannot be used anymore, its just that they will no longer receive any updates from the developer given their more advance counterparts.
@@ -55,7 +68,7 @@ The way the `pivot_longer` function works is, you specify the columns to be **ga
 
 As it is evident, the problem now is that we have too many columns to pass them individually. What happens if we want all of the weeks to be transfered as subcategories to a new variable called *weeks*?
 
-In that case, the following structure comes in to play where regular expressions are used to pick all the varaibles to be mapped.
+In that case, the following structure comes into play where regular expressions are used to pick all the varaibles to be mapped.
 
 
 
@@ -73,14 +86,113 @@ billboard %>% pivot_longer(cols = starts_with("wk"), names_to = "weeks", values_
 And so with this neat little trick, we've managed to bring the dataset into a better looking structure making further manipulation easier. Of courser, this is not all we can do with the data, there is a wide range of tools at our disposal to allow us not only to pick the varaibles we need but also to split the contents of them into new columns, with more on that in the following sections. 
 
 
+### Working with similar columns 
 
+In some circumstances pivoting can also be used to construct a more robust for ease of use in later stages of the analysis. In these cases the dateset contains variables that are similat in their structure with the aim being to gather them in to one, cleaner, format. Consider the `asncombe` dataset that comes with basic R as shown below:
+
+```{r}
+#dataset
+anscombe
+
+```
+
+As it is apprent, the basis for each varible is the same (x1,x2, y1,y2 etc) and so it would make sense to simply create pair `x` and `y` and depict their corresponding identifier `1,2,3,4` in a separate variable. 
+
+In such cases, `pivot_longer` offers an elegant solution to the problem by automatically selecting the common patterns and using them as the new variables.
+
+```{r}
+
+# using ".value" and "everything()" to select common variables
+anscombe %>% pivot_longer(everything(),
+   names_to = c(".value", "set"),
+   names_pattern = "(.)(.)" )
+
+
+```
+
+
+In the example above, the `.value` identifier enables selection of the common elements between `x1,x2,etc` and `y1,y2,etc` and then uses the findings as separate variables. 
+
+The `everything()` argument, as the neme would suggest, picks the entire variable set in the dataset.
+
+Notice also the use of the `names_pattern = "(.)(.)"` option. This is a special kind of regex use where the values within the brackets are used to detect the kind of pattern to be used. 
+
+The `names_pattern` or `name_sep()` options make explicit use of the `extract()` and  `separete()` tools respectively (discussed in more detail in the  next sections) utilising regular expressions to detect the varaible to pivot. In the former expression, the regex contained in the matching groups depicted within the brackets in the above expression, is what distinguishes one part of the variable from the other.  
 
 
 ## Widening the dataset
 
+`pivot_wider()` is the opposite `pivot_longer()` tranforming a dataset to a **wider** format. It is not used as often but  has still some value in presenting a dataset in a different light should the situation calls for it.
+
+Consider the `fish_encounters` dataset, contributed by Myfanwy Johnston depicted below. It describes whether fish swimming down a river are detected or not by automatic monitoring stations.
+
+```{r}
+
+fish_encounters
+#> # A tibble: 114 x 3
+#>    fish  station  seen
+#>    <fct> <fct>   <int>
+#>  1 4842  Release     1
+#>  2 4842  I80_1       1
+#>  3 4842  Lisbon      1
+#>  4 4842  Rstr        1
+#>  5 4842  Base_TD     1
+#>  6 4842  BCE         1
+#>  7 4842  BCW         1
+#>  8 4842  BCE2        1
+#>  9 4842  BCW2        1
+#> 10 4842  MAE         1
+#> # … with 104 more rows
+```
+
+A simple use of the function can provide a better understanding of what the data contains and also make it more useful for potential use in later stages of a processing system where specific input from each station can be utilised. 
 
 
+```{r}
+fish_encounters %>% pivot_wider(names_from = station, values_from = seen)
+#> # A tibble: 19 x 12
+#>    fish  Release I80_1 Lisbon  Rstr Base_TD   BCE   BCW  BCE2  BCW2   MAE   MAW
+#>    <fct>   <int> <int>  <int> <int>   <int> <int> <int> <int> <int> <int> <int>
+#>  1 4842        1     1      1     1       1     1     1     1     1     1     1
+#>  2 4843        1     1      1     1       1     1     1     1     1     1     1
+#>  3 4844        1     1      1     1       1     1     1     1     1     1     1
+#>  4 4845        1     1      1     1       1    NA    NA    NA    NA    NA    NA
+#>  5 4847        1     1      1    NA      NA    NA    NA    NA    NA    NA    NA
+#>  6 4848        1     1      1     1      NA    NA    NA    NA    NA    NA    NA
+#>  7 4849        1     1     NA    NA      NA    NA    NA    NA    NA    NA    NA
+#>  8 4850        1     1     NA     1       1     1     1    NA    NA    NA    NA
+#>  9 4851        1     1     NA    NA      NA    NA    NA    NA    NA    NA    NA
+#> 10 4854        1     1     NA    NA      NA    NA    NA    NA    NA    NA    NA
+#> # … with 9 more rows
 
+```
+
+The general use is very similar to that presented in ``pivot_longer()` with `names_from` targeting the column containing the subcategories to plit from and `values_from` the correposning values associated with each category. 
+
+Notice that there will be cases where there is no match and these will initially be filled with `NA`. Simply setting the option `values_fill` to a value of your choise will replaced teh `NA` values to something more meaningful.   
+
+
+```{r}
+fish_encounters %>% pivot_wider(
+  names_from = station,
+  values_from = seen,
+  values_fill = 0
+)
+#> # A tibble: 19 x 12
+#>    fish  Release I80_1 Lisbon  Rstr Base_TD   BCE   BCW  BCE2  BCW2   MAE   MAW
+#>    <fct>   <int> <int>  <int> <int>   <int> <int> <int> <int> <int> <int> <int>
+#>  1 4842        1     1      1     1       1     1     1     1     1     1     1
+#>  2 4843        1     1      1     1       1     1     1     1     1     1     1
+#>  3 4844        1     1      1     1       1     1     1     1     1     1     1
+#>  4 4845        1     1      1     1       1     0     0     0     0     0     0
+#>  5 4847        1     1      1     0       0     0     0     0     0     0     0
+#>  6 4848        1     1      1     1       0     0     0     0     0     0     0
+#>  7 4849        1     1      0     0       0     0     0     0     0     0     0
+#>  8 4850        1     1      0     1       1     1     1     0     0     0     0
+#>  9 4851        1     1      0     0       0     0     0     0     0     0     0
+#> 10 4854        1     1      0     0       0     0     0     0     0     0     0
+#> # … with 9 more rows
+```
 
 
 ## separating and extracting column contents
@@ -129,6 +241,17 @@ df %>% separate(x, c("A", "B"), sep = "\\.", remove = F)
 offenders %>% extract(SENTENCE,c("A","B"), regex = "(.+)_(.+)")
 
 offenders %>% separate(SENTENCE, c("A","B"), sep = "_")
+
+
+
+
+
+a = anscombe %>%
+  pivot_longer(everything(),
+    names_to = c(".value", "set"),
+    names_pattern = "(.)(.)"
+  ) %>%
+  arrange(set)
 
 ```
 
