@@ -304,7 +304,7 @@ In addition, internally the pivot functions make explicit use of  `seaprate()` a
 
 ### Unite
 
-Of course, extacting and creating new variables would not be complete without a function to revert back to the original target variable. In this case, the `unite()` function provides the means to do exactly that as shown in the example below.
+Of course, extracting and creating new variables would not be complete without a function to revert back to the original target variable. In this case, the `unite()` function provides the means to do exactly that as shown in the example below.
 
 
 ```{r}
@@ -316,7 +316,7 @@ tab3 %>% unite(new ,century, decade, year)
 
 ```
 
-By default, the `_` separator is used after each component of the composite variable but as always, there are option in place to customize this behaviour. In the following block of code the separator is removed giving the original variable before any altaration takes place.
+By default, the `_` separator is used after each component of the composite variable but as always, there are option in place to customize this behavior. In the following block of code the separator is removed giving the original variable before any alteration takes place.
 
 
 ```{r}
@@ -326,6 +326,208 @@ tab3 %>% unite(new ,century, decade, year, sep = "")
 
 
 ## Exercises 
+
+### Pivoting
+
+#### Exercise 1 
+
+Why does the following code fail?
+
+```{r, , eval= F}
+#the table to use
+table4a
+
+
+table4a %>% pivot_longer(1999,2000, names_to = "year",values_to = "value")
+
+
+```
+
+
+#### Exercise 2
+
+Consider the following dataset and apply `pivot_wider()` to **spread** the values in `name`,  do you agree with the results after pivoting? 
+
+Hint. Could a new column solve the problem, what other solution could we apply?
+
+
+```{r, eval=FALSE}
+people = tribble(~name, ~key, ~value,
+                 #------------/------/-----,
+                 "Phil Woods", "age",45,
+                 "Phil Woods", "height",185,
+                 "Phil Woods", "age",50,
+                 "Jess Cordero", "age",45,
+                 "Jess Cordero", "height",156,)
+
+
+```
+
+
+
+
+#### Exercise 3
+
+Consider the followign simple tibble, what kind of pivoting would you use, `pivot_longer()` or `pivot_wider()` ?
+
+
+```{r}
+
+rcj = tribble( ~judge, ~male, ~female,
+                    "yes", NA, 10, 
+                    "no", 20, 12)
+
+
+
+```
+
+
+
+### Separating and Extracting
+
+#### Exercise 1
+
+What to the additional arguments `extra` and `fill` do in `separate()`?  
+
+Experiment with the various option in using the following datasets.
+
+
+```{r}
+
+tibble(x = c("a,b,c", "d,e,f,g", "h,i,j")) %>% 
+  separate(x, c("one", "two", "three"))
+
+tibble(x = c("a,b,c", "d,e", "f,g,i")) %>% 
+  separate(x, c("one", "two", "three"))
+
+```
+
+
+#### Exercise 2
+
+Both  `unite()` and `separate()` have a remove option. What does in to and how can it be utilized
+
+#### Exercise 3
+
+Compare `separate()` and `extract()`, why are there so many option to separate but only one `unite()`?
+
+## Solutions
+
+### Pivoting
+
+#### Exercise 1
+
+```{r, eval= F}
+
+table4a %>% pivot_longer(cols = !country, names_to = "year",values_to = "value")
+
+
+```
+
+
+
+#### Exercise 2
+
+
+```{r, eval=FALSE}
+
+#withough changing anything on the dataset
+people = tribble(~name, ~key, ~value,
+                 #------------/------/-----,
+                 "Phil Woods", "age",45,
+                 "Phil Woods", "height",185,
+                 "Phil Woods", "age",50,
+                 "Jess Cordero", "age",45,
+                 "Jess Cordero", "height",156,)
+people %>% pivot_wider(names_from = name, values_from = value)
+
+
+
+# solution 1 - adding a new column
+people = tribble(~name, ~key, ~value, ~dkey,
+                 #------------/------/-----,
+                 "Phil Woods", "age",45,1,
+                 "Phil Woods", "height",185,1,
+                 "Phil Woods", "age",50,0,
+                 "Jess Cordero", "age",45,1,
+                 "Jess Cordero", "height",156,1)
+
+people %>% pivot_wider(names_from = name, values_from = value)
+
+
+
+#solution 2  - uniqueness
+people = tribble(~name, ~key, ~value,
+                 #------------/------/-----,
+                 "Phil Woods", "age",45,
+                 "Phil Woods", "height",185,
+                 # "Phil Woods", "age",50,
+                 "Jess Cordero", "age",45,
+                 "Jess Cordero", "height",156,)
+
+
+people %>% pivot_wider(names_from = name, values_from = value)
+
+
+
+```
+
+
+### Exercise 3
+
+```{r, eval=FALSE}
+rcj = tribble( ~judge, ~male, ~female,
+                    "yes", NA, 10, 
+                    "no", 20, 12)
+
+#alternative table to try with no NAs
+# rcj = tribble( ~judge, ~male, ~female,
+#                     "yes", 4, 10, 
+#                     "no", 20, 12)
+
+
+#use of pivot_longer
+rcj %>% pivot_longer(cols = c(male, female),   names_to = "gender", values_to = "count")
+
+
+# use of  pivot_wider 
+rcj %>% pivot_wider(names_from = judge, values_from = c(male, female))
+
+
+
+```
+
+
+
+### Separating and Extracting
+
+#### Exercise 1
+
+typing `?separate()` shows all the options and their meaning. Try experimenting with them to discover more of what they do.
+
+```{r, eval=FALSE}
+
+tibble(x = c("a,b,c", "d,e,f,g", "h,i,j")) %>% 
+  separate(x, c("one", "two", "three"))
+
+tibble(x = c("a,b,c", "d,e", "f,g,i")) %>% 
+  separate(x, c("one", "two", "three"))
+
+
+
+```
+
+
+#### Exercise 2
+
+
+Solution: typing `?separate()` in the command line shows all the  information needed here. The `remove` option is there to remove the input columns from the output. 
+
+#### Exercise 3
+
+
+Solution: one suggestion is that there is only one way to unite the multiple strings but a number of different ways to split them apart. 
+
 
 
 
