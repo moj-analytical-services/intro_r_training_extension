@@ -348,6 +348,7 @@ table4a %>% pivot_longer(1999,2000, names_to = "year",values_to = "value")
 
 Consider the following dataset and apply `pivot_wider()` to **spread** the values in `name`,  do you agree with the results after pivoting? 
 
+
 Hint. Could a new column solve the problem, what other solution could we apply?
 
 
@@ -404,6 +405,7 @@ tibble(x = c("a,b,c", "d,e", "f,g,i")) %>%
 
 
 #### Exercise 2
+
 
 Both  `unite()` and `separate()` have a remove option. What does in to and how can it be utilized
 
@@ -473,7 +475,9 @@ people %>% pivot_wider(names_from = name, values_from = value)
 ```
 
 
+
 ### Exercise 3
+
 
 ```{r, eval=FALSE}
 rcj = tribble( ~judge, ~male, ~female,
@@ -499,6 +503,7 @@ rcj %>% pivot_wider(names_from = judge, values_from = c(male, female))
 
 
 
+
 ### Separating and Extracting
 
 #### Exercise 1
@@ -521,9 +526,12 @@ tibble(x = c("a,b,c", "d,e", "f,g,i")) %>%
 #### Exercise 2
 
 
+
 Solution: typing `?separate()` in the command line shows all the  information needed here. The `remove` option is there to remove the input columns from the output. 
+=======
 
 #### Exercise 3
+
 
 
 Solution: one suggestion is that there is only one way to unite the multiple strings but a number of different ways to split them apart. 
