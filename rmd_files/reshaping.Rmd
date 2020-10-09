@@ -267,7 +267,7 @@ table3 %>% separate(rate, into = c("cases", "population"), sep = "/")
 
 ```
 
-At the heart `separate()` uses regular expressions to detect and pull the corresponding characters. As a result the new columns are now of `char` type, something that can be changed by altering the state of the `convert` flag as shown below:
+At its heart, `separate()` uses regular expressions to detect and pull the corresponding characters. As a result the new columns are now of `char` type, something that can be changed by altering the state of the `convert` flag as shown below:
 
 
 ```{r}
