@@ -1,1 +1,14 @@
 # String manipulation
+
+
+```{r, echo=F, message=F, results=F}
+
+# loading packages
+# 
+library(tidyr)
+library(dplyr)
+library(readr)
+```
+
+To add content about string manipulation etc
+
