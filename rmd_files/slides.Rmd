@@ -32,6 +32,9 @@ If you need any help, just ask! For anyone joining remotely, we will be monitori
 ```{r source_content, child = 'conditional_statements.Rmd'}
 ```
 
+```{r source_content, child = 'missing_data.Rmd'}
+```
+
 ```{r source_content, child = 'iteration.Rmd'}
 ```
 
@@ -40,6 +43,10 @@ If you need any help, just ask! For anyone joining remotely, we will be monitori
 
 ```{r source_content, child = 'strings.Rmd'}
 ```
+
+# Further material
+
+Go to https://github.com/moj-analytical-services/intro_r_training_extension and take a look at the README to find more advanced examples and further reading.
 
 
 # Any questions?

@@ -1,0 +1,120 @@
+# Handling missing data
+
+It's often the case that datasets will contain missing values, which are usually denoted by `NA` (which stands for 'Note Available') in R. Care needs to be taken to make sure these are handled in the most appropriate way for a particular situation. This section introduces a few methods for handling missing values in different situations.
+
+
+## Identifying missing values
+
+The function `is.na()` can be used to identify missing values in a variable. It returns `TRUE` is a value is `NA`, and `FALSE` otherwise:
+
+```{r, purl=purl_example_code}
+x <- c(7, 23, 5, 14, NA, 1, 11, NA)
+is.na(x)
+```
+
+If instead you wanted to identify values that are not missing, then you can combine `is.na()` with the 'not' operator, `!`, like so:
+```{r, purl=purl_example_code}
+x <- c(7, 23, 5, 14, NA, 1, 11, NA)
+!is.na(x)
+```
+
+
+## Handling missing values using a function argument
+
+Some functions have built-in arguments where you can specify what you want to happen to missing values. For example, the `sum()` function has an argument called `na.rm` that you can use to specify if you want the `NA` values to be removed before the sum is calculated. By default `na.rm` is set to `FALSE`:
+
+```{r, purl=purl_example_code}
+x <- c(7, 23, 5, 14, NA, 1, 11, NA)
+sum(x)
+```
+
+So if we try to sum over numeric vector that contains `NA` values, then the result is `NA`. By setting `na.rm` to `TRUE`, however, we can remove the `NA` values before continuing with the calculation:
+
+```{r, purl=purl_example_code}
+x <- c(7, 23, 5, 14, NA, 1, 11, NA)
+sum(x, na.rm=TRUE)
+```
+
+
+## Converting values to NA
+
+There might be occasions where we want to set some values to `NA`, for example if they are invalid. The `replace()` function can be used to replace values based on a particular condition. This example shows how negative values in a vector can be replaced with `NA`:
+
+```{r, purl=purl_example_code}
+x <- c(7, 23, 5, -14, 0, -1, 11, 0)
+replace(x, x < 0, NA)
+```
+
+
+## Replacing missing values
+
+Sometimes it's necessary to replace missing values; for example, when displaying data in a table or chart, or when the missing values would cause problems for a particular calculation. There are a few different options that we'll visit in this section.
+
+
+### Replacing with a specified value
+
+We can also use the `replace()` function to replace missing values with a specific value. In this example we're replacing missing values with zero:
+
+```{r, purl=purl_example_code}
+x <- c(7, 23, 5, -14, NA, -1, 11,NA)
+replace(x, is.na(x), 0)
+```
+
+The `replace_na()` function from tidyr also provides a convenient way to replace missing values in a dataframe, and is especially useful if you want to use different replacement values for different columns. Here's an example of its usage, where we're replacing missing values in the `HEIGHT` column withn 'Unknown', and missing values in the `PREV_CONVICTIONS` column with zero:
+
+```{r, purl=purl_example_code}
+offenders <- offenders %>% 
+  tidyr::replace_na(list(HEIGHT = "Unknown",
+                         PREV_CONVICTIONS = 0))
+```
+
+
+### Replacing with values from another column
+
+The `coalesce()` function from dplyr can be used to fill in missing values with values from another column. Before we jump into an example, let's first prepare a dataframe:
+
+```{r, purl=purl_example_code}
+event_dates <- tibble::data_frame(
+  "event_id" = c(0, 1, 2, 3, 4, 5),
+  "date" = c("2016-04-13", "2015-12-29", "2016-06-02", "2017-01-27", "2015-10-21", "2018-03-15"),
+  "new_date" = c("2016-08-16", NA, NA, "2017-03-02", NA, "2018-11-20")
+)
+
+event_dates
+```
+
+We can use `coalesce()` to fill in the missing dates in the `New date` column with the equivalent date in the `Date` column:
+
+```{r, purl=purl_example_code}
+event_dates <- event_dates %>%
+  dplyr::mutate(new_date = dplyr::coalesce(new_date, date))
+
+event_dates
+```
+
+### Filling missing values with the previous value
+
+If we were to encounter a dataframe like the following, where each group name in the `year` column appears only once, then we might want to fill in the missing labels before beginning any analysis.
+
+```{r, purl=purl_example_code}
+# Construct dataframe
+df <- tidyr::crossing(year = c("2015", "2016", "2017", "2018", "2019"),
+                      quarter = c("Q1", "Q2", "Q3", "Q4")) %>%
+      dplyr::mutate(count = sample(length(year)))
+
+# This removes repeated row labels
+df$year[duplicated(df$year)] <- NA
+
+df
+```
+
+The `fill()` function from tidyr is a convenient way to do this, and can be used like this:
+
+```{r, purl=purl_example_code}
+df <- df %>% tidyr::fill(year)
+
+df
+```
+
+
+

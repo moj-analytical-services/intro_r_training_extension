@@ -21,9 +21,12 @@ If you have any feedback on the content, please get in touch!
 * [Pre-material](#pre-material)
 * [Learning outcomes](#learning-outcomes)
 * [Conditional statements](#conditional-statements)
+* [Handling missing data](#handling-missing-data)
 * [Iteration](#iteration)
 * [Reshaping data](#reshaping-data)
 * [String manipulation](#string-manipulation)
+* [Real world examples](#real-world-examples)
+* [Appendix](#appendix)
 
 
 ## Pre-material
@@ -46,6 +49,9 @@ All the examples in the presentation/README are available in the R script exampl
 ```{r source_content, child = 'conditional_statements.Rmd'}
 ```
 
+```{r source_content, child = 'missing_data.Rmd'}
+```
+
 ```{r source_content, child = 'iteration.Rmd'}
 ```
 
@@ -53,6 +59,9 @@ All the examples in the presentation/README are available in the R script exampl
 ```
 
 ```{r source_content, child = 'strings.Rmd'}
+```
+
+```{r source_content, child = 'examples.Rmd'}
 ```
 
 ```{r source_content, child = 'appendix.Rmd'}

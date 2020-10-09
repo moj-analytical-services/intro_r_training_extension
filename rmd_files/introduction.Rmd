@@ -22,7 +22,8 @@ First, we need to load a few packages and an example dataset.
 ```{r message=F, warning=F}
 # Load packages
 library(s3tools)
-library(tidyverse)
+library(dplyr)
+library(tidyr)
 ```
 
 ```{r message=F, warning=F}
