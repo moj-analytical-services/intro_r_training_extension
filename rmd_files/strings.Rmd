@@ -5,10 +5,114 @@
 
 # loading packages
 # 
-library(tidyr)
-library(dplyr)
-library(readr)
+library(tidyverse)
+library(stringr)
+
 ```
 
-To add content about string manipulation etc
+## Introduction
+
+In this part we will introduce strings and how to manipulate them to suit the needs of a particular project. The packages needed (listed above) are mostly the `stringr` and  `tidyverse` package where the former contains a great number of functions to manipulate and work with strings and the latter is the base for most of the things we do in R. 
+
+It should also be mentioned that the majority of the content that follows is containe din the book `R for Data Science` by `Hadley Wickam` and `Garrett Grolemund`.
+
+## String Basics
+
+There are two ways with which you can create a string in R, at the very basic level, by either using single of double quotes. There is no difference in the behaviour but it is recomended to stick with `"` as it is more widely understood that this is a string and others will be able to follow your code esier. 
+
+To note here that one of the advantages of having two ways to define a string is that you can combine them when quotes within a string if needed as showcased in the example below. 
+
+
+```{r}
+string1 = "a string using double quotes"
+
+is.character(string1)
+
+string2 = 'another string using single quotes'
+
+is.character(string2)
+
+# a string containing quotes
+string3 = "this is a 'string' within a string"
+
+# notice how the output changes when implementing the following code
+string4 = 'this is a "string" within a string'
+
+
+```
+
+
+Notice the difference in `string4`. This happens becaus the compiler cannot place two double quotes within the same string and so we need to `escape` it. To achieve that a `\` is used before the corresponding character. This can be used not only for `"` but for any other reserved character as well. 
+
+If you need to `escape` a backslash then use a double backslash as in `\\` and to see what the output would look like when used in text you can use the `writeLines()` function to simulate that effect. 
+
+
+```{r}
+string5 = "escaping a reserved character like \" quotes "
+
+# to see how the result would apear in text
+writeLines(string5)
+
+string6 = "escaping a backslash \\ "
+
+# to see how the result would apear in text
+writeLines(string6)
+
+```
+
+
+
+Fuirthermore, additional control in the form of newlines or tabs is provided by using `\n` and `\t` for example along with a plethora of available special characters that can be found by typing `?"'"` or `?'"'` in you command line. 
+
+Introducing non-English characters in your text strings is also possible using special cahracters of the form `\u00b5` for example for the greek letter mu. 
+
+```{r}
+
+# outputting non-English characters
+string7 = "\u00b5" 
+
+
+```
+
+
+Adding strings into a character vector is very common and is usualy done with the use of the `c()` function. 
+
+```{r}
+
+s8 = c("a", "vector", "of", "strings")
+
+
+```
+
+
+
+## String Length
+
+
+
+## Combining Strings
+
+## Subseting strings
+
+## Customising text for different language locales
+
+## Exercises
+
+
+## Regular Expressions
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
