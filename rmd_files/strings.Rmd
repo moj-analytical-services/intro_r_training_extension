@@ -14,6 +14,8 @@ library(stringr)
 
 In this part we will introduce strings and how to manipulate them to suit the needs of a particular project. The packages needed (listed above) are mostly the `stringr` and  `tidyverse` package where the former contains a great number of functions to manipulate and work with strings and the latter is the base for most of the things we do in R. 
 
+Base R has a a number of functions to manipulate and work with strings but they can be incosistent at times,  the above package was created in an effort to standardise character vector manipulation and make it easier to follow and replicate.  
+
 It should also be mentioned that the majority of the content that follows is containe din the book `R for Data Science` by `Hadley Wickam` and `Garrett Grolemund`.
 
 ## String Basics
@@ -88,11 +90,55 @@ s8 = c("a", "vector", "of", "strings")
 
 ## String Length
 
+At times it is necessary to dertermine the length of a character string. A useful function to use in these cases is the `str_length()` function which helps with that.
+
+```{r}
+
+# finding out how many characters in a char vector
+str_length(c(s8, NA))
+
+
+```
+
+Notice that an `NA` character is translated as is and we will see other options on how tto deal with this in the sections to follow. 
 
 
 ## Combining Strings
 
+We already seen one way to combine strings in the previous section but with the `stringer` package we have an additional, more powerful tool at our disposal. 
+
+Using `str_c()` can be beneficial in many cases since it allows for additional flexibility in the form of parameters for separators to be used or the option to collapse individual entries into one composite character string. 
+
+```{r}
+# using custom separator
+str_c("an", "str_c vectror", "with", "space", "character", "separating each entry", sep = " ")
+
+# the colapse option
+str_c("an", "str_c vectror", "with", "space", "character", "separating each entry", collapse = T)
+
+```
+
+What is more important however is that `str_c` is vectorised and in this way can help in cases where an action has to be aplied to each element of an input vector instead of individual character strings.
+
+In addition, it can also work to recycle shorter vectrors to mach the longer ones as in the following example. 
+
+
+```{r}
+
+# vectorized form - translating a shorter vectror to match the longer one
+str_c("a", c("b", "c", "d"), "c", sep = " " )
+
+# simpler vectorizing 
+str_c("a", c("b", "c", "d"))
+
+# c() comparison
+c("a", c("b", "c", "d"))
+
+```
+
 ## Subseting strings
+
+
 
 ## Customising text for different language locales
 
@@ -100,6 +146,8 @@ s8 = c("a", "vector", "of", "strings")
 
 
 ## Regular Expressions
+
+several sections here, each with exercises 
 
 
 
