@@ -1490,17 +1490,84 @@ writeLines(x)</code></pre>
 <pre><code>## a\b</code></pre>
 <pre class="r"><code># to view the result in a RegEx
 str_view(x, &quot;\\\\&quot;)</code></pre>
-<div id="htmlwidget-b9ed386394c12e83af4b" style="width:960px;height:100%;" class="str_view html-widget"></div>
-<script type="application/json" data-for="htmlwidget-b9ed386394c12e83af4b">{"x":{"html":"<ul>\n  <li>a<span class='match'>\\<\/span>b<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-09c27171369d11e87080" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-09c27171369d11e87080">{"x":{"html":"<ul>\n  <li>a<span class='match'>\\<\/span>b<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
 <p>thourght this section the pattern for a RegEx will be presented as <code>\.</code> wheras the actual string as <code>\\.</code>.</p>
-</div>
-<div id="exerceses" class="section level3">
-<h3>Exerceses</h3>
+<div id="exerceses" class="section level4">
+<h4>Exerceses</h4>
 <ol style="list-style-type: decimal">
 <li><p>Explain why each of these strings don’t match a : “&quot;,”\“,”\&quot;.</p></li>
 <li><p>How would you match the sequence &quot;’?</p></li>
 <li><p>What patterns will the regular expression ...... match? How would you represent it as a string?</p></li>
 </ol>
+</div>
+</div>
+<div id="anchors" class="section level3">
+<h3>Anchors</h3>
+<p>It is sometimes usefull to match a pattern starting from the begining or the end of a string. In these cases an anchor is used to notify the engine that we are using a point of origin.</p>
+<p>More specifically, the start of the string is denoted by <code>^</code> and the end by <code>$</code></p>
+<pre class="r"><code>x &lt;- c(&quot;apple&quot;, &quot;banana&quot;, &quot;pear&quot;)
+str_view(x, &quot;^a&quot;)
+
+str_view(x, &quot;a$&quot;)</code></pre>
+<p>You can also use both in one pattern and this is usefull when the entire string is to be mathed</p>
+<pre class="r"><code># this will output all possible matches
+x &lt;- c(&quot;apple pie&quot;, &quot;apple&quot;, &quot;apple cake&quot;)
+str_view(x, &quot;apple&quot;)</code></pre>
+<div id="htmlwidget-9e714111d2b5c6f9bb63" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-9e714111d2b5c6f9bb63">{"x":{"html":"<ul>\n  <li><span class='match'>apple<\/span> pie<\/li>\n  <li><span class='match'>apple<\/span><\/li>\n  <li><span class='match'>apple<\/span> cake<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+<pre class="r"><code># notice the difference in the result here
+str_view(x, &quot;^apple$&quot;)</code></pre>
+<div id="htmlwidget-08cbb23a012b1d4e5332" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-08cbb23a012b1d4e5332">{"x":{"html":"<ul>\n  <li>apple pie<\/li>\n  <li><span class='match'>apple<\/span><\/li>\n  <li>apple cake<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+<div id="exercises-1" class="section level4">
+<h4>Exercises</h4>
+<ol style="list-style-type: decimal">
+<li><p>How would you match the literal string “<span class="math inline">\(^\)</span>”?</p></li>
+<li><p>Given the corpus of common words in stringr::words, create regular expressions that find all words that:</p>
+<p>+Start with “y”. +End with “x” +Are exactly three letters long. (Don’t cheat by using str_length()!) +Have seven letters or more. Hint: Since this list is long, you might want to use the match argument to str_view() to show only the matching or non-matching words.</p></li>
+</ol>
+<p>###Character Classes</p>
+<p>Similar to the wildcard you saw previously, ther are other reserved patters that serve a similar purpose for example:</p>
+<ul>
+<li> matches any digit.</li>
+<li>: matches any whitespace (e.g. space, tab, newline).</li>
+<li></li>
+<li></li>
+</ul>
+<p>A reminder here that if you want to use teh above to pattern then you will need to escape them as we learned earlier. So the <code>\d</code> string would be used as <code>\\d</code> in a pattern.</p>
+<p>In addition, there is an alternative to the backlash way of escaping a character that involves creating a class for a single character as in <code>[.]</code> for example. In many cases this is considered more intuitive that using the backlash.</p>
+<p>A character class containing a single character is a nice alternative to backslash escapes when you want to include a single metacharacter in a regex. Many people find this more readable.</p>
+<pre class="r"><code># Look for a literal character that normally has special meaning in a regex
+str_view(c(&quot;abc&quot;, &quot;a.c&quot;, &quot;a*c&quot;, &quot;a c&quot;), &quot;a[.]c&quot;)
+
+
+str_view(c(&quot;abc&quot;, &quot;a.c&quot;, &quot;a*c&quot;, &quot;a c&quot;), &quot;.[*]c&quot;)
+
+str_view(c(&quot;abc&quot;, &quot;a.c&quot;, &quot;a*c&quot;, &quot;a c&quot;), &quot;a[ ]&quot;)</code></pre>
+<p>However, some characters will ahve a certain meaning even inside brackets and so the backslash for escaping them is still necessary, these are <code>] \ ^ -</code>.</p>
+<p>Alternation is used to pick between patterns, for example <code>abc|d..f</code> will pick a patern with either <code>c</code> or <code>d</code> in the dfinition. Note how the <code>|</code> is used, it will only pick between the immediate characters and not between the entire patterns on either side. If it gets to a point where it becomes confusing remember to use parenthesis to clear things up.</p>
+<pre class="r"><code>str_view(c(&quot;grey&quot;, &quot;gray&quot;), &quot;gr(e|a)y&quot;)</code></pre>
+</div>
+<div id="exercises-2" class="section level4">
+<h4>Exercises</h4>
+<ol style="list-style-type: decimal">
+<li>Create regular expressions to find all words that: +Start with a vowel. +That only contain consonants. (Hint: thinking about matching “not”-vowels.) +End with ed, but not with eed. +End with ing or ise.</li>
+<li>Empirically verify the rule “i before e except after c”.</li>
+<li>Is “q” always followed by a “u”?</li>
+<li>Write a regular expression that matches a word if it’s probably written in British English, not American English.</li>
+<li>Create a regular expression that will match telephone numbers as commonly written in your country.</li>
+</ol>
+</div>
+</div>
+<div id="repetition" class="section level3">
+<h3>Repetition</h3>
+<div id="exercises-3" class="section level4">
+<h4>Exercises</h4>
+</div>
+</div>
+<div id="additional-functions" class="section level3">
+<h3>Additional Functions</h3>
 </div>
 </div>
 </div>
