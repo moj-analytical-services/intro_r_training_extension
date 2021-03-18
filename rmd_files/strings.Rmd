@@ -460,8 +460,24 @@ str_view(x, 'C[LX]+?')
 
 ### Additional Functions
 
+The `stringr` package comes with additional function wrappers that make the most common string operations somewhat easier. For example the following matching behavior can be conducted using the premade functions: 
+
++ Determine which strings match a pattern.
++ Find the positions of matches.
++ Extract the content of matches.
++ Replace matches with new values.
 
 
+The list is actually a lot longer so here we will briefly discuss how the most popular string matching operations can be performed using the tools supplied by the `stringr` package.
+
+
+#### Detect Strings
+
+
+#### Extract Strings
+
+
+### Replace Strings
 
 
 
