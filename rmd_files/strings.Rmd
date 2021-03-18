@@ -386,7 +386,73 @@ str_view(c("grey", "gray"), "gr(e|a)y")
 
 ### Repetition
 
+It is sometimes necessary for a certain pattern to appear multpiple time within a string, in such cases these repetitions can be coded with regular expressions to automate the search process. 
+
+for example:
+
++ `?`: 0 or 1
++ `+`: 1 or more
++ `*`: 0 or more
+
+```{r}
+
+x <- "1888 is the longest year in Roman numerals: MDCCCLXXXVIII"
+str_view(x, "CC?")
+
+str_view(x, "CC+")
+
+str_view(x, 'C[LX]+')
+
+```
+
+Another key aspect of the above code is that the number or precedence here dictates that the characterjust before the operater will be affected. This means that parenthesis will need to be used as in `bana(na)+` to capture more than one character.
+
+It is also possible to specify the number of repetitions explicitly by using:
+
++ `{n}`: exactly n
++ `{n,}`: n or more
++ `{,m}`: at most m
++ `{n,m}`: between n and m
+
+```{r}
+
+str_view(x, "C{2}")
+
+
+str_view(x, "C{2,}")
+
+str_view(x, "C{2,3}")
+
+```
+
+
+To also note here that the system will match as many of the characters that it can find. To switch this behaviour off and use what is called "lazy" mathcing (instead of "greedy" as specified earlier) the `?` operator can be used as follows:
+
+```{r}
+str_view(x, 'C{2,3}?')
+
+str_view(x, 'C[LX]+?')
+```
+
 #### Exercises
+
+
+1. Describe the equivalents of `?`, `+`,` *` in `{m,n}` form.
+
+2. Describe in words what these regular expressions match: (read carefully to see if I’m using a regular expression or a string that defines a regular expression.)
+
+      + `^.*$`
+      + `"\\{.+\\}"`
+      + `\d{4}-\d{2}-\d{2}`
+      + `"\\\\{4}"`
+3. Create regular expressions to find all words that:
+
+      + Start with three consonants.
+      + Have three or more vowels in a row.
+      + Have two or more vowel-consonant pairs in a row.
+      
+4. Solve the beginner regexp crosswords at [https://regexcrossword.com/challenges/beginner].
+
 
 
 ### Additional Functions
