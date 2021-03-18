@@ -16,7 +16,7 @@ In this part we will introduce strings and how to manipulate them to suit the ne
 
 Base R has a a number of functions to manipulate and work with strings but they can be inconsistent at times,  the above package was created in an effort to standardize character vector manipulation and make it easier to follow and replicate.  
 
-It should also be mentioned that the majority of the content that follows is containd in the book `R for Data Science` by `Hadley Wickam` and `Garrett Grolemund` that can be found in this [link](https://r4ds.had.co.nz/index.html).
+It should also be mentioned that the majority of the content that follows is contained in the book `R for Data Science` by `Hadley Wickam` and `Garrett Grolemund` that can be found in this [link](https://r4ds.had.co.nz/index.html).
 
 ### String Basics
 
@@ -224,7 +224,7 @@ str_view(x, "an")
 ```
 
 
-The complexity of the match can be adjusted and wildcards can be used as well in teh form of `.` as in 
+The complexity of the match can be adjusted and wildcards can be used as well in the form of `.` as in 
 
 ```{r, results=F}
 str_view(x, ".a.")
@@ -235,13 +235,13 @@ str_view(x, ".a.")
 
 An important thing to remember here is that you are looking for given pattern in a string or a vector of strings. Specifying the pattern to look for can be sometimes tricky and therefore is recommended to take a look at the accompanied information sheet for the `stringr` package located [here](https://evoldyn.gitlab.io/evomics-2018/ref-sheets/R_strings.pdf). 
 
-The most common functions for regular expressions as well as ways to strucure your pattern can be found in the above link.
+The most common functions for regular expressions as well as ways to structure your pattern can be found in the above link.
 
 ### Escaping characters
 
-We saw prevously that the wildcard is representd by `.`, what happens if your pattern needs to include the dot `.`?
+We saw previously that the wildcard is represented by `.`, what happens if your pattern needs to include the dot `.`?
 
-For cases such as these there is a need to "escape" a charcter using the backlash `\`. So for example the dot (`.`) as stated previously would be normally used as `\.` in a regular expression. However, a problem arises since strings are used to represent regular expressions, they also use the backlash to represent an escaped character. The solution is to use the double backlash as in `\\.` to signify that we want to "escape" the dot (`.`) in a regular expression pattern.
+For cases such as these there is a need to "escape" a character using the backlash `\`. So for example the dot (`.`) as stated previously would be normally used as `\.` in a regular expression. However, a problem arises since strings are used to represent regular expressions, they also use the backlash to represent an escaped character. The solution is to use the double backlash as in `\\.` to signify that we want to "escape" the dot (`.`) in a regular expression pattern.
 
 
 ```{r, results=F}
@@ -262,19 +262,22 @@ str_view(c("abc", "a.c", "bef"), "a\\.c")
 If there is a need to match the `\` character itself then you will need to use the double version `\\` for regular expressions and since this is a string you will need to add one more `\` followed by the actual character. So four backlash characters will need to be used!
 
 
+```{r}
 #to see this in a string
 x <- "a\\b"
 writeLines(x)
 
 # to view the result in a RegEx
 str_view(x, "\\\\")
+
 ```
 
-thourght this section the pattern for a RegEx will be presented as `\.` wheras the actual string as `\\.`. 
+
+throughout this section the pattern for a RegEx will be presented as `\.` whereas the actual string as `\\.`. 
 
 
 
-#### Exerceses
+#### Exercises
 
 
 1. Explain why each of these strings don’t match a \: "\", "\\", "\\\".
@@ -288,7 +291,7 @@ thourght this section the pattern for a RegEx will be presented as `\.` wheras t
 ### Anchors
 
 
-It is sometimes usefull to match a pattern starting from the begining or the end of a string. In these cases an anchor is used to notify the engine that we are using a point of origin. 
+It is sometimes useful to match a pattern starting from the beginning or the end of a string. In these cases an anchor is used to notify the engine that we are using a point of origin. 
 
 More specifically, the start of the string is denoted by `^` and the end by `$`
 
@@ -303,7 +306,7 @@ str_view(x, "a$")
 ```
 
 
-You can also use both in one pattern and this is usefull when the entire string is to be mathed 
+You can also use both in one pattern and this is useful when the entire string is to be matched 
 
 ```{r, results=F}
 # this will output all possible matches
@@ -332,19 +335,19 @@ Hint: Since this list is long, you might want to use the match argument to str_v
 
 ###Character Classes
 
-Similar to the wildcard you saw previously, ther are other reserved patters that serve a similar purpose for example:
+Similar to the wildcard you saw previously, there are other reserved patters that serve a similar purpose for example:
  
- + \d: matches any digit.
- + \s: matches any whitespace (e.g. space, tab, newline).
- + [abc]: matches a, b, or c.
- + [^abc]: matches anything except a, b, or c.
+ + `\d`: matches any digit.
+ + `\s`: matches any whitespace (e.g. space, tab, newline).
+ + `[abc]`: matches a, b, or c.
+ + `[^abc]`: matches anything except a, b, or c.
 
-A reminder here that if you want to use teh above to pattern then you will need to escape them as we learned earlier. So the `\d` string would be used as `\\d` in a pattern.
+A reminder here that if you want to use the above to pattern then you will need to escape them as we learned earlier. So the `\d` string would be used as `\\d` in a pattern.
 
 In addition, there is an alternative to the backlash way of escaping a character that involves creating a class for a single character as in `[.]` for example. In many cases this is considered more intuitive that using the backlash.
 
 
-A character class containing a single character is a nice alternative to backslash escapes when you want to include a single metacharacter in a regex. Many people find this more readable.
+A character class containing a single character is a nice alternative to backslash escapes when you want to include a single meta-character in a regex. Many people find this more readable.
 
 ```{r, results= F }
 # Look for a literal character that normally has special meaning in a regex
@@ -358,9 +361,9 @@ str_view(c("abc", "a.c", "a*c", "a c"), "a[ ]")
 ```
 
 
-However, some characters will ahve a certain meaning even inside brackets and so the backslash for escaping them is still necessary, these are `] \ ^ -`.
+However, some characters will have a certain meaning even inside brackets and so the backslash for escaping them is still necessary, these are `] \ ^ -`.
 
-Alternation is used to pick between patterns, for example `abc|d..f` will pick a patern with either `c` or `d` in the dfinition. Note how the `|` is used, it will only pick between the immediate characters and not between the entire patterns on either side. If it gets to a point where it becomes confusing remember to use parenthesis to clear things up. 
+Alternation is used to pick between patterns, for example `abc|d..f` will pick a pattern with either `c` or `d` in the definition. Note how the `|` is used, it will only pick between the immediate characters and not between the entire patterns on either side. If it gets to a point where it becomes confusing remember to use parenthesis to clear things up. 
 
 
 ```{r, results = F}
@@ -377,8 +380,8 @@ str_view(c("grey", "gray"), "gr(e|a)y")
 1. Create regular expressions to find all words that:
     +Start with a vowel.
     +That only contain consonants. (Hint: thinking about matching “not”-vowels.)
-    +End with ed, but not with eed.
-    +End with ing or ise.
+    +End with` ed`, but not with `eed`.
+    +End with `ing` or` ise`.
 2. Empirically verify the rule “i before e except after c”.
 3. Is “q” always followed by a “u”?
 4. Write a regular expression that matches a word if it’s probably written in British English, not American English.
@@ -386,7 +389,7 @@ str_view(c("grey", "gray"), "gr(e|a)y")
 
 ### Repetition
 
-It is sometimes necessary for a certain pattern to appear multpiple time within a string, in such cases these repetitions can be coded with regular expressions to automate the search process. 
+It is sometimes necessary for a certain pattern to appear multiple time within a string, in such cases these repetitions can be coded with regular expressions to automate the search process. 
 
 for example:
 
@@ -405,7 +408,7 @@ str_view(x, 'C[LX]+')
 
 ```
 
-Another key aspect of the above code is that the number or precedence here dictates that the characterjust before the operater will be affected. This means that parenthesis will need to be used as in `bana(na)+` to capture more than one character.
+Another key aspect of the above code is that the number or precedence here dictates that the character just before the operator will be affected. This means that parenthesis will need to be used as in `bana(na)+` to capture more than one character.
 
 It is also possible to specify the number of repetitions explicitly by using:
 
@@ -426,7 +429,7 @@ str_view(x, "C{2,3}")
 ```
 
 
-To also note here that the system will match as many of the characters that it can find. To switch this behaviour off and use what is called "lazy" mathcing (instead of "greedy" as specified earlier) the `?` operator can be used as follows:
+To also note here that the system will match as many of the characters that it can find. To switch this behavior off and use what is called "lazy" matching (instead of "greedy" as specified earlier) the `?` operator can be used as follows:
 
 ```{r}
 str_view(x, 'C{2,3}?')
