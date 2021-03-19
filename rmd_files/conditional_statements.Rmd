@@ -39,7 +39,7 @@ For the conditions themselves, we can make use of any of R's relational and logi
 
 ## Vectorising an if...else statement
 
-Dplyr's `if_else()` function is useful if we want to apply an 'if...else' statement to a vector, rather than a single variable. When we use `if_else()`, we need to provide it with three arguments in the format `if_else(condition, true, false)`, where `condition` is the condition we want to test, `true` is the value to use if the condition evaluates to `TRUE`, and `false` is the value to use if the condition evaluates to `FALSE`.
+Dplyr's `if_else()` function is useful if we want to apply an 'if...else' statement to a vector, rather than a single variable. When we use `if_else()` we need to provide it with three arguments, like this: `if_else(condition, true, false)`, where `condition` is the condition we want to test, `true` is the value to use if the condition evaluates to `TRUE`, and `false` is the value to use if the condition evaluates to `FALSE`.
 
 For example, if we had a vector containing a set of numbers, and we wanted to create an equivalent vector containing a '1' if the number is greater than zero, or a '0' if the number is less than or equal to zero, then we could do:
 ```{r, purl=purl_example_code}
@@ -48,18 +48,30 @@ x <- c(0, 74, 0, 8, 23, 15, 3, 0, 0, 9)
 dplyr::if_else(x > 0, 1, 0)
 ```
 
-When we're manipulating dataframes, it can be useful to combine `if_else()` with the `mutate()` function from dplyr. If we take a look at the `offenders` dataframe, let's say we wanted a simple way to be able to separate youths from adult offenders. We could add a column that contains a '1' if the offender is under the age of 18, and '0' otherwise:
+When we're manipulating dataframes, it can be useful to combine `if_else()` with the `mutate()` function from dplyr. If we take a look at the `offenders` dataframe, let's say we wanted a simple way to be able to separate youths from adult offenders. We can add a column that contains 'Youth' if the offender is under the age of 18, and 'Adult' otherwise:
 
 ```{r, purl=purl_example_code}
 offenders <- offenders %>%
-  dplyr::mutate(youth = dplyr::if_else(AGE < 18, 1, 0))
+  dplyr::mutate(YOUTH_OR_ADULT = dplyr::if_else(AGE < 18, "Youth", "Adult"))
 
 str(offenders)
 ```
 
 ### Exercise
 
-(Placeholder)
+Add a column called 'PRISON_SENTENCE' to the `offenders` dataframe. The column should contain a '1' if the offender received a prison sentence, or a '0' if the offender received a court order.
+
+**Hint:** you'll need to apply the `dplyr::if_else()` function to the 'SENTENCE' column.
+
+---
+
+```{r, include=show_solution, purl=purl_solutions}
+# Solution
+offenders <- offenders %>%
+  dplyr::mutate(PRISON_SENTENCE = dplyr::if_else(SENTENCE == "Court_order", 0, 1))
+
+str(offenders)
+```
 
 
 ## Vectorising multiple if...else statements
@@ -93,12 +105,25 @@ A default value can be assigned in the event that none of the conditions are met
 
 ### Exercise
 
-(Placeholder)
+Add a column called 'PREV_CONVICTIONS_BAND' to the `offenders` dataframe. The column should contain the following categories: "0-1", "1-5", "5-10", "10+", based on the number of convictions given in the 'PREV_CONVICTIONS' column.
 
+**Hint:** you'll need to use the `dplyr::case_when()` function.
 
+---
 
+```{r, include=show_solution, purl=purl_solutions}
+# Solution
+offenders <- offenders %>%
+  dplyr::mutate(PREV_CONVICTIONS_BAND = dplyr::case_when(
+    PREV_CONVICTIONS < 1 ~ "0-1",
+    PREV_CONVICTIONS < 5 ~ "1-5",
+    PREV_CONVICTIONS < 10 ~ "5-10",
+    PREV_CONVICTIONS >= 10 ~ "10+",
+    TRUE ~ "Unknown"
+  ))
 
-
+str(offenders)
+```
 
 
 

@@ -24,6 +24,7 @@ First, we need to load a few packages and an example dataset.
 library(s3tools)
 library(dplyr)
 library(tidyr)
+library(stringr)
 ```
 
 ```{r message=F, warning=F}
