@@ -1352,7 +1352,7 @@ summary {
 <h3>Introduction</h3>
 <p>In this part we will introduce strings and how to manipulate them to suit the needs of a particular project. The packages needed (listed above) are mostly the <code>stringr</code> and <code>tidyverse</code> package where the former contains a great number of functions to manipulate and work with strings and the latter is the base for most of the things we do in R.</p>
 <p>Base R has a a number of functions to manipulate and work with strings but they can be inconsistent at times, the above package was created in an effort to standardize character vector manipulation and make it easier to follow and replicate.</p>
-<p>It should also be mentioned that the majority of the content that follows is containd in the book <code>R for Data Science</code> by <code>Hadley Wickam</code> and <code>Garrett Grolemund</code> that can be found in this <a href="https://r4ds.had.co.nz/index.html">link</a>.</p>
+<p>It should also be mentioned that the majority of the content that follows is contained in the book <code>R for Data Science</code> by <code>Hadley Wickam</code> and <code>Garrett Grolemund</code> that can be found in this <a href="https://r4ds.had.co.nz/index.html">link</a>.</p>
 </div>
 <div id="string-basics" class="section level3">
 <h3>String Basics</h3>
@@ -1465,15 +1465,15 @@ str_sort(x,locale = &quot;lt&quot;)</code></pre>
 <p>Simple pattern matching can be achieved by using the <code>str_view</code> function and specifying the <code>string</code> and <code>pattern</code> arguments as shown below:</p>
 <pre class="r"><code>x &lt;- c(&quot;apple&quot;, &quot;banana&quot;, &quot;pear&quot;)
 str_view(x, &quot;an&quot;)</code></pre>
-<p>The complexity of the match can be adjusted and wildcards can be used as well in teh form of <code>.</code> as in</p>
+<p>The complexity of the match can be adjusted and wildcards can be used as well in the form of <code>.</code> as in</p>
 <pre class="r"><code>str_view(x, &quot;.a.&quot;)</code></pre>
 <p>An important thing to remember here is that you are looking for given pattern in a string or a vector of strings. Specifying the pattern to look for can be sometimes tricky and therefore is recommended to take a look at the accompanied information sheet for the <code>stringr</code> package located <a href="https://evoldyn.gitlab.io/evomics-2018/ref-sheets/R_strings.pdf">here</a>.</p>
-<p>The most common functions for regular expressions as well as ways to strucure your pattern can be found in the above link.</p>
+<p>The most common functions for regular expressions as well as ways to structure your pattern can be found in the above link.</p>
 </div>
 <div id="escaping-characters" class="section level3">
 <h3>Escaping characters</h3>
-<p>We saw prevously that the wildcard is representd by <code>.</code>, what happens if your pattern needs to include the dot <code>.</code>?</p>
-<p>For cases such as these there is a need to “escape” a charcter using the backlash <code>\</code>. So for example the dot (<code>.</code>) as stated previously would be normally used as <code>\.</code> in a regular expression. However, a problem arises since strings are used to represent regular expressions, they also use the backlash to represent an escaped character. The solution is to use the double backlash as in <code>\\.</code> to signify that we want to “escape” the dot (<code>.</code>) in a regular expression pattern.</p>
+<p>We saw previously that the wildcard is represented by <code>.</code>, what happens if your pattern needs to include the dot <code>.</code>?</p>
+<p>For cases such as these there is a need to “escape” a character using the backlash <code>\</code>. So for example the dot (<code>.</code>) as stated previously would be normally used as <code>\.</code> in a regular expression. However, a problem arises since strings are used to represent regular expressions, they also use the backlash to represent an escaped character. The solution is to use the double backlash as in <code>\\.</code> to signify that we want to “escape” the dot (<code>.</code>) in a regular expression pattern.</p>
 <pre class="r"><code># To create the regular expression, we need \\
 dot &lt;- &quot;\\.&quot;
 
@@ -1484,50 +1484,40 @@ writeLines(dot)
 # And this tells R to look for an explicit .
 str_view(c(&quot;abc&quot;, &quot;a.c&quot;, &quot;bef&quot;), &quot;a\\.c&quot;)</code></pre>
 <p>If there is a need to match the <code>\</code> character itself then you will need to use the double version <code>\\</code> for regular expressions and since this is a string you will need to add one more <code>\</code> followed by the actual character. So four backlash characters will need to be used!</p>
-<p>#to see this in a string x &lt;- “a\b” writeLines(x)</p>
+<pre class="r"><code>#to see this in a string
+x &lt;- &quot;a\\b&quot;
+writeLines(x)</code></pre>
+<pre><code>## a\b</code></pre>
+<pre class="r"><code># to view the result in a RegEx
+str_view(x, &quot;\\\\&quot;)</code></pre>
+<div id="htmlwidget-73d13f3fb46e36adbf62" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-73d13f3fb46e36adbf62">{"x":{"html":"<ul>\n  <li>a<span class='match'>\\<\/span>b<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+<p>throughout this section the pattern for a RegEx will be presented as <code>\.</code> whereas the actual string as <code>\\.</code>.</p>
+<div id="exercises-1" class="section level4">
+<h4>Exercises</h4>
+<ol style="list-style-type: decimal">
+<li><p>Explain why each of these strings don’t match a : “&quot;,”\“,”\&quot;.</p></li>
+<li><p>How would you match the sequence &quot;’?</p></li>
+<li><p>What patterns will the regular expression ...... match? How would you represent it as a string?</p></li>
+</ol>
 </div>
 </div>
-</div>
-<div id="to-view-the-result-in-a-regex" class="section level1">
-<h1>to view the result in a RegEx</h1>
-<p>str_view(x, “\\”)</p>
-<pre><code>
-thourght this section the pattern for a RegEx will be presented as `\.` wheras the actual string as `\\.`. 
-
-
-
-#### Exerceses
-
-
-1. Explain why each of these strings don’t match a \: &quot;\&quot;, &quot;\\&quot;, &quot;\\\&quot;.
-
-2. How would you match the sequence &quot;&#39;\?
-
-3. What patterns will the regular expression \..\..\.. match? How would you represent it as a string?
-
-
-
-### Anchors
-
-
-It is sometimes usefull to match a pattern starting from the begining or the end of a string. In these cases an anchor is used to notify the engine that we are using a point of origin. 
-
-More specifically, the start of the string is denoted by `^` and the end by `$`
-
-
-```r
-x &lt;- c(&quot;apple&quot;, &quot;banana&quot;, &quot;pear&quot;)
+<div id="anchors" class="section level3">
+<h3>Anchors</h3>
+<p>It is sometimes useful to match a pattern starting from the beginning or the end of a string. In these cases an anchor is used to notify the engine that we are using a point of origin.</p>
+<p>More specifically, the start of the string is denoted by <code>^</code> and the end by <code>$</code></p>
+<pre class="r"><code>x &lt;- c(&quot;apple&quot;, &quot;banana&quot;, &quot;pear&quot;)
 str_view(x, &quot;^a&quot;)
 
 str_view(x, &quot;a$&quot;)</code></pre>
-<p>You can also use both in one pattern and this is usefull when the entire string is to be mathed</p>
+<p>You can also use both in one pattern and this is useful when the entire string is to be matched</p>
 <pre class="r"><code># this will output all possible matches
 x &lt;- c(&quot;apple pie&quot;, &quot;apple&quot;, &quot;apple cake&quot;)
 str_view(x, &quot;apple&quot;)
 
 # notice the difference in the result here
 str_view(x, &quot;^apple$&quot;)</code></pre>
-<div id="exercises-1" class="section level4">
+<div id="exercises-2" class="section level4">
 <h4>Exercises</h4>
 <ol style="list-style-type: decimal">
 <li><p>How would you match the literal string “<span class="math inline">\(^\)</span>”?</p></li>
@@ -1535,16 +1525,16 @@ str_view(x, &quot;^apple$&quot;)</code></pre>
 <p>+Start with “y”. +End with “x” +Are exactly three letters long. (Don’t cheat by using str_length()!) +Have seven letters or more. Hint: Since this list is long, you might want to use the match argument to str_view() to show only the matching or non-matching words.</p></li>
 </ol>
 <p>###Character Classes</p>
-<p>Similar to the wildcard you saw previously, ther are other reserved patters that serve a similar purpose for example:</p>
+<p>Similar to the wildcard you saw previously, there are other reserved patters that serve a similar purpose for example:</p>
 <ul>
-<li> matches any digit.</li>
-<li>: matches any whitespace (e.g. space, tab, newline).</li>
-<li></li>
-<li></li>
+<li><code>\d</code>: matches any digit.</li>
+<li><code>\s</code>: matches any whitespace (e.g. space, tab, newline).</li>
+<li><code>[abc]</code>: matches a, b, or c.</li>
+<li><code>[^abc]</code>: matches anything except a, b, or c.</li>
 </ul>
-<p>A reminder here that if you want to use teh above to pattern then you will need to escape them as we learned earlier. So the <code>\d</code> string would be used as <code>\\d</code> in a pattern.</p>
+<p>A reminder here that if you want to use the above to pattern then you will need to escape them as we learned earlier. So the <code>\d</code> string would be used as <code>\\d</code> in a pattern.</p>
 <p>In addition, there is an alternative to the backlash way of escaping a character that involves creating a class for a single character as in <code>[.]</code> for example. In many cases this is considered more intuitive that using the backlash.</p>
-<p>A character class containing a single character is a nice alternative to backslash escapes when you want to include a single metacharacter in a regex. Many people find this more readable.</p>
+<p>A character class containing a single character is a nice alternative to backslash escapes when you want to include a single meta-character in a regex. Many people find this more readable.</p>
 <pre class="r"><code># Look for a literal character that normally has special meaning in a regex
 str_view(c(&quot;abc&quot;, &quot;a.c&quot;, &quot;a*c&quot;, &quot;a c&quot;), &quot;a[.]c&quot;)
 
@@ -1552,23 +1542,24 @@ str_view(c(&quot;abc&quot;, &quot;a.c&quot;, &quot;a*c&quot;, &quot;a c&quot;), 
 str_view(c(&quot;abc&quot;, &quot;a.c&quot;, &quot;a*c&quot;, &quot;a c&quot;), &quot;.[*]c&quot;)
 
 str_view(c(&quot;abc&quot;, &quot;a.c&quot;, &quot;a*c&quot;, &quot;a c&quot;), &quot;a[ ]&quot;)</code></pre>
-<p>However, some characters will ahve a certain meaning even inside brackets and so the backslash for escaping them is still necessary, these are <code>] \ ^ -</code>.</p>
-<p>Alternation is used to pick between patterns, for example <code>abc|d..f</code> will pick a patern with either <code>c</code> or <code>d</code> in the dfinition. Note how the <code>|</code> is used, it will only pick between the immediate characters and not between the entire patterns on either side. If it gets to a point where it becomes confusing remember to use parenthesis to clear things up.</p>
+<p>However, some characters will have a certain meaning even inside brackets and so the backslash for escaping them is still necessary, these are <code>] \ ^ -</code>.</p>
+<p>Alternation is used to pick between patterns, for example <code>abc|d..f</code> will pick a pattern with either <code>c</code> or <code>d</code> in the definition. Note how the <code>|</code> is used, it will only pick between the immediate characters and not between the entire patterns on either side. If it gets to a point where it becomes confusing remember to use parenthesis to clear things up.</p>
 <pre class="r"><code>str_view(c(&quot;grey&quot;, &quot;gray&quot;), &quot;gr(e|a)y&quot;)</code></pre>
 </div>
-<div id="exercises-2" class="section level4">
+<div id="exercises-3" class="section level4">
 <h4>Exercises</h4>
 <ol style="list-style-type: decimal">
-<li>Create regular expressions to find all words that: +Start with a vowel. +That only contain consonants. (Hint: thinking about matching “not”-vowels.) +End with ed, but not with eed. +End with ing or ise.</li>
+<li>Create regular expressions to find all words that: +Start with a vowel. +That only contain consonants. (Hint: thinking about matching “not”-vowels.) +End with<code>ed</code>, but not with <code>eed</code>. +End with <code>ing</code> or<code>ise</code>.</li>
 <li>Empirically verify the rule “i before e except after c”.</li>
 <li>Is “q” always followed by a “u”?</li>
 <li>Write a regular expression that matches a word if it’s probably written in British English, not American English.</li>
 <li>Create a regular expression that will match telephone numbers as commonly written in your country.</li>
 </ol>
 </div>
+</div>
 <div id="repetition" class="section level3">
 <h3>Repetition</h3>
-<p>It is sometimes necessary for a certain pattern to appear multpiple time within a string, in such cases these repetitions can be coded with regular expressions to automate the search process.</p>
+<p>It is sometimes necessary for a certain pattern to appear multiple time within a string, in such cases these repetitions can be coded with regular expressions to automate the search process.</p>
 <p>for example:</p>
 <ul>
 <li><code>?</code>: 0 or 1</li>
@@ -1577,15 +1568,15 @@ str_view(c(&quot;abc&quot;, &quot;a.c&quot;, &quot;a*c&quot;, &quot;a c&quot;), 
 </ul>
 <pre class="r"><code>x &lt;- &quot;1888 is the longest year in Roman numerals: MDCCCLXXXVIII&quot;
 str_view(x, &quot;CC?&quot;)</code></pre>
-<div id="htmlwidget-5a54e9ec811b02e6cfbe" style="width:960px;height:100%;" class="str_view html-widget"></div>
-<script type="application/json" data-for="htmlwidget-5a54e9ec811b02e6cfbe">{"x":{"html":"<ul>\n  <li>1888 is the longest year in Roman numerals: MD<span class='match'>CC<\/span>CLXXXVIII<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-8748103413a35b37e976" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-8748103413a35b37e976">{"x":{"html":"<ul>\n  <li>1888 is the longest year in Roman numerals: MD<span class='match'>CC<\/span>CLXXXVIII<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>str_view(x, &quot;CC+&quot;)</code></pre>
-<div id="htmlwidget-253658b7f8dbab2ab713" style="width:960px;height:100%;" class="str_view html-widget"></div>
-<script type="application/json" data-for="htmlwidget-253658b7f8dbab2ab713">{"x":{"html":"<ul>\n  <li>1888 is the longest year in Roman numerals: MD<span class='match'>CCC<\/span>LXXXVIII<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-cae5c9e396e5337dd7d5" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-cae5c9e396e5337dd7d5">{"x":{"html":"<ul>\n  <li>1888 is the longest year in Roman numerals: MD<span class='match'>CCC<\/span>LXXXVIII<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>str_view(x, &#39;C[LX]+&#39;)</code></pre>
-<div id="htmlwidget-a4d67cb3fd99b1f49281" style="width:960px;height:100%;" class="str_view html-widget"></div>
-<script type="application/json" data-for="htmlwidget-a4d67cb3fd99b1f49281">{"x":{"html":"<ul>\n  <li>1888 is the longest year in Roman numerals: MDCC<span class='match'>CLXXX<\/span>VIII<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
-<p>Another key aspect of the above code is that the number or precedence here dictates that the characterjust before the operater will be affected. This means that parenthesis will need to be used as in <code>bana(na)+</code> to capture more than one character.</p>
+<div id="htmlwidget-d9acf9833ec20234cd65" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-d9acf9833ec20234cd65">{"x":{"html":"<ul>\n  <li>1888 is the longest year in Roman numerals: MDCC<span class='match'>CLXXX<\/span>VIII<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+<p>Another key aspect of the above code is that the number or precedence here dictates that the character just before the operator will be affected. This means that parenthesis will need to be used as in <code>bana(na)+</code> to capture more than one character.</p>
 <p>It is also possible to specify the number of repetitions explicitly by using:</p>
 <ul>
 <li><code>{n}</code>: exactly n</li>
@@ -1594,31 +1585,31 @@ str_view(x, &quot;CC?&quot;)</code></pre>
 <li><code>{n,m}</code>: between n and m</li>
 </ul>
 <pre class="r"><code>str_view(x, &quot;C{2}&quot;)</code></pre>
-<div id="htmlwidget-3a179aa2cab657c4785d" style="width:960px;height:100%;" class="str_view html-widget"></div>
-<script type="application/json" data-for="htmlwidget-3a179aa2cab657c4785d">{"x":{"html":"<ul>\n  <li>1888 is the longest year in Roman numerals: MD<span class='match'>CC<\/span>CLXXXVIII<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-7526f91e2c61102c8318" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-7526f91e2c61102c8318">{"x":{"html":"<ul>\n  <li>1888 is the longest year in Roman numerals: MD<span class='match'>CC<\/span>CLXXXVIII<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>str_view(x, &quot;C{2,}&quot;)</code></pre>
-<div id="htmlwidget-327907ac9ed63137237a" style="width:960px;height:100%;" class="str_view html-widget"></div>
-<script type="application/json" data-for="htmlwidget-327907ac9ed63137237a">{"x":{"html":"<ul>\n  <li>1888 is the longest year in Roman numerals: MD<span class='match'>CCC<\/span>LXXXVIII<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-3474f3307344944fa21b" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-3474f3307344944fa21b">{"x":{"html":"<ul>\n  <li>1888 is the longest year in Roman numerals: MD<span class='match'>CCC<\/span>LXXXVIII<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>str_view(x, &quot;C{2,3}&quot;)</code></pre>
-<div id="htmlwidget-e820e1e6c138c6dd542d" style="width:960px;height:100%;" class="str_view html-widget"></div>
-<script type="application/json" data-for="htmlwidget-e820e1e6c138c6dd542d">{"x":{"html":"<ul>\n  <li>1888 is the longest year in Roman numerals: MD<span class='match'>CCC<\/span>LXXXVIII<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
-<p>To also note here that the system will match as many of the characters that it can find. To switch this behaviour off and use what is called “lazy” mathcing (instead of “greedy” as specified earlier) the <code>?</code> operator can be used as follows:</p>
+<div id="htmlwidget-d16685fb05b9d31b1806" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-d16685fb05b9d31b1806">{"x":{"html":"<ul>\n  <li>1888 is the longest year in Roman numerals: MD<span class='match'>CCC<\/span>LXXXVIII<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+<p>To also note here that the system will match as many of the characters that it can find. To switch this behavior off and use what is called “lazy” matching (instead of “greedy” as specified earlier) the <code>?</code> operator can be used as follows:</p>
 <pre class="r"><code>str_view(x, &#39;C{2,3}?&#39;)</code></pre>
-<div id="htmlwidget-eedcae6914d5a1fda34d" style="width:960px;height:100%;" class="str_view html-widget"></div>
-<script type="application/json" data-for="htmlwidget-eedcae6914d5a1fda34d">{"x":{"html":"<ul>\n  <li>1888 is the longest year in Roman numerals: MD<span class='match'>CC<\/span>CLXXXVIII<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-cbbeede0aeda518a449d" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-cbbeede0aeda518a449d">{"x":{"html":"<ul>\n  <li>1888 is the longest year in Roman numerals: MD<span class='match'>CC<\/span>CLXXXVIII<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>str_view(x, &#39;C[LX]+?&#39;)</code></pre>
-<div id="htmlwidget-f0fcbe37501c162ad615" style="width:960px;height:100%;" class="str_view html-widget"></div>
-<script type="application/json" data-for="htmlwidget-f0fcbe37501c162ad615">{"x":{"html":"<ul>\n  <li>1888 is the longest year in Roman numerals: MDCC<span class='match'>CL<\/span>XXXVIII<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
-<div id="exercises-3" class="section level4">
+<div id="htmlwidget-9f6238679eae5db67846" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-9f6238679eae5db67846">{"x":{"html":"<ul>\n  <li>1888 is the longest year in Roman numerals: MDCC<span class='match'>CL<\/span>XXXVIII<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+<div id="exercises-4" class="section level4">
 <h4>Exercises</h4>
 <ol style="list-style-type: decimal">
-<li><p>Describe the equivalents of ?, +, * in {m,n} form.</p></li>
+<li><p>Describe the equivalents of <code>?</code>, <code>+</code>,<code>*</code> in <code>{m,n}</code> form.</p></li>
 <li><p>Describe in words what these regular expressions match: (read carefully to see if I’m using a regular expression or a string that defines a regular expression.)</p>
 <ul>
-<li>^.*$</li>
-<li>“\{.+\}”</li>
-<li>--</li>
-<li>“\\{4}”</li>
+<li><code>^.*$</code></li>
+<li><code>&quot;\\{.+\\}&quot;</code></li>
+<li><code>\d{4}-\d{2}-\d{2}</code></li>
+<li><code>&quot;\\\\{4}&quot;</code></li>
 </ul></li>
 <li><p>Create regular expressions to find all words that:</p>
 <ul>
@@ -1632,6 +1623,24 @@ str_view(x, &quot;CC?&quot;)</code></pre>
 </div>
 <div id="additional-functions" class="section level3">
 <h3>Additional Functions</h3>
+<p>The <code>stringr</code> package comes with additional function wrappers that make the most common string operations somewhat easier. For example the following matching behavior can be conducted using the premade functions:</p>
+<ul>
+<li>Determine which strings match a pattern.</li>
+<li>Find the positions of matches.</li>
+<li>Extract the content of matches.</li>
+<li>Replace matches with new values.</li>
+</ul>
+<p>The list is actually a lot longer so here we will briefly discuss how the most popular string matching operations can be performed using the tools supplied by the <code>stringr</code> package.</p>
+<div id="detect-strings" class="section level4">
+<h4>Detect Strings</h4>
+</div>
+<div id="extract-strings" class="section level4">
+<h4>Extract Strings</h4>
+</div>
+</div>
+<div id="replace-strings" class="section level3">
+<h3>Replace Strings</h3>
+</div>
 </div>
 </div>
 

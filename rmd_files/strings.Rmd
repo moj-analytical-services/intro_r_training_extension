@@ -333,7 +333,7 @@ str_view(x, "^apple$")
       +Have seven letters or more.
 Hint: Since this list is long, you might want to use the match argument to str_view() to show only the matching or non-matching words.
 
-###Character Classes
+### Character Classes
 
 Similar to the wildcard you saw previously, there are other reserved patters that serve a similar purpose for example:
  
@@ -477,10 +477,10 @@ The list is actually a lot longer so here we will briefly discuss how the most p
 #### Extract Strings
 
 
-### Replace Strings
+#### Replace Strings
 
 
-
+#### Exercises 
 
 
 
