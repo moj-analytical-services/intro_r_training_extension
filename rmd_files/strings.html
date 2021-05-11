@@ -1490,8 +1490,8 @@ writeLines(x)</code></pre>
 <pre><code>## a\b</code></pre>
 <pre class="r"><code># to view the result in a RegEx
 str_view(x, &quot;\\\\&quot;)</code></pre>
-<div id="htmlwidget-73d13f3fb46e36adbf62" style="width:960px;height:100%;" class="str_view html-widget"></div>
-<script type="application/json" data-for="htmlwidget-73d13f3fb46e36adbf62">{"x":{"html":"<ul>\n  <li>a<span class='match'>\\<\/span>b<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-9eb6d948c88adeae0ade" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-9eb6d948c88adeae0ade">{"x":{"html":"<ul>\n  <li>a<span class='match'>\\<\/span>b<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
 <p>throughout this section the pattern for a RegEx will be presented as <code>\.</code> whereas the actual string as <code>\\.</code>.</p>
 <div id="exercises-1" class="section level4">
 <h4>Exercises</h4>
@@ -1524,7 +1524,10 @@ str_view(x, &quot;^apple$&quot;)</code></pre>
 <li><p>Given the corpus of common words in stringr::words, create regular expressions that find all words that:</p>
 <p>+Start with “y”. +End with “x” +Are exactly three letters long. (Don’t cheat by using str_length()!) +Have seven letters or more. Hint: Since this list is long, you might want to use the match argument to str_view() to show only the matching or non-matching words.</p></li>
 </ol>
-<p>###Character Classes</p>
+</div>
+</div>
+<div id="character-classes" class="section level3">
+<h3>Character Classes</h3>
 <p>Similar to the wildcard you saw previously, there are other reserved patters that serve a similar purpose for example:</p>
 <ul>
 <li><code>\d</code>: matches any digit.</li>
@@ -1545,7 +1548,6 @@ str_view(c(&quot;abc&quot;, &quot;a.c&quot;, &quot;a*c&quot;, &quot;a c&quot;), 
 <p>However, some characters will have a certain meaning even inside brackets and so the backslash for escaping them is still necessary, these are <code>] \ ^ -</code>.</p>
 <p>Alternation is used to pick between patterns, for example <code>abc|d..f</code> will pick a pattern with either <code>c</code> or <code>d</code> in the definition. Note how the <code>|</code> is used, it will only pick between the immediate characters and not between the entire patterns on either side. If it gets to a point where it becomes confusing remember to use parenthesis to clear things up.</p>
 <pre class="r"><code>str_view(c(&quot;grey&quot;, &quot;gray&quot;), &quot;gr(e|a)y&quot;)</code></pre>
-</div>
 <div id="exercises-3" class="section level4">
 <h4>Exercises</h4>
 <ol style="list-style-type: decimal">
@@ -1568,14 +1570,14 @@ str_view(c(&quot;abc&quot;, &quot;a.c&quot;, &quot;a*c&quot;, &quot;a c&quot;), 
 </ul>
 <pre class="r"><code>x &lt;- &quot;1888 is the longest year in Roman numerals: MDCCCLXXXVIII&quot;
 str_view(x, &quot;CC?&quot;)</code></pre>
-<div id="htmlwidget-8748103413a35b37e976" style="width:960px;height:100%;" class="str_view html-widget"></div>
-<script type="application/json" data-for="htmlwidget-8748103413a35b37e976">{"x":{"html":"<ul>\n  <li>1888 is the longest year in Roman numerals: MD<span class='match'>CC<\/span>CLXXXVIII<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-2378c3c8b5f8f2de64cb" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-2378c3c8b5f8f2de64cb">{"x":{"html":"<ul>\n  <li>1888 is the longest year in Roman numerals: MD<span class='match'>CC<\/span>CLXXXVIII<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>str_view(x, &quot;CC+&quot;)</code></pre>
-<div id="htmlwidget-cae5c9e396e5337dd7d5" style="width:960px;height:100%;" class="str_view html-widget"></div>
-<script type="application/json" data-for="htmlwidget-cae5c9e396e5337dd7d5">{"x":{"html":"<ul>\n  <li>1888 is the longest year in Roman numerals: MD<span class='match'>CCC<\/span>LXXXVIII<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-a0625c92ebe6fef320e9" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-a0625c92ebe6fef320e9">{"x":{"html":"<ul>\n  <li>1888 is the longest year in Roman numerals: MD<span class='match'>CCC<\/span>LXXXVIII<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>str_view(x, &#39;C[LX]+&#39;)</code></pre>
-<div id="htmlwidget-d9acf9833ec20234cd65" style="width:960px;height:100%;" class="str_view html-widget"></div>
-<script type="application/json" data-for="htmlwidget-d9acf9833ec20234cd65">{"x":{"html":"<ul>\n  <li>1888 is the longest year in Roman numerals: MDCC<span class='match'>CLXXX<\/span>VIII<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-22ed6348c6d9a3252ae0" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-22ed6348c6d9a3252ae0">{"x":{"html":"<ul>\n  <li>1888 is the longest year in Roman numerals: MDCC<span class='match'>CLXXX<\/span>VIII<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
 <p>Another key aspect of the above code is that the number or precedence here dictates that the character just before the operator will be affected. This means that parenthesis will need to be used as in <code>bana(na)+</code> to capture more than one character.</p>
 <p>It is also possible to specify the number of repetitions explicitly by using:</p>
 <ul>
@@ -1585,21 +1587,21 @@ str_view(x, &quot;CC?&quot;)</code></pre>
 <li><code>{n,m}</code>: between n and m</li>
 </ul>
 <pre class="r"><code>str_view(x, &quot;C{2}&quot;)</code></pre>
-<div id="htmlwidget-7526f91e2c61102c8318" style="width:960px;height:100%;" class="str_view html-widget"></div>
-<script type="application/json" data-for="htmlwidget-7526f91e2c61102c8318">{"x":{"html":"<ul>\n  <li>1888 is the longest year in Roman numerals: MD<span class='match'>CC<\/span>CLXXXVIII<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-5804636720f19df519e4" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-5804636720f19df519e4">{"x":{"html":"<ul>\n  <li>1888 is the longest year in Roman numerals: MD<span class='match'>CC<\/span>CLXXXVIII<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>str_view(x, &quot;C{2,}&quot;)</code></pre>
-<div id="htmlwidget-3474f3307344944fa21b" style="width:960px;height:100%;" class="str_view html-widget"></div>
-<script type="application/json" data-for="htmlwidget-3474f3307344944fa21b">{"x":{"html":"<ul>\n  <li>1888 is the longest year in Roman numerals: MD<span class='match'>CCC<\/span>LXXXVIII<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-16d639005cd0c7613200" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-16d639005cd0c7613200">{"x":{"html":"<ul>\n  <li>1888 is the longest year in Roman numerals: MD<span class='match'>CCC<\/span>LXXXVIII<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>str_view(x, &quot;C{2,3}&quot;)</code></pre>
-<div id="htmlwidget-d16685fb05b9d31b1806" style="width:960px;height:100%;" class="str_view html-widget"></div>
-<script type="application/json" data-for="htmlwidget-d16685fb05b9d31b1806">{"x":{"html":"<ul>\n  <li>1888 is the longest year in Roman numerals: MD<span class='match'>CCC<\/span>LXXXVIII<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-852caadfecdf95ab7e91" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-852caadfecdf95ab7e91">{"x":{"html":"<ul>\n  <li>1888 is the longest year in Roman numerals: MD<span class='match'>CCC<\/span>LXXXVIII<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
 <p>To also note here that the system will match as many of the characters that it can find. To switch this behavior off and use what is called “lazy” matching (instead of “greedy” as specified earlier) the <code>?</code> operator can be used as follows:</p>
 <pre class="r"><code>str_view(x, &#39;C{2,3}?&#39;)</code></pre>
-<div id="htmlwidget-cbbeede0aeda518a449d" style="width:960px;height:100%;" class="str_view html-widget"></div>
-<script type="application/json" data-for="htmlwidget-cbbeede0aeda518a449d">{"x":{"html":"<ul>\n  <li>1888 is the longest year in Roman numerals: MD<span class='match'>CC<\/span>CLXXXVIII<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-067318ec27c793a2f117" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-067318ec27c793a2f117">{"x":{"html":"<ul>\n  <li>1888 is the longest year in Roman numerals: MD<span class='match'>CC<\/span>CLXXXVIII<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>str_view(x, &#39;C[LX]+?&#39;)</code></pre>
-<div id="htmlwidget-9f6238679eae5db67846" style="width:960px;height:100%;" class="str_view html-widget"></div>
-<script type="application/json" data-for="htmlwidget-9f6238679eae5db67846">{"x":{"html":"<ul>\n  <li>1888 is the longest year in Roman numerals: MDCC<span class='match'>CL<\/span>XXXVIII<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-d883ecfc274c6f4622c0" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-d883ecfc274c6f4622c0">{"x":{"html":"<ul>\n  <li>1888 is the longest year in Roman numerals: MDCC<span class='match'>CL<\/span>XXXVIII<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
 <div id="exercises-4" class="section level4">
 <h4>Exercises</h4>
 <ol style="list-style-type: decimal">
@@ -1633,13 +1635,137 @@ str_view(x, &quot;CC?&quot;)</code></pre>
 <p>The list is actually a lot longer so here we will briefly discuss how the most popular string matching operations can be performed using the tools supplied by the <code>stringr</code> package.</p>
 <div id="detect-strings" class="section level4">
 <h4>Detect Strings</h4>
+<p>Detecting strings is a very important aspect in many Data Analysis applications and <code>str_detect</code> was created with ease of use in mind. It returns a logical vector depending whether there was a match in the corresponding location and based on the supplied pattern, as the example below illustrates.</p>
+<pre class="r"><code>x &lt;- c(&quot;apple&quot;, &quot;banana&quot;, &quot;pear&quot;)
+str_detect(x, &quot;e&quot;)</code></pre>
+<pre><code>## [1]  TRUE FALSE  TRUE</code></pre>
+<pre class="r"><code>#&gt; [1]  TRUE FALSE  TRUE</code></pre>
+<p>A very handy way of using it, is by taking advantage of how <code>R</code> translates <code>TRUE</code> (evaluated as <code>1</code>) and <code>FALSE</code> (evaluated as <code>0</code>) responses. In the example below using the <code>sum</code> and <code>mean</code> functions makes counting instances of a pattern being detected much easier.</p>
+<pre class="r"><code># How many common words start with t?
+sum(str_detect(words, &quot;^t&quot;))</code></pre>
+<pre><code>## [1] 65</code></pre>
+<pre class="r"><code>#&gt; [1] 65
+# What proportion of common words end with a vowel?
+mean(str_detect(words, &quot;[aeiou]$&quot;))</code></pre>
+<pre><code>## [1] 0.2765306</code></pre>
+<pre class="r"><code>#&gt; [1] 0.2765306</code></pre>
+<p>A variation of <code>str_detect</code> is <code>str_count</code> and as the name suggests the function will count the instances of a pattern appearing in the target vector.</p>
+<pre class="r"><code>x &lt;- c(&quot;apple&quot;, &quot;banana&quot;, &quot;pear&quot;)
+str_count(x, &quot;a&quot;)</code></pre>
+<pre><code>## [1] 1 3 1</code></pre>
+<pre class="r"><code>#&gt; [1] 1 3 1
+
+# On average, how many vowels per word?
+mean(str_count(words, &quot;[aeiou]&quot;))</code></pre>
+<pre><code>## [1] 1.991837</code></pre>
+<pre class="r"><code>#&gt; [1] 1.991837</code></pre>
 </div>
-<div id="extract-strings" class="section level4">
+<div id="extr_str" class="section level4">
 <h4>Extract Strings</h4>
+<p>To extract strings we use the <code>str_extract</code> function that takes the input source vector and the pattern to match as arguments. In this case we will need a more complex set of examples and so the <a href="https://en.wikipedia.org/wiki/Harvard_sentences">Harvard Sentences</a> collection of sentences is used. Although originally created to test VOIP systems, it can also be used for regex examples as well.</p>
+<pre class="r"><code>length(sentences)</code></pre>
+<pre><code>## [1] 720</code></pre>
+<pre class="r"><code>#&gt; [1] 720
+head(sentences)</code></pre>
+<pre><code>## [1] &quot;The birch canoe slid on the smooth planks.&quot; 
+## [2] &quot;Glue the sheet to the dark blue background.&quot;
+## [3] &quot;It&#39;s easy to tell the depth of a well.&quot;     
+## [4] &quot;These days a chicken leg is a rare dish.&quot;   
+## [5] &quot;Rice is often served in round bowls.&quot;       
+## [6] &quot;The juice of lemons makes fine punch.&quot;</code></pre>
+<pre class="r"><code>#&gt; [1] &quot;The birch canoe slid on the smooth planks.&quot; 
+#&gt; [2] &quot;Glue the sheet to the dark blue background.&quot;
+#&gt; [3] &quot;It&#39;s easy to tell the depth of a well.&quot;     
+#&gt; [4] &quot;These days a chicken leg is a rare dish.&quot;   
+#&gt; [5] &quot;Rice is often served in round bowls.&quot;       
+#&gt; [6] &quot;The juice of lemons makes fine punch.&quot;</code></pre>
+<p>A good way to start using regex in bulk is to see if we can construct a pattern to match that contains all the relevant information. In the example below the pattern contains a set of colours combined into a string to be used as the pattern.</p>
+<pre class="r"><code>colours &lt;- c(&quot;red&quot;, &quot;orange&quot;, &quot;yellow&quot;, &quot;green&quot;, &quot;blue&quot;, &quot;purple&quot;)
+colour_match &lt;- str_c(colours, collapse = &quot;|&quot;)
+colour_match</code></pre>
+<pre><code>## [1] &quot;red|orange|yellow|green|blue|purple&quot;</code></pre>
+<pre class="r"><code>#&gt; [1] &quot;red|orange|yellow|green|blue|purple&quot;</code></pre>
+<p>The next stage is to select the relevant examples from the collection of <code>sentences</code> and then proceed in matching based on the pattern we created.</p>
+<pre class="r"><code>has_colour &lt;- str_subset(sentences, colour_match)
+matches &lt;- str_extract(has_colour, colour_match)
+head(matches)</code></pre>
+<pre><code>## [1] &quot;blue&quot; &quot;blue&quot; &quot;red&quot;  &quot;red&quot;  &quot;red&quot;  &quot;blue&quot;</code></pre>
+<pre class="r"><code>#&gt; [1] &quot;blue&quot; &quot;blue&quot; &quot;red&quot;  &quot;red&quot;  &quot;red&quot;  &quot;blue&quot;</code></pre>
+<p>To better understand the mechanics behind the matching process it helps to know that <code>str_extract</code> only finds and extracts the first match in each row of a vector. To better illustrate this, the code below selects the phrases from the <code>sentences</code> collection where there are more than one match.</p>
+<pre class="r"><code>more &lt;- sentences[str_count(sentences, colour_match) &gt; 1]
+str_view_all(more, colour_match)</code></pre>
+<div id="htmlwidget-aba6b0b70ebc80d7d678" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-aba6b0b70ebc80d7d678">{"x":{"html":"<ul>\n  <li>It is hard to erase <span class='match'>blue<\/span> or <span class='match'>red<\/span> ink.<\/li>\n  <li>The <span class='match'>green<\/span> light in the brown box flicke<span class='match'>red<\/span>.<\/li>\n  <li>The sky in the west is tinged with <span class='match'>orange<\/span> <span class='match'>red<\/span>.<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+<p>Notice how <code>str_extract</code> works with these source vectors.</p>
+<pre class="r"><code>str_extract(more, colour_match)</code></pre>
+<pre><code>## [1] &quot;blue&quot;   &quot;green&quot;  &quot;orange&quot;</code></pre>
+<pre class="r"><code>#&gt; [1] &quot;blue&quot;   &quot;green&quot;  &quot;orange&quot;</code></pre>
+</div>
+<div id="replace-strings" class="section level4">
+<h4>Replace Strings</h4>
+<p><code>str_replace</code> and <code>str_replace_all</code>allow you to replace parts of a string that match a pattern with a new replacement string.</p>
+<pre class="r"><code>x &lt;- c(&quot;apple&quot;, &quot;pear&quot;, &quot;banana&quot;)
+str_replace(x, &quot;[aeiou]&quot;, &quot;-&quot;)</code></pre>
+<pre><code>## [1] &quot;-pple&quot;  &quot;p-ar&quot;   &quot;b-nana&quot;</code></pre>
+<pre class="r"><code>#&gt; [1] &quot;-pple&quot;  &quot;p-ar&quot;   &quot;b-nana&quot;
+str_replace_all(x, &quot;[aeiou]&quot;, &quot;-&quot;)</code></pre>
+<pre><code>## [1] &quot;-ppl-&quot;  &quot;p--r&quot;   &quot;b-n-n-&quot;</code></pre>
+<pre class="r"><code>#&gt; [1] &quot;-ppl-&quot;  &quot;p--r&quot;   &quot;b-n-n-&quot;</code></pre>
+<p>And with <code>str_replace_all</code> we can apply the same functionality as above in all the elements of a character vector.</p>
+<pre class="r"><code>x &lt;- c(&quot;1 house&quot;, &quot;2 cars&quot;, &quot;3 people&quot;)
+str_replace_all(x, c(&quot;1&quot; = &quot;one&quot;, &quot;2&quot; = &quot;two&quot;, &quot;3&quot; = &quot;three&quot;))</code></pre>
+<pre><code>## [1] &quot;one house&quot;    &quot;two cars&quot;     &quot;three people&quot;</code></pre>
+<pre class="r"><code>#&gt; [1] &quot;one house&quot;    &quot;two cars&quot;     &quot;three people&quot;</code></pre>
+<p>In addition, one can also use backrefferences and recycle elements of the same string as replacements</p>
+<pre class="r"><code>sentences %&gt;% 
+  str_replace(&quot;([^ ]+) ([^ ]+) ([^ ]+)&quot;, &quot;\\1 \\3 \\2&quot;) %&gt;% 
+  head(5)</code></pre>
+<pre><code>## [1] &quot;The canoe birch slid on the smooth planks.&quot; 
+## [2] &quot;Glue sheet the to the dark blue background.&quot;
+## [3] &quot;It&#39;s to easy tell the depth of a well.&quot;     
+## [4] &quot;These a days chicken leg is a rare dish.&quot;   
+## [5] &quot;Rice often is served in round bowls.&quot;</code></pre>
+<pre class="r"><code>#&gt; [1] &quot;The canoe birch slid on the smooth planks.&quot; 
+#&gt; [2] &quot;Glue sheet the to the dark blue background.&quot;
+#&gt; [3] &quot;It&#39;s to easy tell the depth of a well.&quot;     
+#&gt; [4] &quot;These a days chicken leg is a rare dish.&quot;   
+#&gt; [5] &quot;Rice often is served in round bowls.&quot;</code></pre>
+</div>
+<div id="exercises-5" class="section level4">
+<h4>Exercises</h4>
+<div id="on-detecting-strings" class="section level5">
+<h5>On detecting strings</h5>
+<ol style="list-style-type: decimal">
+<li><p>For each of the following challenges, try solving it by using both a single regular expression, and a combination of multiple str_detect() calls.</p>
+<ol style="list-style-type: decimal">
+<li><p>Find all words that start or end with x.</p></li>
+<li><p>Find all words that start with a vowel and end with a consonant.</p></li>
+<li><p>Are there any words that contain at least one of each different vowel?</p></li>
+</ol></li>
+<li><p>What word has the highest number of vowels? What word has the highest proportion of vowels? (Hint: what is the denominator?)</p></li>
+</ol>
+</div>
+<div id="on-extracting-strings" class="section level5">
+<h5>On extracting strings</h5>
+<ol style="list-style-type: decimal">
+<li><p>In the example in section <a href="#extr_str">Extracting Strings</a> section, you might have noticed that the regular expression matched “flickered”, which is not a colour. Modify the regex to fix the problem.</p></li>
+<li><p>From the Harvard sentences data, extract:</p>
+<ol style="list-style-type: decimal">
+<li>The first word from each sentence.</li>
+<li>All words ending in ing.</li>
+<li>All plurals.</li>
+</ol></li>
+</ol>
+</div>
+<div id="on-replacing-strings" class="section level5">
+<h5>On Replacing Strings</h5>
+<ol style="list-style-type: decimal">
+<li><p>Replace all forward slashes in a string with backslashes.</p></li>
+<li><p>Implement a simple version of str_to_lower() using replace_all().</p></li>
+<li><p>Switch the first and last letters in words. Which of those strings are still words?</p></li>
+</ol>
 </div>
 </div>
-<div id="replace-strings" class="section level3">
-<h3>Replace Strings</h3>
 </div>
 </div>
 </div>
