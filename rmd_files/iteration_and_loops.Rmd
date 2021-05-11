@@ -1,0 +1,22 @@
+
+# Iteration and Loops
+
+```{r,echo=F, message=F, results=F}
+# loading packages
+# 
+library(tidyverse)
+library(stringr)
+
+```
+
+
+## Introduction
+
+## For loops
+
+## For loop variants
+
+## the Map functionls and purrr
+
+
+##Exercises
