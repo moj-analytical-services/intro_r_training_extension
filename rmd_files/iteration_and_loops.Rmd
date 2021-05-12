@@ -12,11 +12,66 @@ library(stringr)
 
 ## Introduction
 
-## For loops
+
+As part of any good coding practice is to reduce the number of repetitive tasks as much as possible. To help with this concept any programming language comes with a set of **control structures** to help reduce clutter in the code and make it more readable and easier to understand.
+
+A general rule in programming is to never copy an paste code more than twice; if you find that you are using repeated statements over and over again, this is a good sign that either a loop or a function or both are needed to make the code more compact and efficient. 
+
+Loops form part of the core of any programming platform and R is no different here. In the section to follow we will cover the for loos and its variants and explain a few things about `purrr` and how we can iterate through lists using a variety of *maps*. 
+
+A note here similar to what was mentioned in previous chapters, the content in this section can also be found in Hadley Wickham's and Garrett Grolemund's book [R For Data Science](https://r4ds.had.co.nz)
+
+
+## For Loops
+
+The basics of how a for loop works can be understood best by using an example. Consider the following tibble:
+
+
+
+```{r}
+df <- tibble(
+  a = rnorm(10),
+  b = rnorm(10),
+  c = rnorm(10),
+  d = rnorm(10)
+)
+
+```
+
+the task now is to calculate, for example, the mean or the median:
+
+```{r}
+
+median(df$a)
+#> [1] -0.2457625
+median(df$b)
+#> [1] -0.2873072
+median(df$c)
+#> [1] -0.05669771
+median(df$d)
+#> [1] 0.1442633
+```
+
+
+one way of doing this is by copying and pasting the same code over and over again; inefficient, but possible at this stage. A much better way is to construct a for loop and iterate through the code that is repeated as above.
+
+```{r}
+output <- vector("double", ncol(df))  # 1. output
+for (i in seq_along(df)) {            # 2. sequence
+  output[[i]] <- median(df[[i]])      # 3. body
+}
+output
+#> [1] -0.24576245 -0.28730721 -0.05669771  0.14426335
+```
+
+In the example above the For loop has three primary components,  the *output*, the *sequence* and the *body*. The output is usually a list or a vector where the result of the loop is to be stored. the sequence is  a vector or a list containing the collection of items to cycle through while running. The iterator `i` is used as a place holder variable, changing each time the loop runs to the corresponding value ion the given sequence. As the loop runs `i` runs through all the values in the `sequence` in the order they appear.  
+
+the body of the loop contains the code to run at each iteration. The iterator `i` will be take the value of each element in the sequence on each run. 
 
 ## For loop variants
 
-## the Map functionls and purrr
+## the Map functions and purrr
 
 
 ##Exercises
+
