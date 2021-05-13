@@ -66,12 +66,116 @@ output
 
 In the example above the For loop has three primary components,  the *output*, the *sequence* and the *body*. The output is usually a list or a vector where the result of the loop is to be stored. the sequence is  a vector or a list containing the collection of items to cycle through while running. The iterator `i` is used as a place holder variable, changing each time the loop runs to the corresponding value ion the given sequence. As the loop runs `i` runs through all the values in the `sequence` in the order they appear.  
 
-the body of the loop contains the code to run at each iteration. The iterator `i` will be take the value of each element in the sequence on each run. 
+The body of the loop contains the code to run at each iteration. The iterator `i` will be take the value of each element in the sequence on each run. 
+
+
+### Exercises
+
+1. Write for loops to:
+
+  1. Compute the mean of every column in mtcars.
+  2. Determine the type of each column in nycflights13::flights.
+  3. Compute the number of unique values in each column of iris.
+  4. Generate 10 random normals from distributions with means of -10, 0, 10, and 100.
+
+Think about the output, sequence, and body before you start writing the loop.
+
 
 ## For loop variants
+
+Now that you know the basics of the for loop, it is time to see a few of its variants and how they can be used in very common programming tasks. 
+
+There are 4 variants to consider here:
+
+1. Modifying an existing object, instead of creating a new object.
+2. Looping over names or values, instead of indices.
+3. Handling outputs of unknown length.
+4. Handling sequences of unknown length.
+
+and we will cover each in the sections below. 
+
+
+### Modifying an existing object
+
+In many cases there will be a need to modify a given object based on the current data analysis task. In the example below the task is to scale the data frame for further processing. On way to achieve this is by manually change each column in the data; this could be fine for small dataframes but for larger ones this will very quickly become a problem. 
+
+
+```{r}
+df <- tibble(
+  a = rnorm(10),
+  b = rnorm(10),
+  c = rnorm(10),
+  d = rnorm(10)
+)
+rescale01 <- function(x) {
+  rng <- range(x, na.rm = TRUE)
+  (x - rng[1]) / (rng[2] - rng[1])
+}
+
+df$a <- rescale01(df$a)
+df$b <- rescale01(df$b)
+df$c <- rescale01(df$c)
+df$d <- rescale01(df$d)
+```
+
+
+A for loop in this case would be recommended as you will notice that the same one line of code is repeated throughout. The code below illustrated this concept. 
+
+More specifically the components of the for loop are:
+
++ The**output** -  in this case we don't output to a different object we just update the input. The output is the same as the input
++ The **sequence** - This will be the number of columns in `df` we want to run the code to. As previously the `seq_along` function will help us with this as it will count the number of columns and turn this into a sequence we can use in the for loop
+
++ The body of the loop is just the re scale one line of code running the defined `rescale01` function. It can be anything that will take the column as an argument to work with. Further restrictions would normally apply but we will not cover this here
+
+The code below simplifies what we want to do and as you can see, overall, we now have a much better structured and easier to read two lines of code!
+
+
+
+```{r}
+for (i in seq_along(df)) {
+  df[[i]] <- rescale01(df[[i]])
+}
+```
+
+### Looping patterns
+
+```{r}
+x = letters
+results <- vector("list", length(x))
+
+```
+
+
+
+```{r}
+
+for (i in seq_along(x)) {
+  name <- names(x)[[i]]
+  value <- x[[i]]
+}
+
+
+```
+
+
+### Handling outputs of 
+
+
 
 ## the Map functions and purrr
 
 
 ##Exercises
+
+
+
+
+
+
+
+```{r}
+
+```
+
 
