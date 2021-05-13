@@ -140,9 +140,13 @@ for (i in seq_along(df)) {
 
 ### Looping patterns
 
+
 ```{r}
 x = letters
-results <- vector("list", length(x))
+vowel <- c('a', 'e', 'i', 'o', 'u')
+results <- rnorm(length(x))
+names(results) <- x
+
 
 ```
 
@@ -150,9 +154,10 @@ results <- vector("list", length(x))
 
 ```{r}
 
-for (i in seq_along(x)) {
-  name <- names(x)[[i]]
-  value <- x[[i]]
+value = list()
+
+for (i in vowel) {
+  value[[i]] <- results[[i]]
 }
 
 
