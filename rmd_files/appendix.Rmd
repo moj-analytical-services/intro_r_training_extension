@@ -18,4 +18,7 @@
 
 ## Further Reading
 
+### Reshaping data
 
+ * [pivoting vignette](https://tidyr.tidyverse.org/dev/articles/pivot.html#generate-column-name-from-multiple-variables-1)
+ * [R For Data Science](https://r4ds.had.co.nz/)
