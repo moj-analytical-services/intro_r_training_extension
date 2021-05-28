@@ -10,22 +10,22 @@ library(stringr)
 
 ```
 
-## Introduction
+### Introduction
 
 In this part we will introduce strings and how to manipulate them to suit the needs of a particular project. The packages needed (listed above) are mostly the `stringr` and  `tidyverse` package where the former contains a great number of functions to manipulate and work with strings and the latter is the base for most of the things we do in R. 
 
-Base R has a a number of functions to manipulate and work with strings but they can be incosistent at times,  the above package was created in an effort to standardise character vector manipulation and make it easier to follow and replicate.  
+Base R has a a number of functions to manipulate and work with strings but they can be inconsistent at times,  the above package was created in an effort to standardize character vector manipulation and make it easier to follow and replicate.  
 
-It should also be mentioned that the majority of the content that follows is containe din the book `R for Data Science` by `Hadley Wickam` and `Garrett Grolemund`.
+It should also be mentioned that the majority of the content that follows is contained in the book `R for Data Science` by `Hadley Wickam` and `Garrett Grolemund` that can be found in this [link](https://r4ds.had.co.nz/index.html).
 
-## String Basics
+### String Basics
 
-There are two ways with which you can create a string in R, at the very basic level, by either using single of double quotes. There is no difference in the behaviour but it is recomended to stick with `"` as it is more widely understood that this is a string and others will be able to follow your code esier. 
+There are two ways with which you can create a string in R, at the very basic level, by either using single of double quotes. There is no difference in the behavior but it is recommended to stick with `"` as it is more widely understood that this is a string and others will be able to follow your code easier. 
 
 To note here that one of the advantages of having two ways to define a string is that you can combine them when quotes within a string if needed as showcased in the example below. 
 
 
-```{r}
+```{r, results=FALSE}
 string1 = "a string using double quotes"
 
 is.character(string1)
@@ -44,12 +44,12 @@ string4 = 'this is a "string" within a string'
 ```
 
 
-Notice the difference in `string4`. This happens becaus the compiler cannot place two double quotes within the same string and so we need to `escape` it. To achieve that a `\` is used before the corresponding character. This can be used not only for `"` but for any other reserved character as well. 
+Notice the difference in `string4`. This happens because the compiler cannot place two double quotes within the same string and so we need to `escape` it. To achieve that a `\` is used before the corresponding character. This can be used not only for `"` but for any other reserved character as well. 
 
 If you need to `escape` a backslash then use a double backslash as in `\\` and to see what the output would look like when used in text you can use the `writeLines()` function to simulate that effect. 
 
 
-```{r}
+```{r, results=FALSE}
 string5 = "escaping a reserved character like \" quotes "
 
 # to see how the result would apear in text
@@ -64,11 +64,11 @@ writeLines(string6)
 
 
 
-Fuirthermore, additional control in the form of newlines or tabs is provided by using `\n` and `\t` for example along with a plethora of available special characters that can be found by typing `?"'"` or `?'"'` in you command line. 
+Furthermore, additional control in the form of newlines or tabs is provided by using `\n` and `\t` for example along with a plethora of available special characters that can be found by typing `?"'"` or `?'"'` in you command line. 
 
-Introducing non-English characters in your text strings is also possible using special cahracters of the form `\u00b5` for example for the greek letter mu. 
+Introducing non-English characters in your text strings is also possible using special characters of the form `\u00b5` for example for the Greek letter mu. 
 
-```{r}
+```{r, results=FALSE}
 
 # outputting non-English characters
 string7 = "\u00b5" 
@@ -77,9 +77,9 @@ string7 = "\u00b5"
 ```
 
 
-Adding strings into a character vector is very common and is usualy done with the use of the `c()` function. 
+Adding strings into a character vector is very common and is usually done with the use of the `c()` function. 
 
-```{r}
+```{r, results=FALSE}
 
 s8 = c("a", "vector", "of", "strings")
 
@@ -88,11 +88,11 @@ s8 = c("a", "vector", "of", "strings")
 
 
 
-## String Length
+### String Length
 
-At times it is necessary to dertermine the length of a character string. A useful function to use in these cases is the `str_length()` function which helps with that.
+At times it is necessary to determine the length of a character string. A useful function to use in these cases is the `str_length()` function which helps with that.
 
-```{r}
+```{r, results=FALSE}
 
 # finding out how many characters in a char vector
 str_length(c(s8, NA))
@@ -100,30 +100,30 @@ str_length(c(s8, NA))
 
 ```
 
-Notice that an `NA` character is translated as is and we will see other options on how tto deal with this in the sections to follow. 
+Notice that an `NA` character is translated as is and we will see other options on how to deal with this in the sections to follow. 
 
 
-## Combining Strings
+### Combining Strings
 
 We already seen one way to combine strings in the previous section but with the `stringer` package we have an additional, more powerful tool at our disposal. 
 
 Using `str_c()` can be beneficial in many cases since it allows for additional flexibility in the form of parameters for separators to be used or the option to collapse individual entries into one composite character string. 
 
-```{r}
+```{r, results=FALSE}
 # using custom separator
-str_c("an", "str_c vectror", "with", "space", "character", "separating each entry", sep = " ")
+str_c("an", "str_c vector", "with", "space", "character", "separating each entry", sep = " ")
 
 # the colapse option
-str_c("an", "str_c vectror", "with", "space", "character", "separating each entry", collapse = T)
+str_c("an", "str_c vector", "with", "space", "character", "separating each entry", collapse = T)
 
 ```
 
-What is more important however is that `str_c` is vectorised and in this way can help in cases where an action has to be aplied to each element of an input vector instead of individual character strings.
+What is more important however is that `str_c` is vectorised and in this way can help in cases where an action has to be applied to each element of an input vector instead of individual character strings.
 
-In addition, it can also work to recycle shorter vectrors to mach the longer ones as in the following example. 
+In addition, it can also work to recycle shorter vectors to mach the longer ones as in the following example. 
 
 
-```{r}
+```{r, results=FALSE}
 
 # vectorized form - translating a shorter vectror to match the longer one
 str_c("a", c("b", "c", "d"), "c", sep = " " )
@@ -136,20 +136,497 @@ c("a", c("b", "c", "d"))
 
 ```
 
-## Subseting strings
+### Subsisting strings
+
+Extracting parts of a string can be done using the `str_sub` function and by specifying the `start` and `end` limits of the string to retain.
+
+It is also important to note that the function will not fail if the end point is outside of the index limit of the string.
+
+
+```{r, results=FALSE}
+x <- c("OneValue", "SecondValue", "ThirdValue")
+str_sub(x, 1, 3)
+
+# negative numbers count backwards from end
+str_sub(x, -4, -1)
+
+
+# The function will not fail in teh example below
+str_sub("a", 1,5)
 
 
 
-## Customising text for different language locales
+```
 
-## Exercises
+An additional use of the of the `str_sub` function is to assign values to a given range on the target string  
+
+```{r, results=FALSE}
+str_sub(x, 1, 1) <- str_to_lower(str_sub(x, 1, 1))
+x
+
+```
+
+
+### Customizing text for different language locales
+
+In some cases the string manipulation functions have a `locale` argument where adjustments for certain languages can be made. Notice
+for example how the sort order changes if the locale changes from English to Lithuanian in the example below.
+
+
+```{r, results=FALSE}
+#initial string
+x = c("y", "i", "k")
+
+#sort function in English
+str_sort(x)
+
+#sort function in Lithuanian
+str_sort(x,locale = "lt")
+
+
+
+```
+
+### Exercises
+
++ In code that doesn’t use stringr, you’ll often see paste() and paste0(). What’s the difference between the two functions? What stringr function  are they equivalent to? How do the functions differ in their handling of NA?
+
++ In your own words, describe the difference between the sep and collapse arguments to str_c().
+
++ Use str_length() and str_sub() to extract the middle character from a string. What will you do if the string has an even number of characters?
+
++ What does str_wrap() do? When might you want to use it?
+
++ What does str_trim() do? What’s the opposite of str_trim()?
+
++ Write a function that turns (e.g.) a vector c("a", "b", "c") into the string a, b, and c. Think carefully about what it should do if given a vector of length 0, 1, or 2.
+
+
+NOTE: The content in this section as well as a more in depth analysis on each of the previous sections can be found in this book [R For Data Science](https://r4ds.had.co.nz/strings.html#exercises-32)  
 
 
 ## Regular Expressions
 
-several sections here, each with exercises 
+Matching patterns with regular expressions is usually covered in a very large topic and one that  arguably should be covered on its own course, however here we will consider it as part of the general string manipulation section and will include a flavor of what can be achieved.  
 
 
+### Normal Pattern Matching 
+
+Simple pattern matching can be achieved by using the `str_view` function and specifying the `string` and `pattern` arguments as shown below:
+
+
+
+```{r, results=F}
+
+x <- c("apple", "banana", "pear")
+str_view(x, "an")
+
+```
+
+
+The complexity of the match can be adjusted and wildcards can be used as well in the form of `.` as in 
+
+```{r, results=F}
+str_view(x, ".a.")
+
+
+```
+
+
+An important thing to remember here is that you are looking for given pattern in a string or a vector of strings. Specifying the pattern to look for can be sometimes tricky and therefore is recommended to take a look at the accompanied information sheet for the `stringr` package located [here](https://evoldyn.gitlab.io/evomics-2018/ref-sheets/R_strings.pdf). 
+
+The most common functions for regular expressions as well as ways to structure your pattern can be found in the above link.
+
+### Escaping characters
+
+We saw previously that the wildcard is represented by `.`, what happens if your pattern needs to include the dot `.`?
+
+For cases such as these there is a need to "escape" a character using the backlash `\`. So for example the dot (`.`) as stated previously would be normally used as `\.` in a regular expression. However, a problem arises since strings are used to represent regular expressions, they also use the backlash to represent an escaped character. The solution is to use the double backlash as in `\\.` to signify that we want to "escape" the dot (`.`) in a regular expression pattern.
+
+
+```{r, results=F}
+
+# To create the regular expression, we need \\
+dot <- "\\."
+
+# But the expression itself only contains one:
+writeLines(dot)
+
+
+# And this tells R to look for an explicit .
+str_view(c("abc", "a.c", "bef"), "a\\.c")
+
+```
+
+
+If there is a need to match the `\` character itself then you will need to use the double version `\\` for regular expressions and since this is a string you will need to add one more `\` followed by the actual character. So four backlash characters will need to be used!
+
+
+```{r}
+#to see this in a string
+x <- "a\\b"
+writeLines(x)
+
+# to view the result in a RegEx
+str_view(x, "\\\\")
+
+```
+
+
+throughout this section the pattern for a RegEx will be presented as `\.` whereas the actual string as `\\.`. 
+
+
+
+#### Exercises
+
+
+1. Explain why each of these strings don’t match a \: "\", "\\", "\\\".
+
+2. How would you match the sequence "'\?
+
+3. What patterns will the regular expression \..\..\.. match? How would you represent it as a string?
+
+
+
+### Anchors
+
+
+It is sometimes useful to match a pattern starting from the beginning or the end of a string. In these cases an anchor is used to notify the engine that we are using a point of origin. 
+
+More specifically, the start of the string is denoted by `^` and the end by `$`
+
+```{r, results=F}
+
+x <- c("apple", "banana", "pear")
+str_view(x, "^a")
+
+str_view(x, "a$")
+
+
+```
+
+
+You can also use both in one pattern and this is useful when the entire string is to be matched 
+
+```{r, results=F}
+# this will output all possible matches
+x <- c("apple pie", "apple", "apple cake")
+str_view(x, "apple")
+
+# notice the difference in the result here
+str_view(x, "^apple$")
+
+
+```
+
+
+
+#### Exercises
+
+1. How would you match the literal string "$^$"?
+
+2. Given the corpus of common words in stringr::words, create regular expressions that find all words that:
+
+      +Start with “y”.
+      +End with “x”
+      +Are exactly three letters long. (Don’t cheat by using str_length()!)
+      +Have seven letters or more.
+Hint: Since this list is long, you might want to use the match argument to str_view() to show only the matching or non-matching words.
+
+### Character Classes
+
+Similar to the wildcard you saw previously, there are other reserved patters that serve a similar purpose for example:
+ 
+ + `\d`: matches any digit.
+ + `\s`: matches any whitespace (e.g. space, tab, newline).
+ + `[abc]`: matches a, b, or c.
+ + `[^abc]`: matches anything except a, b, or c.
+
+A reminder here that if you want to use the above to pattern then you will need to escape them as we learned earlier. So the `\d` string would be used as `\\d` in a pattern.
+
+In addition, there is an alternative to the backlash way of escaping a character that involves creating a class for a single character as in `[.]` for example. In many cases this is considered more intuitive that using the backlash.
+
+
+A character class containing a single character is a nice alternative to backslash escapes when you want to include a single meta-character in a regex. Many people find this more readable.
+
+```{r, results= F }
+# Look for a literal character that normally has special meaning in a regex
+str_view(c("abc", "a.c", "a*c", "a c"), "a[.]c")
+
+
+str_view(c("abc", "a.c", "a*c", "a c"), ".[*]c")
+
+str_view(c("abc", "a.c", "a*c", "a c"), "a[ ]")
+
+```
+
+
+However, some characters will have a certain meaning even inside brackets and so the backslash for escaping them is still necessary, these are `] \ ^ -`.
+
+Alternation is used to pick between patterns, for example `abc|d..f` will pick a pattern with either `c` or `d` in the definition. Note how the `|` is used, it will only pick between the immediate characters and not between the entire patterns on either side. If it gets to a point where it becomes confusing remember to use parenthesis to clear things up. 
+
+
+```{r, results = F}
+
+str_view(c("grey", "gray"), "gr(e|a)y")
+
+
+```
+
+
+
+#### Exercises
+
+1. Create regular expressions to find all words that:
+    +Start with a vowel.
+    +That only contain consonants. (Hint: thinking about matching “not”-vowels.)
+    +End with` ed`, but not with `eed`.
+    +End with `ing` or` ise`.
+2. Empirically verify the rule “i before e except after c”.
+3. Is “q” always followed by a “u”?
+4. Write a regular expression that matches a word if it’s probably written in British English, not American English.
+5. Create a regular expression that will match telephone numbers as commonly written in your country.
+
+### Repetition
+
+It is sometimes necessary for a certain pattern to appear multiple time within a string, in such cases these repetitions can be coded with regular expressions to automate the search process. 
+
+for example:
+
++ `?`: 0 or 1
++ `+`: 1 or more
++ `*`: 0 or more
+
+```{r}
+
+x <- "1888 is the longest year in Roman numerals: MDCCCLXXXVIII"
+str_view(x, "CC?")
+
+str_view(x, "CC+")
+
+str_view(x, 'C[LX]+')
+
+```
+
+Another key aspect of the above code is that the number or precedence here dictates that the character just before the operator will be affected. This means that parenthesis will need to be used as in `bana(na)+` to capture more than one character.
+
+It is also possible to specify the number of repetitions explicitly by using:
+
++ `{n}`: exactly n
++ `{n,}`: n or more
++ `{,m}`: at most m
++ `{n,m}`: between n and m
+
+```{r}
+
+str_view(x, "C{2}")
+
+
+str_view(x, "C{2,}")
+
+str_view(x, "C{2,3}")
+
+```
+
+
+To also note here that the system will match as many of the characters that it can find. To switch this behavior off and use what is called "lazy" matching (instead of "greedy" as specified earlier) the `?` operator can be used as follows:
+
+```{r}
+str_view(x, 'C{2,3}?')
+
+str_view(x, 'C[LX]+?')
+```
+
+#### Exercises
+
+
+1. Describe the equivalents of `?`, `+`,` *` in `{m,n}` form.
+
+2. Describe in words what these regular expressions match: (read carefully to see if I’m using a regular expression or a string that defines a regular expression.)
+
+      + `^.*$`
+      + `"\\{.+\\}"`
+      + `\d{4}-\d{2}-\d{2}`
+      + `"\\\\{4}"`
+3. Create regular expressions to find all words that:
+
+      + Start with three consonants.
+      + Have three or more vowels in a row.
+      + Have two or more vowel-consonant pairs in a row.
+      
+4. Solve the beginner regexp crosswords at [https://regexcrossword.com/challenges/beginner].
+
+
+
+### Additional Functions
+
+The `stringr` package comes with additional function wrappers that make the most common string operations somewhat easier. For example the following matching behavior can be conducted using the premade functions: 
+
++ Determine which strings match a pattern.
++ Find the positions of matches.
++ Extract the content of matches.
++ Replace matches with new values.
+
+
+The list is actually a lot longer so here we will briefly discuss how the most popular string matching operations can be performed using the tools supplied by the `stringr` package.
+
+
+#### Detect Strings
+
+Detecting strings is a very important aspect in many Data Analysis applications and `str_detect` was created with ease of use in mind. It returns a logical vector depending whether there was a match in the corresponding location and based on the supplied pattern, as the example below illustrates.   
+
+```{r}
+x <- c("apple", "banana", "pear")
+str_detect(x, "e")
+#> [1]  TRUE FALSE  TRUE
+```
+
+
+A very handy way of using it, is by taking advantage of how `R` translates `TRUE` (evaluated as `1`) and `FALSE` (evaluated as `0`) responses. In the example below using the `sum` and `mean` functions makes counting instances of a pattern being detected much easier.
+
+```{r}
+# How many common words start with t?
+sum(str_detect(words, "^t"))
+#> [1] 65
+# What proportion of common words end with a vowel?
+mean(str_detect(words, "[aeiou]$"))
+#> [1] 0.2765306
+```
+
+A variation of `str_detect` is `str_count` and as the name suggests the function will count the instances of a pattern appearing in the target vector.
+
+```{r}
+x <- c("apple", "banana", "pear")
+str_count(x, "a")
+#> [1] 1 3 1
+
+# On average, how many vowels per word?
+mean(str_count(words, "[aeiou]"))
+#> [1] 1.991837
+```
+
+
+
+#### Extract Strings {#extr_str}
+
+To extract strings we use the `str_extract` function that takes the input source vector and the pattern to match as arguments. In this case we will need a more complex set of examples and so the [Harvard Sentences](https://en.wikipedia.org/wiki/Harvard_sentences) collection of sentences is used. Although originally created to test VOIP systems, it can also be used for regex examples as well. 
+
+```{r}
+length(sentences)
+#> [1] 720
+head(sentences)
+#> [1] "The birch canoe slid on the smooth planks." 
+#> [2] "Glue the sheet to the dark blue background."
+#> [3] "It's easy to tell the depth of a well."     
+#> [4] "These days a chicken leg is a rare dish."   
+#> [5] "Rice is often served in round bowls."       
+#> [6] "The juice of lemons makes fine punch."
+```
+
+A good way to start using regex in bulk is to see if we can construct a pattern to match that contains all the relevant information. In the example below the pattern contains a set of colours combined into a string to be used as the pattern.
+
+```{r}
+colours <- c("red", "orange", "yellow", "green", "blue", "purple")
+colour_match <- str_c(colours, collapse = "|")
+colour_match
+#> [1] "red|orange|yellow|green|blue|purple"
+```
+
+The next stage is to select the relevant examples from the collection of `sentences` and then proceed in matching based on the pattern we created. 
+
+```{r}
+has_colour <- str_subset(sentences, colour_match)
+matches <- str_extract(has_colour, colour_match)
+head(matches)
+#> [1] "blue" "blue" "red"  "red"  "red"  "blue"
+```
+
+To better understand the mechanics behind the matching process it helps to know that `str_extract` only finds and extracts the first match in each row of a vector.  To better illustrate this, the code below selects the phrases from the `sentences` collection where there are more than one match.    
+
+```{r}
+more <- sentences[str_count(sentences, colour_match) > 1]
+str_view_all(more, colour_match)
+```
+
+Notice how `str_extract` works with these source vectors.
+
+```{r}
+
+str_extract(more, colour_match)
+#> [1] "blue"   "green"  "orange"
+```
+
+
+#### Replace Strings
+
+`str_replace` and `str_replace_all`allow you to replace parts of a string that match a pattern with a new replacement string.
+
+
+```{r}
+x <- c("apple", "pear", "banana")
+str_replace(x, "[aeiou]", "-")
+#> [1] "-pple"  "p-ar"   "b-nana"
+str_replace_all(x, "[aeiou]", "-")
+#> [1] "-ppl-"  "p--r"   "b-n-n-"
+```
+
+And with `str_replace_all` we can apply the same functionality as above in all the elements of a character vector.
+
+```{r}
+x <- c("1 house", "2 cars", "3 people")
+str_replace_all(x, c("1" = "one", "2" = "two", "3" = "three"))
+#> [1] "one house"    "two cars"     "three people"
+```
+
+In addition, one can also use backrefferences and recycle elements of the same string as replacements
+
+```{r}
+sentences %>% 
+  str_replace("([^ ]+) ([^ ]+) ([^ ]+)", "\\1 \\3 \\2") %>% 
+  head(5)
+#> [1] "The canoe birch slid on the smooth planks." 
+#> [2] "Glue sheet the to the dark blue background."
+#> [3] "It's to easy tell the depth of a well."     
+#> [4] "These a days chicken leg is a rare dish."   
+#> [5] "Rice often is served in round bowls."
+```
+
+
+
+
+
+#### Exercises 
+
+##### On detecting strings
+
+1. For each of the following challenges, try solving it by using both a single regular expression, and a combination of multiple str_detect() calls.
+
+    1. Find all words that start or end with x.
+
+    2. Find all words that start with a vowel and end with a consonant.
+
+    3. Are there any words that contain at least one of each different vowel?
+
+2. What word has the highest number of vowels? What word has the highest proportion of vowels? (Hint: what is the denominator?)
+
+
+##### On extracting strings
+
+1. In the example in section [Extracting Strings](#extr_str) section, you might have noticed that the regular expression matched “flickered”, which is not a colour. Modify the regex to fix the problem.
+
+2. From the Harvard sentences data, extract:
+
+    1. The first word from each sentence.
+    2. All words ending in ing.
+    3. All plurals.
+
+##### On Replacing Strings
+
+1. Replace all forward slashes in a string with backslashes.
+
+2. Implement a simple version of str_to_lower() using replace_all().
+
+3. Switch the first and last letters in words. Which of those strings are still words?
 
 
 
