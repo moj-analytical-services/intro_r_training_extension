@@ -1,18 +1,6 @@
 # Reshaping data
 
 
-```{r, echo=F, message=F, results=F}
-
-# loading packages
-# 
-library(tidyr)
-library(dplyr)
-library(readr)
-
-
-
-```
-
 The tidyr package can help us to reshape dataframes - this can be really helpful when we need to transform between tables that are easier to read and tables that are easier to analyse. For example, we might need to structure a dataset so that it can be manipulated more easily at a later stage of the analysis.
 
 These situations may arise when there is more than one category associated with each value in a dataset. The dataset can be **lengthened** or **widened** (increasing the number of rows or columns, respectively), and this process is commonly referred to as **pivoting**.
@@ -22,7 +10,7 @@ These situations may arise when there is more than one category associated with 
 
 Let's take a look at the `billboard` dataset supplied with tidyr (it should be available when you load the package), which contains the rank of songs in the year 2000. The dataset has 79 columns (one for each week, starting from Oct 1999, along with the artist, track name, and release date) and 317 rows.
 
-```{r}
+```{r, purl=purl_example_code}
 # Preview the data
 billboard %>% head(10)
 ```
@@ -30,14 +18,13 @@ billboard %>% head(10)
 We can use the `pivot_longer()` function to help restructure this dataframe by decreasing the number of columns while increasing the number of rows. For example, we can map the first four week columns into a pair of new variables, called `month1` and `rank`.
 
 
-```{r}
+```{r, purl=purl_example_code}
 # Start by mapping a single month 
 billboard_longer <- billboard %>%
   tidyr::pivot_longer(cols = c(wk1,wk2, wk3, wk4), names_to = "week_of_month1", values_to = "rank") %>% head()
 
 # Display what we've done
-billboard_longer %>% select(artist, track, date.entered, week_of_month1, rank)
-
+billboard_longer %>% dplyr::select(artist, track, date.entered, week_of_month1, rank)
 ```
 
 In the `pivot_longer()` function, we've specified variables/columns to be **gathered** into a new pair of columns using the `cols()` argument, then the `names_to` argument specifies the name of a new column to contain the names of the gathered columns, and `values_to` specifies the name of a new column to contain the corresponding values.  
@@ -48,10 +35,9 @@ There might be a situation where we have a lot of columns to gather, in which ca
 
 In this case, we can use the `starts_with()` function to select all columns with a name that begins with 'wk':
 
-```{r}
+```{r, purl=purl_example_code}
 # Mapping all week columns to new variables called "weeks" and "rank"
-billboard %>% pivot_longer(cols = starts_with("wk"), names_to = "week", values_to = "rank") %>% head()
-
+billboard %>% tidyr::pivot_longer(cols = starts_with("wk"), names_to = "week", values_to = "rank") %>% head()
 ```
 
 
@@ -62,24 +48,19 @@ This has allowed us to convert a dataframe with 79 columns into one with only 5,
 
 In some circumstances pivoting can also be used to construct a more robust for ease of use in later stages of the analysis. In these cases the dataset contains variables that are similar in their structure with the aim being to gather them in to one, cleaner, format. Consider the `asncombe` dataset that comes with basic R as shown below:
 
-```{r}
-#dataset
+```{r, purl=purl_example_code}
 anscombe
-
 ```
 
 As it is apparent, the basis for each variable is the same (x1,x2, y1,y2 etc) and so it would make sense to simply create pair `x` and `y` and depict their corresponding identifier `1,2,3,4` in a separate variable. 
 
 In such cases, `pivot_longer` offers an elegant solution to the problem by automatically selecting the common patterns and using them as the new variables.
 
-```{r}
-
+```{r, purl=purl_example_code}
 # using ".value" and "everything()" to select common variables
-anscombe %>% pivot_longer(everything(),
+anscombe %>% tidyr::pivot_longer(everything(),
    names_to = c(".value", "set"),
    names_pattern = "(.)(.)" )
-
-
 ```
 
 
@@ -98,22 +79,22 @@ The `pivot_wider()` function is the inverse of `pivot_longer()`, and transforms 
 
 Consider the `fish_encounters` dataset, which contains a record of fish that are detected by various monitoring stations.
 
-```{r}
+```{r, purl=purl_example_code}
 fish_encounters %>% head(10)
 ```
 
 We can use the `pivot_wider()` function to restructure this dataframe into a wide format: 
 
-```{r}
-fish_encounters %>% pivot_wider(names_from = station, values_from = seen)
+```{r, purl=purl_example_code}
+fish_encounters %>% tidyr::pivot_wider(names_from = station, values_from = seen)
 ```
 
 The `names_from` argument is used to specify the column containing categories we want to split across multiple columns, and the `values_from` argument contains the corresponding values for each category. 
 
 In this dataframe there are some combinations of `fish` and `station` that don't exist in the original data, therefore the `values_fill` argument can be used to specify a value for these. In this case we've chosen to fill the NA values with zero:
 
-```{r}
-fish_encounters %>% pivot_wider(names_from = station, values_from = seen, values_fill = list(seen = 0))
+```{r, purl=purl_example_code}
+fish_encounters %>% tidyr::pivot_wider(names_from = station, values_from = seen, values_fill = list(seen = 0))
 ```
 
 
@@ -121,21 +102,21 @@ fish_encounters %>% pivot_wider(names_from = station, values_from = seen, values
 
 Consider the `warpbreaks` dataset, which describes the results of a designed experiment with nine replicates for every combination of wool (A and B) and tension (L, M, H). 
 
-```{r}
-warpbreaks %>% select(wool, tension, breaks)
+```{r, purl=purl_example_code}
+warpbreaks %>% dplyr::select(wool, tension, breaks)
 ```
 
 Note the warning that appears when trying to widen this dataset. This is because some combinations of `wool` and `tension` are repeated several times. 
 
-```{r}
-warpbreaks %>% pivot_wider(names_from = wool, values_from = breaks)
+```{r, purl=purl_example_code}
+warpbreaks %>% tidyr::pivot_wider(names_from = wool, values_from = breaks)
 ```
 
 To deal with this issue, we can use the optional `values_fn` argument in the `pivot _wider()` function, which allows us to specify a function to use to aggregate the multiple values. For example, we can specify to calculate the mean number of breaks for each combination of `wool` and `tension` like so:
 
-```{r}
+```{r, purl=purl_example_code}
 warpbreaks %>%
-  pivot_wider(
+  tidyr::pivot_wider(
     names_from = wool,
     values_from = breaks,
     values_fn = list(breaks = mean)
@@ -152,10 +133,8 @@ The functions `separate()` and `extract()` were created for this purpose where r
 Consider `table3` for example that comes with the `tidyr` package. One look at the table illustrates the problem that we are facing where the variable `rate` could be split into two different ones if somehow we could detect and pull out the values on either side of the separator.  
 
 
-```{r}
+```{r, purl=purl_example_code}
 table3
-
-
 ```
 
 ### Separate
@@ -163,47 +142,39 @@ table3
 The `separate()` function is build to help in cases where values in a column could be split based on a separator in place. On the above example in `table3` the following code splits the `rate` variable into `cases` and `population` accordingly 
 
 
-```{r}
+```{r, purl=purl_example_code}
 # separate() automatically detects the separator
-table3 %>% separate(rate, into = c("cases", "population"))
-
+table3 %>% tidyr::separate(rate, into = c("cases", "population"))
 ```
 
 By default, the function will automatically detect any non-alphanumeric character and use that as a separator but its not limited to that. One can specify the separator manually using the `sep` option.
 
-```{r}
+```{r, purl=purl_example_code}
 # separate() manually  detects the separator
-table3 %>% separate(rate, into = c("cases", "population"), sep = "/")
-
-
+table3 %>% tidyr::separate(rate, into = c("cases", "population"), sep = "/")
 ```
 
 At its heart, `separate()` uses regular expressions to detect and pull the corresponding characters. As a result the new columns are now of `char` type, something that can be changed by altering the state of the `convert` flag as shown below:
 
 
-```{r}
-
+```{r, purl=purl_example_code}
 # separate() manually detects the separator and convers the columns into the appropriate data type 
-table3 %>% separate(rate, into = c("cases", "population"), sep = "/", convert = TRUE)
-
-
+table3 %>% tidyr::separate(rate, into = c("cases", "population"), sep = "/", convert = TRUE)
 ```
 
 ### Extract
 
 The `extract()` function lets you go a step further and allows you to define your own regex to be used for pattern patching. Using the same example as above, lets see how to split the `year` variable to `century` and `years`.
 
-```{r}
-table3 %>% extract( col = year, into = c("century","years"), regex = "([0-9]{2})([0-9]{2})")
+```{r, purl=purl_example_code}
+table3 %>% tidyr::extract( col = year, into = c("century","years"), regex = "([0-9]{2})([0-9]{2})")
 ```
 
 The `regex` option shown above uses the same syntax as described earlier in the chapter, in fact, it is possible to split the target variable into several others by expanding the bracket list as shown in the following block of code. The year variable is now split into three variables to depict the `century`, `decade` and `year`.
 
 
-```{r}
-
-table3 %>% extract( col = year, into = c("century","decade","year" ), regex = "([0-9]{2})([0-9])([0-9])")
-
+```{r, purl=purl_example_code}
+table3 %>% tidyr::extract( col = year, into = c("century","decade","year" ), regex = "([0-9]{2})([0-9])([0-9])")
 ```
 
 In addition, internally the pivot functions make explicit use of  `seaprate()` and `extract()` whenever a split or a regular expression is need to capture patterns present in name or within the content of a variable in the dataset. 
@@ -214,21 +185,20 @@ In addition, internally the pivot functions make explicit use of  `seaprate()` a
 Of course, extracting and creating new variables would not be complete without a function to revert back to the original target variable. In this case, the `unite()` function provides the means to do exactly that as shown in the example below.
 
 
-```{r}
+```{r, purl=purl_example_code}
 # the reshaped dataset
-tab3 = table3 %>% extract( col = year, into = c("century","decade","year" ), regex = "([0-9]{2})([0-9])([0-9])")
+tab3 = table3 %>% tidyr::extract( col = year, into = c("century","decade","year" ), regex = "([0-9]{2})([0-9])([0-9])")
 
 # going back to the original dataset - with separator
-tab3 %>% unite(new ,century, decade, year)
-
+tab3 %>% tidyr::unite(new ,century, decade, year)
 ```
 
 By default, the `_` separator is used after each component of the composite variable but as always, there are option in place to customize this behavior. In the following block of code the separator is removed giving the original variable before any alteration takes place.
 
 
-```{r}
+```{r, purl=purl_example_code}
 # going back to the original dataset - with no separators
-tab3 %>% unite(new ,century, decade, year, sep = "")
+tab3 %>% tidyr::unite(new ,century, decade, year, sep = "")
 ```
 
 
@@ -240,14 +210,13 @@ tab3 %>% unite(new ,century, decade, year, sep = "")
 
 Why does the following code fail?
 
-```{r, , eval= F}
+```{r, purl=purl_example_code}
 #the table to use
 table4a
+```
 
-
-table4a %>% pivot_longer(1999, 2000, names_to = "year", values_to = "value")
-
-
+```{r, purl=purl_example_code, eval=F}
+table4a %>% tidyr::pivot_longer(1999, 2000, names_to = "year", values_to = "value")
 ```
 
 
@@ -255,38 +224,26 @@ table4a %>% pivot_longer(1999, 2000, names_to = "year", values_to = "value")
 
 Consider the following dataset and apply `pivot_wider()` to **spread** the values in `name`, do you agree with the results after pivoting? 
 
-
 Hint. Could a new column solve the problem, what other solution could we apply?
 
-
-```{r, eval=FALSE}
+```{r, purl=purl_example_code}
 people = tribble(~name, ~key, ~value,
-                 #------------/------/-----,
                  "Phil Woods", "age",45,
                  "Phil Woods", "height",185,
                  "Phil Woods", "age",50,
                  "Jess Cordero", "age",45,
                  "Jess Cordero", "height",156,)
-
-
 ```
-
-
 
 
 #### Exercise 3
 
 Consider the followign simple tibble, what kind of pivoting would you use, `pivot_longer()` or `pivot_wider()` ?
 
-
-```{r}
-
+```{r, purl=purl_example_code}
 rcj = tribble( ~judge, ~male, ~female,
                     "yes", NA, 10, 
                     "no", 20, 12)
-
-
-
 ```
 
 
@@ -300,13 +257,13 @@ What to the additional arguments `extra` and `fill` do in `separate()`?
 Experiment with the various option in using the following datasets.
 
 
-```{r}
+```{r, purl=purl_example_code}
 
 tibble(x = c("a,b,c", "d,e,f,g", "h,i,j")) %>% 
-  separate(x, c("one", "two", "three"))
+  tidyr::separate(x, c("one", "two", "three"))
 
 tibble(x = c("a,b,c", "d,e", "f,g,i")) %>% 
-  separate(x, c("one", "two", "three"))
+  tidyr::separate(x, c("one", "two", "three"))
 
 ```
 
@@ -326,11 +283,9 @@ Compare `separate()` and `extract()`, why are there so many option to separate b
 
 #### Exercise 1
 
-```{r, eval= F}
-
-table4a %>% pivot_longer(cols = !country, names_to = "year",values_to = "value")
-
-
+```{r, include=show_solution, purl=purl_solutions}
+# Solution
+table4a %>% tidyr::pivot_longer(cols = !country, names_to = "year",values_to = "value")
 ```
 
 
@@ -338,55 +293,46 @@ table4a %>% pivot_longer(cols = !country, names_to = "year",values_to = "value")
 #### Exercise 2
 
 
-```{r, eval=FALSE}
+```{r, include=show_solution, purl=purl_solutions}
+# Solution
 
-#withough changing anything on the dataset
+# Without changing anything on the dataset
 people = tribble(~name, ~key, ~value,
-                 #------------/------/-----,
                  "Phil Woods", "age",45,
                  "Phil Woods", "height",185,
                  "Phil Woods", "age",50,
                  "Jess Cordero", "age",45,
                  "Jess Cordero", "height",156,)
-people %>% pivot_wider(names_from = name, values_from = value)
+people %>% tidyr::pivot_wider(names_from = name, values_from = value)
 
-
-
-# solution 1 - adding a new column
+# Solution 1 - adding a new column
 people = tribble(~name, ~key, ~value, ~dkey,
-                 #------------/------/-----,
                  "Phil Woods", "age",45,1,
                  "Phil Woods", "height",185,1,
                  "Phil Woods", "age",50,0,
                  "Jess Cordero", "age",45,1,
                  "Jess Cordero", "height",156,1)
 
-people %>% pivot_wider(names_from = name, values_from = value)
+people %>% tidyr::pivot_wider(names_from = name, values_from = value)
 
-
-
-#solution 2  - uniqueness
+# Solution 2  - uniqueness
 people = tribble(~name, ~key, ~value,
-                 #------------/------/-----,
                  "Phil Woods", "age",45,
                  "Phil Woods", "height",185,
                  # "Phil Woods", "age",50,
                  "Jess Cordero", "age",45,
                  "Jess Cordero", "height",156,)
 
-
-people %>% pivot_wider(names_from = name, values_from = value)
-
-
-
+people %>% tidyr::pivot_wider(names_from = name, values_from = value)
 ```
 
 
 
 ### Exercise 3
 
+```{r, include=show_solution, purl=purl_solutions}
+# Solution
 
-```{r, eval=FALSE}
 rcj = tribble( ~judge, ~male, ~female,
                     "yes", NA, 10, 
                     "no", 20, 12)
@@ -398,11 +344,11 @@ rcj = tribble( ~judge, ~male, ~female,
 
 
 #use of pivot_longer
-rcj %>% pivot_longer(cols = c(male, female),   names_to = "gender", values_to = "count")
+rcj %>% tidyr::pivot_longer(cols = c(male, female), names_to = "gender", values_to = "count")
 
 
 # use of  pivot_wider 
-rcj %>% pivot_wider(names_from = judge, values_from = c(male, female))
+rcj %>% tidyr::pivot_wider(names_from = judge, values_from = c(male, female))
 
 
 
@@ -415,36 +361,16 @@ rcj %>% pivot_wider(names_from = judge, values_from = c(male, female))
 
 #### Exercise 1
 
-typing `?separate()` shows all the options and their meaning. Try experimenting with them to discover more of what they do.
-
-```{r, eval=FALSE}
-
-tibble(x = c("a,b,c", "d,e,f,g", "h,i,j")) %>% 
-  separate(x, c("one", "two", "three"))
-
-tibble(x = c("a,b,c", "d,e", "f,g,i")) %>% 
-  separate(x, c("one", "two", "three"))
-
-
-
-```
+Typing `?separate()` into the R console shows all the arguments and their meanings. Try experimenting with them to discover more about what they do.
 
 
 #### Exercise 2
 
+Solution: Typing `?separate()` in the command line shows all the  information needed here. The `remove` option is there to remove the input columns from the output. 
 
-
-Solution: typing `?separate()` in the command line shows all the  information needed here. The `remove` option is there to remove the input columns from the output. 
-
-=======
 
 #### Exercise 3
 
-
-
 Solution: one suggestion is that there is only one way to unite the multiple strings but a number of different ways to split them apart. 
-
-
-
 
 

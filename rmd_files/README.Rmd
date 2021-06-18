@@ -40,7 +40,7 @@ A few days before the session, please make sure that -
 
 If you have any problems with the above please get in touch with the course organisers or ask for help on either the #analytical_platform or #intro_r channel on [ASD slack](https://asdslack.slack.com).
 
-All the examples in the presentation/README are available in the R script example_code.R.
+All the examples in the presentation and README are available in the R script example_code.R.
 
 
 ```{r source_content, child = 'introduction.Rmd'}
@@ -52,13 +52,13 @@ All the examples in the presentation/README are available in the R script exampl
 ```{r source_content, child = 'missing_data.Rmd'}
 ```
 
-```{r source_content, child = 'iteration.Rmd'}
-```
-
-```{r source_content, child = 'reshaping.Rmd'}
+```{r source_content, child = 'iteration_and_loops.Rmd'}
 ```
 
 ```{r source_content, child = 'strings.Rmd'}
+```
+
+```{r source_content, child = 'reshaping.Rmd'}
 ```
 
 ```{r source_content, child = 'examples.Rmd'}

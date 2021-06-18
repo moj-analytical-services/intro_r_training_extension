@@ -1,147 +1,115 @@
 # String manipulation
 
 
-```{r, echo=F, message=F, results=F}
-
-# loading packages
-# 
-library(tidyverse)
-library(stringr)
-
-```
-
 ### Introduction
 
-In this part we will introduce strings and how to manipulate them to suit the needs of a particular project. The packages needed (listed above) are mostly the `stringr` and  `tidyverse` package where the former contains a great number of functions to manipulate and work with strings and the latter is the base for most of the things we do in R. 
-
-Base R has a a number of functions to manipulate and work with strings but they can be inconsistent at times,  the above package was created in an effort to standardize character vector manipulation and make it easier to follow and replicate.  
-
-It should also be mentioned that the majority of the content that follows is contained in the book `R for Data Science` by `Hadley Wickam` and `Garrett Grolemund` that can be found in this [link](https://r4ds.had.co.nz/index.html).
+In this part we will introduce strings and how to manipulate them to suit the needs of a particular project. The `stringr` package from `tidyverse` contains a great number of functions to help manipulate and work with strings. 
 
 ### String Basics
 
-There are two ways with which you can create a string in R, at the very basic level, by either using single of double quotes. There is no difference in the behavior but it is recommended to stick with `"` as it is more widely understood that this is a string and others will be able to follow your code easier. 
+There are two ways with which you can create a string in R, at the very basic level, by either using single of double quotes. There is no difference in the behavior but the convention is to use double quotes (`"`). 
 
-To note here that one of the advantages of having two ways to define a string is that you can combine them when quotes within a string if needed as showcased in the example below. 
+There is an advantage to having two ways to define a string, which is that the two quotation marks can be combined for cases when the string itself needs to contain a quotation mark. Here are some examples of how to define a string in R: 
 
+```{r, purl=purl_example_code}
+string1 <- "a string using double quotes"
+string2 <- 'another string using single quotes'
 
-```{r, results=FALSE}
-string1 = "a string using double quotes"
-
+# Verify that both `string1` and `string2` are in fact strings
 is.character(string1)
-
-string2 = 'another string using single quotes'
-
 is.character(string2)
 
-# a string containing quotes
-string3 = "this is a 'string' within a string"
+# Some strings containing quotation marks
+string3 <- "this is a 'string' within a string"
+string3
 
-# notice how the output changes when implementing the following code
-string4 = 'this is a "string" within a string'
-
-
+string4 <- 'this is a "string" within a string'
+string4
 ```
 
+Notice the difference in `string4` - R has added escape characters (`\`) before the double quote marks. These escape characters change the behaviour of the following character. In this case it stops the following double quote mark from defining the end of the string, and instead allows it to be a part of the string.
 
-Notice the difference in `string4`. This happens because the compiler cannot place two double quotes within the same string and so we need to `escape` it. To achieve that a `\` is used before the corresponding character. This can be used not only for `"` but for any other reserved character as well. 
+Escape characters can be used to include other special characters inside a string as well. Since the escape character itself is a backslash, a double backslash (`\\`) is used to include a backslash character in a string. To see what the output would look like when used in text you can use the `writeLines()` function: 
 
-If you need to `escape` a backslash then use a double backslash as in `\\` and to see what the output would look like when used in text you can use the `writeLines()` function to simulate that effect. 
-
-
-```{r, results=FALSE}
-string5 = "escaping a reserved character like \" quotes "
-
-# to see how the result would apear in text
+```{r, purl=purl_example_code}
+string5 <- "including \"double quotes\" in a string "
 writeLines(string5)
 
-string6 = "escaping a backslash \\ "
-
-# to see how the result would apear in text
+string6 <- "including a backslash \\ in a string"
 writeLines(string6)
-
 ```
 
+Other special character pairs include newlines and tabs, denoted by `\n` and `\t` respectively, and you can enter `?"'"` or `?'"'` in the R console to see even more examples of where the escape character can be used. 
 
+You can also add Unicode characters to strings. For example, the Greek letter mu can be included like this: 
 
-Furthermore, additional control in the form of newlines or tabs is provided by using `\n` and `\t` for example along with a plethora of available special characters that can be found by typing `?"'"` or `?'"'` in you command line. 
-
-Introducing non-English characters in your text strings is also possible using special characters of the form `\u00b5` for example for the Greek letter mu. 
-
-```{r, results=FALSE}
-
-# outputting non-English characters
-string7 = "\u00b5" 
-
-
+```{r, purl=purl_example_code}
+string7 <- "\u00b5" 
+writeLines(string7)
 ```
 
+Often it is necessary to work with a set of strings in a character vector, and in the following sections we'll look at how various `stringr` functions can help us work with character vectors. A new character vector can be constructed using the `c()` function:
 
-Adding strings into a character vector is very common and is usually done with the use of the `c()` function. 
-
-```{r, results=FALSE}
-
-s8 = c("a", "vector", "of", "strings")
-
-
+```{r, purl=purl_example_code}
+string_vector <- c("a", "vector", "of", "strings")
 ```
-
-
 
 ### String Length
 
-At times it is necessary to determine the length of a character string. A useful function to use in these cases is the `str_length()` function which helps with that.
+The first `stringr` function we'll look at is `str_length()`, which returns the length of each string in a character vector:
 
-```{r, results=FALSE}
-
-# finding out how many characters in a char vector
-str_length(c(s8, NA))
-
-
+```{r, purl=purl_example_code}
+# Find out how many characters are in each string
+str_length(string_vector)
 ```
-
-Notice that an `NA` character is translated as is and we will see other options on how to deal with this in the sections to follow. 
-
 
 ### Combining Strings
 
-We already seen one way to combine strings in the previous section but with the `stringer` package we have an additional, more powerful tool at our disposal. 
+The `str_c()` function is used to combine multiple strings together, like so:
 
-Using `str_c()` can be beneficial in many cases since it allows for additional flexibility in the form of parameters for separators to be used or the option to collapse individual entries into one composite character string. 
-
-```{r, results=FALSE}
-# using custom separator
-str_c("an", "str_c vector", "with", "space", "character", "separating each entry", sep = " ")
-
-# the colapse option
-str_c("an", "str_c vector", "with", "space", "character", "separating each entry", collapse = T)
-
+```{r, purl=purl_example_code}
+str_c("some", "strings", "to", "combine")
 ```
 
-What is more important however is that `str_c` is vectorised and in this way can help in cases where an action has to be applied to each element of an input vector instead of individual character strings.
+There are two optional arguments, `sep` and `collapse` that can be used to modify the behaviour of `str_c()`. The `sep` argument allows us to define a separator to put between the strings when they're combined:
 
-In addition, it can also work to recycle shorter vectors to mach the longer ones as in the following example. 
+```{r, purl=purl_example_code}
+# Using custom separator
+str_c("some", "space", "separated", "strings", sep = " ")
+```
 
+The `str_c()` is especially useful because it is vectorised, and when applying it to character vectors the `collapse` argument can be used to combine all strings into a single string:
 
-```{r, results=FALSE}
+```{r, purl=purl_example_code}
+# Collasping a character vector
+vector_to_collapse <- c("some", "strings", "to", "combine")
+str_c(vector_to_collapse, collapse="")
+```
+The value of `collapse` will determine how the collapsed strings are separated.
 
-# vectorized form - translating a shorter vectror to match the longer one
-str_c("a", c("b", "c", "d"), "c", sep = " " )
+You can input multiple string vectors to `str_c()`, and it will combine them together:
 
-# simpler vectorizing 
-str_c("a", c("b", "c", "d"))
+```{r, purl=purl_example_code}
+string_vector1 <- c("A", "B", "C", "D")
+string_vector2 <- c("1", "2", "3", "4")
+str_c(string_vector1, string_vector2, sep=" - ")
+```
 
-# c() comparison
+It can also combine a single single with a vector of strings, like so: 
+
+```{r, purl=purl_example_code}
+# The single string will be 'recycled' to match the length of the vector
+str_c("a", c("b", "c", "d"), sep = " ")
+
+# Compare with what happens when we combine these strings with c() 
 c("a", c("b", "c", "d"))
-
 ```
 
-### Subsisting strings
+### Subsetting strings
 
 Extracting parts of a string can be done using the `str_sub` function and by specifying the `start` and `end` limits of the string to retain.
 
 It is also important to note that the function will not fail if the end point is outside of the index limit of the string.
-
 
 ```{r, results=FALSE}
 x <- c("OneValue", "SecondValue", "ThirdValue")

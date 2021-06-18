@@ -9,10 +9,10 @@ Development of the Tidyverse suite of packages was led by Hadley Wickham, and mo
 ### By the end of this session you should know how to:
 
  - Classify a variable in a dataframe, based on a set of conditions
- - Apply a function to multiple columns in a dataframe
+ - Deal with missing values in a dataframe
+ - Easily apply a function to any number of columns in a dataframe
  - Search for a string pattern in a dataframe
  - Reshape dataframes
- - Deal with missing values in a dataframe
 
 
 ## Before we start

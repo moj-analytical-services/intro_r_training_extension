@@ -86,12 +86,14 @@ Sometimes it's necessary to replace missing values; for example, when displaying
 ### Replacing with a specific value
 
 We can also use the `replace()` function to replace missing values with a specific value. In this example we're replacing missing values with zero:
+
 ```{r, purl=purl_example_code}
 x <- c(7, 23, 5, -14, NA, -1, 11,NA)
 replace(x, is.na(x), 0)
 ```
 
 The `replace()` function can also be applied to a whole dataframe, like so:
+
 ```{r, purl=purl_example_code}
 df <- tibble::data_frame(
   "x" = c(0, 1, 2, NA, 4),
@@ -108,7 +110,8 @@ Here's an example of how to use `replace_na()` with the `offenders` dataframe, w
 offenders_replacena <- offenders %>%
   tidyr::replace_na(list(HEIGHT = "Unknown"))
 
-offenders_replacena %>% arrange(desc(HEIGHT)) %>% str()
+# Display the dataframe in descending height order, so we can see the 'Unknown' values
+offenders_replacena %>% dplyr::arrange(desc(HEIGHT)) %>% str()
 ```
 
 ### Exercise
