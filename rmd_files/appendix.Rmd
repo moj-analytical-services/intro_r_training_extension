@@ -16,9 +16,15 @@
 |   %in%   | The subject appears in a list |
 | is.na()  | The subject is NA             |
 
+
 ## Further Reading
+
+### General
+
+ * [Tidyverse website](https://www.tidyverse.org)
+ * [R For Data Science](https://r4ds.had.co.nz/)
 
 ### Reshaping data
 
- * [pivoting vignette](https://tidyr.tidyverse.org/dev/articles/pivot.html#generate-column-name-from-multiple-variables-1)
- * [R For Data Science](https://r4ds.had.co.nz/)
+ * [Pivoting vignette](https://tidyr.tidyverse.org/dev/articles/pivot.html#generate-column-name-from-multiple-variables-1)
+
