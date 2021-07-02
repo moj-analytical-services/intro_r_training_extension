@@ -87,8 +87,8 @@ Now that you know the basics of the for loop, it is time to see a few of its var
 
 There are 4 variants to consider here:
 
-1. Modifying an existing object, instead of creating a new object.
-2. Looping over names or values, instead of indices.
+1. Modifying an existing object on the spot.
+2. Looping over a list of names or values.
 3. Handling outputs of unknown length.
 4. Handling sequences of unknown length.
 
@@ -140,46 +140,120 @@ for (i in seq_along(df)) {
 
 ### Looping patterns
 
+There are a couple of ways we can use to access the sequence part of the **for** loop depending on the coding style and the needs of the project. For example, in the code shown below, one could choose to loop over the list of indices of a vector using `for(i in se_along(x)` or alternatively iterate through the contents of the `results` vector using `for(i in vowel)`. Both formulations are valid with the first one allowing for more flexibility when it comes to accessing the resources of the vector.
 
 ```{r}
-x = letters
+x = letters # vector of letters
 vowel <- c('a', 'e', 'i', 'o', 'u')
-results <- rnorm(length(x))
-names(results) <- x
+
+results <- rnorm(length(x)) #create a random vector
+names(results) <- x # name the elements of the vector 
+
+## loop thourgh indices of a vector
+## 
+for(i in seq_along(x)){
+  x1[i] = paste(x[i],"23")
+}
+
+## loop through contents of a vector
+## 
+for(i in vowel){
+  print(results[i])
+  }
+
 
 
 ```
 
 
+### Handling outputs of unknown length
+
+There are cases where the output from a loop is not known beforehand. In these cases, certain precautions need to be taken as it may result in clogging up the memory with vectors going out of control expanding indefinitely. 
 
 ```{r}
 
-value = list()
+a = 0 # initialize number
 
-for (i in vowel) {
-  value[[i]] <- results[[i]]
+# run a sequence of random length vectros to be appended
+for(i in seq_len(10)){
+  n = sample(20,1)
+  a = c(a,rnorm(n))
 }
 
 
 ```
 
 
-### Handling outputs of 
+A better way to achieving the above result would be to create a list and capture the results within each cell at each corresponding iteration. The result would be a list with a  predictable index length. 
+
+```{r}
+
+a = list() # initilise a list
+
+# populate the contents of each cell of a list with a random size vector created in each iteration 
+for(i in seq_len(10)){
+  n = sample(20,1)
+  a[[i]] = rnorm(n)
+}
 
 
 
-## the Map functions and purrr
+```
+
+
+
+
+### Handling sequences of unknown length
+
+In general, unknown sequence length translates to cases where we want to check for certain condition in order to stop the execution of a block of code. In these cases the use of the `while` loop is preferable as in the example below.
+
+```{r}
+
+## while loop definition
+
+while (condition) {
+  # body
+}
+
+```
+
+Notice that the `while` loop execution differs that the `for` loop in that the body of code is executed first before the condition is checked and this is by design. One needs to first check the contents before accessing the validity of the condition to terminate the loop.   
+
+```{r}
+
+# The loop will first execute the body of code and then check if the condition is satisfied. If this is the case the loop will stop its iteration.
+while(mean(numbers) < 0.5){
+  numbers = rnorm(20)
+  print(mean(numbers))
+}
+
+
+```
 
 
 ##Exercises
 
-
-
-
-
-
+1. Imagine you have a directory full of files that you want to read in. You have the file names in the vector `files`, and now want to read each one. Write the for loop that will simulate reading them into a single data frame.
 
 ```{r}
+
+# the following code will create a random colelction of file names
+
+files = paste0(str_extract(sentences[1:5], "^[:alpha:]+"), sample(c(".csv",".xlsx")))
+
+
+```
+
+
+2. What happens if you use `for (nm in names(x))` and x has no names? What if only some of the elements are named? What if the names are not unique?
+
+```{r}
+# try using the folling list of files 
+
+files2 = paste0(str_extract(sentences[1:10], "^[:alpha:]+"), ".xlsx") 
+files2[5] = NA
+
+
 
 ```
 
