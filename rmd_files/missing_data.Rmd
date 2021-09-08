@@ -163,7 +163,7 @@ If we were to encounter a dataframe like the following, where each group name in
 
 ```{r, purl=purl_example_code}
 # Construct the example dataframe
-df <- tidyr::crossing(year = c("2015", "2016", "2017", "2018", "2019"),
+df <- tidyr::crossing(year = c("2017", "2018", "2019"),
                       quarter = c("Q1", "Q2", "Q3", "Q4")) %>%
       dplyr::mutate(count = sample(length(year)))
 

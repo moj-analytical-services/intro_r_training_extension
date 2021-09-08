@@ -21,16 +21,11 @@ To follow along with the code run during this session and participate in the exe
 
 First, we need to load a few packages and an example dataset.
 
-```{r message=F, warning=F}
+```{r message=F, warning=F, purl=purl_example_code}
 # Load packages
 library(s3tools)
 library(dplyr)
 library(tidyr)
 library(stringr)
-```
-
-```{r message=F, warning=F}
-# Read data
-offenders <- s3tools::s3_path_to_full_df("alpha-r-training/intro-r-training/Offenders_Chicago_Police_Dept_Main.csv")
 ```
 

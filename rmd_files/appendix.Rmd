@@ -27,6 +27,7 @@
 ### Strings
 
  * [R For Data Science - strings chapter](https://r4ds.had.co.nz/strings.html)
+ * [stringr and regex cheatsheet](https://evoldyn.gitlab.io/evomics-2018/ref-sheets/R_strings.pdf)
  * [Regex Coffee & Coding session](https://github.com/moj-analytical-services/Coffee-and-Coding/tree/master/2019-03-13%20Regex)
 
 ### Reshaping data

@@ -2,7 +2,7 @@
 
 Let's take a look at a few more examples and tackle some problems that we might encounter as an analyst in DASD. 
 
-```{r, purl=purl_example_code}
+```{r, message=F, warning=F, purl=purl_example_code}
 # Read data
 prosecutions_and_convictions <- s3tools::s3_path_to_full_df(
   "alpha-r-training/writing-functions-in-r/prosecutions-and-convictions-2018.csv")
@@ -13,7 +13,7 @@ prosecutions <- prosecutions_and_convictions %>%
 ```
 
 
-## Example 1
+### Example 1
 
 The following code is used to prepare a table that will form the basis of this example. This table will show the number of prosecutions over time for each offence group.
 
