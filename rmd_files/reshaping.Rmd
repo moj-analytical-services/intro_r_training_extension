@@ -204,8 +204,6 @@ tab3 %>% tidyr::unite(new ,century, decade, year, sep = "")
 
 ## Exercises 
 
-### Pivoting
-
 #### Exercise 1 
 
 Why does the following code fail?
@@ -247,54 +245,14 @@ rcj = tribble( ~judge, ~male, ~female,
 ```
 
 
-
-### Separating and Extracting
-
-#### Exercise 1
-
-What to the additional arguments `extra` and `fill` do in `separate()`?  
-
-Experiment with the various option in using the following datasets.
-
-
-```{r, purl=purl_example_code}
-
-tibble(x = c("a,b,c", "d,e,f,g", "h,i,j")) %>% 
-  tidyr::separate(x, c("one", "two", "three"))
-
-tibble(x = c("a,b,c", "d,e", "f,g,i")) %>% 
-  tidyr::separate(x, c("one", "two", "three"))
-
-```
-
-
-#### Exercise 2
-
-
-Both  `unite()` and `separate()` have a remove option. What does in to and how can it be utilized
-
-#### Exercise 3
-
-Compare `separate()` and `extract()`, why are there so many option to separate but only one `unite()`?
-
-## Solutions
-
-### Pivoting
-
-#### Exercise 1
-
 ```{r, include=show_solution, purl=purl_solutions}
-# Solution
+# Exercise 1 solution
 table4a %>% tidyr::pivot_longer(cols = !country, names_to = "year",values_to = "value")
 ```
 
 
-
-#### Exercise 2
-
-
 ```{r, include=show_solution, purl=purl_solutions}
-# Solution
+# Exercise 2 solution
 
 # Without changing anything on the dataset
 people = tribble(~name, ~key, ~value,
@@ -328,49 +286,17 @@ people %>% tidyr::pivot_wider(names_from = name, values_from = value)
 
 
 
-### Exercise 3
-
 ```{r, include=show_solution, purl=purl_solutions}
-# Solution
+# Exercise 3 solution
 
 rcj = tribble( ~judge, ~male, ~female,
                     "yes", NA, 10, 
                     "no", 20, 12)
 
-#alternative table to try with no NAs
-# rcj = tribble( ~judge, ~male, ~female,
-#                     "yes", 4, 10, 
-#                     "no", 20, 12)
-
-
 #use of pivot_longer
 rcj %>% tidyr::pivot_longer(cols = c(male, female), names_to = "gender", values_to = "count")
 
-
 # use of  pivot_wider 
 rcj %>% tidyr::pivot_wider(names_from = judge, values_from = c(male, female))
-
-
-
 ```
-
-
-
-
-### Separating and Extracting
-
-#### Exercise 1
-
-Typing `?separate()` into the R console shows all the arguments and their meanings. Try experimenting with them to discover more about what they do.
-
-
-#### Exercise 2
-
-Solution: Typing `?separate()` in the command line shows all the  information needed here. The `remove` option is there to remove the input columns from the output. 
-
-
-#### Exercise 3
-
-Solution: one suggestion is that there is only one way to unite the multiple strings but a number of different ways to split them apart. 
-
 
