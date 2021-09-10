@@ -4,16 +4,12 @@
 
 ## Introduction
 
-Best practice for programming involves reducing code repetition as much as possible. This helps prevent code getting overly long and complicated, and makes it more readable and easier to understand.
+This chapter introduces how to use loops to repeatedly execute a piece of code.
 
-A general rule of thumb in programming is never to copy and paste a piece of code more than once; if you find that you are repeating similar pieces of code over and over again, this is a sign that either a loop or a [function](https://github.com/moj-analytical-services/writing_functions_in_r) (or both) are required. 
-
-Loops form a core part of any programming language and R is no different. In the following section we cover different uses of **for loops** and take a look at the `purrr` package from Tidyverse to help iterate through lists. 
-
-The content in this section can also be found in Hadley Wickham's and Garrett Grolemund's book [R For Data Science](https://r4ds.had.co.nz)
+A general rule of thumb in programming is to avoid copying and pasting a piece of code more than once; if you find that you are repeating similar pieces of code over and over again, this is a sign that either a loop or a [function](https://github.com/moj-analytical-services/writing_functions_in_r) (or both) are required. Keeping your code concise will help make it more readable and easier to understand.
 
 
-## For Loops
+## For loops
 
 Let's start with a very basic example to illustrate what a for loop does. Say we wanted to print the numbers 1 to 5; without a for loop we'd need to write something like this:
 
@@ -25,7 +21,7 @@ print(4)
 print(5)
 ```
 
-Clearly there is some code repetition here, so we can achieve the same result using a for loop written like so:
+Clearly there is some code repetition here, so we can achieve the same result using a for loop:
 
 ```{r, purl=purl_example_code}
 for (i in 1:5) {
@@ -45,14 +41,13 @@ for (string in strings) {
 }
 ```
 
-Other things that could be iterated over include file names or columns of a dataframe.
-
 If you wanted to get an index number for each element of the iterable, you can use the `seq_along()` function. For example:
 
 ```{r, purl=purl_example_code}
 strings <- c("spam", "egg", "chips", "beans")
 
 for (i in seq_along(strings)) {
+  # Use paste() to combine two strings together
   print(paste(i, strings[i]))
 }
 ```
@@ -80,34 +75,39 @@ When writing a for loop you must define something to iterate over a fixed number
 
 ### Exercise
 
-1. Write for loops to:
+Write a for loop to print "The current date is ..." for each date in the following string vector:
 
-  1. Compute the mean of every column in mtcars.
-  2. Determine the type of each column in nycflights13::flights.
-  3. Compute the number of unique values in each column of iris.
-  4. Generate 10 random normals from distributions with means of -10, 0, 10, and 100.
+```{r, purl=purl_example_code}
+dates <- c("2020-03-01", "2020-06-01", "2020-09-01", "2020-12-01")
+```
 
-Think about the output, sequence, and body before you start writing the loop.
+**Hint:** You can use the `paste()` function to join strings together.
 
-
-
+---
+```{r, include=show_solution, purl=purl_solutions}
+# Solution
+for (date in dates) {
+  print(paste("The current date is", date))
+}
+```
+---
 
 
 ### Handling outputs of unknown length
 
-There are cases where the size of an output from a loop is not known beforehand. For example, this might be because different iterations result in outputs of different lengths. The most memory efficient way to handle this is to add the output from each iteration to a list structure, where the length of the list is the same as the length of the iterable, and then to combine the list elements together afterwards. 
+There are cases where the size of an output from a loop is not known beforehand. For example, this might be because different iterations result in outputs of different lengths.
 
-Let's say we want to join together dataframes of different lengths. There is a shared folder prepared in the alpha-r-training s3 bucket, which contains some data for us to read in and combine together. We might not even know in advance how many datasets there are to join together. Fortunately we can use the s3tools package to get a list of files to read in:
+Let's say we want to join together dataframes of different lengths. There is a shared folder prepared in the alpha-r-training s3 bucket, which contains some data for us to read in and combine together. First we need to get a list of file paths to read from:
 
 ```{r, message=F, warning=F, purl=purl_example_code}
-# Get a vector of csv files we can iterate over
+# Get a vector of file paths to iterate over
 files <- s3tools::list_files_in_buckets("alpha-r-training", prefix="intro-r-extension", path_only=T)
-files <- files[grepl(".csv", files)]
+files <- files[grepl(".csv", files)] # This makes sure that only csv files are included
 
 files
 ```
 
-Now we can use a for loop to read in each file as a dataframe, and add each dataframe to a list. After the for loop, the `bind_rows()` function from dplyr can be used to combine the data into a single dataframe.
+Now we can use a for loop to read in each file as a dataframe, and add each dataframe to a list. After the for loop, the `bind_rows()` function from dplyr can be used to combine the data into a single dataframe. This is more memory efficient than appending the dataframes in each loop iteration.
 
 ```{r, message=F, warning=F, purl=purl_example_code}
 # First define an empty list with the same length as the number of datasets to be read in
@@ -123,12 +123,44 @@ fruit <- dplyr::bind_rows(fruit_list)
 fruit
 ```
 
+### Conditionally exiting a for loop
+
+You might want to stop a for loop iterating under a certain condition. In this case you can use a `break` statement in combination with an 'if' or 'if...else' statement, like so:
+
+```{r, purl=purl_example_code}
+
+for (i in 1:10) {
+  # Exit the for loop if i is greater than 5
+  if (i > 5){
+    break
+  }
+  
+  print(i)
+}
+```
+
+### Conditionally skip to the next iteration
+
+The `next` statement can be use to skip to the next iteration of the loop under a certain condition. For example, we can skip to the next iteration if the iterable is equal to 3:
+
+```{r, purl=purl_example_code}
+
+for (i in 1:5) {
+  # Skip this iteration if i equals 3
+  if (i == 3){
+    next
+  }
+  
+  print(i)
+}
+```
+
 
 ## While loops
 
-There may be cases where we want to keep looping over a piece of code until a certain condition is met, rather than having to specify in advance how many times a loop should run. In these cases a `while` loop can be used.
+There may be cases where we want to keep looping over a piece of code until a certain condition is met, rather than having to specify in advance how many times a loop should run. In these cases a while loop can be used.
 
-The syntax for a while loop is similar to that of a for loop, but in the brackets a condition is specified instead of an iterable. Prior to writing the while loop you'll also need to specify a start value for the variable used in the loop, and there should be something in the body of the loop to change the variable during each iteration - otherwise the condition can never be met! For example, we can use a while loop to achieve a similar result to the first for loop example above:
+For example, we can use a while loop to achieve a similar result to the first for loop example above:
 
 ```{r, purl=purl_example_code}
 # First specify an initial value for the variable used in the while loop
@@ -141,29 +173,7 @@ while (i <= 5) { # The loop will continue until the condition i<=5 is met
 }
 ```
 
+The syntax for a while loop is similar to that of a for loop, but in the brackets a condition is specified instead of an iterable. Prior to writing the while loop you'll also need to specify a start value for the variable used in the loop, and there should be something in the body of the loop to change the variable during each iteration - otherwise the condition can never be met!
+
 Generally a while loop should only be used in circumstances where it isn't possible to achieve the desired result using a for loop. The reason for this is that it's quite easy to accidentally set up an infinite loop, where a bug in the code means that the condition is never met for a while loop to end.
-
-
-### Exercises
-
-1. Imagine you have a directory full of files that you want to read in. You have the file names in the vector `files`, and now want to read each one. Write the for loop that will simulate reading them into a single data frame.
-
-```{r}
-
-# the following code will create a random colelction of file names
-
-files = paste0(str_extract(sentences[1:5], "^[:alpha:]+"), sample(c(".csv",".xlsx")))
-
-
-```
-
-
-2. What happens if you use `for (nm in names(x))` and x has no names? What if only some of the elements are named? What if the names are not unique?
-
-```{r}
-# try using the folling list of files 
-
-files2 = paste0(str_extract(sentences[1:10], "^[:alpha:]+"), ".xlsx") 
-files2[5] = NA
-```
 

@@ -124,7 +124,7 @@ fruit <- tibble::data_frame(
   "Quantity" = c(23, NA, 15, 9, 11)
 )
 ```
-**Hint:** you add multiple arguments to `replace_na(list(...))`, with one argument for each column where NA values need replacing.
+**Hint:** you can add multiple arguments to `replace_na(list(...))`, with one argument for each column where NA values need replacing.
 
 ---
 

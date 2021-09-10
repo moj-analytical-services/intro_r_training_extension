@@ -25,6 +25,7 @@ If you have any feedback on the content, please get in touch!
 * [Iteration](#iteration)
 * [Reshaping data](#reshaping-data)
 * [String manipulation](#string-manipulation)
+* [Further reading](#further-reading)
 * [Bonus examples](#bonus-examples)
 * [Appendix](#appendix)
 

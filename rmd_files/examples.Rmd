@@ -2,6 +2,49 @@
 
 Let's take a look at a few more examples and tackle some problems that we might encounter as an analyst in DASD. 
 
+
+## Example 1 - reshaping
+
+Let's look at an example with some aggregate data based on the `offenders` dataset:
+
+```{r, purl=purl_example_code}
+offenders_summary <- offenders %>%
+  group_by(REGION, SENTENCE) %>%
+  summarise(offender_count = n())
+offenders_summary
+```
+
+### Transforming from long to wide format
+
+The above summary dataframe could be described as being in a 'long' format - where there are minimal columns and lots of rows. This format tends not to be used for presenting data, as it is more difficult to look at and interpret. Therefore wider formats are often used to display data, where there are more columns but fewer rows. We can use the `pivot_wider()` function from tidyr to help us transform from a long format to a wide format, like so:
+
+```{r, purl=purl_example_code}
+offenders_summary <- offenders_summary %>%
+  tidyr::pivot_wider(names_from = "SENTENCE", values_from = "offender_count")
+
+offenders_summary
+```
+
+In the `names_from` argument of `pivot_wider()`, we've specifed that we want to create new columns based on the different categories in the `SENTENCE` column - so there will be one new column for each of the three categories that appear in `SENTENCE`. Then we use the `values_from` argument to specify that we want values from the `offender_count` column to go into those new columns.
+
+
+### Transforming from wide to long format
+
+In order to reverse the reshaping that we've just done, and go back from a wide format to a long format, we can use the `pivot_longer()` function:
+
+```{r, purl=purl_example_code}
+offenders_summary <- offenders_summary %>%
+  tidyr::pivot_longer(cols = -REGION, names_to = "SENTENCE", values_to = "offender_count")
+
+offenders_summary
+```
+
+The `cols` argument of `pivot_longer()` has been set to `-REGION`, which means that all columns apart from `REGION` will be reshaped. Then the `names_to` argument is used to specify that we want the names of those columns to go into a new column called `SENTENCE`, and the `values_to` argument is used to specify that we want the values in those column to go into a new column called `offender_count`.
+
+
+
+## Example 2
+
 ```{r, message=F, warning=F, purl=purl_example_code}
 # Read data
 prosecutions_and_convictions <- s3tools::s3_path_to_full_df(
@@ -11,9 +54,6 @@ prosecutions_and_convictions <- s3tools::s3_path_to_full_df(
 prosecutions <- prosecutions_and_convictions %>%
   filter(`Court.Type` == "Magistrates Court")
 ```
-
-
-### Example 1
 
 The following code is used to prepare a table that will form the basis of this example. This table will show the number of prosecutions over time for each offence group.
 
@@ -84,7 +124,5 @@ time_series
 ```
 
 Now we've managed to calculate the total number of prosecutions over the past 5 years, without needing to hard-code the names of those years. This means that the code can be re-used in future years without needing to be edited.
-
-
 
 
