@@ -29,48 +29,6 @@ billboard_longer %>% dplyr::select(artist, track, date.entered, week_of_month1, 
 
 In the `pivot_longer()` function, we've specified variables/columns to be **gathered** into a new pair of columns using the `cols()` argument, then the `names_to` argument specifies the name of a new column to contain the names of the gathered columns, and `values_to` specifies the name of a new column to contain the corresponding values.  
 
-### Working with similarly named columns
-
-There might be a situation where we have a lot of columns to gather, in which case it would be time consuming to type them all out individually. What happens if we want all of the week columns to be restructured?
-
-In this case, we can use the `starts_with()` function to select all columns with a name that begins with 'wk':
-
-```{r, purl=purl_example_code}
-# Mapping all week columns to new variables called "weeks" and "rank"
-billboard %>% tidyr::pivot_longer(cols = starts_with("wk"), names_to = "week", values_to = "rank") %>% head()
-```
-
-
-This has allowed us to convert a dataframe with 79 columns into one with only 5, while retaining all of the same information, which can be helpful for making further analysis easier.
-
-
-### Working with similar columns 
-
-In some circumstances pivoting can also be used to construct a more robust for ease of use in later stages of the analysis. In these cases the dataset contains variables that are similar in their structure with the aim being to gather them in to one, cleaner, format. Consider the `asncombe` dataset that comes with basic R as shown below:
-
-```{r, purl=purl_example_code}
-anscombe
-```
-
-As it is apparent, the basis for each variable is the same (x1,x2, y1,y2 etc) and so it would make sense to simply create pair `x` and `y` and depict their corresponding identifier `1,2,3,4` in a separate variable. 
-
-In such cases, `pivot_longer` offers an elegant solution to the problem by automatically selecting the common patterns and using them as the new variables.
-
-```{r, purl=purl_example_code}
-# using ".value" and "everything()" to select common variables
-anscombe %>% tidyr::pivot_longer(everything(),
-   names_to = c(".value", "set"),
-   names_pattern = "(.)(.)" )
-```
-
-
-In the example above, the `.value` identifier enables selection of the common elements between `x1,x2,etc` and `y1,y2,etc` and then uses the findings as separate variables. 
-
-The `everything()` argument, as the name would suggest, picks the entire variable set in the dataset.
-
-Notice also the use of the `names_pattern = "(.)(.)"` option. This is a special kind of regex use where the values within the brackets are used to detect the kind of pattern to be used. 
-
-The `names_pattern` or `name_sep()` options make explicit use of the `extract()` and  `separete()` tools respectively (discussed in more detail in the  next sections) utilizing regular expressions to detect the variable to pivot. In the former expression, the regex contained in the matching groups depicted within the brackets in the above expression, is what distinguishes one part of the variable from the other.  
 
 
 ## Transforming from long to wide format
@@ -121,84 +79,6 @@ warpbreaks %>%
     values_from = breaks,
     values_fn = list(breaks = mean)
   )
-```
-
-
-## Separating and extracting column contents
-
-An Important aspect of every data shaping mechanism is to be able to pick multiple columns or data entries within a variable  with a certain precision and without having to manually type them each time. 
-
-The functions `separate()` and `extract()` were created for this purpose where regex is used to describe the pattern to pick and reshape.
-
-Consider `table3` for example that comes with the `tidyr` package. One look at the table illustrates the problem that we are facing where the variable `rate` could be split into two different ones if somehow we could detect and pull out the values on either side of the separator.  
-
-
-```{r, purl=purl_example_code}
-table3
-```
-
-### Separate
-
-The `separate()` function is build to help in cases where values in a column could be split based on a separator in place. On the above example in `table3` the following code splits the `rate` variable into `cases` and `population` accordingly 
-
-
-```{r, purl=purl_example_code}
-# separate() automatically detects the separator
-table3 %>% tidyr::separate(rate, into = c("cases", "population"))
-```
-
-By default, the function will automatically detect any non-alphanumeric character and use that as a separator but its not limited to that. One can specify the separator manually using the `sep` option.
-
-```{r, purl=purl_example_code}
-# separate() manually  detects the separator
-table3 %>% tidyr::separate(rate, into = c("cases", "population"), sep = "/")
-```
-
-At its heart, `separate()` uses regular expressions to detect and pull the corresponding characters. As a result the new columns are now of `char` type, something that can be changed by altering the state of the `convert` flag as shown below:
-
-
-```{r, purl=purl_example_code}
-# separate() manually detects the separator and convers the columns into the appropriate data type 
-table3 %>% tidyr::separate(rate, into = c("cases", "population"), sep = "/", convert = TRUE)
-```
-
-### Extract
-
-The `extract()` function lets you go a step further and allows you to define your own regex to be used for pattern patching. Using the same example as above, lets see how to split the `year` variable to `century` and `years`.
-
-```{r, purl=purl_example_code}
-table3 %>% tidyr::extract( col = year, into = c("century","years"), regex = "([0-9]{2})([0-9]{2})")
-```
-
-The `regex` option shown above uses the same syntax as described earlier in the chapter, in fact, it is possible to split the target variable into several others by expanding the bracket list as shown in the following block of code. The year variable is now split into three variables to depict the `century`, `decade` and `year`.
-
-
-```{r, purl=purl_example_code}
-table3 %>% tidyr::extract( col = year, into = c("century","decade","year" ), regex = "([0-9]{2})([0-9])([0-9])")
-```
-
-In addition, internally the pivot functions make explicit use of  `seaprate()` and `extract()` whenever a split or a regular expression is need to capture patterns present in name or within the content of a variable in the dataset. 
-
-
-### Unite
-
-Of course, extracting and creating new variables would not be complete without a function to revert back to the original target variable. In this case, the `unite()` function provides the means to do exactly that as shown in the example below.
-
-
-```{r, purl=purl_example_code}
-# the reshaped dataset
-tab3 = table3 %>% tidyr::extract( col = year, into = c("century","decade","year" ), regex = "([0-9]{2})([0-9])([0-9])")
-
-# going back to the original dataset - with separator
-tab3 %>% tidyr::unite(new ,century, decade, year)
-```
-
-By default, the `_` separator is used after each component of the composite variable but as always, there are option in place to customize this behavior. In the following block of code the separator is removed giving the original variable before any alteration takes place.
-
-
-```{r, purl=purl_example_code}
-# going back to the original dataset - with no separators
-tab3 %>% tidyr::unite(new ,century, decade, year, sep = "")
 ```
 
 
