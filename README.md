@@ -318,18 +318,11 @@ to check which rows are complete (i.e. the row doesn’t contain any
 missing values):
 
 ``` r
-df <- tibble::data_frame(
+df <- tibble::tibble(
   "x" = c(0, 1, 2, NA, 4),
   "y" = c(18, NA, 45, 15, 2),
 )
-```
 
-    ## Warning: `data_frame()` is deprecated as of tibble 1.1.0.
-    ## Please use `tibble()` instead.
-    ## This warning is displayed once every 8 hours.
-    ## Call `lifecycle::last_warnings()` to see where this warning was generated.
-
-``` r
 complete.cases(df)
 ```
 
@@ -341,7 +334,7 @@ For the following dataframe, use the `filter()` function from dplyr with
 `complete.cases()` to extract the rows **with** missing values:
 
 ``` r
-fruit <- tibble::data_frame(
+fruit <- tibble::tibble(
   "Item" = c("Orange", "Apple", "Banana", "Lemon", "Pear"),
   "Cost" = c(0.5, 0.4, 0.1, 0.3, NA),
   "Quantity" = c(23, NA, 15, 9, 11)
@@ -417,7 +410,7 @@ The `replace()` function can also be applied to a whole dataframe, like
 so:
 
 ``` r
-df <- tibble::data_frame(
+df <- tibble::tibble(
   "x" = c(0, 1, 2, NA, 4),
   "y" = c(18, NA, 45, 15, 2),
 )
@@ -473,7 +466,7 @@ to replace missing values in the `Cost` column with “Unknown” and the
 `Quantity` column with 0.
 
 ``` r
-fruit <- tibble::data_frame(
+fruit <- tibble::tibble(
   "Item" = c("Orange", "Apple", "Banana", "Lemon", "Pear"),
   "Cost" = c(0.5, 0.4, 0.1, 0.3, NA),
   "Quantity" = c(23, NA, 15, 9, 11)
@@ -494,7 +487,7 @@ values with values from another column. Before we jump into an example,
 let’s first prepare a dataframe:
 
 ``` r
-event_dates <- tibble::data_frame(
+event_dates <- tibble::tibble(
   "event_id" = c(0, 1, 2, 3, 4, 5),
   "date" = c("2016-04-13", "2015-12-29", "2016-06-02", "2017-01-27", "2015-10-21", "2018-03-15"),
   "new_date" = c("2016-08-16", NA, NA, "2017-03-02", NA, "2018-11-20")
@@ -552,25 +545,25 @@ df
     ## # A tibble: 20 x 3
     ##    year  quarter count
     ##    <chr> <chr>   <int>
-    ##  1 2015  Q1         16
+    ##  1 2015  Q1         10
     ##  2 <NA>  Q2         14
-    ##  3 <NA>  Q3         20
-    ##  4 <NA>  Q4         10
-    ##  5 2016  Q1         18
-    ##  6 <NA>  Q2          5
-    ##  7 <NA>  Q3          6
-    ##  8 <NA>  Q4          7
-    ##  9 2017  Q1          1
-    ## 10 <NA>  Q2         19
-    ## 11 <NA>  Q3          2
-    ## 12 <NA>  Q4          9
-    ## 13 2018  Q1          8
-    ## 14 <NA>  Q2         11
-    ## 15 <NA>  Q3         15
-    ## 16 <NA>  Q4          4
+    ##  3 <NA>  Q3          2
+    ##  4 <NA>  Q4          9
+    ##  5 2016  Q1         12
+    ##  6 <NA>  Q2          4
+    ##  7 <NA>  Q3         17
+    ##  8 <NA>  Q4         15
+    ##  9 2017  Q1         11
+    ## 10 <NA>  Q2          5
+    ## 11 <NA>  Q3         19
+    ## 12 <NA>  Q4          1
+    ## 13 2018  Q1          6
+    ## 14 <NA>  Q2         16
+    ## 15 <NA>  Q3          8
+    ## 16 <NA>  Q4          7
     ## 17 2019  Q1          3
-    ## 18 <NA>  Q2         12
-    ## 19 <NA>  Q3         17
+    ## 18 <NA>  Q2         20
+    ## 19 <NA>  Q3         18
     ## 20 <NA>  Q4         13
 
 The `fill()` function from tidyr is a convenient way to do this, and can
@@ -583,25 +576,25 @@ df %>% tidyr::fill(year)
     ## # A tibble: 20 x 3
     ##    year  quarter count
     ##    <chr> <chr>   <int>
-    ##  1 2015  Q1         16
+    ##  1 2015  Q1         10
     ##  2 2015  Q2         14
-    ##  3 2015  Q3         20
-    ##  4 2015  Q4         10
-    ##  5 2016  Q1         18
-    ##  6 2016  Q2          5
-    ##  7 2016  Q3          6
-    ##  8 2016  Q4          7
-    ##  9 2017  Q1          1
-    ## 10 2017  Q2         19
-    ## 11 2017  Q3          2
-    ## 12 2017  Q4          9
-    ## 13 2018  Q1          8
-    ## 14 2018  Q2         11
-    ## 15 2018  Q3         15
-    ## 16 2018  Q4          4
+    ##  3 2015  Q3          2
+    ##  4 2015  Q4          9
+    ##  5 2016  Q1         12
+    ##  6 2016  Q2          4
+    ##  7 2016  Q3         17
+    ##  8 2016  Q4         15
+    ##  9 2017  Q1         11
+    ## 10 2017  Q2          5
+    ## 11 2017  Q3         19
+    ## 12 2017  Q4          1
+    ## 13 2018  Q1          6
+    ## 14 2018  Q2         16
+    ## 15 2018  Q3          8
+    ## 16 2018  Q4          7
     ## 17 2019  Q1          3
-    ## 18 2019  Q2         12
-    ## 19 2019  Q3         17
+    ## 18 2019  Q2         20
+    ## 19 2019  Q3         18
     ## 20 2019  Q4         13
 
 ## Removing rows with missing values from a dataframe
@@ -659,7 +652,328 @@ str(offenders_nona)
     ##  $ age_band             : chr  "55-64" "55-64" "35-44" "45-54" ...
     ##  $ PREV_CONVICTIONS_BAND: chr  "0-1" "0-1" "0-1" "0-1" ...
 
-# Iteration
+# Iteration and Loops
+
+## Introduction
+
+As part of any good coding practice is to reduce the number of
+repetitive tasks as much as possible. To help with this concept any
+programming language comes with a set of **control structures** to help
+reduce clutter in the code and make it more readable and easier to
+understand.
+
+A general rule in programming is to never copy an paste code more than
+twice; if you find that you are using repeated statements over and over
+again, this is a good sign that either a loop or a function or both are
+needed to make the code more compact and efficient.
+
+Loops form part of the core of any programming platform and R is no
+different here. In the section to follow we will cover the for loos and
+its variants and explain a few things about `purrr` and how we can
+iterate through lists using a variety of *maps*.
+
+A note here similar to what was mentioned in previous chapters, the
+content in this section can also be found in Hadley Wickham’s and
+Garrett Grolemund’s book [R For Data Science](https://r4ds.had.co.nz)
+
+## For Loops
+
+The basics of how a for loop works can be understood best by using an
+example. Consider the following tibble:
+
+``` r
+df <- tibble(
+  a = rnorm(10),
+  b = rnorm(10),
+  c = rnorm(10),
+  d = rnorm(10)
+)
+```
+
+the task now is to calculate, for example, the mean or the median:
+
+``` r
+median(df$a)
+```
+
+    ## [1] -0.05599186
+
+``` r
+#> [1] -0.2457625
+median(df$b)
+```
+
+    ## [1] 0.01508239
+
+``` r
+#> [1] -0.2873072
+median(df$c)
+```
+
+    ## [1] 0.01555376
+
+``` r
+#> [1] -0.05669771
+median(df$d)
+```
+
+    ## [1] 0.3498346
+
+``` r
+#> [1] 0.1442633
+```
+
+one way of doing this is by copying and pasting the same code over and
+over again; inefficient, but possible at this stage. A much better way
+is to construct a for loop and iterate through the code that is repeated
+as above.
+
+``` r
+output <- vector("double", ncol(df))  # 1. output
+for (i in seq_along(df)) {            # 2. sequence
+  output[[i]] <- median(df[[i]])      # 3. body
+}
+output
+```
+
+    ## [1] -0.05599186  0.01508239  0.01555376  0.34983459
+
+``` r
+#> [1] -0.24576245 -0.28730721 -0.05669771  0.14426335
+```
+
+In the example above the For loop has three primary components, the
+*output*, the *sequence* and the *body*. The output is usually a list or
+a vector where the result of the loop is to be stored. the sequence is a
+vector or a list containing the collection of items to cycle through
+while running. The iterator `i` is used as a place holder variable,
+changing each time the loop runs to the corresponding value ion the
+given sequence. As the loop runs `i` runs through all the values in the
+`sequence` in the order they appear.
+
+The body of the loop contains the code to run at each iteration. The
+iterator `i` will be take the value of each element in the sequence on
+each run.
+
+### Exercises
+
+1.  Write for loops to:
+
+2.  Compute the mean of every column in mtcars.
+
+3.  Determine the type of each column in nycflights13::flights.
+
+4.  Compute the number of unique values in each column of iris.
+
+5.  Generate 10 random normals from distributions with means of -10, 0,
+    10, and 100.
+
+Think about the output, sequence, and body before you start writing the
+loop.
+
+## For loop variants
+
+Now that you know the basics of the for loop, it is time to see a few of
+its variants and how they can be used in very common programming tasks.
+
+There are 4 variants to consider here:
+
+1.  Modifying an existing object on the spot.
+2.  Looping over a list of names or values.
+3.  Handling outputs of unknown length.
+4.  Handling sequences of unknown length.
+
+and we will cover each in the sections below.
+
+### Modifying an existing object
+
+In many cases there will be a need to modify a given object based on the
+current data analysis task. In the example below the task is to scale
+the data frame for further processing. On way to achieve this is by
+manually change each column in the data; this could be fine for small
+dataframes but for larger ones this will very quickly become a problem.
+
+``` r
+df <- tibble(
+  a = rnorm(10),
+  b = rnorm(10),
+  c = rnorm(10),
+  d = rnorm(10)
+)
+rescale01 <- function(x) {
+  rng <- range(x, na.rm = TRUE)
+  (x - rng[1]) / (rng[2] - rng[1])
+}
+
+df$a <- rescale01(df$a)
+df$b <- rescale01(df$b)
+df$c <- rescale01(df$c)
+df$d <- rescale01(df$d)
+```
+
+A for loop in this case would be recommended as you will notice that the
+same one line of code is repeated throughout. The code below illustrated
+this concept.
+
+More specifically the components of the for loop are:
+
+  - The**output** - in this case we don’t output to a different object
+    we just update the input. The output is the same as the input
+
+  - The **sequence** - This will be the number of columns in `df` we
+    want to run the code to. As previously the `seq_along` function will
+    help us with this as it will count the number of columns and turn
+    this into a sequence we can use in the for loop
+
+  - The body of the loop is just the re scale one line of code running
+    the defined `rescale01` function. It can be anything that will take
+    the column as an argument to work with. Further restrictions would
+    normally apply but we will not cover this here
+
+The code below simplifies what we want to do and as you can see,
+overall, we now have a much better structured and easier to read two
+lines of code\!
+
+``` r
+for (i in seq_along(df)) {
+  df[[i]] <- rescale01(df[[i]])
+}
+```
+
+### Looping patterns
+
+There are a couple of ways we can use to access the sequence part of the
+**for** loop depending on the coding style and the needs of the project.
+For example, in the code shown below, one could choose to loop over the
+list of indices of a vector using `for(i in se_along(x)` or
+alternatively iterate through the contents of the `results` vector using
+`for(i in vowel)`. Both formulations are valid with the first one
+allowing for more flexibility when it comes to accessing the resources
+of the vector.
+
+``` r
+x = letters # vector of letters
+vowel <- c('a', 'e', 'i', 'o', 'u')
+
+results <- rnorm(length(x)) #create a random vector
+names(results) <- x # name the elements of the vector 
+
+## loop thourgh indices of a vector
+## 
+for(i in seq_along(x)){
+  x1[i] = paste(x[i],"23")
+}
+```
+
+    ## Error in eval(expr, envir, enclos): object 'x1' not found
+
+``` r
+## loop through contents of a vector
+## 
+for(i in vowel){
+  print(results[i])
+  }
+```
+
+    ##         a 
+    ## 0.6281432 
+    ##        e 
+    ## 0.645164 
+    ##        i 
+    ## 1.036356 
+    ##         o 
+    ## 0.2784657 
+    ##         u 
+    ## 0.7687964
+
+### Handling outputs of unknown length
+
+There are cases where the output from a loop is not known beforehand. In
+these cases, certain precautions need to be taken as it may result in
+clogging up the memory with vectors going out of control expanding
+indefinitely.
+
+``` r
+a = 0 # initialize number
+
+# run a sequence of random length vectros to be appended
+for(i in seq_len(10)){
+  n = sample(20,1)
+  a = c(a,rnorm(n))
+}
+```
+
+A better way to achieving the above result would be to create a list and
+capture the results within each cell at each corresponding iteration.
+The result would be a list with a predictable index length.
+
+``` r
+a = list() # initilise a list
+
+# populate the contents of each cell of a list with a random size vector created in each iteration 
+for(i in seq_len(10)){
+  n = sample(20,1)
+  a[[i]] = rnorm(n)
+}
+```
+
+### Handling sequences of unknown length
+
+In general, unknown sequence length translates to cases where we want to
+check for certain condition in order to stop the execution of a block of
+code. In these cases the use of the `while` loop is preferable as in the
+example below.
+
+``` r
+## while loop definition
+
+while (condition) {
+  # body
+}
+```
+
+Notice that the `while` loop execution differs that the `for` loop in
+that the body of code is executed first before the condition is checked
+and this is by design. One needs to first check the contents before
+accessing the validity of the condition to terminate the loop.
+
+``` r
+# The loop will first execute the body of code and then check if the condition is satisfied. If this is the case the loop will stop its iteration.
+while(mean(numbers) < 0.5){
+  numbers = rnorm(20)
+  print(mean(numbers))
+}
+```
+
+    ## Error in mean(numbers): object 'numbers' not found
+
+\#\#Exercises
+
+1.  Imagine you have a directory full of files that you want to read in.
+    You have the file names in the vector `files`, and now want to read
+    each one. Write the for loop that will simulate reading them into a
+    single data frame.
+
+<!-- end list -->
+
+``` r
+# the following code will create a random colelction of file names
+
+files = paste0(str_extract(sentences[1:5], "^[:alpha:]+"), sample(c(".csv",".xlsx")))
+```
+
+2.  What happens if you use `for (nm in names(x))` and x has no names?
+    What if only some of the elements are named? What if the names are
+    not unique?
+
+<!-- end list -->
+
+``` r
+# try using the folling list of files 
+
+files2 = paste0(str_extract(sentences[1:10], "^[:alpha:]+"), ".xlsx") 
+files2[5] = NA
+```
 
 # Reshaping data
 
@@ -722,26 +1036,23 @@ billboard %>% arrange(desc(date.entered)) %>% tail()
 ```
 
     ## # A tibble: 6 x 79
-    ##   artist track date.entered   wk1   wk2   wk3   wk4   wk5   wk6   wk7   wk8
-    ##   <chr>  <chr> <date>       <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
-    ## 1 IMx    Stay… 1999-10-09      84    61    45    43    40    38    36    31
-    ## 2 Train  Meet… 1999-10-09      76    67    59    54    48    45    40    32
-    ## 3 Creed  High… 1999-09-11      81    77    73    63    61    58    56    52
-    ## 4 Houst… My L… 1999-09-04      81    68    44    16    11     9     8     7
-    ## 5 Amber  Sexu… 1999-07-17      99    99    96    96   100    93    93    96
-    ## 6 Lones… Amaz… 1999-06-05      81    54    44    39    38    33    29    29
-    ## # … with 68 more variables: wk9 <dbl>, wk10 <dbl>, wk11 <dbl>, wk12 <dbl>,
-    ## #   wk13 <dbl>, wk14 <dbl>, wk15 <dbl>, wk16 <dbl>, wk17 <dbl>, wk18 <dbl>,
-    ## #   wk19 <dbl>, wk20 <dbl>, wk21 <dbl>, wk22 <dbl>, wk23 <dbl>, wk24 <dbl>,
-    ## #   wk25 <dbl>, wk26 <dbl>, wk27 <dbl>, wk28 <dbl>, wk29 <dbl>, wk30 <dbl>,
-    ## #   wk31 <dbl>, wk32 <dbl>, wk33 <dbl>, wk34 <dbl>, wk35 <dbl>, wk36 <dbl>,
-    ## #   wk37 <dbl>, wk38 <dbl>, wk39 <dbl>, wk40 <dbl>, wk41 <dbl>, wk42 <dbl>,
-    ## #   wk43 <dbl>, wk44 <dbl>, wk45 <dbl>, wk46 <dbl>, wk47 <dbl>, wk48 <dbl>,
-    ## #   wk49 <dbl>, wk50 <dbl>, wk51 <dbl>, wk52 <dbl>, wk53 <dbl>, wk54 <dbl>,
-    ## #   wk55 <dbl>, wk56 <dbl>, wk57 <dbl>, wk58 <dbl>, wk59 <dbl>, wk60 <dbl>,
-    ## #   wk61 <dbl>, wk62 <dbl>, wk63 <dbl>, wk64 <dbl>, wk65 <dbl>, wk66 <lgl>,
-    ## #   wk67 <lgl>, wk68 <lgl>, wk69 <lgl>, wk70 <lgl>, wk71 <lgl>, wk72 <lgl>,
-    ## #   wk73 <lgl>, wk74 <lgl>, wk75 <lgl>, wk76 <lgl>
+    ##   artist track date.entered   wk1   wk2   wk3   wk4   wk5   wk6   wk7   wk8   wk9  wk10  wk11  wk12  wk13
+    ##   <chr>  <chr> <date>       <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
+    ## 1 IMx    Stay… 1999-10-09      84    61    45    43    40    38    36    31    34    34    40    36    36
+    ## 2 Train  Meet… 1999-10-09      76    67    59    54    48    45    40    32    26    24    22    21    21
+    ## 3 Creed  High… 1999-09-11      81    77    73    63    61    58    56    52    56    57    57    57    57
+    ## 4 Houst… My L… 1999-09-04      81    68    44    16    11     9     8     7     8     7     8     8     6
+    ## 5 Amber  Sexu… 1999-07-17      99    99    96    96   100    93    93    96    NA    NA    99    NA    96
+    ## 6 Lones… Amaz… 1999-06-05      81    54    44    39    38    33    29    29    32    27    26    24    27
+    ## # … with 63 more variables: wk14 <dbl>, wk15 <dbl>, wk16 <dbl>, wk17 <dbl>, wk18 <dbl>, wk19 <dbl>,
+    ## #   wk20 <dbl>, wk21 <dbl>, wk22 <dbl>, wk23 <dbl>, wk24 <dbl>, wk25 <dbl>, wk26 <dbl>, wk27 <dbl>,
+    ## #   wk28 <dbl>, wk29 <dbl>, wk30 <dbl>, wk31 <dbl>, wk32 <dbl>, wk33 <dbl>, wk34 <dbl>, wk35 <dbl>,
+    ## #   wk36 <dbl>, wk37 <dbl>, wk38 <dbl>, wk39 <dbl>, wk40 <dbl>, wk41 <dbl>, wk42 <dbl>, wk43 <dbl>,
+    ## #   wk44 <dbl>, wk45 <dbl>, wk46 <dbl>, wk47 <dbl>, wk48 <dbl>, wk49 <dbl>, wk50 <dbl>, wk51 <dbl>,
+    ## #   wk52 <dbl>, wk53 <dbl>, wk54 <dbl>, wk55 <dbl>, wk56 <dbl>, wk57 <dbl>, wk58 <dbl>, wk59 <dbl>,
+    ## #   wk60 <dbl>, wk61 <dbl>, wk62 <dbl>, wk63 <dbl>, wk64 <dbl>, wk65 <dbl>, wk66 <lgl>, wk67 <lgl>,
+    ## #   wk68 <lgl>, wk69 <lgl>, wk70 <lgl>, wk71 <lgl>, wk72 <lgl>, wk73 <lgl>, wk74 <lgl>, wk75 <lgl>,
+    ## #   wk76 <lgl>
 
 ``` r
 #starting by mapping a single month 
@@ -749,26 +1060,22 @@ billboard %>% pivot_longer(cols = c(wk1,wk2, wk3, wk4), names_to = "month1", val
 ```
 
     ## # A tibble: 6 x 77
-    ##   artist track date.entered   wk5   wk6   wk7   wk8   wk9  wk10  wk11  wk12
-    ##   <chr>  <chr> <date>       <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
-    ## 1 2 Pac  Baby… 2000-02-26      87    94    99    NA    NA    NA    NA    NA
-    ## 2 2 Pac  Baby… 2000-02-26      87    94    99    NA    NA    NA    NA    NA
-    ## 3 2 Pac  Baby… 2000-02-26      87    94    99    NA    NA    NA    NA    NA
-    ## 4 2 Pac  Baby… 2000-02-26      87    94    99    NA    NA    NA    NA    NA
-    ## 5 2Ge+h… The … 2000-09-02      NA    NA    NA    NA    NA    NA    NA    NA
-    ## 6 2Ge+h… The … 2000-09-02      NA    NA    NA    NA    NA    NA    NA    NA
-    ## # … with 66 more variables: wk13 <dbl>, wk14 <dbl>, wk15 <dbl>, wk16 <dbl>,
-    ## #   wk17 <dbl>, wk18 <dbl>, wk19 <dbl>, wk20 <dbl>, wk21 <dbl>, wk22 <dbl>,
-    ## #   wk23 <dbl>, wk24 <dbl>, wk25 <dbl>, wk26 <dbl>, wk27 <dbl>, wk28 <dbl>,
-    ## #   wk29 <dbl>, wk30 <dbl>, wk31 <dbl>, wk32 <dbl>, wk33 <dbl>, wk34 <dbl>,
-    ## #   wk35 <dbl>, wk36 <dbl>, wk37 <dbl>, wk38 <dbl>, wk39 <dbl>, wk40 <dbl>,
-    ## #   wk41 <dbl>, wk42 <dbl>, wk43 <dbl>, wk44 <dbl>, wk45 <dbl>, wk46 <dbl>,
-    ## #   wk47 <dbl>, wk48 <dbl>, wk49 <dbl>, wk50 <dbl>, wk51 <dbl>, wk52 <dbl>,
-    ## #   wk53 <dbl>, wk54 <dbl>, wk55 <dbl>, wk56 <dbl>, wk57 <dbl>, wk58 <dbl>,
-    ## #   wk59 <dbl>, wk60 <dbl>, wk61 <dbl>, wk62 <dbl>, wk63 <dbl>, wk64 <dbl>,
-    ## #   wk65 <dbl>, wk66 <lgl>, wk67 <lgl>, wk68 <lgl>, wk69 <lgl>, wk70 <lgl>,
-    ## #   wk71 <lgl>, wk72 <lgl>, wk73 <lgl>, wk74 <lgl>, wk75 <lgl>, wk76 <lgl>,
-    ## #   month1 <chr>, rank <dbl>
+    ##   artist track date.entered   wk5   wk6   wk7   wk8   wk9  wk10  wk11  wk12  wk13  wk14  wk15  wk16  wk17
+    ##   <chr>  <chr> <date>       <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
+    ## 1 2 Pac  Baby… 2000-02-26      87    94    99    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+    ## 2 2 Pac  Baby… 2000-02-26      87    94    99    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+    ## 3 2 Pac  Baby… 2000-02-26      87    94    99    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+    ## 4 2 Pac  Baby… 2000-02-26      87    94    99    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+    ## 5 2Ge+h… The … 2000-09-02      NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+    ## 6 2Ge+h… The … 2000-09-02      NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+    ## # … with 61 more variables: wk18 <dbl>, wk19 <dbl>, wk20 <dbl>, wk21 <dbl>, wk22 <dbl>, wk23 <dbl>,
+    ## #   wk24 <dbl>, wk25 <dbl>, wk26 <dbl>, wk27 <dbl>, wk28 <dbl>, wk29 <dbl>, wk30 <dbl>, wk31 <dbl>,
+    ## #   wk32 <dbl>, wk33 <dbl>, wk34 <dbl>, wk35 <dbl>, wk36 <dbl>, wk37 <dbl>, wk38 <dbl>, wk39 <dbl>,
+    ## #   wk40 <dbl>, wk41 <dbl>, wk42 <dbl>, wk43 <dbl>, wk44 <dbl>, wk45 <dbl>, wk46 <dbl>, wk47 <dbl>,
+    ## #   wk48 <dbl>, wk49 <dbl>, wk50 <dbl>, wk51 <dbl>, wk52 <dbl>, wk53 <dbl>, wk54 <dbl>, wk55 <dbl>,
+    ## #   wk56 <dbl>, wk57 <dbl>, wk58 <dbl>, wk59 <dbl>, wk60 <dbl>, wk61 <dbl>, wk62 <dbl>, wk63 <dbl>,
+    ## #   wk64 <dbl>, wk65 <dbl>, wk66 <lgl>, wk67 <lgl>, wk68 <lgl>, wk69 <lgl>, wk70 <lgl>, wk71 <lgl>,
+    ## #   wk72 <lgl>, wk73 <lgl>, wk74 <lgl>, wk75 <lgl>, wk76 <lgl>, month1 <chr>, rank <dbl>
 
 ``` r
 # and to see clearly the contents of the new variable
@@ -1724,7 +2031,7 @@ x <- c("apple", "banana", "pear")
 str_view(x, "an")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-68-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-91-1.png)<!-- -->
 
 The complexity of the match can be adjusted and wildcards can be used as
 well in the form of `.` as in
@@ -1733,7 +2040,7 @@ well in the form of `.` as in
 str_view(x, ".a.")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-69-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-92-1.png)<!-- -->
 
 An important thing to remember here is that you are looking for given
 pattern in a string or a vector of strings. Specifying the pattern to
@@ -1770,7 +2077,7 @@ writeLines(dot)
 str_view(c("abc", "a.c", "bef"), "a\\.c")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-70-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-93-1.png)<!-- -->
 
 If there is a need to match the `\` character itself then you will need
 to use the double version `\\` for regular expressions and since this is
@@ -1790,7 +2097,7 @@ writeLines(x)
 str_view(x, "\\\\")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-71-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-94-1.png)<!-- -->
 
 throughout this section the pattern for a RegEx will be presented as
 `\.` whereas the actual string as `\\.`.
@@ -1818,13 +2125,13 @@ x <- c("apple", "banana", "pear")
 str_view(x, "^a")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-72-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-95-1.png)<!-- -->
 
 ``` r
 str_view(x, "a$")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-72-2.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-95-2.png)<!-- -->
 
 You can also use both in one pattern and this is useful when the entire
 string is to be matched
@@ -1835,14 +2142,14 @@ x <- c("apple pie", "apple", "apple cake")
 str_view(x, "apple")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-73-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-96-1.png)<!-- -->
 
 ``` r
 # notice the difference in the result here
 str_view(x, "^apple$")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-73-2.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-96-2.png)<!-- -->
 
 #### Exercises
 
@@ -1857,7 +2164,7 @@ str_view(x, "^apple$")
     argument to str\_view() to show only the matching or non-matching
     words.
 
-\#\#\#Character Classes
+### Character Classes
 
 Similar to the wildcard you saw previously, there are other reserved
 patters that serve a similar purpose for example:
@@ -1885,19 +2192,19 @@ regex. Many people find this more readable.
 str_view(c("abc", "a.c", "a*c", "a c"), "a[.]c")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-74-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-97-1.png)<!-- -->
 
 ``` r
 str_view(c("abc", "a.c", "a*c", "a c"), ".[*]c")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-74-2.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-97-2.png)<!-- -->
 
 ``` r
 str_view(c("abc", "a.c", "a*c", "a c"), "a[ ]")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-74-3.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-97-3.png)<!-- -->
 
 However, some characters will have a certain meaning even inside
 brackets and so the backslash for escaping them is still necessary,
@@ -1914,7 +2221,7 @@ up.
 str_view(c("grey", "gray"), "gr(e|a)y")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-75-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-98-1.png)<!-- -->
 
 #### Exercises
 
@@ -1948,19 +2255,19 @@ x <- "1888 is the longest year in Roman numerals: MDCCCLXXXVIII"
 str_view(x, "CC?")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-76-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-99-1.png)<!-- -->
 
 ``` r
 str_view(x, "CC+")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-76-2.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-99-2.png)<!-- -->
 
 ``` r
 str_view(x, 'C[LX]+')
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-76-3.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-99-3.png)<!-- -->
 
 Another key aspect of the above code is that the number or precedence
 here dictates that the character just before the operator will be
@@ -1981,19 +2288,19 @@ using:
 str_view(x, "C{2}")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-77-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-100-1.png)<!-- -->
 
 ``` r
 str_view(x, "C{2,}")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-77-2.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-100-2.png)<!-- -->
 
 ``` r
 str_view(x, "C{2,3}")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-77-3.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-100-3.png)<!-- -->
 
 To also note here that the system will match as many of the characters
 that it can find. To switch this behavior off and use what is called
@@ -2004,13 +2311,13 @@ operator can be used as follows:
 str_view(x, 'C{2,3}?')
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-78-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-101-1.png)<!-- -->
 
 ``` r
 str_view(x, 'C[LX]+?')
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-78-2.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-101-2.png)<!-- -->
 
 #### Exercises
 
@@ -2052,9 +2359,259 @@ tools supplied by the `stringr` package.
 
 #### Detect Strings
 
+Detecting strings is a very important aspect in many Data Analysis
+applications and `str_detect` was created with ease of use in mind. It
+returns a logical vector depending whether there was a match in the
+corresponding location and based on the supplied pattern, as the example
+below illustrates.
+
+``` r
+x <- c("apple", "banana", "pear")
+str_detect(x, "e")
+```
+
+    ## [1]  TRUE FALSE  TRUE
+
+``` r
+#> [1]  TRUE FALSE  TRUE
+```
+
+A very handy way of using it, is by taking advantage of how `R`
+translates `TRUE` (evaluated as `1`) and `FALSE` (evaluated as `0`)
+responses. In the example below using the `sum` and `mean` functions
+makes counting instances of a pattern being detected much easier.
+
+``` r
+# How many common words start with t?
+sum(str_detect(words, "^t"))
+```
+
+    ## [1] 65
+
+``` r
+#> [1] 65
+# What proportion of common words end with a vowel?
+mean(str_detect(words, "[aeiou]$"))
+```
+
+    ## [1] 0.2765306
+
+``` r
+#> [1] 0.2765306
+```
+
+A variation of `str_detect` is `str_count` and as the name suggests the
+function will count the instances of a pattern appearing in the target
+vector.
+
+``` r
+x <- c("apple", "banana", "pear")
+str_count(x, "a")
+```
+
+    ## [1] 1 3 1
+
+``` r
+#> [1] 1 3 1
+
+# On average, how many vowels per word?
+mean(str_count(words, "[aeiou]"))
+```
+
+    ## [1] 1.991837
+
+``` r
+#> [1] 1.991837
+```
+
 #### Extract Strings
 
-### Replace Strings
+To extract strings we use the `str_extract` function that takes the
+input source vector and the pattern to match as arguments. In this case
+we will need a more complex set of examples and so the [Harvard
+Sentences](https://en.wikipedia.org/wiki/Harvard_sentences) collection
+of sentences is used. Although originally created to test VOIP systems,
+it can also be used for regex examples as well.
+
+``` r
+length(sentences)
+```
+
+    ## [1] 720
+
+``` r
+#> [1] 720
+head(sentences)
+```
+
+    ## [1] "The birch canoe slid on the smooth planks."  "Glue the sheet to the dark blue background."
+    ## [3] "It's easy to tell the depth of a well."      "These days a chicken leg is a rare dish."   
+    ## [5] "Rice is often served in round bowls."        "The juice of lemons makes fine punch."
+
+``` r
+#> [1] "The birch canoe slid on the smooth planks." 
+#> [2] "Glue the sheet to the dark blue background."
+#> [3] "It's easy to tell the depth of a well."     
+#> [4] "These days a chicken leg is a rare dish."   
+#> [5] "Rice is often served in round bowls."       
+#> [6] "The juice of lemons makes fine punch."
+```
+
+A good way to start using regex in bulk is to see if we can construct a
+pattern to match that contains all the relevant information. In the
+example below the pattern contains a set of colours combined into a
+string to be used as the pattern.
+
+``` r
+colours <- c("red", "orange", "yellow", "green", "blue", "purple")
+colour_match <- str_c(colours, collapse = "|")
+colour_match
+```
+
+    ## [1] "red|orange|yellow|green|blue|purple"
+
+``` r
+#> [1] "red|orange|yellow|green|blue|purple"
+```
+
+The next stage is to select the relevant examples from the collection of
+`sentences` and then proceed in matching based on the pattern we
+created.
+
+``` r
+has_colour <- str_subset(sentences, colour_match)
+matches <- str_extract(has_colour, colour_match)
+head(matches)
+```
+
+    ## [1] "blue" "blue" "red"  "red"  "red"  "blue"
+
+``` r
+#> [1] "blue" "blue" "red"  "red"  "red"  "blue"
+```
+
+To better understand the mechanics behind the matching process it helps
+to know that `str_extract` only finds and extracts the first match in
+each row of a vector. To better illustrate this, the code below selects
+the phrases from the `sentences` collection where there are more than
+one match.
+
+``` r
+more <- sentences[str_count(sentences, colour_match) > 1]
+str_view_all(more, colour_match)
+```
+
+![](README_files/figure-gfm/unnamed-chunk-108-1.png)<!-- -->
+
+Notice how `str_extract` works with these source vectors.
+
+``` r
+str_extract(more, colour_match)
+```
+
+    ## [1] "blue"   "green"  "orange"
+
+``` r
+#> [1] "blue"   "green"  "orange"
+```
+
+#### Replace Strings
+
+`str_replace` and `str_replace_all`allow you to replace parts of a
+string that match a pattern with a new replacement string.
+
+``` r
+x <- c("apple", "pear", "banana")
+str_replace(x, "[aeiou]", "-")
+```
+
+    ## [1] "-pple"  "p-ar"   "b-nana"
+
+``` r
+#> [1] "-pple"  "p-ar"   "b-nana"
+str_replace_all(x, "[aeiou]", "-")
+```
+
+    ## [1] "-ppl-"  "p--r"   "b-n-n-"
+
+``` r
+#> [1] "-ppl-"  "p--r"   "b-n-n-"
+```
+
+And with `str_replace_all` we can apply the same functionality as above
+in all the elements of a character vector.
+
+``` r
+x <- c("1 house", "2 cars", "3 people")
+str_replace_all(x, c("1" = "one", "2" = "two", "3" = "three"))
+```
+
+    ## [1] "one house"    "two cars"     "three people"
+
+``` r
+#> [1] "one house"    "two cars"     "three people"
+```
+
+In addition, one can also use backrefferences and recycle elements of
+the same string as replacements
+
+``` r
+sentences %>% 
+  str_replace("([^ ]+) ([^ ]+) ([^ ]+)", "\\1 \\3 \\2") %>% 
+  head(5)
+```
+
+    ## [1] "The canoe birch slid on the smooth planks."  "Glue sheet the to the dark blue background."
+    ## [3] "It's to easy tell the depth of a well."      "These a days chicken leg is a rare dish."   
+    ## [5] "Rice often is served in round bowls."
+
+``` r
+#> [1] "The canoe birch slid on the smooth planks." 
+#> [2] "Glue sheet the to the dark blue background."
+#> [3] "It's to easy tell the depth of a well."     
+#> [4] "These a days chicken leg is a rare dish."   
+#> [5] "Rice often is served in round bowls."
+```
+
+#### Exercises
+
+##### On detecting strings
+
+1.  For each of the following challenges, try solving it by using both a
+    single regular expression, and a combination of multiple
+    str\_detect() calls.
+    
+    1.  Find all words that start or end with x.
+    
+    2.  Find all words that start with a vowel and end with a consonant.
+    
+    3.  Are there any words that contain at least one of each different
+        vowel?
+
+2.  What word has the highest number of vowels? What word has the
+    highest proportion of vowels? (Hint: what is the denominator?)
+
+##### On extracting strings
+
+1.  In the example in section [Extracting Strings](#extr_str) section,
+    you might have noticed that the regular expression matched
+    “flickered”, which is not a colour. Modify the regex to fix the
+    problem.
+
+2.  From the Harvard sentences data, extract:
+    
+    1.  The first word from each sentence.
+    2.  All words ending in ing.
+    3.  All plurals.
+
+##### On Replacing Strings
+
+1.  Replace all forward slashes in a string with backslashes.
+
+2.  Implement a simple version of str\_to\_lower() using replace\_all().
+
+3.  Switch the first and last letters in words. Which of those strings
+    are still words?
 
 # ‘Real world’ examples
 
