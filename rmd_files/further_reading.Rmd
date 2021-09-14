@@ -1,0 +1,31 @@
+# Further reading
+
+### General
+
+ * [Tidyverse website](https://www.tidyverse.org)
+ * [R for Data Science](https://r4ds.had.co.nz)
+ * [Advanced R](https://adv-r.hadley.nz)
+ * [Tidyverse style guide](https://style.tidyverse.org/) (has some guidance on choosing function and argument names)
+ * [MoJ coding standards](https://moj-analytical-services.github.io/our-coding-standards/)
+ 
+### Conditional statements
+
+ * [Advanced R - choices section](https://adv-r.hadley.nz/control-flow.html#choices)
+
+### Iteration
+
+ * [R for Data Science - iteration chapter](https://r4ds.had.co.nz/iteration.html)
+ * [Advanced R - loops section](https://adv-r.hadley.nz/control-flow.html#loops)
+
+### Strings and regex
+
+ * [R for Data Science - strings chapter](https://r4ds.had.co.nz/strings.html)
+ * [stringr and regex cheatsheet](https://evoldyn.gitlab.io/evomics-2018/ref-sheets/R_strings.pdf)
+ * [Regex Coffee & Coding session](https://github.com/moj-analytical-services/Coffee-and-Coding/tree/master/2019-03-13%20Regex)
+
+### Reshaping data
+
+ * [Tidyverse website - pivoting section](https://tidyr.tidyverse.org/dev/articles/pivot.html)
+ * [R for Data Science - pivoting chapter](https://r4ds.had.co.nz/tidy-data.html#pivoting)
+
+

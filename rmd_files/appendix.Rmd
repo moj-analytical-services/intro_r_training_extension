@@ -16,6 +16,3 @@
 |   %in%   | The subject appears in a list |
 | is.na()  | The subject is NA             |
 
-## Further Reading
-
-

@@ -20,6 +20,7 @@ If you have any feedback on the content, please get in touch\!
   - [Iteration](#iteration)
   - [Reshaping data](#reshaping-data)
   - [String manipulation](#string-manipulation)
+  - [Further reading](#further-reading)
   - [Real world examples](#real-world-examples)
   - [Appendix](#appendix)
 
@@ -545,26 +546,26 @@ df
     ## # A tibble: 20 x 3
     ##    year  quarter count
     ##    <chr> <chr>   <int>
-    ##  1 2015  Q1         10
-    ##  2 <NA>  Q2         14
-    ##  3 <NA>  Q3          2
-    ##  4 <NA>  Q4          9
-    ##  5 2016  Q1         12
-    ##  6 <NA>  Q2          4
-    ##  7 <NA>  Q3         17
-    ##  8 <NA>  Q4         15
-    ##  9 2017  Q1         11
+    ##  1 2015  Q1         19
+    ##  2 <NA>  Q2          2
+    ##  3 <NA>  Q3         10
+    ##  4 <NA>  Q4         11
+    ##  5 2016  Q1         15
+    ##  6 <NA>  Q2          3
+    ##  7 <NA>  Q3          7
+    ##  8 <NA>  Q4         17
+    ##  9 2017  Q1         12
     ## 10 <NA>  Q2          5
-    ## 11 <NA>  Q3         19
-    ## 12 <NA>  Q4          1
-    ## 13 2018  Q1          6
-    ## 14 <NA>  Q2         16
-    ## 15 <NA>  Q3          8
-    ## 16 <NA>  Q4          7
-    ## 17 2019  Q1          3
+    ## 11 <NA>  Q3          8
+    ## 12 <NA>  Q4          9
+    ## 13 2018  Q1          4
+    ## 14 <NA>  Q2         13
+    ## 15 <NA>  Q3          6
+    ## 16 <NA>  Q4         18
+    ## 17 2019  Q1         14
     ## 18 <NA>  Q2         20
-    ## 19 <NA>  Q3         18
-    ## 20 <NA>  Q4         13
+    ## 19 <NA>  Q3         16
+    ## 20 <NA>  Q4          1
 
 The `fill()` function from tidyr is a convenient way to do this, and can
 be used like this:
@@ -576,26 +577,26 @@ df %>% tidyr::fill(year)
     ## # A tibble: 20 x 3
     ##    year  quarter count
     ##    <chr> <chr>   <int>
-    ##  1 2015  Q1         10
-    ##  2 2015  Q2         14
-    ##  3 2015  Q3          2
-    ##  4 2015  Q4          9
-    ##  5 2016  Q1         12
-    ##  6 2016  Q2          4
-    ##  7 2016  Q3         17
-    ##  8 2016  Q4         15
-    ##  9 2017  Q1         11
+    ##  1 2015  Q1         19
+    ##  2 2015  Q2          2
+    ##  3 2015  Q3         10
+    ##  4 2015  Q4         11
+    ##  5 2016  Q1         15
+    ##  6 2016  Q2          3
+    ##  7 2016  Q3          7
+    ##  8 2016  Q4         17
+    ##  9 2017  Q1         12
     ## 10 2017  Q2          5
-    ## 11 2017  Q3         19
-    ## 12 2017  Q4          1
-    ## 13 2018  Q1          6
-    ## 14 2018  Q2         16
-    ## 15 2018  Q3          8
-    ## 16 2018  Q4          7
-    ## 17 2019  Q1          3
+    ## 11 2017  Q3          8
+    ## 12 2017  Q4          9
+    ## 13 2018  Q1          4
+    ## 14 2018  Q2         13
+    ## 15 2018  Q3          6
+    ## 16 2018  Q4         18
+    ## 17 2019  Q1         14
     ## 18 2019  Q2         20
-    ## 19 2019  Q3         18
-    ## 20 2019  Q4         13
+    ## 19 2019  Q3         16
+    ## 20 2019  Q4          1
 
 ## Removing rows with missing values from a dataframe
 
@@ -696,28 +697,28 @@ the task now is to calculate, for example, the mean or the median:
 median(df$a)
 ```
 
-    ## [1] -0.05599186
+    ## [1] -0.2400778
 
 ``` r
 #> [1] -0.2457625
 median(df$b)
 ```
 
-    ## [1] 0.01508239
+    ## [1] -0.4167184
 
 ``` r
 #> [1] -0.2873072
 median(df$c)
 ```
 
-    ## [1] 0.01555376
+    ## [1] 0.1073201
 
 ``` r
 #> [1] -0.05669771
 median(df$d)
 ```
 
-    ## [1] 0.3498346
+    ## [1] 0.4126003
 
 ``` r
 #> [1] 0.1442633
@@ -736,7 +737,7 @@ for (i in seq_along(df)) {            # 2. sequence
 output
 ```
 
-    ## [1] -0.05599186  0.01508239  0.01555376  0.34983459
+    ## [1] -0.2400778 -0.4167184  0.1073201  0.4126003
 
 ``` r
 #> [1] -0.24576245 -0.28730721 -0.05669771  0.14426335
@@ -875,16 +876,16 @@ for(i in vowel){
   }
 ```
 
-    ##         a 
-    ## 0.6281432 
-    ##        e 
-    ## 0.645164 
-    ##        i 
-    ## 1.036356 
-    ##         o 
-    ## 0.2784657 
+    ##     a 
+    ## 1.978 
+    ##          e 
+    ## -0.8572724 
+    ##         i 
+    ## -0.461322 
+    ##          o 
+    ## -0.1941412 
     ##         u 
-    ## 0.7687964
+    ## 0.6576127
 
 ### Handling outputs of unknown length
 
@@ -2031,7 +2032,7 @@ x <- c("apple", "banana", "pear")
 str_view(x, "an")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-91-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-81-1.png)<!-- -->
 
 The complexity of the match can be adjusted and wildcards can be used as
 well in the form of `.` as in
@@ -2040,7 +2041,7 @@ well in the form of `.` as in
 str_view(x, ".a.")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-92-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-82-1.png)<!-- -->
 
 An important thing to remember here is that you are looking for given
 pattern in a string or a vector of strings. Specifying the pattern to
@@ -2077,7 +2078,7 @@ writeLines(dot)
 str_view(c("abc", "a.c", "bef"), "a\\.c")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-93-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-83-1.png)<!-- -->
 
 If there is a need to match the `\` character itself then you will need
 to use the double version `\\` for regular expressions and since this is
@@ -2097,7 +2098,7 @@ writeLines(x)
 str_view(x, "\\\\")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-94-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-84-1.png)<!-- -->
 
 throughout this section the pattern for a RegEx will be presented as
 `\.` whereas the actual string as `\\.`.
@@ -2125,13 +2126,13 @@ x <- c("apple", "banana", "pear")
 str_view(x, "^a")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-95-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-85-1.png)<!-- -->
 
 ``` r
 str_view(x, "a$")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-95-2.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-85-2.png)<!-- -->
 
 You can also use both in one pattern and this is useful when the entire
 string is to be matched
@@ -2142,14 +2143,14 @@ x <- c("apple pie", "apple", "apple cake")
 str_view(x, "apple")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-96-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-86-1.png)<!-- -->
 
 ``` r
 # notice the difference in the result here
 str_view(x, "^apple$")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-96-2.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-86-2.png)<!-- -->
 
 #### Exercises
 
@@ -2192,19 +2193,19 @@ regex. Many people find this more readable.
 str_view(c("abc", "a.c", "a*c", "a c"), "a[.]c")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-97-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-87-1.png)<!-- -->
 
 ``` r
 str_view(c("abc", "a.c", "a*c", "a c"), ".[*]c")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-97-2.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-87-2.png)<!-- -->
 
 ``` r
 str_view(c("abc", "a.c", "a*c", "a c"), "a[ ]")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-97-3.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-87-3.png)<!-- -->
 
 However, some characters will have a certain meaning even inside
 brackets and so the backslash for escaping them is still necessary,
@@ -2221,7 +2222,7 @@ up.
 str_view(c("grey", "gray"), "gr(e|a)y")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-98-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-88-1.png)<!-- -->
 
 #### Exercises
 
@@ -2255,19 +2256,19 @@ x <- "1888 is the longest year in Roman numerals: MDCCCLXXXVIII"
 str_view(x, "CC?")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-99-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-89-1.png)<!-- -->
 
 ``` r
 str_view(x, "CC+")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-99-2.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-89-2.png)<!-- -->
 
 ``` r
 str_view(x, 'C[LX]+')
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-99-3.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-89-3.png)<!-- -->
 
 Another key aspect of the above code is that the number or precedence
 here dictates that the character just before the operator will be
@@ -2288,19 +2289,19 @@ using:
 str_view(x, "C{2}")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-100-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-90-1.png)<!-- -->
 
 ``` r
 str_view(x, "C{2,}")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-100-2.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-90-2.png)<!-- -->
 
 ``` r
 str_view(x, "C{2,3}")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-100-3.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-90-3.png)<!-- -->
 
 To also note here that the system will match as many of the characters
 that it can find. To switch this behavior off and use what is called
@@ -2311,13 +2312,13 @@ operator can be used as follows:
 str_view(x, 'C{2,3}?')
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-101-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-91-1.png)<!-- -->
 
 ``` r
 str_view(x, 'C[LX]+?')
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-101-2.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-91-2.png)<!-- -->
 
 #### Exercises
 
@@ -2501,7 +2502,7 @@ more <- sentences[str_count(sentences, colour_match) > 1]
 str_view_all(more, colour_match)
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-108-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-98-1.png)<!-- -->
 
 Notice how `str_extract` works with these source vectors.
 
@@ -2612,6 +2613,46 @@ sentences %>%
 
 3.  Switch the first and last letters in words. Which of those strings
     are still words?
+
+# Further reading
+
+### General
+
+  - [Tidyverse website](https://www.tidyverse.org)
+  - [R for Data Science](https://r4ds.had.co.nz)
+  - [Advanced R](https://adv-r.hadley.nz)
+  - [Tidyverse style guide](https://style.tidyverse.org/) (has some
+    guidance on choosing function and argument names)
+  - [MoJ coding
+    standards](https://moj-analytical-services.github.io/our-coding-standards/)
+
+### Conditional statements
+
+  - [Advanced R - choices
+    section](https://adv-r.hadley.nz/control-flow.html#choices)
+
+### Iteration
+
+  - [R for Data Science - iteration
+    chapter](https://r4ds.had.co.nz/iteration.html)
+  - [Advanced R - loops
+    section](https://adv-r.hadley.nz/control-flow.html#loops)
+
+### Strings and regex
+
+  - [R for Data Science - strings
+    chapter](https://r4ds.had.co.nz/strings.html)
+  - [stringr and regex
+    cheatsheet](https://evoldyn.gitlab.io/evomics-2018/ref-sheets/R_strings.pdf)
+  - [Regex Coffee & Coding
+    session](https://github.com/moj-analytical-services/Coffee-and-Coding/tree/master/2019-03-13%20Regex)
+
+### Reshaping data
+
+  - [Tidyverse website - pivoting
+    section](https://tidyr.tidyverse.org/dev/articles/pivot.html)
+  - [R for Data Science - pivoting
+    chapter](https://r4ds.had.co.nz/tidy-data.html#pivoting)
 
 # ‘Real world’ examples
 
@@ -2828,5 +2869,3 @@ to be edited.
 |    \!    | Not                           |
 |   %in%   | The subject appears in a list |
 | is.na()  | The subject is NA             |
-
-## Further Reading
