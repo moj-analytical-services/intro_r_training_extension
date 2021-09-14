@@ -70,7 +70,7 @@ Note the warning that appears when trying to widen this dataset. This is because
 warpbreaks %>% tidyr::pivot_wider(names_from = wool, values_from = breaks)
 ```
 
-To deal with this issue, we can use the optional `values_fn` argument in the `pivot _wider()` function, which allows us to specify a function to use to aggregate the multiple values. For example, we can specify to calculate the mean number of breaks for each combination of `wool` and `tension` like so:
+To deal with this issue, we can use the optional `values_fn` argument in the `pivot_wider()` function, which allows us to specify a function to use to aggregate the multiple values. For example, we can specify to calculate the mean number of breaks for each combination of `wool` and `tension` like so:
 
 ```{r, purl=purl_example_code}
 warpbreaks %>%

@@ -26,6 +26,7 @@ If you have any feedback on the content, please get in touch!
 * [Reshaping data](#reshaping-data)
 * [String manipulation](#string-manipulation)
 * [Further reading](#further-reading)
+* [Bonus material](#bonus-material)
 * [Bonus examples](#bonus-examples)
 * [Appendix](#appendix)
 
@@ -63,6 +64,9 @@ All the examples in the presentation and README are available in the R script ex
 ```
 
 ```{r source_content, child = 'further_reading.Rmd'}
+```
+
+```{r source_content, child = 'bonus_material.Rmd'}
 ```
 
 ```{r source_content, child = 'examples.Rmd'}

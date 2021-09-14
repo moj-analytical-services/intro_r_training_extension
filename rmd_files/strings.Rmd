@@ -112,7 +112,7 @@ colours <- c("scarlet red", "ultramarine blue", "cadmium red", "cobalt blue", "c
 stringr::str_detect(colours, "blue")
 ```
 
-Because booleans (`TRUE` and `FALSE`) can be represented as numbers (1 and 0), you can apply numeric functions to boolean vectors:
+Because booleans (`TRUE` or `FALSE`) can be represented as numbers (1 or 0), you can apply numeric functions to boolean vectors:
 
 ```{r, purl=purl_example_code}
 # Count how many strings contain 'blue'
