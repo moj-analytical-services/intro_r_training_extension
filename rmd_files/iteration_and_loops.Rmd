@@ -142,7 +142,7 @@ for (i in seq_along(df)) {
 
 There are a couple of ways we can use to access the sequence part of the **for** loop depending on the coding style and the needs of the project. For example, in the code shown below, one could choose to loop over the list of indices of a vector using `for(i in se_along(x)` or alternatively iterate through the contents of the `results` vector using `for(i in vowel)`. Both formulations are valid with the first one allowing for more flexibility when it comes to accessing the resources of the vector.
 
-```{r}
+```{r, results=T}
 x = letters # vector of letters
 vowel <- c('a', 'e', 'i', 'o', 'u')
 
@@ -151,6 +151,7 @@ names(results) <- x # name the elements of the vector
 
 ## loop thourgh indices of a vector
 ## 
+x1 = 0
 for(i in seq_along(x)){
   x1[i] = paste(x[i],"23")
 }
@@ -207,7 +208,7 @@ for(i in seq_len(10)){
 
 In general, unknown sequence length translates to cases where we want to check for certain condition in order to stop the execution of a block of code. In these cases the use of the `while` loop is preferable as in the example below.
 
-```{r}
+```{r, eval=FALSE}
 
 ## while loop definition
 
@@ -219,9 +220,12 @@ while (condition) {
 
 Notice that the `while` loop execution differs that the `for` loop in that the body of code is executed first before the condition is checked and this is by design. One needs to first check the contents before accessing the validity of the condition to terminate the loop.   
 
-```{r}
+```{r, results=F}
 
 # The loop will first execute the body of code and then check if the condition is satisfied. If this is the case the loop will stop its iteration.
+# 
+numbers = 0
+
 while(mean(numbers) < 0.5){
   numbers = rnorm(20)
   print(mean(numbers))
