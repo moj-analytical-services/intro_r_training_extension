@@ -1496,8 +1496,8 @@ writeLines(x)</code></pre>
 <pre><code>## a\b</code></pre>
 <pre class="r"><code># to view the result in a RegEx
 str_view(x, &quot;\\\\&quot;)</code></pre>
-<div id="htmlwidget-6f060c02622c256e7cab" style="width:960px;height:100%;" class="str_view html-widget"></div>
-<script type="application/json" data-for="htmlwidget-6f060c02622c256e7cab">{"x":{"html":"<ul>\n  <li>a<span class='match'>\\<\/span>b<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-422063f3f0edbdfe4b90" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-422063f3f0edbdfe4b90">{"x":{"html":"<ul>\n  <li>a<span class='match'>\\<\/span>b<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
 <p>throughout this section the pattern for a RegEx will be presented as <code>\.</code> whereas the actual string as <code>\\.</code>.</p>
 <div id="exercises-1" class="section level4">
 <h4>Exercises</h4>
@@ -1576,14 +1576,14 @@ str_view(c(&quot;abc&quot;, &quot;a.c&quot;, &quot;a*c&quot;, &quot;a c&quot;), 
 </ul>
 <pre class="r"><code>x &lt;- &quot;1888 is the longest year in Roman numerals: MDCCCLXXXVIII&quot;
 str_view(x, &quot;CC?&quot;)</code></pre>
-<div id="htmlwidget-3748062c4d443bf0948e" style="width:960px;height:100%;" class="str_view html-widget"></div>
-<script type="application/json" data-for="htmlwidget-3748062c4d443bf0948e">{"x":{"html":"<ul>\n  <li>1888 is the longest year in Roman numerals: MD<span class='match'>CC<\/span>CLXXXVIII<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-907398afa2aecf1f2f48" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-907398afa2aecf1f2f48">{"x":{"html":"<ul>\n  <li>1888 is the longest year in Roman numerals: MD<span class='match'>CC<\/span>CLXXXVIII<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>str_view(x, &quot;CC+&quot;)</code></pre>
-<div id="htmlwidget-c76764b3b518b173a734" style="width:960px;height:100%;" class="str_view html-widget"></div>
-<script type="application/json" data-for="htmlwidget-c76764b3b518b173a734">{"x":{"html":"<ul>\n  <li>1888 is the longest year in Roman numerals: MD<span class='match'>CCC<\/span>LXXXVIII<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-340fa7ef7ccc98429094" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-340fa7ef7ccc98429094">{"x":{"html":"<ul>\n  <li>1888 is the longest year in Roman numerals: MD<span class='match'>CCC<\/span>LXXXVIII<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>str_view(x, &#39;C[LX]+&#39;)</code></pre>
-<div id="htmlwidget-a76126b07de032cdab2b" style="width:960px;height:100%;" class="str_view html-widget"></div>
-<script type="application/json" data-for="htmlwidget-a76126b07de032cdab2b">{"x":{"html":"<ul>\n  <li>1888 is the longest year in Roman numerals: MDCC<span class='match'>CLXXX<\/span>VIII<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-ef5ae9f488ed2dc895fd" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-ef5ae9f488ed2dc895fd">{"x":{"html":"<ul>\n  <li>1888 is the longest year in Roman numerals: MDCC<span class='match'>CLXXX<\/span>VIII<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
 <p>Another key aspect of the above code is that the number or precedence here dictates that the character just before the operator will be affected. This means that parenthesis will need to be used as in <code>bana(na)+</code> to capture more than one character.</p>
 <p>It is also possible to specify the number of repetitions explicitly by using:</p>
 <ul>
@@ -1593,21 +1593,21 @@ str_view(x, &quot;CC?&quot;)</code></pre>
 <li><code>{n,m}</code>: between n and m</li>
 </ul>
 <pre class="r"><code>str_view(x, &quot;C{2}&quot;)</code></pre>
-<div id="htmlwidget-83899f6a5593030f9d4b" style="width:960px;height:100%;" class="str_view html-widget"></div>
-<script type="application/json" data-for="htmlwidget-83899f6a5593030f9d4b">{"x":{"html":"<ul>\n  <li>1888 is the longest year in Roman numerals: MD<span class='match'>CC<\/span>CLXXXVIII<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-b5c0fc4e5b381cf766b7" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-b5c0fc4e5b381cf766b7">{"x":{"html":"<ul>\n  <li>1888 is the longest year in Roman numerals: MD<span class='match'>CC<\/span>CLXXXVIII<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>str_view(x, &quot;C{2,}&quot;)</code></pre>
-<div id="htmlwidget-09d7cc9538ce3fda5134" style="width:960px;height:100%;" class="str_view html-widget"></div>
-<script type="application/json" data-for="htmlwidget-09d7cc9538ce3fda5134">{"x":{"html":"<ul>\n  <li>1888 is the longest year in Roman numerals: MD<span class='match'>CCC<\/span>LXXXVIII<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-21dd2e0946e195d603cb" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-21dd2e0946e195d603cb">{"x":{"html":"<ul>\n  <li>1888 is the longest year in Roman numerals: MD<span class='match'>CCC<\/span>LXXXVIII<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>str_view(x, &quot;C{2,3}&quot;)</code></pre>
-<div id="htmlwidget-4cfa223ad304240a7626" style="width:960px;height:100%;" class="str_view html-widget"></div>
-<script type="application/json" data-for="htmlwidget-4cfa223ad304240a7626">{"x":{"html":"<ul>\n  <li>1888 is the longest year in Roman numerals: MD<span class='match'>CCC<\/span>LXXXVIII<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-2d58691d958cd19bbd48" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-2d58691d958cd19bbd48">{"x":{"html":"<ul>\n  <li>1888 is the longest year in Roman numerals: MD<span class='match'>CCC<\/span>LXXXVIII<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
 <p>To also note here that the system will match as many of the characters that it can find. To switch this behavior off and use what is called “lazy” matching (instead of “greedy” as specified earlier) the <code>?</code> operator can be used as follows:</p>
 <pre class="r"><code>str_view(x, &#39;C{2,3}?&#39;)</code></pre>
-<div id="htmlwidget-657091438b323ad646d7" style="width:960px;height:100%;" class="str_view html-widget"></div>
-<script type="application/json" data-for="htmlwidget-657091438b323ad646d7">{"x":{"html":"<ul>\n  <li>1888 is the longest year in Roman numerals: MD<span class='match'>CC<\/span>CLXXXVIII<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-d9fec19dae00ac2ce127" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-d9fec19dae00ac2ce127">{"x":{"html":"<ul>\n  <li>1888 is the longest year in Roman numerals: MD<span class='match'>CC<\/span>CLXXXVIII<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>str_view(x, &#39;C[LX]+?&#39;)</code></pre>
-<div id="htmlwidget-4c69712c5b328c9242e8" style="width:960px;height:100%;" class="str_view html-widget"></div>
-<script type="application/json" data-for="htmlwidget-4c69712c5b328c9242e8">{"x":{"html":"<ul>\n  <li>1888 is the longest year in Roman numerals: MDCC<span class='match'>CL<\/span>XXXVIII<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-50c218dc3d7d70e10918" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-50c218dc3d7d70e10918">{"x":{"html":"<ul>\n  <li>1888 is the longest year in Roman numerals: MDCC<span class='match'>CL<\/span>XXXVIII<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
 <div id="exercises-4" class="section level4">
 <h4>Exercises</h4>
 <ol style="list-style-type: decimal">

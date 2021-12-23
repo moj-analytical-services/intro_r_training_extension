@@ -205,6 +205,185 @@ str_sort(x,locale = "lt")
 NOTE: The content in this section as well as a more in depth analysis on each of the previous sections can be found in this book [R For Data Science](https://r4ds.had.co.nz/strings.html#exercises-32)  
 
 
+
+## Additional Functions
+
+The `stringr` package comes with additional function wrappers that make the most common string operations somewhat easier. For example the following matching behavior can be conducted using the premade functions: 
+
++ Determine which strings match a pattern.
++ Find the positions of matches.
++ Extract the content of matches.
++ Replace matches with new values.
+
+
+The list is actually a lot longer so here we will briefly discuss how the most popular string matching operations can be performed using the tools supplied by the `stringr` package.
+
+
+#### Detect Strings
+
+Detecting strings is a very important aspect in many Data Analysis applications and `str_detect` was created with ease of use in mind. It returns a logical vector depending whether there was a match in the corresponding location and based on the supplied pattern, as the example below illustrates.   
+
+```{r, results = FALSE}
+x <- c("apple", "banana", "pear")
+str_detect(x, "e")
+#> [1]  TRUE FALSE  TRUE
+```
+
+
+A very handy way of using it, is by taking advantage of how `R` translates `TRUE` (evaluated as `1`) and `FALSE` (evaluated as `0`) responses. In the example below using the `sum` and `mean` functions makes counting instances of a pattern being detected much easier.
+
+```{r, results = FALSE}
+# How many common words start with t?
+sum(str_detect(words, "^t"))
+#> [1] 65
+# What proportion of common words end with a vowel?
+mean(str_detect(words, "[aeiou]$"))
+#> [1] 0.2765306
+```
+
+A variation of `str_detect` is `str_count` and as the name suggests the function will count the instances of a pattern appearing in the target vector.
+
+```{r, results = FALSE}
+x <- c("apple", "banana", "pear")
+str_count(x, "a")
+#> [1] 1 3 1
+
+# On average, how many vowels per word?
+mean(str_count(words, "[aeiou]"))
+#> [1] 1.991837
+```
+
+
+
+#### Extract Strings {#extr_str}
+
+To extract strings we use the `str_extract` function that takes the input source vector and the pattern to match as arguments. In this case we will need a more complex set of examples and so the [Harvard Sentences](https://en.wikipedia.org/wiki/Harvard_sentences) collection of sentences is used. Although originally created to test VOIP systems, it can also be used for regex examples as well. 
+
+```{r, results = FALSE}
+length(sentences)
+#> [1] 720
+head(sentences)
+#> [1] "The birch canoe slid on the smooth planks." 
+#> [2] "Glue the sheet to the dark blue background."
+#> [3] "It's easy to tell the depth of a well."     
+#> [4] "These days a chicken leg is a rare dish."   
+#> [5] "Rice is often served in round bowls."       
+#> [6] "The juice of lemons makes fine punch."
+```
+
+A good way to start using regex in bulk is to see if we can construct a pattern to match that contains all the relevant information. In the example below the pattern contains a set of colours combined into a string to be used as the pattern.
+
+```{r, results = FALSE}
+colours <- c("red", "orange", "yellow", "green", "blue", "purple")
+colour_match <- str_c(colours, collapse = "|")
+colour_match
+#> [1] "red|orange|yellow|green|blue|purple"
+```
+
+The next stage is to select the relevant examples from the collection of `sentences` and then proceed in matching based on the pattern we created. 
+
+```{r, results = FALSE}
+has_colour <- str_subset(sentences, colour_match)
+matches <- str_extract(has_colour, colour_match)
+head(matches)
+#> [1] "blue" "blue" "red"  "red"  "red"  "blue"
+```
+
+To better understand the mechanics behind the matching process it helps to know that `str_extract` only finds and extracts the first match in each row of a vector.  To better illustrate this, the code below selects the phrases from the `sentences` collection where there are more than one match.    
+
+```{r, results = FALSE}
+more <- sentences[str_count(sentences, colour_match) > 1]
+str_view_all(more, colour_match)
+```
+
+Notice how `str_extract` works with these source vectors.
+
+```{r, results = FALSE}
+
+str_extract(more, colour_match)
+#> [1] "blue"   "green"  "orange"
+```
+
+
+#### Replace Strings
+
+`str_replace` and `str_replace_all`allow you to replace parts of a string that match a pattern with a new replacement string.
+
+
+```{r, results = FALSE}
+x <- c("apple", "pear", "banana")
+str_replace(x, "[aeiou]", "-")
+#> [1] "-pple"  "p-ar"   "b-nana"
+str_replace_all(x, "[aeiou]", "-")
+#> [1] "-ppl-"  "p--r"   "b-n-n-"
+```
+
+And with `str_replace_all` we can apply the same functionality as above in all the elements of a character vector.
+
+```{r, results = FALSE}
+x <- c("1 house", "2 cars", "3 people")
+str_replace_all(x, c("1" = "one", "2" = "two", "3" = "three"))
+#> [1] "one house"    "two cars"     "three people"
+```
+
+In addition, one can also use backrefferences and recycle elements of the same string as replacements
+
+```{r, results = FALSE}
+sentences %>% 
+  str_replace("([^ ]+) ([^ ]+) ([^ ]+)", "\\1 \\3 \\2") %>% 
+  head(5)
+#> [1] "The canoe birch slid on the smooth planks." 
+#> [2] "Glue sheet the to the dark blue background."
+#> [3] "It's to easy tell the depth of a well."     
+#> [4] "These a days chicken leg is a rare dish."   
+#> [5] "Rice often is served in round bowls."
+```
+
+
+
+
+
+#### Exercises 
+
+##### On detecting strings
+
+1. For each of the following challenges, try solving it by using both a single regular expression, and a combination of multiple str_detect() calls.
+
+    1. Find all words that start or end with x.
+
+    2. Find all words that start with a vowel and end with a consonant.
+
+    3. Are there any words that contain at least one of each different vowel?
+
+2. What word has the highest number of vowels? What word has the highest proportion of vowels? (Hint: what is the denominator?)
+
+
+##### On extracting strings
+
+1. In the example in section [Extracting Strings](#extr_str) section, you might have noticed that the regular expression matched “flickered”, which is not a colour. Modify the regex to fix the problem.
+
+2. From the Harvard sentences data, extract:
+
+    1. The first word from each sentence.
+    2. All words ending in ing.
+    3. All plurals.
+
+##### On Replacing Strings
+
+1. Replace all forward slashes in a string with backslashes.
+
+2. Implement a simple version of str_to_lower() using replace_all().
+
+3. Switch the first and last letters in words. Which of those strings are still words?
+
+
+
+## Appendix
+
+
+Additional content can be found here with regards to Regular expressions, a powerful set of rules that allows for detecting strings and portions of them in text files and other text variables. This is especially powerful when used in bulk since RegEx provides a methodical way of constructing patterns to match within the text.   
+
+
 ## Regular Expressions
 
 Matching patterns with regular expressions is usually covered in a very large topic and one that  arguably should be covered on its own course, however here we will consider it as part of the general string manipulation section and will include a flavor of what can be achieved.  
@@ -455,180 +634,6 @@ str_view(x, 'C[LX]+?')
       + Have two or more vowel-consonant pairs in a row.
       
 4. Solve the beginner regexp crosswords at [https://regexcrossword.com/challenges/beginner].
-
-
-
-## Additional Functions
-
-The `stringr` package comes with additional function wrappers that make the most common string operations somewhat easier. For example the following matching behavior can be conducted using the premade functions: 
-
-+ Determine which strings match a pattern.
-+ Find the positions of matches.
-+ Extract the content of matches.
-+ Replace matches with new values.
-
-
-The list is actually a lot longer so here we will briefly discuss how the most popular string matching operations can be performed using the tools supplied by the `stringr` package.
-
-
-#### Detect Strings
-
-Detecting strings is a very important aspect in many Data Analysis applications and `str_detect` was created with ease of use in mind. It returns a logical vector depending whether there was a match in the corresponding location and based on the supplied pattern, as the example below illustrates.   
-
-```{r, results = FALSE}
-x <- c("apple", "banana", "pear")
-str_detect(x, "e")
-#> [1]  TRUE FALSE  TRUE
-```
-
-
-A very handy way of using it, is by taking advantage of how `R` translates `TRUE` (evaluated as `1`) and `FALSE` (evaluated as `0`) responses. In the example below using the `sum` and `mean` functions makes counting instances of a pattern being detected much easier.
-
-```{r, results = FALSE}
-# How many common words start with t?
-sum(str_detect(words, "^t"))
-#> [1] 65
-# What proportion of common words end with a vowel?
-mean(str_detect(words, "[aeiou]$"))
-#> [1] 0.2765306
-```
-
-A variation of `str_detect` is `str_count` and as the name suggests the function will count the instances of a pattern appearing in the target vector.
-
-```{r, results = FALSE}
-x <- c("apple", "banana", "pear")
-str_count(x, "a")
-#> [1] 1 3 1
-
-# On average, how many vowels per word?
-mean(str_count(words, "[aeiou]"))
-#> [1] 1.991837
-```
-
-
-
-#### Extract Strings {#extr_str}
-
-To extract strings we use the `str_extract` function that takes the input source vector and the pattern to match as arguments. In this case we will need a more complex set of examples and so the [Harvard Sentences](https://en.wikipedia.org/wiki/Harvard_sentences) collection of sentences is used. Although originally created to test VOIP systems, it can also be used for regex examples as well. 
-
-```{r, results = FALSE}
-length(sentences)
-#> [1] 720
-head(sentences)
-#> [1] "The birch canoe slid on the smooth planks." 
-#> [2] "Glue the sheet to the dark blue background."
-#> [3] "It's easy to tell the depth of a well."     
-#> [4] "These days a chicken leg is a rare dish."   
-#> [5] "Rice is often served in round bowls."       
-#> [6] "The juice of lemons makes fine punch."
-```
-
-A good way to start using regex in bulk is to see if we can construct a pattern to match that contains all the relevant information. In the example below the pattern contains a set of colours combined into a string to be used as the pattern.
-
-```{r, results = FALSE}
-colours <- c("red", "orange", "yellow", "green", "blue", "purple")
-colour_match <- str_c(colours, collapse = "|")
-colour_match
-#> [1] "red|orange|yellow|green|blue|purple"
-```
-
-The next stage is to select the relevant examples from the collection of `sentences` and then proceed in matching based on the pattern we created. 
-
-```{r, results = FALSE}
-has_colour <- str_subset(sentences, colour_match)
-matches <- str_extract(has_colour, colour_match)
-head(matches)
-#> [1] "blue" "blue" "red"  "red"  "red"  "blue"
-```
-
-To better understand the mechanics behind the matching process it helps to know that `str_extract` only finds and extracts the first match in each row of a vector.  To better illustrate this, the code below selects the phrases from the `sentences` collection where there are more than one match.    
-
-```{r, results = FALSE}
-more <- sentences[str_count(sentences, colour_match) > 1]
-str_view_all(more, colour_match)
-```
-
-Notice how `str_extract` works with these source vectors.
-
-```{r, results = FALSE}
-
-str_extract(more, colour_match)
-#> [1] "blue"   "green"  "orange"
-```
-
-
-#### Replace Strings
-
-`str_replace` and `str_replace_all`allow you to replace parts of a string that match a pattern with a new replacement string.
-
-
-```{r, results = FALSE}
-x <- c("apple", "pear", "banana")
-str_replace(x, "[aeiou]", "-")
-#> [1] "-pple"  "p-ar"   "b-nana"
-str_replace_all(x, "[aeiou]", "-")
-#> [1] "-ppl-"  "p--r"   "b-n-n-"
-```
-
-And with `str_replace_all` we can apply the same functionality as above in all the elements of a character vector.
-
-```{r, results = FALSE}
-x <- c("1 house", "2 cars", "3 people")
-str_replace_all(x, c("1" = "one", "2" = "two", "3" = "three"))
-#> [1] "one house"    "two cars"     "three people"
-```
-
-In addition, one can also use backrefferences and recycle elements of the same string as replacements
-
-```{r, results = FALSE}
-sentences %>% 
-  str_replace("([^ ]+) ([^ ]+) ([^ ]+)", "\\1 \\3 \\2") %>% 
-  head(5)
-#> [1] "The canoe birch slid on the smooth planks." 
-#> [2] "Glue sheet the to the dark blue background."
-#> [3] "It's to easy tell the depth of a well."     
-#> [4] "These a days chicken leg is a rare dish."   
-#> [5] "Rice often is served in round bowls."
-```
-
-
-
-
-
-#### Exercises 
-
-##### On detecting strings
-
-1. For each of the following challenges, try solving it by using both a single regular expression, and a combination of multiple str_detect() calls.
-
-    1. Find all words that start or end with x.
-
-    2. Find all words that start with a vowel and end with a consonant.
-
-    3. Are there any words that contain at least one of each different vowel?
-
-2. What word has the highest number of vowels? What word has the highest proportion of vowels? (Hint: what is the denominator?)
-
-
-##### On extracting strings
-
-1. In the example in section [Extracting Strings](#extr_str) section, you might have noticed that the regular expression matched “flickered”, which is not a colour. Modify the regex to fix the problem.
-
-2. From the Harvard sentences data, extract:
-
-    1. The first word from each sentence.
-    2. All words ending in ing.
-    3. All plurals.
-
-##### On Replacing Strings
-
-1. Replace all forward slashes in a string with backslashes.
-
-2. Implement a simple version of str_to_lower() using replace_all().
-
-3. Switch the first and last letters in words. Which of those strings are still words?
-
-
 
 
 
