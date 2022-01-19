@@ -151,6 +151,7 @@ names(results) <- x # name the elements of the vector
 
 ## loop thourgh indices of a vector
 ## 
+x1 = 0
 for(i in seq_along(x)){
   x1[i] = paste(x[i],"23")
 }
@@ -222,6 +223,8 @@ Notice that the `while` loop execution differs that the `for` loop in that the b
 ```{r, error = TRUE}
 
 # The loop will first execute the body of code and then check if the condition is satisfied. If this is the case the loop will stop its iteration.
+numbers = 0
+
 while(mean(numbers) < 0.5){
   numbers = rnorm(20)
   print(mean(numbers))
