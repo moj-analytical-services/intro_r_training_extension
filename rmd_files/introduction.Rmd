@@ -21,7 +21,7 @@ First, we need to load a few packages and an example dataset.
 
 ```{r message=F, warning=F}
 # Load packages
-library(s3tools)
+library(botor)
 library(dplyr)
 library(tidyr)
 library(stringr)
@@ -29,6 +29,7 @@ library(stringr)
 
 ```{r message=F, warning=F}
 # Read data
-offenders <- s3tools::s3_path_to_full_df("alpha-r-training/intro-r-training/Offenders_Chicago_Police_Dept_Main.csv")
+offenders <- botor::s3_read("s3://alpha-r-training/intro-r-training/Offenders_Chicago_Police_Dept_Main.csv", read.csv)
+
 ```
 
