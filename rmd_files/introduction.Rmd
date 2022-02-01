@@ -23,7 +23,7 @@ First, we need to load a few packages.
 
 ```{r message=F, warning=F, purl=purl_example_code}
 # Load packages
-library(s3tools)
+library(botor)
 library(dplyr)
 library(tidyr)
 library(stringr)

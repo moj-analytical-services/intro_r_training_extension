@@ -52,7 +52,7 @@ When we're manipulating dataframes, it can be useful to combine `if_else()` with
 
 ```{r, message=F, warning=F, purl=purl_example_code}
 # First read and preview the data
-offenders <- s3tools::s3_path_to_full_df("alpha-r-training/intro-r-training/Offenders_Chicago_Police_Dept_Main.csv")
+offenders <- botor::s3_read("s3://alpha-r-training/intro-r-training/Offenders_Chicago_Police_Dept_Main.csv", read.csv)
 str(offenders)
 ```
 

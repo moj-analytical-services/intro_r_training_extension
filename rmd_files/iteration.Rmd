@@ -108,6 +108,7 @@ rescale01 <- function(x) {
   rng <- range(x, na.rm = TRUE)
   (x - rng[1]) / (rng[2] - rng[1])
 }
+
 df$a <- rescale01(df$a)
 df$b <- rescale01(df$b)
 df$c <- rescale01(df$c)
@@ -141,19 +142,23 @@ There are a couple of ways we can use to access the sequence part of the **for**
 ```{r, error = TRUE}
 x = letters # vector of letters
 vowel <- c('a', 'e', 'i', 'o', 'u')
+
 results <- rnorm(length(x)) #create a random vector
 names(results) <- x # name the elements of the vector 
+
 ## loop thourgh indices of a vector
 ## 
 x1 = 0
 for(i in seq_along(x)){
   x1[i] = paste(x[i],"23")
 }
+
 ## loop through contents of a vector
 ## 
 for(i in vowel){
   print(results[i])
   }
+
 ```
 
 
@@ -163,6 +168,7 @@ There are cases where the output from a loop is not known beforehand. In these c
 
 ```{r}
 a = 0 # initialize number
+
 # run a sequence of random length vectros to be appended
 for(i in seq_len(10)){
   n = sample(20,1)
@@ -175,6 +181,7 @@ A better way to achieving the above result would be to create a list and capture
 
 ```{r}
 a = list() # initilise a list
+
 # populate the contents of each cell of a list with a random size vector created in each iteration 
 for(i in seq_len(10)){
   n = sample(20,1)
@@ -191,6 +198,7 @@ In general, unknown sequence length translates to cases where we want to check f
 
 ```{r, eval=FALSE, echo=TRUE, error = TRUE}
 ## while loop definition
+
 while (condition) {
   # body
 }
@@ -201,6 +209,7 @@ Notice that the `while` loop execution differs that the `for` loop in that the b
 ```{r, error = TRUE}
 # The loop will first execute the body of code and then check if the condition is satisfied. If this is the case the loop will stop its iteration.
 numbers = 0
+
 while(mean(numbers) < 0.5){
   numbers = rnorm(20)
   print(mean(numbers))
@@ -215,6 +224,7 @@ while(mean(numbers) < 0.5){
 ```{r, error = TRUE}
 # the following code will create a random colelction of file names
 files = paste0(str_extract(sentences[1:5], "^[:alpha:]+"), sample(c(".csv",".xlsx")))
+
 ```
 
 
@@ -225,3 +235,4 @@ files = paste0(str_extract(sentences[1:5], "^[:alpha:]+"), sample(c(".csv",".xls
 files2 = paste0(str_extract(sentences[1:10], "^[:alpha:]+"), ".xlsx") 
 files2[5] = NA
 ```
+
