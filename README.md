@@ -1,28 +1,28 @@
 Introduction to R extension
 ================
 
-This repository is for Introduction to R extension course offered by the
-DASD R Training Group.
+This repository is for the Introduction to R extension course offered by
+the DASD R Training Group.
 
 The session is intended to be accessible to anyone who is familiar with
 the content of the [Introduction to
 R](https://github.com/moj-analytical-services/IntroRTraining) training
 session.
 
-If you have any feedback on the content, please get in touch\!
+If you have any feedback on the content, please get in touch!
 
 ## Contents
 
-  - [Pre-material](#pre-material)
-  - [Learning outcomes](#learning-outcomes)
-  - [Conditional statements](#conditional-statements)
-  - [Handling missing data](#handling-missing-data)
-  - [Iteration](#iteration)
-  - [Reshaping data](#reshaping-data)
-  - [String manipulation](#string-manipulation)
-  - [Further reading](#further-reading)
-  - [Real world examples](#real-world-examples)
-  - [Appendix](#appendix)
+-   [Pre-material](#pre-material)
+-   [Learning outcomes](#learning-outcomes)
+-   [Conditional statements](#conditional-statements)
+-   [Handling missing data](#handling-missing-data)
+-   [Iteration](#iteration)
+-   [Reshaping data](#reshaping-data)
+-   [String manipulation](#string-manipulation)
+-   [Further reading](#further-reading)
+-   [Bonus examples](#bonus-examples)
+-   [Appendix](#appendix)
 
 ## Pre-material
 
@@ -43,7 +43,7 @@ If you have any problems with the above please get in touch with the
 course organisers or ask for help on either the \#analytical\_platform
 or \#intro\_r channel on [ASD slack](https://asdslack.slack.com).
 
-All the examples in the presentation/README are available in the R
+All the examples in the presentation and README are available in the R
 script example\_code.R.
 
 # Introduction
@@ -53,15 +53,20 @@ and covers additional programming concepts. It provides examples that
 demonstrate how the Tidyverse packages can assist with tasks typically
 encountered in DASD.
 
+Development of the Tidyverse suite of packages was led by Hadley
+Wickham, and more information about these packages can be found on the
+[Tidyverse website](https://www.tidyverse.org/) as well as in the book
+[R for Data Science](https://r4ds.had.co.nz/).
+
 ## Learning outcomes
 
 ### By the end of this session you should know how to:
 
-  - Classify a variable in a dataframe, based on a set of conditions
-  - Apply a function to multiple columns in a dataframe
-  - Search for a string pattern in a dataframe
-  - Reshape dataframes
-  - Deal with missing values in a dataframe
+-   Classify a variable in a dataframe, based on a set of conditions
+-   Deal with missing values in a dataframe
+-   Easily apply a function to any number of columns in a dataframe
+-   Search for a string pattern in a dataframe
+-   Reshape dataframes
 
 ## Before we start
 
@@ -69,23 +74,18 @@ To follow along with the code run during this session and participate in
 the exercises, open the script “example\_code.R” in RStudio. All the
 code that we’ll show in this session is stored in “example\_code.R”, and
 you can edit this script to write solutions to the exercises. You may
-also want to have the course [read
-me](https://github.com/moj-analytical-services/intro_r_training_extension)
+also want to have the course
+[README](https://github.com/moj-analytical-services/intro_r_training_extension)
 open as a reference.
 
-First, we need to load a few packages and an example dataset.
+First, we need to load a few packages.
 
 ``` r
 # Load packages
-library(s3tools)
+library(botor)
 library(dplyr)
 library(tidyr)
 library(stringr)
-```
-
-``` r
-# Read data
-offenders <- s3tools::s3_path_to_full_df("alpha-r-training/intro-r-training/Offenders_Chicago_Police_Dept_Main.csv")
 ```
 
 # Conditional statements
@@ -174,6 +174,26 @@ contains ‘Youth’ if the offender is under the age of 18, and ‘Adult’
 otherwise:
 
 ``` r
+# First read and preview the data
+offenders <- botor::s3_read("s3://alpha-r-training/intro-r-training/Offenders_Chicago_Police_Dept_Main.csv", read.csv)
+str(offenders)
+```
+
+    ## 'data.frame':    1413 obs. of  11 variables:
+    ##  $ LAST            : chr  "RODRIGUEZ" "MARTINEZ" "GARCIA" "RODRIGUEZ" ...
+    ##  $ FIRST           : chr  "JUAN" "MOISES" "ELLIOTT" "JOSE" ...
+    ##  $ BLOCK           : chr  "009XX W CUYLER AVE" "011XX N KILBOURN AVE" "011XX W 18TH ST" "012XX W RACE AVE" ...
+    ##  $ GENDER          : chr  "MALE" "MALE" "MALE" "MALE" ...
+    ##  $ REGION          : chr  "West" "East" "South" "North" ...
+    ##  $ BIRTH_DATE      : chr  "06/22/1955" "02/07/1954" "08/11/1970" "02/10/1959" ...
+    ##  $ HEIGHT          : int  198 198 201 237 201 199 201 236 198 199 ...
+    ##  $ WEIGHT          : int  190 180 200 195 220 130 200 235 140 130 ...
+    ##  $ PREV_CONVICTIONS: num  0 0 0 0 0 0 0 0 0 0 ...
+    ##  $ SENTENCE        : chr  "Court_order" "Prison_<12m" "Court_order" "Court_order" ...
+    ##  $ AGE             : int  58 59 43 54 34 50 32 43 34 18 ...
+
+``` r
+# Now use mutate to add the new column
 offenders <- offenders %>%
   dplyr::mutate(YOUTH_OR_ADULT = dplyr::if_else(AGE < 18, "Youth", "Adult"))
 
@@ -203,7 +223,7 @@ or a ‘0’ if the offender received a court order.
 **Hint:** you’ll need to apply the `dplyr::if_else()` function to the
 ‘SENTENCE’ column.
 
------
+------------------------------------------------------------------------
 
 ## Vectorising multiple if…else statements
 
@@ -272,7 +292,7 @@ dataframe. The column should contain the following categories: “0-1”,
 
 **Hint:** you’ll need to use the `dplyr::case_when()` function.
 
------
+------------------------------------------------------------------------
 
 # Handling missing data
 
@@ -345,7 +365,7 @@ fruit <- tibble::tibble(
 **Hint:** you can use a `.` inside the `complete.cases()` function to
 apply it to all columns of the dataframe.
 
------
+------------------------------------------------------------------------
 
 ## Handling missing values using a function argument
 
@@ -411,7 +431,7 @@ The `replace()` function can also be applied to a whole dataframe, like
 so:
 
 ``` r
-df <- tibble::tibble(
+df <- tibble::data_frame(
   "x" = c(0, 1, 2, NA, 4),
   "y" = c(18, NA, 45, 15, 2),
 )
@@ -440,7 +460,8 @@ with ‘Unknown’:
 offenders_replacena <- offenders %>%
   tidyr::replace_na(list(HEIGHT = "Unknown"))
 
-offenders_replacena %>% arrange(desc(HEIGHT)) %>% str()
+# Display the dataframe in descending height order, so we can see the 'Unknown' values
+offenders_replacena %>% dplyr::arrange(desc(HEIGHT)) %>% str()
 ```
 
     ## 'data.frame':    1413 obs. of  15 variables:
@@ -474,12 +495,12 @@ fruit <- tibble::tibble(
 )
 ```
 
-**Hint:** you add multiple arguments to `replace_na(list(...))`, with
-one argument for each column where NA values need replacing.
+**Hint:** you can add multiple arguments to `replace_na(list(...))`,
+with one argument for each column where NA values need replacing.
 
------
+------------------------------------------------------------------------
 
------
+------------------------------------------------------------------------
 
 ### Replacing with values from another column
 
@@ -533,7 +554,7 @@ in the missing labels before beginning any analysis.
 
 ``` r
 # Construct the example dataframe
-df <- tidyr::crossing(year = c("2015", "2016", "2017", "2018", "2019"),
+df <- tidyr::crossing(year = c("2017", "2018", "2019"),
                       quarter = c("Q1", "Q2", "Q3", "Q4")) %>%
       dplyr::mutate(count = sample(length(year)))
 
@@ -543,29 +564,21 @@ df$year[duplicated(df$year)] <- NA
 df
 ```
 
-    ## # A tibble: 20 x 3
+    ## # A tibble: 12 x 3
     ##    year  quarter count
     ##    <chr> <chr>   <int>
-    ##  1 2015  Q1         19
-    ##  2 <NA>  Q2          2
-    ##  3 <NA>  Q3         10
-    ##  4 <NA>  Q4         11
-    ##  5 2016  Q1         15
-    ##  6 <NA>  Q2          3
-    ##  7 <NA>  Q3          7
-    ##  8 <NA>  Q4         17
-    ##  9 2017  Q1         12
-    ## 10 <NA>  Q2          5
-    ## 11 <NA>  Q3          8
-    ## 12 <NA>  Q4          9
-    ## 13 2018  Q1          4
-    ## 14 <NA>  Q2         13
-    ## 15 <NA>  Q3          6
-    ## 16 <NA>  Q4         18
-    ## 17 2019  Q1         14
-    ## 18 <NA>  Q2         20
-    ## 19 <NA>  Q3         16
-    ## 20 <NA>  Q4          1
+    ##  1 2017  Q1          9
+    ##  2 <NA>  Q2          5
+    ##  3 <NA>  Q3          4
+    ##  4 <NA>  Q4          1
+    ##  5 2018  Q1          8
+    ##  6 <NA>  Q2         12
+    ##  7 <NA>  Q3          2
+    ##  8 <NA>  Q4          6
+    ##  9 2019  Q1         10
+    ## 10 <NA>  Q2         11
+    ## 11 <NA>  Q3          3
+    ## 12 <NA>  Q4          7
 
 The `fill()` function from tidyr is a convenient way to do this, and can
 be used like this:
@@ -574,29 +587,21 @@ be used like this:
 df %>% tidyr::fill(year)
 ```
 
-    ## # A tibble: 20 x 3
+    ## # A tibble: 12 x 3
     ##    year  quarter count
     ##    <chr> <chr>   <int>
-    ##  1 2015  Q1         19
-    ##  2 2015  Q2          2
-    ##  3 2015  Q3         10
-    ##  4 2015  Q4         11
-    ##  5 2016  Q1         15
-    ##  6 2016  Q2          3
-    ##  7 2016  Q3          7
-    ##  8 2016  Q4         17
-    ##  9 2017  Q1         12
-    ## 10 2017  Q2          5
-    ## 11 2017  Q3          8
-    ## 12 2017  Q4          9
-    ## 13 2018  Q1          4
-    ## 14 2018  Q2         13
-    ## 15 2018  Q3          6
-    ## 16 2018  Q4         18
-    ## 17 2019  Q1         14
-    ## 18 2019  Q2         20
-    ## 19 2019  Q3         16
-    ## 20 2019  Q4          1
+    ##  1 2017  Q1          9
+    ##  2 2017  Q2          5
+    ##  3 2017  Q3          4
+    ##  4 2017  Q4          1
+    ##  5 2018  Q1          8
+    ##  6 2018  Q2         12
+    ##  7 2018  Q3          2
+    ##  8 2018  Q4          6
+    ##  9 2019  Q1         10
+    ## 10 2019  Q2         11
+    ## 11 2019  Q3          3
+    ## 12 2019  Q4          7
 
 ## Removing rows with missing values from a dataframe
 
@@ -697,28 +702,28 @@ the task now is to calculate, for example, the mean or the median:
 median(df$a)
 ```
 
-    ## [1] -0.2400778
+    ## [1] 0.008711174
 
 ``` r
 #> [1] -0.2457625
 median(df$b)
 ```
 
-    ## [1] -0.4167184
+    ## [1] -0.5213911
 
 ``` r
 #> [1] -0.2873072
 median(df$c)
 ```
 
-    ## [1] 0.1073201
+    ## [1] -0.08181994
 
 ``` r
 #> [1] -0.05669771
 median(df$d)
 ```
 
-    ## [1] 0.4126003
+    ## [1] -0.8664605
 
 ``` r
 #> [1] 0.1442633
@@ -737,7 +742,7 @@ for (i in seq_along(df)) {            # 2. sequence
 output
 ```
 
-    ## [1] -0.2400778 -0.4167184  0.1073201  0.4126003
+    ## [1]  0.008711174 -0.521391106 -0.081819937 -0.866460488
 
 ``` r
 #> [1] -0.24576245 -0.28730721 -0.05669771  0.14426335
@@ -818,22 +823,22 @@ this concept.
 
 More specifically the components of the for loop are:
 
-  - The**output** - in this case we don’t output to a different object
+-   The**output** - in this case we don’t output to a different object
     we just update the input. The output is the same as the input
 
-  - The **sequence** - This will be the number of columns in `df` we
+-   The **sequence** - This will be the number of columns in `df` we
     want to run the code to. As previously the `seq_along` function will
     help us with this as it will count the number of columns and turn
     this into a sequence we can use in the for loop
 
-  - The body of the loop is just the re scale one line of code running
+-   The body of the loop is just the re scale one line of code running
     the defined `rescale01` function. It can be anything that will take
     the column as an argument to work with. Further restrictions would
     normally apply but we will not cover this here
 
 The code below simplifies what we want to do and as you can see,
 overall, we now have a much better structured and easier to read two
-lines of code\!
+lines of code!
 
 ``` r
 for (i in seq_along(df)) {
@@ -861,14 +866,11 @@ names(results) <- x # name the elements of the vector
 
 ## loop thourgh indices of a vector
 ## 
+x1 = 0
 for(i in seq_along(x)){
   x1[i] = paste(x[i],"23")
 }
-```
 
-    ## Error in eval(expr, envir, enclos): object 'x1' not found
-
-``` r
 ## loop through contents of a vector
 ## 
 for(i in vowel){
@@ -876,16 +878,16 @@ for(i in vowel){
   }
 ```
 
-    ##     a 
-    ## 1.978 
-    ##          e 
-    ## -0.8572724 
+    ##         a 
+    ## 0.9755523 
+    ##         e 
+    ## 0.6062281 
     ##         i 
-    ## -0.461322 
+    ## 0.7745523 
     ##          o 
-    ## -0.1941412 
+    ## -0.9812224 
     ##         u 
-    ## 0.6576127
+    ## 0.9512958
 
 ### Handling outputs of unknown length
 
@@ -940,13 +942,57 @@ accessing the validity of the condition to terminate the loop.
 
 ``` r
 # The loop will first execute the body of code and then check if the condition is satisfied. If this is the case the loop will stop its iteration.
+numbers = 0
+
 while(mean(numbers) < 0.5){
   numbers = rnorm(20)
   print(mean(numbers))
 }
 ```
 
-    ## Error in mean(numbers): object 'numbers' not found
+    ## [1] -0.08128621
+    ## [1] -0.03804448
+    ## [1] -0.07151508
+    ## [1] 0.249634
+    ## [1] 0.3503244
+    ## [1] 0.004755578
+    ## [1] -0.2448568
+    ## [1] -0.1104974
+    ## [1] -0.1076931
+    ## [1] 0.3355783
+    ## [1] -0.07047475
+    ## [1] 0.1414652
+    ## [1] 0.141561
+    ## [1] -0.1511802
+    ## [1] -0.3362241
+    ## [1] 0.1568241
+    ## [1] -0.1267873
+    ## [1] 0.02720088
+    ## [1] -0.3196602
+    ## [1] 0.07251461
+    ## [1] -0.03893471
+    ## [1] -0.3178789
+    ## [1] -0.04512388
+    ## [1] 0.002402108
+    ## [1] -0.06547899
+    ## [1] 0.1561976
+    ## [1] 0.03407181
+    ## [1] -0.1482138
+    ## [1] 0.3059705
+    ## [1] 0.2553015
+    ## [1] 0.2593327
+    ## [1] -0.2184022
+    ## [1] 0.07368173
+    ## [1] -0.07069272
+    ## [1] -0.1177795
+    ## [1] 0.3027399
+    ## [1] -0.2090169
+    ## [1] 0.3980718
+    ## [1] 0.2434061
+    ## [1] 0.04963118
+    ## [1] -0.2422289
+    ## [1] 0.1321036
+    ## [1] 0.557459
 
 \#\#Exercises
 
@@ -955,11 +1001,8 @@ while(mean(numbers) < 0.5){
     each one. Write the for loop that will simulate reading them into a
     single data frame.
 
-<!-- end list -->
-
 ``` r
 # the following code will create a random colelction of file names
-
 files = paste0(str_extract(sentences[1:5], "^[:alpha:]+"), sample(c(".csv",".xlsx")))
 ```
 
@@ -967,11 +1010,8 @@ files = paste0(str_extract(sentences[1:5], "^[:alpha:]+"), sample(c(".csv",".xls
     What if only some of the elements are named? What if the names are
     not unique?
 
-<!-- end list -->
-
 ``` r
 # try using the folling list of files 
-
 files2 = paste0(str_extract(sentences[1:10], "^[:alpha:]+"), ".xlsx") 
 files2[5] = NA
 ```
@@ -1024,7 +1064,6 @@ start by the mapping the first month into a single variable.
 
 ``` r
 ?billboard
-
 # notice the dimensions of the data
 dim(billboard)
 ```
@@ -1037,23 +1076,21 @@ billboard %>% arrange(desc(date.entered)) %>% tail()
 ```
 
     ## # A tibble: 6 x 79
-    ##   artist track date.entered   wk1   wk2   wk3   wk4   wk5   wk6   wk7   wk8   wk9  wk10  wk11  wk12  wk13
-    ##   <chr>  <chr> <date>       <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
-    ## 1 IMx    Stay… 1999-10-09      84    61    45    43    40    38    36    31    34    34    40    36    36
-    ## 2 Train  Meet… 1999-10-09      76    67    59    54    48    45    40    32    26    24    22    21    21
-    ## 3 Creed  High… 1999-09-11      81    77    73    63    61    58    56    52    56    57    57    57    57
-    ## 4 Houst… My L… 1999-09-04      81    68    44    16    11     9     8     7     8     7     8     8     6
-    ## 5 Amber  Sexu… 1999-07-17      99    99    96    96   100    93    93    96    NA    NA    99    NA    96
-    ## 6 Lones… Amaz… 1999-06-05      81    54    44    39    38    33    29    29    32    27    26    24    27
-    ## # … with 63 more variables: wk14 <dbl>, wk15 <dbl>, wk16 <dbl>, wk17 <dbl>, wk18 <dbl>, wk19 <dbl>,
-    ## #   wk20 <dbl>, wk21 <dbl>, wk22 <dbl>, wk23 <dbl>, wk24 <dbl>, wk25 <dbl>, wk26 <dbl>, wk27 <dbl>,
-    ## #   wk28 <dbl>, wk29 <dbl>, wk30 <dbl>, wk31 <dbl>, wk32 <dbl>, wk33 <dbl>, wk34 <dbl>, wk35 <dbl>,
-    ## #   wk36 <dbl>, wk37 <dbl>, wk38 <dbl>, wk39 <dbl>, wk40 <dbl>, wk41 <dbl>, wk42 <dbl>, wk43 <dbl>,
-    ## #   wk44 <dbl>, wk45 <dbl>, wk46 <dbl>, wk47 <dbl>, wk48 <dbl>, wk49 <dbl>, wk50 <dbl>, wk51 <dbl>,
-    ## #   wk52 <dbl>, wk53 <dbl>, wk54 <dbl>, wk55 <dbl>, wk56 <dbl>, wk57 <dbl>, wk58 <dbl>, wk59 <dbl>,
-    ## #   wk60 <dbl>, wk61 <dbl>, wk62 <dbl>, wk63 <dbl>, wk64 <dbl>, wk65 <dbl>, wk66 <lgl>, wk67 <lgl>,
-    ## #   wk68 <lgl>, wk69 <lgl>, wk70 <lgl>, wk71 <lgl>, wk72 <lgl>, wk73 <lgl>, wk74 <lgl>, wk75 <lgl>,
-    ## #   wk76 <lgl>
+    ##   artist   track    date.entered   wk1   wk2   wk3   wk4   wk5   wk6   wk7   wk8   wk9  wk10  wk11  wk12  wk13  wk14  wk15
+    ##   <chr>    <chr>    <date>       <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
+    ## 1 IMx      Stay Th… 1999-10-09      84    61    45    43    40    38    36    31    34    34    40    36    36    23    41
+    ## 2 Train    Meet Vi… 1999-10-09      76    67    59    54    48    45    40    32    26    24    22    21    21    24    21
+    ## 3 Creed    Higher   1999-09-11      81    77    73    63    61    58    56    52    56    57    57    57    57    57    60
+    ## 4 Houston… My Love… 1999-09-04      81    68    44    16    11     9     8     7     8     7     8     8     6     6     5
+    ## 5 Amber    Sexual   1999-07-17      99    99    96    96   100    93    93    96    NA    NA    99    NA    96    96    99
+    ## 6 Lonestar Amazed   1999-06-05      81    54    44    39    38    33    29    29    32    27    26    24    27    32    33
+    ## # … with 61 more variables: wk16 <dbl>, wk17 <dbl>, wk18 <dbl>, wk19 <dbl>, wk20 <dbl>, wk21 <dbl>, wk22 <dbl>,
+    ## #   wk23 <dbl>, wk24 <dbl>, wk25 <dbl>, wk26 <dbl>, wk27 <dbl>, wk28 <dbl>, wk29 <dbl>, wk30 <dbl>, wk31 <dbl>,
+    ## #   wk32 <dbl>, wk33 <dbl>, wk34 <dbl>, wk35 <dbl>, wk36 <dbl>, wk37 <dbl>, wk38 <dbl>, wk39 <dbl>, wk40 <dbl>,
+    ## #   wk41 <dbl>, wk42 <dbl>, wk43 <dbl>, wk44 <dbl>, wk45 <dbl>, wk46 <dbl>, wk47 <dbl>, wk48 <dbl>, wk49 <dbl>,
+    ## #   wk50 <dbl>, wk51 <dbl>, wk52 <dbl>, wk53 <dbl>, wk54 <dbl>, wk55 <dbl>, wk56 <dbl>, wk57 <dbl>, wk58 <dbl>,
+    ## #   wk59 <dbl>, wk60 <dbl>, wk61 <dbl>, wk62 <dbl>, wk63 <dbl>, wk64 <dbl>, wk65 <dbl>, wk66 <lgl>, wk67 <lgl>,
+    ## #   wk68 <lgl>, wk69 <lgl>, wk70 <lgl>, wk71 <lgl>, wk72 <lgl>, wk73 <lgl>, wk74 <lgl>, wk75 <lgl>, wk76 <lgl>
 
 ``` r
 #starting by mapping a single month 
@@ -1061,21 +1098,20 @@ billboard %>% pivot_longer(cols = c(wk1,wk2, wk3, wk4), names_to = "month1", val
 ```
 
     ## # A tibble: 6 x 77
-    ##   artist track date.entered   wk5   wk6   wk7   wk8   wk9  wk10  wk11  wk12  wk13  wk14  wk15  wk16  wk17
-    ##   <chr>  <chr> <date>       <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
-    ## 1 2 Pac  Baby… 2000-02-26      87    94    99    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
-    ## 2 2 Pac  Baby… 2000-02-26      87    94    99    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
-    ## 3 2 Pac  Baby… 2000-02-26      87    94    99    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
-    ## 4 2 Pac  Baby… 2000-02-26      87    94    99    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
-    ## 5 2Ge+h… The … 2000-09-02      NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
-    ## 6 2Ge+h… The … 2000-09-02      NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
-    ## # … with 61 more variables: wk18 <dbl>, wk19 <dbl>, wk20 <dbl>, wk21 <dbl>, wk22 <dbl>, wk23 <dbl>,
-    ## #   wk24 <dbl>, wk25 <dbl>, wk26 <dbl>, wk27 <dbl>, wk28 <dbl>, wk29 <dbl>, wk30 <dbl>, wk31 <dbl>,
-    ## #   wk32 <dbl>, wk33 <dbl>, wk34 <dbl>, wk35 <dbl>, wk36 <dbl>, wk37 <dbl>, wk38 <dbl>, wk39 <dbl>,
-    ## #   wk40 <dbl>, wk41 <dbl>, wk42 <dbl>, wk43 <dbl>, wk44 <dbl>, wk45 <dbl>, wk46 <dbl>, wk47 <dbl>,
-    ## #   wk48 <dbl>, wk49 <dbl>, wk50 <dbl>, wk51 <dbl>, wk52 <dbl>, wk53 <dbl>, wk54 <dbl>, wk55 <dbl>,
-    ## #   wk56 <dbl>, wk57 <dbl>, wk58 <dbl>, wk59 <dbl>, wk60 <dbl>, wk61 <dbl>, wk62 <dbl>, wk63 <dbl>,
-    ## #   wk64 <dbl>, wk65 <dbl>, wk66 <lgl>, wk67 <lgl>, wk68 <lgl>, wk69 <lgl>, wk70 <lgl>, wk71 <lgl>,
+    ##   artist  track     date.entered   wk5   wk6   wk7   wk8   wk9  wk10  wk11  wk12  wk13  wk14  wk15  wk16  wk17  wk18  wk19
+    ##   <chr>   <chr>     <date>       <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
+    ## 1 2 Pac   Baby Don… 2000-02-26      87    94    99    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+    ## 2 2 Pac   Baby Don… 2000-02-26      87    94    99    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+    ## 3 2 Pac   Baby Don… 2000-02-26      87    94    99    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+    ## 4 2 Pac   Baby Don… 2000-02-26      87    94    99    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+    ## 5 2Ge+her The Hard… 2000-09-02      NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+    ## 6 2Ge+her The Hard… 2000-09-02      NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+    ## # … with 59 more variables: wk20 <dbl>, wk21 <dbl>, wk22 <dbl>, wk23 <dbl>, wk24 <dbl>, wk25 <dbl>, wk26 <dbl>,
+    ## #   wk27 <dbl>, wk28 <dbl>, wk29 <dbl>, wk30 <dbl>, wk31 <dbl>, wk32 <dbl>, wk33 <dbl>, wk34 <dbl>, wk35 <dbl>,
+    ## #   wk36 <dbl>, wk37 <dbl>, wk38 <dbl>, wk39 <dbl>, wk40 <dbl>, wk41 <dbl>, wk42 <dbl>, wk43 <dbl>, wk44 <dbl>,
+    ## #   wk45 <dbl>, wk46 <dbl>, wk47 <dbl>, wk48 <dbl>, wk49 <dbl>, wk50 <dbl>, wk51 <dbl>, wk52 <dbl>, wk53 <dbl>,
+    ## #   wk54 <dbl>, wk55 <dbl>, wk56 <dbl>, wk57 <dbl>, wk58 <dbl>, wk59 <dbl>, wk60 <dbl>, wk61 <dbl>, wk62 <dbl>,
+    ## #   wk63 <dbl>, wk64 <dbl>, wk65 <dbl>, wk66 <lgl>, wk67 <lgl>, wk68 <lgl>, wk69 <lgl>, wk70 <lgl>, wk71 <lgl>,
     ## #   wk72 <lgl>, wk73 <lgl>, wk74 <lgl>, wk75 <lgl>, wk76 <lgl>, month1 <chr>, rank <dbl>
 
 ``` r
@@ -1293,12 +1329,10 @@ fish_encounters %>% pivot_wider(names_from = station, values_from = seen)
 The general use is very similar to that presented in \``pivot_longer()`
 with `names_from` targeting the column containing the subcategories to
 split from and `values_from` the corresponding values associated with
-each category.
-
-Notice that there will be cases where there is no match and these will
-initially be filled with `NA`. Simply setting the option `values_fill`
-to a value of your choice will replaced the `NA` values to something
-more meaningful.
+each category. Notice that there will be cases where there is no match
+and these will initially be filled with `NA`. Simply setting the option
+`values_fill` to a value of your choice will replaced the `NA` values to
+something more meaningful.
 
 ``` r
 fish_encounters %>% pivot_wider(names_from = station, values_from = seen,
@@ -1383,10 +1417,10 @@ the same value of breaks for each tension value.
 warpdata = warpbreaks %>% pivot_wider(names_from = wool, values_from = breaks)
 ```
 
-    ## Warning: Values in `breaks` are not uniquely identified; output will contain list-cols.
-    ## * Use `values_fn = list(breaks = list)` to suppress this warning.
-    ## * Use `values_fn = list(breaks = length)` to identify where the duplicates arise
-    ## * Use `values_fn = list(breaks = summary_fun)` to summarise duplicates
+    ## Warning: Values are not uniquely identified; output will contain list-cols.
+    ## * Use `values_fn = list` to suppress this warning.
+    ## * Use `values_fn = length` to identify where the duplicates arise
+    ## * Use `values_fn = {summary_fun}` to summarise duplicates
 
 ``` r
 #> Warning: Values are not uniquely identified; output will contain list-cols.
@@ -1579,7 +1613,6 @@ as shown in the example below.
 ``` r
 #the reshaped dataset
 tab3 = table3 %>% extract( col = year, into = c("century","decade","year" ), regex = "([0-9]{2})([0-9])([0-9])")
-
 #going back to the original dataset - with separator
 tab3 %>% unite(new ,century, decade, year)
 ```
@@ -1625,8 +1658,6 @@ Why does the following code fail?
 ``` r
 #the table to use
 table4a
-
-
 table4a %>% pivot_longer(1999,2000, names_to = "year",values_to = "value")
 ```
 
@@ -1727,9 +1758,6 @@ people = tribble(~name, ~key, ~value,
                  "Jess Cordero", "age",45,
                  "Jess Cordero", "height",156,)
 people %>% pivot_wider(names_from = name, values_from = value)
-
-
-
 # solution 1 - adding a new column
 people = tribble(~name, ~key, ~value, ~dkey,
                  #------------/------/-----,
@@ -1738,11 +1766,7 @@ people = tribble(~name, ~key, ~value, ~dkey,
                  "Phil Woods", "age",50,0,
                  "Jess Cordero", "age",45,1,
                  "Jess Cordero", "height",156,1)
-
 people %>% pivot_wider(names_from = name, values_from = value)
-
-
-
 #solution 2  - uniqueness
 people = tribble(~name, ~key, ~value,
                  #------------/------/-----,
@@ -1751,8 +1775,6 @@ people = tribble(~name, ~key, ~value,
                  # "Phil Woods", "age",50,
                  "Jess Cordero", "age",45,
                  "Jess Cordero", "height",156,)
-
-
 people %>% pivot_wider(names_from = name, values_from = value)
 ```
 
@@ -1762,17 +1784,12 @@ people %>% pivot_wider(names_from = name, values_from = value)
 rcj = tribble( ~judge, ~male, ~female,
                     "yes", NA, 10, 
                     "no", 20, 12)
-
 #alternative table to try with no NAs
 # rcj = tribble( ~judge, ~male, ~female,
 #                     "yes", 4, 10, 
 #                     "no", 20, 12)
-
-
 #use of pivot_longer
 rcj %>% pivot_longer(cols = c(male, female),   names_to = "gender", values_to = "count")
-
-
 # use of  pivot_wider 
 rcj %>% pivot_wider(names_from = judge, values_from = c(male, female))
 ```
@@ -1787,7 +1804,6 @@ experimenting with them to discover more of what they do.
 ``` r
 tibble(x = c("a,b,c", "d,e,f,g", "h,i,j")) %>% 
   separate(x, c("one", "two", "three"))
-
 tibble(x = c("a,b,c", "d,e", "f,g,i")) %>% 
   separate(x, c("one", "two", "three"))
 ```
@@ -1835,16 +1851,21 @@ needed as showcased in the example below.
 
 ``` r
 string1 = "a string using double quotes"
-
 is.character(string1)
+```
 
+    ## [1] TRUE
+
+``` r
 string2 = 'another string using single quotes'
-
 is.character(string2)
+```
 
+    ## [1] TRUE
+
+``` r
 # a string containing quotes
 string3 = "this is a 'string' within a string"
-
 # notice how the output changes when implementing the following code
 string4 = 'this is a "string" within a string'
 ```
@@ -1861,15 +1882,19 @@ can use the `writeLines()` function to simulate that effect.
 
 ``` r
 string5 = "escaping a reserved character like \" quotes "
-
 # to see how the result would apear in text
 writeLines(string5)
+```
 
+    ## escaping a reserved character like " quotes
+
+``` r
 string6 = "escaping a backslash \\ "
-
 # to see how the result would apear in text
 writeLines(string6)
 ```
+
+    ## escaping a backslash \
 
 Furthermore, additional control in the form of newlines or tabs is
 provided by using `\n` and `\t` for example along with a plethora of
@@ -1903,6 +1928,8 @@ which helps with that.
 str_length(c(s8, NA))
 ```
 
+    ## [1]  1  6  2  7 NA
+
 Notice that an `NA` character is translated as is and we will see other
 options on how to deal with this in the sections to follow.
 
@@ -1920,10 +1947,16 @@ character string.
 ``` r
 # using custom separator
 str_c("an", "str_c vector", "with", "space", "character", "separating each entry", sep = " ")
+```
 
+    ## [1] "an str_c vector with space character separating each entry"
+
+``` r
 # the colapse option
 str_c("an", "str_c vector", "with", "space", "character", "separating each entry", collapse = T)
 ```
+
+    ## [1] "anstr_c vectorwithspacecharacterseparating each entry"
 
 What is more important however is that `str_c` is vectorised and in this
 way can help in cases where an action has to be applied to each element
@@ -1935,15 +1968,25 @@ longer ones as in the following example.
 ``` r
 # vectorized form - translating a shorter vectror to match the longer one
 str_c("a", c("b", "c", "d"), "c", sep = " " )
+```
 
+    ## [1] "a b c" "a c c" "a d c"
+
+``` r
 # simpler vectorizing 
 str_c("a", c("b", "c", "d"))
+```
 
+    ## [1] "ab" "ac" "ad"
+
+``` r
 # c() comparison
 c("a", c("b", "c", "d"))
 ```
 
-### Subsisting strings
+    ## [1] "a" "b" "c" "d"
+
+### Substituting strings
 
 Extracting parts of a string can be done using the `str_sub` function
 and by specifying the `start` and `end` limits of the string to retain.
@@ -1954,14 +1997,23 @@ point is outside of the index limit of the string.
 ``` r
 x <- c("OneValue", "SecondValue", "ThirdValue")
 str_sub(x, 1, 3)
+```
 
+    ## [1] "One" "Sec" "Thi"
+
+``` r
 # negative numbers count backwards from end
 str_sub(x, -4, -1)
+```
 
+    ## [1] "alue" "alue" "alue"
 
-# The function will not fail in teh example below
+``` r
+# The function will not fail in the example below
 str_sub("a", 1,5)
 ```
+
+    ## [1] "a"
 
 An additional use of the of the `str_sub` function is to assign values
 to a given range on the target string
@@ -1970,6 +2022,8 @@ to a given range on the target string
 str_sub(x, 1, 1) <- str_to_lower(str_sub(x, 1, 1))
 x
 ```
+
+    ## [1] "oneValue"    "secondValue" "thirdValue"
 
 ### Customizing text for different language locales
 
@@ -1981,33 +2035,38 @@ Lithuanian in the example below.
 ``` r
 #initial string
 x = c("y", "i", "k")
-
 #sort function in English
 str_sort(x)
+```
 
+    ## [1] "i" "k" "y"
+
+``` r
 #sort function in Lithuanian
 str_sort(x,locale = "lt")
 ```
 
+    ## [1] "i" "y" "k"
+
 ### Exercises
 
-  - In code that doesn’t use stringr, you’ll often see paste() and
+-   In code that doesn’t use stringr, you’ll often see paste() and
     paste0(). What’s the difference between the two functions? What
     stringr function are they equivalent to? How do the functions differ
     in their handling of NA?
 
-  - In your own words, describe the difference between the sep and
+-   In your own words, describe the difference between the sep and
     collapse arguments to str\_c().
 
-  - Use str\_length() and str\_sub() to extract the middle character
+-   Use str\_length() and str\_sub() to extract the middle character
     from a string. What will you do if the string has an even number of
     characters?
 
-  - What does str\_wrap() do? When might you want to use it?
+-   What does str\_wrap() do? When might you want to use it?
 
-  - What does str\_trim() do? What’s the opposite of str\_trim()?
+-   What does str\_trim() do? What’s the opposite of str\_trim()?
 
-  - Write a function that turns (e.g.) a vector c(“a”, “b”, “c”) into
+-   Write a function that turns (e.g.) a vector c(“a”, “b”, “c”) into
     the string a, b, and c. Think carefully about what it should do if
     given a vector of length 0, 1, or 2.
 
@@ -2015,344 +2074,17 @@ NOTE: The content in this section as well as a more in depth analysis on
 each of the previous sections can be found in this book [R For Data
 Science](https://r4ds.had.co.nz/strings.html#exercises-32)
 
-## Regular Expressions
-
-Matching patterns with regular expressions is usually covered in a very
-large topic and one that arguably should be covered on its own course,
-however here we will consider it as part of the general string
-manipulation section and will include a flavor of what can be achieved.
-
-### Normal Pattern Matching
-
-Simple pattern matching can be achieved by using the `str_view` function
-and specifying the `string` and `pattern` arguments as shown below:
-
-``` r
-x <- c("apple", "banana", "pear")
-str_view(x, "an")
-```
-
-![](README_files/figure-gfm/unnamed-chunk-81-1.png)<!-- -->
-
-The complexity of the match can be adjusted and wildcards can be used as
-well in the form of `.` as in
-
-``` r
-str_view(x, ".a.")
-```
-
-![](README_files/figure-gfm/unnamed-chunk-82-1.png)<!-- -->
-
-An important thing to remember here is that you are looking for given
-pattern in a string or a vector of strings. Specifying the pattern to
-look for can be sometimes tricky and therefore is recommended to take a
-look at the accompanied information sheet for the `stringr` package
-located
-[here](https://evoldyn.gitlab.io/evomics-2018/ref-sheets/R_strings.pdf).
-
-The most common functions for regular expressions as well as ways to
-structure your pattern can be found in the above link.
-
-### Escaping characters
-
-We saw previously that the wildcard is represented by `.`, what happens
-if your pattern needs to include the dot `.`?
-
-For cases such as these there is a need to “escape” a character using
-the backlash `\`. So for example the dot (`.`) as stated previously
-would be normally used as `\.` in a regular expression. However, a
-problem arises since strings are used to represent regular expressions,
-they also use the backlash to represent an escaped character. The
-solution is to use the double backlash as in `\\.` to signify that we
-want to “escape” the dot (`.`) in a regular expression pattern.
-
-``` r
-# To create the regular expression, we need \\
-dot <- "\\."
-
-# But the expression itself only contains one:
-writeLines(dot)
-
-
-# And this tells R to look for an explicit .
-str_view(c("abc", "a.c", "bef"), "a\\.c")
-```
-
-![](README_files/figure-gfm/unnamed-chunk-83-1.png)<!-- -->
-
-If there is a need to match the `\` character itself then you will need
-to use the double version `\\` for regular expressions and since this is
-a string you will need to add one more `\` followed by the actual
-character. So four backlash characters will need to be used\!
-
-``` r
-#to see this in a string
-x <- "a\\b"
-writeLines(x)
-```
-
-    ## a\b
-
-``` r
-# to view the result in a RegEx
-str_view(x, "\\\\")
-```
-
-![](README_files/figure-gfm/unnamed-chunk-84-1.png)<!-- -->
-
-throughout this section the pattern for a RegEx will be presented as
-`\.` whereas the actual string as `\\.`.
-
-#### Exercises
-
-1.  Explain why each of these strings don’t match a : “",”\\“,”\\".
-
-2.  How would you match the sequence "’?
-
-3.  What patterns will the regular expression ...... match? How would
-    you represent it as a string?
-
-### Anchors
-
-It is sometimes useful to match a pattern starting from the beginning or
-the end of a string. In these cases an anchor is used to notify the
-engine that we are using a point of origin.
-
-More specifically, the start of the string is denoted by `^` and the end
-by `$`
-
-``` r
-x <- c("apple", "banana", "pear")
-str_view(x, "^a")
-```
-
-![](README_files/figure-gfm/unnamed-chunk-85-1.png)<!-- -->
-
-``` r
-str_view(x, "a$")
-```
-
-![](README_files/figure-gfm/unnamed-chunk-85-2.png)<!-- -->
-
-You can also use both in one pattern and this is useful when the entire
-string is to be matched
-
-``` r
-# this will output all possible matches
-x <- c("apple pie", "apple", "apple cake")
-str_view(x, "apple")
-```
-
-![](README_files/figure-gfm/unnamed-chunk-86-1.png)<!-- -->
-
-``` r
-# notice the difference in the result here
-str_view(x, "^apple$")
-```
-
-![](README_files/figure-gfm/unnamed-chunk-86-2.png)<!-- -->
-
-#### Exercises
-
-1.  How would you match the literal string “\(^\)”?
-
-2.  Given the corpus of common words in stringr::words, create regular
-    expressions that find all words that:
-    
-    \+Start with “y”. +End with “x” +Are exactly three letters long.
-    (Don’t cheat by using str\_length()\!) +Have seven letters or more.
-    Hint: Since this list is long, you might want to use the match
-    argument to str\_view() to show only the matching or non-matching
-    words.
-
-### Character Classes
-
-Similar to the wildcard you saw previously, there are other reserved
-patters that serve a similar purpose for example:
-
-  - `\d`: matches any digit.
-  - `\s`: matches any whitespace (e.g. space, tab, newline).
-  - `[abc]`: matches a, b, or c.
-  - `[^abc]`: matches anything except a, b, or c.
-
-A reminder here that if you want to use the above to pattern then you
-will need to escape them as we learned earlier. So the `\d` string would
-be used as `\\d` in a pattern.
-
-In addition, there is an alternative to the backlash way of escaping a
-character that involves creating a class for a single character as in
-`[.]` for example. In many cases this is considered more intuitive that
-using the backlash.
-
-A character class containing a single character is a nice alternative to
-backslash escapes when you want to include a single meta-character in a
-regex. Many people find this more readable.
-
-``` r
-# Look for a literal character that normally has special meaning in a regex
-str_view(c("abc", "a.c", "a*c", "a c"), "a[.]c")
-```
-
-![](README_files/figure-gfm/unnamed-chunk-87-1.png)<!-- -->
-
-``` r
-str_view(c("abc", "a.c", "a*c", "a c"), ".[*]c")
-```
-
-![](README_files/figure-gfm/unnamed-chunk-87-2.png)<!-- -->
-
-``` r
-str_view(c("abc", "a.c", "a*c", "a c"), "a[ ]")
-```
-
-![](README_files/figure-gfm/unnamed-chunk-87-3.png)<!-- -->
-
-However, some characters will have a certain meaning even inside
-brackets and so the backslash for escaping them is still necessary,
-these are `] \ ^ -`.
-
-Alternation is used to pick between patterns, for example `abc|d..f`
-will pick a pattern with either `c` or `d` in the definition. Note how
-the `|` is used, it will only pick between the immediate characters and
-not between the entire patterns on either side. If it gets to a point
-where it becomes confusing remember to use parenthesis to clear things
-up.
-
-``` r
-str_view(c("grey", "gray"), "gr(e|a)y")
-```
-
-![](README_files/figure-gfm/unnamed-chunk-88-1.png)<!-- -->
-
-#### Exercises
-
-1.  Create regular expressions to find all words that: +Start with a
-    vowel. +That only contain consonants. (Hint: thinking about matching
-    “not”-vowels.) +End with`ed`, but not with `eed`. +End with `ing`
-    or`ise`.
-2.  Empirically verify the rule “i before e except after c”.
-3.  Is “q” always followed by a “u”?
-4.  Write a regular expression that matches a word if it’s probably
-    written in British English, not American English.
-5.  Create a regular expression that will match telephone numbers as
-    commonly written in your country.
-
-### Repetition
-
-It is sometimes necessary for a certain pattern to appear multiple time
-within a string, in such cases these repetitions can be coded with
-regular expressions to automate the search process.
-
-for example:
-
-  - `?`: 0 or 1
-  - `+`: 1 or more
-  - `*`: 0 or more
-
-<!-- end list -->
-
-``` r
-x <- "1888 is the longest year in Roman numerals: MDCCCLXXXVIII"
-str_view(x, "CC?")
-```
-
-![](README_files/figure-gfm/unnamed-chunk-89-1.png)<!-- -->
-
-``` r
-str_view(x, "CC+")
-```
-
-![](README_files/figure-gfm/unnamed-chunk-89-2.png)<!-- -->
-
-``` r
-str_view(x, 'C[LX]+')
-```
-
-![](README_files/figure-gfm/unnamed-chunk-89-3.png)<!-- -->
-
-Another key aspect of the above code is that the number or precedence
-here dictates that the character just before the operator will be
-affected. This means that parenthesis will need to be used as in
-`bana(na)+` to capture more than one character.
-
-It is also possible to specify the number of repetitions explicitly by
-using:
-
-  - `{n}`: exactly n
-  - `{n,}`: n or more
-  - `{,m}`: at most m
-  - `{n,m}`: between n and m
-
-<!-- end list -->
-
-``` r
-str_view(x, "C{2}")
-```
-
-![](README_files/figure-gfm/unnamed-chunk-90-1.png)<!-- -->
-
-``` r
-str_view(x, "C{2,}")
-```
-
-![](README_files/figure-gfm/unnamed-chunk-90-2.png)<!-- -->
-
-``` r
-str_view(x, "C{2,3}")
-```
-
-![](README_files/figure-gfm/unnamed-chunk-90-3.png)<!-- -->
-
-To also note here that the system will match as many of the characters
-that it can find. To switch this behavior off and use what is called
-“lazy” matching (instead of “greedy” as specified earlier) the `?`
-operator can be used as follows:
-
-``` r
-str_view(x, 'C{2,3}?')
-```
-
-![](README_files/figure-gfm/unnamed-chunk-91-1.png)<!-- -->
-
-``` r
-str_view(x, 'C[LX]+?')
-```
-
-![](README_files/figure-gfm/unnamed-chunk-91-2.png)<!-- -->
-
-#### Exercises
-
-1.  Describe the equivalents of `?`, `+`,`*` in `{m,n}` form.
-
-2.  Describe in words what these regular expressions match: (read
-    carefully to see if I’m using a regular expression or a string that
-    defines a regular expression.)
-    
-      - `^.*$`
-      - `"\\{.+\\}"`
-      - `\d{4}-\d{2}-\d{2}`
-      - `"\\\\{4}"`
-
-3.  Create regular expressions to find all words that:
-    
-      - Start with three consonants.
-      - Have three or more vowels in a row.
-      - Have two or more vowel-consonant pairs in a row.
-
-4.  Solve the beginner regexp crosswords at
-    \[<https://regexcrossword.com/challenges/beginner>\].
-
-### Additional Functions
+## Additional Functions
 
 The `stringr` package comes with additional function wrappers that make
 the most common string operations somewhat easier. For example the
 following matching behavior can be conducted using the premade
 functions:
 
-  - Determine which strings match a pattern.
-  - Find the positions of matches.
-  - Extract the content of matches.
-  - Replace matches with new values.
+-   Determine which strings match a pattern.
+-   Find the positions of matches.
+-   Extract the content of matches.
+-   Replace matches with new values.
 
 The list is actually a lot longer so here we will briefly discuss how
 the most popular string matching operations can be performed using the
@@ -2369,11 +2101,6 @@ below illustrates.
 ``` r
 x <- c("apple", "banana", "pear")
 str_detect(x, "e")
-```
-
-    ## [1]  TRUE FALSE  TRUE
-
-``` r
 #> [1]  TRUE FALSE  TRUE
 ```
 
@@ -2385,19 +2112,9 @@ makes counting instances of a pattern being detected much easier.
 ``` r
 # How many common words start with t?
 sum(str_detect(words, "^t"))
-```
-
-    ## [1] 65
-
-``` r
 #> [1] 65
 # What proportion of common words end with a vowel?
 mean(str_detect(words, "[aeiou]$"))
-```
-
-    ## [1] 0.2765306
-
-``` r
 #> [1] 0.2765306
 ```
 
@@ -2408,20 +2125,10 @@ vector.
 ``` r
 x <- c("apple", "banana", "pear")
 str_count(x, "a")
-```
-
-    ## [1] 1 3 1
-
-``` r
 #> [1] 1 3 1
 
 # On average, how many vowels per word?
 mean(str_count(words, "[aeiou]"))
-```
-
-    ## [1] 1.991837
-
-``` r
 #> [1] 1.991837
 ```
 
@@ -2436,20 +2143,8 @@ it can also be used for regex examples as well.
 
 ``` r
 length(sentences)
-```
-
-    ## [1] 720
-
-``` r
 #> [1] 720
 head(sentences)
-```
-
-    ## [1] "The birch canoe slid on the smooth planks."  "Glue the sheet to the dark blue background."
-    ## [3] "It's easy to tell the depth of a well."      "These days a chicken leg is a rare dish."   
-    ## [5] "Rice is often served in round bowls."        "The juice of lemons makes fine punch."
-
-``` r
 #> [1] "The birch canoe slid on the smooth planks." 
 #> [2] "Glue the sheet to the dark blue background."
 #> [3] "It's easy to tell the depth of a well."     
@@ -2467,11 +2162,6 @@ string to be used as the pattern.
 colours <- c("red", "orange", "yellow", "green", "blue", "purple")
 colour_match <- str_c(colours, collapse = "|")
 colour_match
-```
-
-    ## [1] "red|orange|yellow|green|blue|purple"
-
-``` r
 #> [1] "red|orange|yellow|green|blue|purple"
 ```
 
@@ -2483,11 +2173,6 @@ created.
 has_colour <- str_subset(sentences, colour_match)
 matches <- str_extract(has_colour, colour_match)
 head(matches)
-```
-
-    ## [1] "blue" "blue" "red"  "red"  "red"  "blue"
-
-``` r
 #> [1] "blue" "blue" "red"  "red"  "red"  "blue"
 ```
 
@@ -2499,20 +2184,13 @@ one match.
 
 ``` r
 more <- sentences[str_count(sentences, colour_match) > 1]
-str_view_all(more, colour_match)
+# str_view_all(more, colour_match)
 ```
-
-![](README_files/figure-gfm/unnamed-chunk-98-1.png)<!-- -->
 
 Notice how `str_extract` works with these source vectors.
 
 ``` r
 str_extract(more, colour_match)
-```
-
-    ## [1] "blue"   "green"  "orange"
-
-``` r
 #> [1] "blue"   "green"  "orange"
 ```
 
@@ -2524,18 +2202,8 @@ string that match a pattern with a new replacement string.
 ``` r
 x <- c("apple", "pear", "banana")
 str_replace(x, "[aeiou]", "-")
-```
-
-    ## [1] "-pple"  "p-ar"   "b-nana"
-
-``` r
 #> [1] "-pple"  "p-ar"   "b-nana"
 str_replace_all(x, "[aeiou]", "-")
-```
-
-    ## [1] "-ppl-"  "p--r"   "b-n-n-"
-
-``` r
 #> [1] "-ppl-"  "p--r"   "b-n-n-"
 ```
 
@@ -2545,11 +2213,6 @@ in all the elements of a character vector.
 ``` r
 x <- c("1 house", "2 cars", "3 people")
 str_replace_all(x, c("1" = "one", "2" = "two", "3" = "three"))
-```
-
-    ## [1] "one house"    "two cars"     "three people"
-
-``` r
 #> [1] "one house"    "two cars"     "three people"
 ```
 
@@ -2560,13 +2223,6 @@ the same string as replacements
 sentences %>% 
   str_replace("([^ ]+) ([^ ]+) ([^ ]+)", "\\1 \\3 \\2") %>% 
   head(5)
-```
-
-    ## [1] "The canoe birch slid on the smooth planks."  "Glue sheet the to the dark blue background."
-    ## [3] "It's to easy tell the depth of a well."      "These a days chicken leg is a rare dish."   
-    ## [5] "Rice often is served in round bowls."
-
-``` r
 #> [1] "The canoe birch slid on the smooth planks." 
 #> [2] "Glue sheet the to the dark blue background."
 #> [3] "It's to easy tell the depth of a well."     
@@ -2581,11 +2237,11 @@ sentences %>%
 1.  For each of the following challenges, try solving it by using both a
     single regular expression, and a combination of multiple
     str\_detect() calls.
-    
+
     1.  Find all words that start or end with x.
-    
+
     2.  Find all words that start with a vowel and end with a consonant.
-    
+
     3.  Are there any words that contain at least one of each different
         vowel?
 
@@ -2600,7 +2256,7 @@ sentences %>%
     problem.
 
 2.  From the Harvard sentences data, extract:
-    
+
     1.  The first word from each sentence.
     2.  All words ending in ing.
     3.  All plurals.
@@ -2614,66 +2270,169 @@ sentences %>%
 3.  Switch the first and last letters in words. Which of those strings
     are still words?
 
-# Further reading
+# Further Reading
 
 ### General
 
-  - [Tidyverse website](https://www.tidyverse.org)
-  - [R for Data Science](https://r4ds.had.co.nz)
-  - [Advanced R](https://adv-r.hadley.nz)
-  - [Tidyverse style guide](https://style.tidyverse.org/) (has some
+-   [Bonus
+    examples](https://github.com/moj-analytical-services/intro_r_training_extension#bonus-examples)
+-   [Appendix](https://github.com/moj-analytical-services/intro_r_training_extension#appendix)
+-   [Tidyverse website](https://www.tidyverse.org)
+-   [R for Data Science](https://r4ds.had.co.nz)
+-   [Advanced R](https://adv-r.hadley.nz)
+-   [Tidyverse style guide](https://style.tidyverse.org/) (has some
     guidance on choosing function and argument names)
-  - [MoJ coding
+-   [MoJ coding
     standards](https://moj-analytical-services.github.io/our-coding-standards/)
 
 ### Conditional statements
 
-  - [Advanced R - choices
+-   [Advanced R - choices
     section](https://adv-r.hadley.nz/control-flow.html#choices)
 
 ### Iteration
 
-  - [R for Data Science - iteration
+-   [R for Data Science - iteration
     chapter](https://r4ds.had.co.nz/iteration.html)
-  - [Advanced R - loops
+-   [Advanced R - loops
     section](https://adv-r.hadley.nz/control-flow.html#loops)
 
 ### Strings and regex
 
-  - [R for Data Science - strings
+-   [R for Data Science - strings
     chapter](https://r4ds.had.co.nz/strings.html)
-  - [stringr and regex
+-   [stringr and regex
     cheatsheet](https://evoldyn.gitlab.io/evomics-2018/ref-sheets/R_strings.pdf)
-  - [Regex Coffee & Coding
+-   [Regex Coffee & Coding
     session](https://github.com/moj-analytical-services/Coffee-and-Coding/tree/master/2019-03-13%20Regex)
 
 ### Reshaping data
 
-  - [Tidyverse website - pivoting
+-   [Tidyverse website - pivoting
     section](https://tidyr.tidyverse.org/dev/articles/pivot.html)
-  - [R for Data Science - pivoting
+-   [R for Data Science - pivoting
     chapter](https://r4ds.had.co.nz/tidy-data.html#pivoting)
 
-# ‘Real world’ examples
+# Bonus examples
 
 Let’s take a look at a few more examples and tackle some problems that
 we might encounter as an analyst in DASD.
 
+## Example 1 - reshaping
+
+Let’s look at an example with some aggregate data based on the
+`offenders` dataset:
+
 ``` r
-# Read data
-prosecutions_and_convictions <- s3tools::s3_path_to_full_df(
-  "alpha-r-training/writing-functions-in-r/prosecutions-and-convictions-2018.csv")
+offenders_summary <- offenders %>%
+  group_by(REGION, SENTENCE) %>%
+  summarise(offender_count = n())
 ```
 
-    ## using csv (or similar) method, reading directly to R supported
+    ## `summarise()` has grouped output by 'REGION'. You can override using the `.groups` argument.
 
 ``` r
+offenders_summary
+```
+
+    ## # A tibble: 12 x 3
+    ## # Groups:   REGION [4]
+    ##    REGION SENTENCE    offender_count
+    ##    <chr>  <chr>                <int>
+    ##  1 East   Court_order            211
+    ##  2 East   Prison_<12m            108
+    ##  3 East   Prison_12m+             33
+    ##  4 North  Court_order            219
+    ##  5 North  Prison_<12m             94
+    ##  6 North  Prison_12m+             45
+    ##  7 South  Court_order            235
+    ##  8 South  Prison_<12m            115
+    ##  9 South  Prison_12m+             28
+    ## 10 West   Court_order            191
+    ## 11 West   Prison_<12m            100
+    ## 12 West   Prison_12m+             34
+
+### Transforming from long to wide format
+
+The above summary dataframe could be described as being in a ‘long’
+format - where there are minimal columns and lots of rows. This format
+tends not to be used for presenting data, as it is more difficult to
+look at and interpret. Therefore wider formats are often used to display
+data, where there are more columns but fewer rows. We can use the
+`pivot_wider()` function from tidyr to help us transform from a long
+format to a wide format, like so:
+
+``` r
+offenders_summary <- offenders_summary %>%
+  tidyr::pivot_wider(names_from = "SENTENCE", values_from = "offender_count")
+
+offenders_summary
+```
+
+    ## # A tibble: 4 x 4
+    ## # Groups:   REGION [4]
+    ##   REGION Court_order `Prison_<12m` `Prison_12m+`
+    ##   <chr>        <int>         <int>         <int>
+    ## 1 East           211           108            33
+    ## 2 North          219            94            45
+    ## 3 South          235           115            28
+    ## 4 West           191           100            34
+
+In the `names_from` argument of `pivot_wider()`, we’ve specifed that we
+want to create new columns based on the different categories in the
+`SENTENCE` column - so there will be one new column for each of the
+three categories that appear in `SENTENCE`. Then we use the
+`values_from` argument to specify that we want values from the
+`offender_count` column to go into those new columns.
+
+### Transforming from wide to long format
+
+In order to reverse the reshaping that we’ve just done, and go back from
+a wide format to a long format, we can use the `pivot_longer()`
+function:
+
+``` r
+offenders_summary <- offenders_summary %>%
+  tidyr::pivot_longer(cols = -REGION, names_to = "SENTENCE", values_to = "offender_count")
+
+offenders_summary
+```
+
+    ## # A tibble: 12 x 3
+    ## # Groups:   REGION [4]
+    ##    REGION SENTENCE    offender_count
+    ##    <chr>  <chr>                <int>
+    ##  1 East   Court_order            211
+    ##  2 East   Prison_<12m            108
+    ##  3 East   Prison_12m+             33
+    ##  4 North  Court_order            219
+    ##  5 North  Prison_<12m             94
+    ##  6 North  Prison_12m+             45
+    ##  7 South  Court_order            235
+    ##  8 South  Prison_<12m            115
+    ##  9 South  Prison_12m+             28
+    ## 10 West   Court_order            191
+    ## 11 West   Prison_<12m            100
+    ## 12 West   Prison_12m+             34
+
+The `cols` argument of `pivot_longer()` has been set to `-REGION`, which
+means that all columns apart from `REGION` will be reshaped. Then the
+`names_to` argument is used to specify that we want the names of those
+columns to go into a new column called `SENTENCE`, and the `values_to`
+argument is used to specify that we want the values in those column to
+go into a new column called `offender_count`.
+
+## Example 2
+
+``` r
+# Read data
+prosecutions_and_convictions <- botor::s3_read(
+  "s3://alpha-r-training/writing-functions-in-r/prosecutions-and-convictions-2018.csv", read.csv)
+
 # Filter for Magistrates Court to extract the prosecutions
 prosecutions <- prosecutions_and_convictions %>%
   filter(`Court.Type` == "Magistrates Court")
 ```
-
-## Example 1
 
 The following code is used to prepare a table that will form the basis
 of this example. This table will show the number of prosecutions over
@@ -2690,7 +2449,11 @@ time_series <- prosecutions %>%
   tidyr::pivot_wider(names_from = "Year", values_from = "Count", values_fill = c("Count" = 0)) %>%
   arrange(Offence.Type, Offence.Group) %>%
   ungroup()
+```
 
+    ## `summarise()` has grouped output by 'Year', 'Offence.Type'. You can override using the `.groups` argument.
+
+``` r
 # This removes repeated row labels, to replicate how this data might be displayed in Excel
 time_series$Offence.Type[duplicated(time_series$Offence.Type)] <- NA
 
@@ -2803,7 +2566,11 @@ Now we’re ready to find the total for each offence group using
 totals <- time_series_long %>%
   group_by(Offence.Type, Offence.Group) %>%
   summarise(Total = sum(count))
+```
 
+    ## `summarise()` has grouped output by 'Offence.Type'. You can override using the `.groups` argument.
+
+``` r
 totals
 ```
 
@@ -2857,15 +2624,267 @@ to be edited.
 ## Table of operators
 
 | Operator | Definition                    |
-| :------: | :---------------------------- |
-|   \==    | Equal to                      |
-|   \!=    | Not equal to                  |
-|    \>    | Greater than                  |
-|    \<    | Less than                     |
-|   \>=    | Greater than or equal to      |
-|   \<=    | Less than or equal to         |
+|:--------:|:------------------------------|
+|    ==    | Equal to                      |
+|    !=    | Not equal to                  |
+|   &gt;   | Greater than                  |
+|   &lt;   | Less than                     |
+|  &gt;=   | Greater than or equal to      |
+|  &lt;=   | Less than or equal to         |
 |    ǀ     | Or                            |
 |    &     | And                           |
-|    \!    | Not                           |
+|    !     | Not                           |
 |   %in%   | The subject appears in a list |
 | is.na()  | The subject is NA             |
+
+## Regular Expressions
+
+Matching patterns with regular expressions is a large topic and one that
+could be a course of its own. Here we include a flavor of what can be
+achieved.
+
+### Normal Pattern Matching
+
+Simple pattern matching can be achieved by using the `str_view` function
+and specifying the `string` and `pattern` arguments as shown below:
+
+``` r
+x <- c("apple", "banana", "pear")
+# str_view(x, "an")
+```
+
+The complexity of the match can be adjusted and wildcards can be used as
+well in the form of `.` as in
+
+``` r
+# str_view(x, ".a.")
+```
+
+An important thing to remember here is that you are looking for given
+pattern in a string or a vector of strings. Specifying the pattern to
+look for can be sometimes tricky and therefore is recommended to take a
+look at the accompanied information sheet for the `stringr` package
+located
+[here](https://evoldyn.gitlab.io/evomics-2018/ref-sheets/R_strings.pdf).
+
+The most common functions for regular expressions as well as ways to
+structure your pattern can be found in the above link.
+
+### Escaping characters
+
+We saw previously that the wildcard is represented by `.`, what happens
+if your pattern needs to include the dot `.`?
+
+For cases such as these there is a need to “escape” a character using
+the backlash `\`. So for example the dot (`.`) as stated previously
+would be normally used as `\.` in a regular expression. However, a
+problem arises since strings are used to represent regular expressions,
+they also use the backlash to represent an escaped character. The
+solution is to use the double backlash as in `\\.` to signify that we
+want to “escape” the dot (`.`) in a regular expression pattern.
+
+``` r
+# To create the regular expression, we need \\
+dot <- "\\."
+# But the expression itself only contains one:
+writeLines(dot)
+# And this tells R to look for an explicit .
+# str_view(c("abc", "a.c", "bef"), "a\\.c")
+```
+
+If there is a need to match the `\` character itself then you will need
+to use the double version `\\` for regular expressions and since this is
+a string you will need to add one more `\` followed by the actual
+character. So four backlash characters will need to be used!
+
+``` r
+#to see this in a string
+x <- "a\\b"
+writeLines(x)
+```
+
+    ## a\b
+
+``` r
+# to view the result in a RegEx
+# str_view(x, "\\\\")
+```
+
+throughout this section the pattern for a RegEx will be presented as
+`\.` whereas the actual string as `\\.`.
+
+#### Exercises
+
+1.  Explain why each of these strings don’t match a : “",”\\“,”\\".
+
+2.  How would you match the sequence "’?
+
+3.  What patterns will the regular expression ...... match? How would
+    you represent it as a string?
+
+### Anchors
+
+It is sometimes useful to match a pattern starting from the beginning or
+the end of a string. In these cases an anchor is used to notify the
+engine that we are using a point of origin.
+
+More specifically, the start of the string is denoted by `^` and the end
+by `$`
+
+``` r
+x <- c("apple", "banana", "pear")
+# str_view(x, "^a")
+# str_view(x, "a$")
+```
+
+You can also use both in one pattern and this is useful when the entire
+string is to be matched
+
+``` r
+# this will output all possible matches
+x <- c("apple pie", "apple", "apple cake")
+# str_view(x, "apple")
+# notice the difference in the result here
+# str_view(x, "^apple$")
+```
+
+#### Exercises
+
+1.  How would you match the literal string “$^$”?
+
+2.  Given the corpus of common words in stringr::words, create regular
+    expressions that find all words that:
+
+    +Start with “y”. +End with “x” +Are exactly three letters long.
+    (Don’t cheat by using str\_length()!) +Have seven letters or more.
+    Hint: Since this list is long, you might want to use the match
+    argument to str\_view() to show only the matching or non-matching
+    words.
+
+### Character Classes
+
+Similar to the wildcard you saw previously, there are other reserved
+patters that serve a similar purpose for example:
+
+-   `\d`: matches any digit.
+-   `\s`: matches any whitespace (e.g. space, tab, newline).
+-   `[abc]`: matches a, b, or c.
+-   `[^abc]`: matches anything except a, b, or c.
+
+A reminder here that if you want to use the above to pattern then you
+will need to escape them as we learned earlier. So the `\d` string would
+be used as `\\d` in a pattern.
+
+In addition, there is an alternative to the backlash way of escaping a
+character that involves creating a class for a single character as in
+`[.]` for example. In many cases this is considered more intuitive that
+using the backlash.
+
+A character class containing a single character is a nice alternative to
+backslash escapes when you want to include a single meta-character in a
+regex. Many people find this more readable.
+
+``` r
+# Look for a literal character that normally has special meaning in a regex
+# str_view(c("abc", "a.c", "a*c", "a c"), "a[.]c")
+# str_view(c("abc", "a.c", "a*c", "a c"), ".[*]c")
+# str_view(c("abc", "a.c", "a*c", "a c"), "a[ ]")
+```
+
+However, some characters will have a certain meaning even inside
+brackets and so the backslash for escaping them is still necessary,
+these are `] \ ^ -`.
+
+Alternation is used to pick between patterns, for example `abc|d..f`
+will pick a pattern with either `c` or `d` in the definition. Note how
+the `|` is used, it will only pick between the immediate characters and
+not between the entire patterns on either side. If it gets to a point
+where it becomes confusing remember to use parenthesis to clear things
+up.
+
+``` r
+# str_view(c("grey", "gray"), "gr(e|a)y")
+```
+
+#### Exercises
+
+1.  Create regular expressions to find all words that: +Start with a
+    vowel. +That only contain consonants. (Hint: thinking about matching
+    “not”-vowels.) +End with`ed`, but not with `eed`. +End with `ing`
+    or`ise`.
+2.  Empirically verify the rule “i before e except after c”.
+3.  Is “q” always followed by a “u”?
+4.  Write a regular expression that matches a word if it’s probably
+    written in British English, not American English.
+5.  Create a regular expression that will match telephone numbers as
+    commonly written in your country.
+
+### Repetition
+
+It is sometimes necessary for a certain pattern to appear multiple time
+within a string, in such cases these repetitions can be coded with
+regular expressions to automate the search process.
+
+for example:
+
+-   `?`: 0 or 1
+-   `+`: 1 or more
+-   `*`: 0 or more
+
+``` r
+x <- "1888 is the longest year in Roman numerals: MDCCCLXXXVIII"
+# str_view(x, "CC?")
+# str_view(x, "CC+")
+# str_view(x, 'C[LX]+')
+```
+
+Another key aspect of the above code is that the number or precedence
+here dictates that the character just before the operator will be
+affected. This means that parenthesis will need to be used as in
+`bana(na)+` to capture more than one character.
+
+It is also possible to specify the number of repetitions explicitly by
+using:
+
+-   `{n}`: exactly n
+-   `{n,}`: n or more
+-   `{,m}`: at most m
+-   `{n,m}`: between n and m
+
+``` r
+# str_view(x, "C{2}")
+# str_view(x, "C{2,}")
+# str_view(x, "C{2,3}")
+```
+
+To also note here that the system will match as many of the characters
+that it can find. To switch this behavior off and use what is called
+“lazy” matching (instead of “greedy” as specified earlier) the `?`
+operator can be used as follows:
+
+``` r
+# str_view(x, 'C{2,3}?')
+# str_view(x, 'C[LX]+?')
+```
+
+#### Exercises
+
+1.  Describe the equivalents of `?`, `+`,`*` in `{m,n}` form.
+
+2.  Describe in words what these regular expressions match: (read
+    carefully to see if I’m using a regular expression or a string that
+    defines a regular expression.)
+
+    -   `^.*$`
+    -   `"\\{.+\\}"`
+    -   `\d{4}-\d{2}-\d{2}`
+    -   `"\\\\{4}"`
+
+3.  Create regular expressions to find all words that:
+
+    -   Start with three consonants.
+    -   Have three or more vowels in a row.
+    -   Have two or more vowel-consonant pairs in a row.
+
+4.  Solve the beginner regexp crosswords at
+    \[<https://regexcrossword.com/challenges/beginner>\].
