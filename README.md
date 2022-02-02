@@ -2,7 +2,7 @@ Introduction to R extension
 ================
 
 This repository is for the Introduction to R extension course offered by
-the DASD R Training Group.
+the Data & Analysis R Training Group.
 
 The session is intended to be accessible to anyone who is familiar with
 the content of the [Introduction to
@@ -51,7 +51,7 @@ script example\_code.R.
 This course builds on the original Introduction to R training course,
 and covers additional programming concepts. It provides examples that
 demonstrate how the Tidyverse packages can assist with tasks typically
-encountered in DASD.
+encountered in MoJ Data & Analysis.
 
 Development of the Tidyverse suite of packages was led by Hadley
 Wickham, and more information about these packages can be found on the
@@ -567,18 +567,18 @@ df
     ## # A tibble: 12 x 3
     ##    year  quarter count
     ##    <chr> <chr>   <int>
-    ##  1 2017  Q1          9
-    ##  2 <NA>  Q2          5
-    ##  3 <NA>  Q3          4
-    ##  4 <NA>  Q4          1
-    ##  5 2018  Q1          8
-    ##  6 <NA>  Q2         12
-    ##  7 <NA>  Q3          2
-    ##  8 <NA>  Q4          6
-    ##  9 2019  Q1         10
-    ## 10 <NA>  Q2         11
-    ## 11 <NA>  Q3          3
-    ## 12 <NA>  Q4          7
+    ##  1 2017  Q1          6
+    ##  2 <NA>  Q2          1
+    ##  3 <NA>  Q3          8
+    ##  4 <NA>  Q4          2
+    ##  5 2018  Q1         11
+    ##  6 <NA>  Q2          3
+    ##  7 <NA>  Q3          5
+    ##  8 <NA>  Q4          9
+    ##  9 2019  Q1         12
+    ## 10 <NA>  Q2          7
+    ## 11 <NA>  Q3         10
+    ## 12 <NA>  Q4          4
 
 The `fill()` function from tidyr is a convenient way to do this, and can
 be used like this:
@@ -590,18 +590,18 @@ df %>% tidyr::fill(year)
     ## # A tibble: 12 x 3
     ##    year  quarter count
     ##    <chr> <chr>   <int>
-    ##  1 2017  Q1          9
-    ##  2 2017  Q2          5
-    ##  3 2017  Q3          4
-    ##  4 2017  Q4          1
-    ##  5 2018  Q1          8
-    ##  6 2018  Q2         12
-    ##  7 2018  Q3          2
-    ##  8 2018  Q4          6
-    ##  9 2019  Q1         10
-    ## 10 2019  Q2         11
-    ## 11 2019  Q3          3
-    ## 12 2019  Q4          7
+    ##  1 2017  Q1          6
+    ##  2 2017  Q2          1
+    ##  3 2017  Q3          8
+    ##  4 2017  Q4          2
+    ##  5 2018  Q1         11
+    ##  6 2018  Q2          3
+    ##  7 2018  Q3          5
+    ##  8 2018  Q4          9
+    ##  9 2019  Q1         12
+    ## 10 2019  Q2          7
+    ## 11 2019  Q3         10
+    ## 12 2019  Q4          4
 
 ## Removing rows with missing values from a dataframe
 
@@ -702,28 +702,28 @@ the task now is to calculate, for example, the mean or the median:
 median(df$a)
 ```
 
-    ## [1] 0.008711174
+    ## [1] -0.07025371
 
 ``` r
 #> [1] -0.2457625
 median(df$b)
 ```
 
-    ## [1] -0.5213911
+    ## [1] 0.4591695
 
 ``` r
 #> [1] -0.2873072
 median(df$c)
 ```
 
-    ## [1] -0.08181994
+    ## [1] 0.005129257
 
 ``` r
 #> [1] -0.05669771
 median(df$d)
 ```
 
-    ## [1] -0.8664605
+    ## [1] -0.6329
 
 ``` r
 #> [1] 0.1442633
@@ -742,7 +742,7 @@ for (i in seq_along(df)) {            # 2. sequence
 output
 ```
 
-    ## [1]  0.008711174 -0.521391106 -0.081819937 -0.866460488
+    ## [1] -0.070253707  0.459169490  0.005129257 -0.632900025
 
 ``` r
 #> [1] -0.24576245 -0.28730721 -0.05669771  0.14426335
@@ -878,16 +878,16 @@ for(i in vowel){
   }
 ```
 
-    ##         a 
-    ## 0.9755523 
+    ##          a 
+    ## -0.7149123 
     ##         e 
-    ## 0.6062281 
-    ##         i 
-    ## 0.7745523 
-    ##          o 
-    ## -0.9812224 
-    ##         u 
-    ## 0.9512958
+    ## -1.638549 
+    ##           i 
+    ## -0.09378904 
+    ##         o 
+    ## 0.9392581 
+    ##          u 
+    ## -0.5860504
 
 ### Handling outputs of unknown length
 
@@ -950,49 +950,16 @@ while(mean(numbers) < 0.5){
 }
 ```
 
-    ## [1] -0.08128621
-    ## [1] -0.03804448
-    ## [1] -0.07151508
-    ## [1] 0.249634
-    ## [1] 0.3503244
-    ## [1] 0.004755578
-    ## [1] -0.2448568
-    ## [1] -0.1104974
-    ## [1] -0.1076931
-    ## [1] 0.3355783
-    ## [1] -0.07047475
-    ## [1] 0.1414652
-    ## [1] 0.141561
-    ## [1] -0.1511802
-    ## [1] -0.3362241
-    ## [1] 0.1568241
-    ## [1] -0.1267873
-    ## [1] 0.02720088
-    ## [1] -0.3196602
-    ## [1] 0.07251461
-    ## [1] -0.03893471
-    ## [1] -0.3178789
-    ## [1] -0.04512388
-    ## [1] 0.002402108
-    ## [1] -0.06547899
-    ## [1] 0.1561976
-    ## [1] 0.03407181
-    ## [1] -0.1482138
-    ## [1] 0.3059705
-    ## [1] 0.2553015
-    ## [1] 0.2593327
-    ## [1] -0.2184022
-    ## [1] 0.07368173
-    ## [1] -0.07069272
-    ## [1] -0.1177795
-    ## [1] 0.3027399
-    ## [1] -0.2090169
-    ## [1] 0.3980718
-    ## [1] 0.2434061
-    ## [1] 0.04963118
-    ## [1] -0.2422289
-    ## [1] 0.1321036
-    ## [1] 0.557459
+    ## [1] 0.06194961
+    ## [1] -0.4477576
+    ## [1] 0.1621811
+    ## [1] 0.03442124
+    ## [1] -0.4094331
+    ## [1] 0.4108247
+    ## [1] 0.03613671
+    ## [1] -0.2294146
+    ## [1] 0.1598702
+    ## [1] 0.5209681
 
 \#\#Exercises
 
@@ -2316,7 +2283,7 @@ sentences %>%
 # Bonus examples
 
 Let’s take a look at a few more examples and tackle some problems that
-we might encounter as an analyst in DASD.
+we might encounter as an analyst in MoJ.
 
 ## Example 1 - reshaping
 
