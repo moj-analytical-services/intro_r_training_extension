@@ -1,17 +1,9 @@
 # Reshaping data
 
 
-```{r, echo=F, message=F, results=F}
-# loading packages
-# 
-library(tidyr)
-library(dplyr)
-library(readr)
-```
-
 The tidyr package can help us to reshape dataframes - this can be really helpful when we need to transform between tables that are easier to read and tables that are easier to analyse. The aim here is to structure the resulting datasets so that they could be manipulated easier in further stages of the processing. 
 
-I should mention at this point that the source for the material presented in this chapter can be found in this [pivoting vignette](https://tidyr.tidyverse.org/dev/articles/pivot.html#generate-column-name-from-multiple-variables-1) as well as in the book by the same author, Hadley Wickam, titled [R For Data Sciecne](https://r4ds.had.co.nz/).
+I should mention at this point that the source for the material presented in this chapter can be found in this [pivoting vignette](https://tidyr.tidyverse.org/dev/articles/pivot.html#generate-column-name-from-multiple-variables-1) as well as in the book by the same author, Hadley Wickam, titled [R For Data Science](https://r4ds.had.co.nz/).
 
 In many scenarios, although the data could be complete in the sense of it containing the desired variables, it is not quite in the right format requiring additional manipulation to bring it in line.
 
@@ -26,7 +18,7 @@ Consider the `billboard` dataset supplied with tidyr (should be in you workspace
 
 The aim now is to create a single variable to house the different weeks in order to create a different representation of for the data. First we start by the mapping the first month into a single variable.
 
-```{r}
+```{r, purl=purl_example_code}
 ?billboard
 # notice the dimensions of the data
 dim(billboard)
@@ -49,7 +41,7 @@ In that case, the following structure comes into play where regular expressions 
 
 
 
-```{r}
+```{r, purl=purl_example_code}
 #mapping all weeks to one varable called "weeks" 
 billboard %>% pivot_longer(cols = starts_with("wk"), names_to = "weeks", values_to = "rank") %>% head()
 ```
@@ -62,7 +54,7 @@ And so with this neat little trick, we've managed to bring the dataset into a be
 
 In some circumstances pivoting can also be used to construct a more robust for ease of use in later stages of the analysis. In these cases the dataset contains variables that are similar in their structure with the aim being to gather them in to one, cleaner, format. Consider the `asncombe` dataset that comes with basic R as shown below:
 
-```{r}
+```{r, purl=purl_example_code}
 #dataset
 anscombe
 ```
@@ -71,7 +63,7 @@ As it is apparent, the basis for each variable is the same (x1,x2, y1,y2 etc) an
 
 In such cases, `pivot_longer` offers an elegant solution to the problem by automatically selecting the common patterns and using them as the new variables.
 
-```{r}
+```{r, purl=purl_example_code}
 # using ".value" and "everything()" to select common variables
 anscombe %>% pivot_longer(everything(),
    names_to = c(".value", "set"),
@@ -94,64 +86,23 @@ The `names_pattern` or `name_sep()` options make explicit use of the `extract()`
 
 Consider the `fish_encounters` dataset, contributed by **Myfanwy Johnston** depicted below. It describes whether fish swimming down a river are detected or not by automatic monitoring stations.
 
-```{r}
-fish_encounters
-#> # A tibble: 114 x 3
-#>    fish  station  seen
-#>    <fct> <fct>   <int>
-#>  1 4842  Release     1
-#>  2 4842  I80_1       1
-#>  3 4842  Lisbon      1
-#>  4 4842  Rstr        1
-#>  5 4842  Base_TD     1
-#>  6 4842  BCE         1
-#>  7 4842  BCW         1
-#>  8 4842  BCE2        1
-#>  9 4842  BCW2        1
-#> 10 4842  MAE         1
-#> # … with 104 more rows
+```{r, purl=purl_example_code}
+fish_encounters %>% head(10)
 ```
 
 A simple use of the function can provide a better understanding of what the data contains and also make it more useful for potential use in later stages of a processing system where specific input from each station can be utilized. 
 
 
-```{r}
+```{r, purl=purl_example_code}
 fish_encounters %>% pivot_wider(names_from = station, values_from = seen)
-#> # A tibble: 19 x 12
-#>    fish  Release I80_1 Lisbon  Rstr Base_TD   BCE   BCW  BCE2  BCW2   MAE   MAW
-#>    <fct>   <int> <int>  <int> <int>   <int> <int> <int> <int> <int> <int> <int>
-#>  1 4842        1     1      1     1       1     1     1     1     1     1     1
-#>  2 4843        1     1      1     1       1     1     1     1     1     1     1
-#>  3 4844        1     1      1     1       1     1     1     1     1     1     1
-#>  4 4845        1     1      1     1       1    NA    NA    NA    NA    NA    NA
-#>  5 4847        1     1      1    NA      NA    NA    NA    NA    NA    NA    NA
-#>  6 4848        1     1      1     1      NA    NA    NA    NA    NA    NA    NA
-#>  7 4849        1     1     NA    NA      NA    NA    NA    NA    NA    NA    NA
-#>  8 4850        1     1     NA     1       1     1     1    NA    NA    NA    NA
-#>  9 4851        1     1     NA    NA      NA    NA    NA    NA    NA    NA    NA
-#> 10 4854        1     1     NA    NA      NA    NA    NA    NA    NA    NA    NA
-#> # … with 9 more rows
 ```
 
 The general use is very similar to that presented in ``pivot_longer()` with `names_from` targeting the column containing the subcategories to split from and `values_from` the corresponding values associated with each category. 
-Notice that there will be cases where there is no match and these will initially be filled with `NA`. Simply setting the option `values_fill` to a value of your choice will replaced the `NA` values to something more meaningful.   
-```{r}
+Notice that there will be cases where there is no match and these will initially be filled with `NA`. Simply setting the option `values_fill` to a value of your choice will replaced the `NA` values to something more meaningful.
+
+```{r, purl=purl_example_code}
 fish_encounters %>% pivot_wider(names_from = station, values_from = seen,
   values_fill = list(seen = 0))
-#> # A tibble: 19 x 12
-#>    fish  Release I80_1 Lisbon  Rstr Base_TD   BCE   BCW  BCE2  BCW2   MAE   MAW
-#>    <fct>   <int> <int>  <int> <int>   <int> <int> <int> <int> <int> <int> <int>
-#>  1 4842        1     1      1     1       1     1     1     1     1     1     1
-#>  2 4843        1     1      1     1       1     1     1     1     1     1     1
-#>  3 4844        1     1      1     1       1     1     1     1     1     1     1
-#>  4 4845        1     1      1     1       1     0     0     0     0     0     0
-#>  5 4847        1     1      1     0       0     0     0     0     0     0     0
-#>  6 4848        1     1      1     1       0     0     0     0     0     0     0
-#>  7 4849        1     1      0     0       0     0     0     0     0     0     0
-#>  8 4850        1     1      0     1       1     1     1     0     0     0     0
-#>  9 4851        1     1      0     0       0     0     0     0     0     0     0
-#> 10 4854        1     1      0     0       0     0     0     0     0     0     0
-#> # … with 9 more rows
 ```
 
 
@@ -160,7 +111,7 @@ fish_encounters %>% pivot_wider(names_from = station, values_from = seen,
 Consider the  `warpbreaks` dataset that comes with basic R, it describes the results of a designed experiment with nine replicates for every combination of wool (A and B) and tension (L, M, H). 
 
 
-```{r}
+```{r, purl=purl_example_code}
 #converting into a tibble and rearranging the vars
 warpbreaks %>% as_tibble() %>% select(wool,tension, breaks)
 # the code above aims attempts to instil clarity in the output
@@ -169,37 +120,21 @@ warpbreaks %>% as_tibble() %>% select(wool,tension, breaks)
 
 Notice the problem that appears when trying to widen this dataset. Uniqueness is not maintained since this is a repeated experiment with the same value of breaks for each tension value. 
 
-```{r}
+```{r, purl=purl_example_code}
 warpdata = warpbreaks %>% pivot_wider(names_from = wool, values_from = breaks)
-#> Warning: Values are not uniquely identified; output will contain list-cols.
-#> * Use `values_fn = list` to suppress this warning.
-#> * Use `values_fn = length` to identify where the duplicates arise
-#> * Use `values_fn = {summary_fun}` to summarise duplicates
-#> # A tibble: 3 x 3
-#>   tension A         B        
-#>   <fct>   <list>    <list>   
-#> 1 L       <dbl [9]> <dbl [9]>
-#> 2 M       <dbl [9]> <dbl [9]>
-#> 3 H       <dbl [9]> <dbl [9]>
 ```
 
 The default output here is a list containing all the associated **break** values. One other, and perhaps more informative, approach would be to include a statistic  to describe the contents in that list. 
 
-For that purpose, `pivot _wider()` offers the `values_fn` option where a suitable function is defined to describe the list with t single value. 
+For that purpose, `pivot_wider()` offers the `values_fn` option where a suitable function is defined to describe the list with t single value. 
 
-```{r}
+```{r, purl=purl_example_code}
 warpbreaks %>%
   pivot_wider(
     names_from = wool,
     values_from = breaks,
     values_fn = list(breaks = mean)
   )
-#> # A tibble: 3 x 3
-#>   tension     A     B
-#>   <fct>   <dbl> <dbl>
-#> 1 L        44.6  28.2
-#> 2 M        24    28.8
-#> 3 H        24.6  18.8
 ```
 
 
@@ -212,7 +147,7 @@ The functions `separate()` and `extract()` were created for this purpose where r
 Consider `table3` for example that comes with the `tidyr` package. One look at the table illustrates the problem that we are facing where the variable `rate` could be split into two different ones if somehow we could detect and pull out the values on either side of the separator.  
 
 
-```{r}
+```{r, purl=purl_example_code}
 table3
 ```
 
@@ -221,14 +156,14 @@ table3
 The `separate()` function is build to help in cases where values in a column could be split based on a separator in place. On the above example in `table3` the following code splits the `rate` variable into `cases` and `population` accordingly 
 
 
-```{r}
+```{r, purl=purl_example_code}
 # separate() automatically detects the separator
 table3 %>% separate(rate, into = c("cases", "population"))
 ```
 
 By default, the function will automatically detect any non-alphanumeric character and use that as a separator but its not limited to that. One can specify the separator manually using the `sep` option.
 
-```{r}
+```{r, purl=purl_example_code}
 # separate() manually  detects the separator
 table3 %>% separate(rate, into = c("cases", "population"), sep = "/")
 ```
@@ -236,7 +171,7 @@ table3 %>% separate(rate, into = c("cases", "population"), sep = "/")
 At its heart, `separate()` uses regular expressions to detect and pull the corresponding characters. As a result the new columns are now of `char` type, something that can be changed by altering the state of the `convert` flag as shown below:
 
 
-```{r}
+```{r, purl=purl_example_code}
 # separate() manually detects the separator and convers the columns into the appropriate data type 
 table3 %>% separate(rate, into = c("cases", "population"), sep = "/", convert = TRUE)
 ```
@@ -245,15 +180,14 @@ table3 %>% separate(rate, into = c("cases", "population"), sep = "/", convert = 
 
 The `extract()` function lets you go a step further and allows you to define your own regex to be used for pattern patching. Using the same example as above, lets see how to split the `year` variable to `century` and `years`.
 
-```{r}
-#
+```{r, purl=purl_example_code}
 table3 %>% extract( col = year, into = c("century","years"), regex = "([0-9]{2})([0-9]{2})")
 ```
 
 The `regex` option shown above uses the same syntax as described earlier in the chapter, in fact, it is possible to split the target variable into several others by expanding the bracket list as shown in the following block of code. The year variable is now split into three variables to depict the `century`, `decade` and `year`.
 
 
-```{r}
+```{r, purl=purl_example_code}
 table3 %>% extract( col = year, into = c("century","decade","year" ), regex = "([0-9]{2})([0-9])([0-9])")
 ```
 
@@ -265,7 +199,7 @@ In addition, internally the pivot functions make explicit use of  `seaprate()` a
 Of course, extracting and creating new variables would not be complete without a function to revert back to the original target variable. In this case, the `unite()` function provides the means to do exactly that as shown in the example below.
 
 
-```{r}
+```{r, purl=purl_example_code}
 #the reshaped dataset
 tab3 = table3 %>% extract( col = year, into = c("century","decade","year" ), regex = "([0-9]{2})([0-9])([0-9])")
 #going back to the original dataset - with separator
@@ -275,7 +209,7 @@ tab3 %>% unite(new ,century, decade, year)
 By default, the `_` separator is used after each component of the composite variable but as always, there are option in place to customize this behavior. In the following block of code the separator is removed giving the original variable before any alteration takes place.
 
 
-```{r}
+```{r, purl=purl_example_code}
 #going back to the original dataset - with no separators
 tab3 %>% unite(new ,century, decade, year, sep = "")
 ```
@@ -289,7 +223,7 @@ tab3 %>% unite(new ,century, decade, year, sep = "")
 
 Why does the following code fail?
 
-```{r, , eval= F}
+```{r, purl=purl_example_code, eval= F}
 #the table to use
 table4a
 table4a %>% pivot_longer(1999,2000, names_to = "year",values_to = "value")

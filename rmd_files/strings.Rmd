@@ -1,13 +1,6 @@
 # String manipulation
 
 
-```{r, echo=F, message=F, results=F}
-# loading packages
-# 
-library(tidyverse)
-library(stringr)
-```
-
 ### Introduction
 
 In this part we will introduce strings and how to manipulate them to suit the needs of a particular project. The packages needed (listed above) are mostly the `stringr` and  `tidyverse` package where the former contains a great number of functions to manipulate and work with strings and the latter is the base for most of the things we do in R. 
@@ -23,7 +16,7 @@ There are two ways with which you can create a string in R, at the very basic le
 To note here that one of the advantages of having two ways to define a string is that you can combine them when quotes within a string if needed as showcased in the example below. 
 
 
-```{r, results=T}
+```{r, purl=purl_example_code}
 string1 = "a string using double quotes"
 is.character(string1)
 string2 = 'another string using single quotes'
@@ -40,7 +33,7 @@ Notice the difference in `string4`. This happens because the compiler cannot pla
 If you need to `escape` a backslash then use a double backslash as in `\\` and to see what the output would look like when used in text you can use the `writeLines()` function to simulate that effect. 
 
 
-```{r, results=T}
+```{r, purl=purl_example_code}
 string5 = "escaping a reserved character like \" quotes "
 # to see how the result would apear in text
 writeLines(string5)
@@ -55,7 +48,7 @@ Furthermore, additional control in the form of newlines or tabs is provided by u
 
 Introducing non-English characters in your text strings is also possible using special characters of the form `\u00b5` for example for the Greek letter mu. 
 
-```{r, results=T}
+```{r, purl=purl_example_code}
 # outputting non-English characters
 string7 = "\u00b5" 
 ```
@@ -63,7 +56,7 @@ string7 = "\u00b5"
 
 Adding strings into a character vector is very common and is usually done with the use of the `c()` function. 
 
-```{r, results=T}
+```{r, purl=purl_example_code}
 s8 = c("a", "vector", "of", "strings")
 ```
 
@@ -73,7 +66,7 @@ s8 = c("a", "vector", "of", "strings")
 
 At times it is necessary to determine the length of a character string. A useful function to use in these cases is the `str_length()` function which helps with that.
 
-```{r, results=T}
+```{r, purl=purl_example_code}
 # finding out how many characters in a char vector
 str_length(c(s8, NA))
 ```
@@ -87,7 +80,7 @@ We already seen one way to combine strings in the previous section but with the 
 
 Using `str_c()` can be beneficial in many cases since it allows for additional flexibility in the form of parameters for separators to be used or the option to collapse individual entries into one composite character string. 
 
-```{r, results=T}
+```{r, purl=purl_example_code}
 # using custom separator
 str_c("an", "str_c vector", "with", "space", "character", "separating each entry", sep = " ")
 # the colapse option
@@ -99,7 +92,7 @@ What is more important however is that `str_c` is vectorised and in this way can
 In addition, it can also work to recycle shorter vectors to mach the longer ones as in the following example. 
 
 
-```{r, results=T}
+```{r, purl=purl_example_code}
 # vectorized form - translating a shorter vectror to match the longer one
 str_c("a", c("b", "c", "d"), "c", sep = " " )
 # simpler vectorizing 
@@ -115,7 +108,7 @@ Extracting parts of a string can be done using the `str_sub` function and by spe
 It is also important to note that the function will not fail if the end point is outside of the index limit of the string.
 
 
-```{r, results=T}
+```{r, purl=purl_example_code}
 x <- c("OneValue", "SecondValue", "ThirdValue")
 str_sub(x, 1, 3)
 # negative numbers count backwards from end
@@ -126,7 +119,7 @@ str_sub("a", 1,5)
 
 An additional use of the of the `str_sub` function is to assign values to a given range on the target string  
 
-```{r, results=T}
+```{r, purl=purl_example_code}
 str_sub(x, 1, 1) <- str_to_lower(str_sub(x, 1, 1))
 x
 ```
@@ -138,7 +131,7 @@ In some cases the string manipulation functions have a `locale` argument where a
 for example how the sort order changes if the locale changes from English to Lithuanian in the example below.
 
 
-```{r, results=T}
+```{r, purl=purl_example_code}
 #initial string
 x = c("y", "i", "k")
 #sort function in English
@@ -183,34 +176,30 @@ The list is actually a lot longer so here we will briefly discuss how the most p
 
 Detecting strings is a very important aspect in many Data Analysis applications and `str_detect` was created with ease of use in mind. It returns a logical vector depending whether there was a match in the corresponding location and based on the supplied pattern, as the example below illustrates.   
 
-```{r, results = FALSE}
+```{r, purl=purl_example_code}
 x <- c("apple", "banana", "pear")
 str_detect(x, "e")
-#> [1]  TRUE FALSE  TRUE
 ```
 
 
 A very handy way of using it, is by taking advantage of how `R` translates `TRUE` (evaluated as `1`) and `FALSE` (evaluated as `0`) responses. In the example below using the `sum` and `mean` functions makes counting instances of a pattern being detected much easier.
 
-```{r, results = FALSE}
+```{r, purl=purl_example_code}
 # How many common words start with t?
 sum(str_detect(words, "^t"))
-#> [1] 65
+
 # What proportion of common words end with a vowel?
 mean(str_detect(words, "[aeiou]$"))
-#> [1] 0.2765306
 ```
 
 A variation of `str_detect` is `str_count` and as the name suggests the function will count the instances of a pattern appearing in the target vector.
 
-```{r, results = FALSE}
+```{r, purl=purl_example_code}
 x <- c("apple", "banana", "pear")
 str_count(x, "a")
-#> [1] 1 3 1
 
 # On average, how many vowels per word?
 mean(str_count(words, "[aeiou]"))
-#> [1] 1.991837
 ```
 
 
@@ -219,48 +208,38 @@ mean(str_count(words, "[aeiou]"))
 
 To extract strings we use the `str_extract` function that takes the input source vector and the pattern to match as arguments. In this case we will need a more complex set of examples and so the [Harvard Sentences](https://en.wikipedia.org/wiki/Harvard_sentences) collection of sentences is used. Although originally created to test VOIP systems, it can also be used for regex examples as well. 
 
-```{r, results = FALSE}
+```{r, purl=purl_example_code}
 length(sentences)
-#> [1] 720
+
 head(sentences)
-#> [1] "The birch canoe slid on the smooth planks." 
-#> [2] "Glue the sheet to the dark blue background."
-#> [3] "It's easy to tell the depth of a well."     
-#> [4] "These days a chicken leg is a rare dish."   
-#> [5] "Rice is often served in round bowls."       
-#> [6] "The juice of lemons makes fine punch."
 ```
 
 A good way to start using regex in bulk is to see if we can construct a pattern to match that contains all the relevant information. In the example below the pattern contains a set of colours combined into a string to be used as the pattern.
 
-```{r, results = FALSE}
+```{r, purl=purl_example_code}
 colours <- c("red", "orange", "yellow", "green", "blue", "purple")
 colour_match <- str_c(colours, collapse = "|")
 colour_match
-#> [1] "red|orange|yellow|green|blue|purple"
 ```
 
 The next stage is to select the relevant examples from the collection of `sentences` and then proceed in matching based on the pattern we created. 
 
-```{r, results = FALSE}
+```{r, purl=purl_example_code}
 has_colour <- str_subset(sentences, colour_match)
 matches <- str_extract(has_colour, colour_match)
 head(matches)
-#> [1] "blue" "blue" "red"  "red"  "red"  "blue"
 ```
 
 To better understand the mechanics behind the matching process it helps to know that `str_extract` only finds and extracts the first match in each row of a vector.  To better illustrate this, the code below selects the phrases from the `sentences` collection where there are more than one match.    
 
-```{r, results = FALSE}
+```{r, purl=purl_example_code}
 more <- sentences[str_count(sentences, colour_match) > 1]
-# str_view_all(more, colour_match)
 ```
 
 Notice how `str_extract` works with these source vectors.
 
-```{r, results = FALSE}
+```{r, purl=purl_example_code}
 str_extract(more, colour_match)
-#> [1] "blue"   "green"  "orange"
 ```
 
 
@@ -269,33 +248,25 @@ str_extract(more, colour_match)
 `str_replace` and `str_replace_all`allow you to replace parts of a string that match a pattern with a new replacement string.
 
 
-```{r, results = FALSE}
+```{r, purl=purl_example_code}
 x <- c("apple", "pear", "banana")
 str_replace(x, "[aeiou]", "-")
-#> [1] "-pple"  "p-ar"   "b-nana"
 str_replace_all(x, "[aeiou]", "-")
-#> [1] "-ppl-"  "p--r"   "b-n-n-"
 ```
 
 And with `str_replace_all` we can apply the same functionality as above in all the elements of a character vector.
 
-```{r, results = FALSE}
+```{r, purl=purl_example_code}
 x <- c("1 house", "2 cars", "3 people")
 str_replace_all(x, c("1" = "one", "2" = "two", "3" = "three"))
-#> [1] "one house"    "two cars"     "three people"
 ```
 
 In addition, one can also use backrefferences and recycle elements of the same string as replacements
 
-```{r, results = FALSE}
+```{r, purl=purl_example_code}
 sentences %>% 
   str_replace("([^ ]+) ([^ ]+) ([^ ]+)", "\\1 \\3 \\2") %>% 
   head(5)
-#> [1] "The canoe birch slid on the smooth planks." 
-#> [2] "Glue sheet the to the dark blue background."
-#> [3] "It's to easy tell the depth of a well."     
-#> [4] "These a days chicken leg is a rare dish."   
-#> [5] "Rice often is served in round bowls."
 ```
 
 

@@ -86,6 +86,7 @@ library(botor)
 library(dplyr)
 library(tidyr)
 library(stringr)
+library(readr)
 ```
 
 # Conditional statements
@@ -567,18 +568,18 @@ df
     ## # A tibble: 12 x 3
     ##    year  quarter count
     ##    <chr> <chr>   <int>
-    ##  1 2017  Q1          6
-    ##  2 <NA>  Q2          1
-    ##  3 <NA>  Q3          8
-    ##  4 <NA>  Q4          2
-    ##  5 2018  Q1         11
-    ##  6 <NA>  Q2          3
+    ##  1 2017  Q1          2
+    ##  2 <NA>  Q2         10
+    ##  3 <NA>  Q3          4
+    ##  4 <NA>  Q4          1
+    ##  5 2018  Q1         12
+    ##  6 <NA>  Q2          7
     ##  7 <NA>  Q3          5
     ##  8 <NA>  Q4          9
-    ##  9 2019  Q1         12
-    ## 10 <NA>  Q2          7
-    ## 11 <NA>  Q3         10
-    ## 12 <NA>  Q4          4
+    ##  9 2019  Q1          6
+    ## 10 <NA>  Q2          3
+    ## 11 <NA>  Q3          8
+    ## 12 <NA>  Q4         11
 
 The `fill()` function from tidyr is a convenient way to do this, and can
 be used like this:
@@ -590,18 +591,18 @@ df %>% tidyr::fill(year)
     ## # A tibble: 12 x 3
     ##    year  quarter count
     ##    <chr> <chr>   <int>
-    ##  1 2017  Q1          6
-    ##  2 2017  Q2          1
-    ##  3 2017  Q3          8
-    ##  4 2017  Q4          2
-    ##  5 2018  Q1         11
-    ##  6 2018  Q2          3
+    ##  1 2017  Q1          2
+    ##  2 2017  Q2         10
+    ##  3 2017  Q3          4
+    ##  4 2017  Q4          1
+    ##  5 2018  Q1         12
+    ##  6 2018  Q2          7
     ##  7 2018  Q3          5
     ##  8 2018  Q4          9
-    ##  9 2019  Q1         12
-    ## 10 2019  Q2          7
-    ## 11 2019  Q3         10
-    ## 12 2019  Q4          4
+    ##  9 2019  Q1          6
+    ## 10 2019  Q2          3
+    ## 11 2019  Q3          8
+    ## 12 2019  Q4         11
 
 ## Removing rows with missing values from a dataframe
 
@@ -702,28 +703,28 @@ the task now is to calculate, for example, the mean or the median:
 median(df$a)
 ```
 
-    ## [1] -0.07025371
+    ## [1] -0.07256001
 
 ``` r
 #> [1] -0.2457625
 median(df$b)
 ```
 
-    ## [1] 0.4591695
+    ## [1] -0.8204447
 
 ``` r
 #> [1] -0.2873072
 median(df$c)
 ```
 
-    ## [1] 0.005129257
+    ## [1] -0.2224024
 
 ``` r
 #> [1] -0.05669771
 median(df$d)
 ```
 
-    ## [1] -0.6329
+    ## [1] 0.2211465
 
 ``` r
 #> [1] 0.1442633
@@ -742,7 +743,7 @@ for (i in seq_along(df)) {            # 2. sequence
 output
 ```
 
-    ## [1] -0.070253707  0.459169490  0.005129257 -0.632900025
+    ## [1] -0.07256001 -0.82044466 -0.22240237  0.22114655
 
 ``` r
 #> [1] -0.24576245 -0.28730721 -0.05669771  0.14426335
@@ -878,16 +879,16 @@ for(i in vowel){
   }
 ```
 
-    ##          a 
-    ## -0.7149123 
+    ##        a 
+    ## 1.470786 
     ##         e 
-    ## -1.638549 
-    ##           i 
-    ## -0.09378904 
+    ## -1.010441 
+    ##          i 
+    ## -0.6262219 
     ##         o 
-    ## 0.9392581 
+    ## 0.1456097 
     ##          u 
-    ## -0.5860504
+    ## 0.07179351
 
 ### Handling outputs of unknown length
 
@@ -950,16 +951,34 @@ while(mean(numbers) < 0.5){
 }
 ```
 
-    ## [1] 0.06194961
-    ## [1] -0.4477576
-    ## [1] 0.1621811
-    ## [1] 0.03442124
-    ## [1] -0.4094331
-    ## [1] 0.4108247
-    ## [1] 0.03613671
-    ## [1] -0.2294146
-    ## [1] 0.1598702
-    ## [1] 0.5209681
+    ## [1] 0.1050824
+    ## [1] 0.0332729
+    ## [1] 0.01856543
+    ## [1] -0.1789536
+    ## [1] 0.04177437
+    ## [1] 0.1426711
+    ## [1] 0.1867491
+    ## [1] 0.09228884
+    ## [1] 0.06974403
+    ## [1] -0.1173996
+    ## [1] 0.2098297
+    ## [1] 0.07347492
+    ## [1] 0.2546859
+    ## [1] -0.2142916
+    ## [1] 0.005483996
+    ## [1] 0.06432274
+    ## [1] 0.08071477
+    ## [1] -0.6033095
+    ## [1] 0.2181724
+    ## [1] 0.08646407
+    ## [1] -0.2064137
+    ## [1] -0.004804388
+    ## [1] -0.1034983
+    ## [1] 0.07727433
+    ## [1] -0.2602338
+    ## [1] 0.01251996
+    ## [1] 0.08961514
+    ## [1] 0.507244
 
 \#\#Exercises
 
@@ -995,7 +1014,7 @@ I should mention at this point that the source for the material
 presented in this chapter can be found in this [pivoting
 vignette](https://tidyr.tidyverse.org/dev/articles/pivot.html#generate-column-name-from-multiple-variables-1)
 as well as in the book by the same author, Hadley Wickam, titled [R For
-Data Sciecne](https://r4ds.had.co.nz/).
+Data Science](https://r4ds.had.co.nz/).
 
 In many scenarios, although the data could be complete in the sense of
 it containing the desired variables, it is not quite in the right format
@@ -1209,10 +1228,10 @@ Johnston** depicted below. It describes whether fish swimming down a
 river are detected or not by automatic monitoring stations.
 
 ``` r
-fish_encounters
+fish_encounters %>% head(10)
 ```
 
-    ## # A tibble: 114 x 3
+    ## # A tibble: 10 x 3
     ##    fish  station  seen
     ##    <fct> <fct>   <int>
     ##  1 4842  Release     1
@@ -1225,24 +1244,6 @@ fish_encounters
     ##  8 4842  BCE2        1
     ##  9 4842  BCW2        1
     ## 10 4842  MAE         1
-    ## # … with 104 more rows
-
-``` r
-#> # A tibble: 114 x 3
-#>    fish  station  seen
-#>    <fct> <fct>   <int>
-#>  1 4842  Release     1
-#>  2 4842  I80_1       1
-#>  3 4842  Lisbon      1
-#>  4 4842  Rstr        1
-#>  5 4842  Base_TD     1
-#>  6 4842  BCE         1
-#>  7 4842  BCW         1
-#>  8 4842  BCE2        1
-#>  9 4842  BCW2        1
-#> 10 4842  MAE         1
-#> # … with 104 more rows
-```
 
 A simple use of the function can provide a better understanding of what
 the data contains and also make it more useful for potential use in
@@ -1275,23 +1276,6 @@ fish_encounters %>% pivot_wider(names_from = station, values_from = seen)
     ## 17 4863        1     1     NA    NA      NA    NA    NA    NA    NA    NA    NA
     ## 18 4864        1     1     NA    NA      NA    NA    NA    NA    NA    NA    NA
     ## 19 4865        1     1      1    NA      NA    NA    NA    NA    NA    NA    NA
-
-``` r
-#> # A tibble: 19 x 12
-#>    fish  Release I80_1 Lisbon  Rstr Base_TD   BCE   BCW  BCE2  BCW2   MAE   MAW
-#>    <fct>   <int> <int>  <int> <int>   <int> <int> <int> <int> <int> <int> <int>
-#>  1 4842        1     1      1     1       1     1     1     1     1     1     1
-#>  2 4843        1     1      1     1       1     1     1     1     1     1     1
-#>  3 4844        1     1      1     1       1     1     1     1     1     1     1
-#>  4 4845        1     1      1     1       1    NA    NA    NA    NA    NA    NA
-#>  5 4847        1     1      1    NA      NA    NA    NA    NA    NA    NA    NA
-#>  6 4848        1     1      1     1      NA    NA    NA    NA    NA    NA    NA
-#>  7 4849        1     1     NA    NA      NA    NA    NA    NA    NA    NA    NA
-#>  8 4850        1     1     NA     1       1     1     1    NA    NA    NA    NA
-#>  9 4851        1     1     NA    NA      NA    NA    NA    NA    NA    NA    NA
-#> 10 4854        1     1     NA    NA      NA    NA    NA    NA    NA    NA    NA
-#> # … with 9 more rows
-```
 
 The general use is very similar to that presented in \``pivot_longer()`
 with `names_from` targeting the column containing the subcategories to
@@ -1328,23 +1312,6 @@ fish_encounters %>% pivot_wider(names_from = station, values_from = seen,
     ## 17 4863        1     1      0     0       0     0     0     0     0     0     0
     ## 18 4864        1     1      0     0       0     0     0     0     0     0     0
     ## 19 4865        1     1      1     0       0     0     0     0     0     0     0
-
-``` r
-#> # A tibble: 19 x 12
-#>    fish  Release I80_1 Lisbon  Rstr Base_TD   BCE   BCW  BCE2  BCW2   MAE   MAW
-#>    <fct>   <int> <int>  <int> <int>   <int> <int> <int> <int> <int> <int> <int>
-#>  1 4842        1     1      1     1       1     1     1     1     1     1     1
-#>  2 4843        1     1      1     1       1     1     1     1     1     1     1
-#>  3 4844        1     1      1     1       1     1     1     1     1     1     1
-#>  4 4845        1     1      1     1       1     0     0     0     0     0     0
-#>  5 4847        1     1      1     0       0     0     0     0     0     0     0
-#>  6 4848        1     1      1     1       0     0     0     0     0     0     0
-#>  7 4849        1     1      0     0       0     0     0     0     0     0     0
-#>  8 4850        1     1      0     1       1     1     1     0     0     0     0
-#>  9 4851        1     1      0     0       0     0     0     0     0     0     0
-#> 10 4854        1     1      0     0       0     0     0     0     0     0     0
-#> # … with 9 more rows
-```
 
 ### Aggregating with with `pivot_wider`
 
@@ -1389,24 +1356,11 @@ warpdata = warpbreaks %>% pivot_wider(names_from = wool, values_from = breaks)
     ## * Use `values_fn = length` to identify where the duplicates arise
     ## * Use `values_fn = {summary_fun}` to summarise duplicates
 
-``` r
-#> Warning: Values are not uniquely identified; output will contain list-cols.
-#> * Use `values_fn = list` to suppress this warning.
-#> * Use `values_fn = length` to identify where the duplicates arise
-#> * Use `values_fn = {summary_fun}` to summarise duplicates
-#> # A tibble: 3 x 3
-#>   tension A         B        
-#>   <fct>   <list>    <list>   
-#> 1 L       <dbl [9]> <dbl [9]>
-#> 2 M       <dbl [9]> <dbl [9]>
-#> 3 H       <dbl [9]> <dbl [9]>
-```
-
 The default output here is a list containing all the associated
 **break** values. One other, and perhaps more informative, approach
 would be to include a statistic to describe the contents in that list.
 
-For that purpose, `pivot _wider()` offers the `values_fn` option where a
+For that purpose, `pivot_wider()` offers the `values_fn` option where a
 suitable function is defined to describe the list with t single value.
 
 ``` r
@@ -1424,15 +1378,6 @@ warpbreaks %>%
     ## 1 L        44.6  28.2
     ## 2 M        24    28.8
     ## 3 H        24.6  18.8
-
-``` r
-#> # A tibble: 3 x 3
-#>   tension     A     B
-#>   <fct>   <dbl> <dbl>
-#> 1 L        44.6  28.2
-#> 2 M        24    28.8
-#> 3 H        24.6  18.8
-```
 
 ## Separating and extracting column contents
 
@@ -1531,7 +1476,6 @@ example as above, lets see how to split the `year` variable to `century`
 and `years`.
 
 ``` r
-#
 table3 %>% extract( col = year, into = c("century","years"), regex = "([0-9]{2})([0-9]{2})")
 ```
 
@@ -2068,8 +2012,9 @@ below illustrates.
 ``` r
 x <- c("apple", "banana", "pear")
 str_detect(x, "e")
-#> [1]  TRUE FALSE  TRUE
 ```
+
+    ## [1]  TRUE FALSE  TRUE
 
 A very handy way of using it, is by taking advantage of how `R`
 translates `TRUE` (evaluated as `1`) and `FALSE` (evaluated as `0`)
@@ -2079,11 +2024,16 @@ makes counting instances of a pattern being detected much easier.
 ``` r
 # How many common words start with t?
 sum(str_detect(words, "^t"))
-#> [1] 65
+```
+
+    ## [1] 65
+
+``` r
 # What proportion of common words end with a vowel?
 mean(str_detect(words, "[aeiou]$"))
-#> [1] 0.2765306
 ```
+
+    ## [1] 0.2765306
 
 A variation of `str_detect` is `str_count` and as the name suggests the
 function will count the instances of a pattern appearing in the target
@@ -2092,12 +2042,16 @@ vector.
 ``` r
 x <- c("apple", "banana", "pear")
 str_count(x, "a")
-#> [1] 1 3 1
+```
 
+    ## [1] 1 3 1
+
+``` r
 # On average, how many vowels per word?
 mean(str_count(words, "[aeiou]"))
-#> [1] 1.991837
 ```
+
+    ## [1] 1.991837
 
 #### Extract Strings
 
@@ -2110,15 +2064,17 @@ it can also be used for regex examples as well.
 
 ``` r
 length(sentences)
-#> [1] 720
-head(sentences)
-#> [1] "The birch canoe slid on the smooth planks." 
-#> [2] "Glue the sheet to the dark blue background."
-#> [3] "It's easy to tell the depth of a well."     
-#> [4] "These days a chicken leg is a rare dish."   
-#> [5] "Rice is often served in round bowls."       
-#> [6] "The juice of lemons makes fine punch."
 ```
+
+    ## [1] 720
+
+``` r
+head(sentences)
+```
+
+    ## [1] "The birch canoe slid on the smooth planks."  "Glue the sheet to the dark blue background."
+    ## [3] "It's easy to tell the depth of a well."      "These days a chicken leg is a rare dish."   
+    ## [5] "Rice is often served in round bowls."        "The juice of lemons makes fine punch."
 
 A good way to start using regex in bulk is to see if we can construct a
 pattern to match that contains all the relevant information. In the
@@ -2129,8 +2085,9 @@ string to be used as the pattern.
 colours <- c("red", "orange", "yellow", "green", "blue", "purple")
 colour_match <- str_c(colours, collapse = "|")
 colour_match
-#> [1] "red|orange|yellow|green|blue|purple"
 ```
+
+    ## [1] "red|orange|yellow|green|blue|purple"
 
 The next stage is to select the relevant examples from the collection of
 `sentences` and then proceed in matching based on the pattern we
@@ -2140,8 +2097,9 @@ created.
 has_colour <- str_subset(sentences, colour_match)
 matches <- str_extract(has_colour, colour_match)
 head(matches)
-#> [1] "blue" "blue" "red"  "red"  "red"  "blue"
 ```
+
+    ## [1] "blue" "blue" "red"  "red"  "red"  "blue"
 
 To better understand the mechanics behind the matching process it helps
 to know that `str_extract` only finds and extracts the first match in
@@ -2151,15 +2109,15 @@ one match.
 
 ``` r
 more <- sentences[str_count(sentences, colour_match) > 1]
-# str_view_all(more, colour_match)
 ```
 
 Notice how `str_extract` works with these source vectors.
 
 ``` r
 str_extract(more, colour_match)
-#> [1] "blue"   "green"  "orange"
 ```
+
+    ## [1] "blue"   "green"  "orange"
 
 #### Replace Strings
 
@@ -2169,10 +2127,15 @@ string that match a pattern with a new replacement string.
 ``` r
 x <- c("apple", "pear", "banana")
 str_replace(x, "[aeiou]", "-")
-#> [1] "-pple"  "p-ar"   "b-nana"
-str_replace_all(x, "[aeiou]", "-")
-#> [1] "-ppl-"  "p--r"   "b-n-n-"
 ```
+
+    ## [1] "-pple"  "p-ar"   "b-nana"
+
+``` r
+str_replace_all(x, "[aeiou]", "-")
+```
+
+    ## [1] "-ppl-"  "p--r"   "b-n-n-"
 
 And with `str_replace_all` we can apply the same functionality as above
 in all the elements of a character vector.
@@ -2180,8 +2143,9 @@ in all the elements of a character vector.
 ``` r
 x <- c("1 house", "2 cars", "3 people")
 str_replace_all(x, c("1" = "one", "2" = "two", "3" = "three"))
-#> [1] "one house"    "two cars"     "three people"
 ```
+
+    ## [1] "one house"    "two cars"     "three people"
 
 In addition, one can also use backrefferences and recycle elements of
 the same string as replacements
@@ -2190,12 +2154,11 @@ the same string as replacements
 sentences %>% 
   str_replace("([^ ]+) ([^ ]+) ([^ ]+)", "\\1 \\3 \\2") %>% 
   head(5)
-#> [1] "The canoe birch slid on the smooth planks." 
-#> [2] "Glue sheet the to the dark blue background."
-#> [3] "It's to easy tell the depth of a well."     
-#> [4] "These a days chicken leg is a rare dish."   
-#> [5] "Rice often is served in round bowls."
 ```
+
+    ## [1] "The canoe birch slid on the smooth planks."  "Glue sheet the to the dark blue background."
+    ## [3] "It's to easy tell the depth of a well."      "These a days chicken leg is a rare dish."   
+    ## [5] "Rice often is served in round bowls."
 
 #### Exercises
 
