@@ -32,14 +32,14 @@ Simple pattern matching can be achieved by using the `str_view` function and spe
 
 ```{r, results=F}
 x <- c("apple", "banana", "pear")
-str_view(x, "an")
+# str_view(x, "an")
 ```
 
 
 The complexity of the match can be adjusted and wildcards can be used as well in the form of `.` as in 
 
 ```{r, results=F}
-str_view(x, ".a.")
+# str_view(x, ".a.")
 ```
 
 
@@ -60,7 +60,7 @@ dot <- "\\."
 # But the expression itself only contains one:
 writeLines(dot)
 # And this tells R to look for an explicit .
-str_view(c("abc", "a.c", "bef"), "a\\.c")
+# str_view(c("abc", "a.c", "bef"), "a\\.c")
 ```
 
 
@@ -72,7 +72,7 @@ If there is a need to match the `\` character itself then you will need to use t
 x <- "a\\b"
 writeLines(x)
 # to view the result in a RegEx
-str_view(x, "\\\\")
+# str_view(x, "\\\\")
 ```
 
 
@@ -100,8 +100,8 @@ More specifically, the start of the string is denoted by `^` and the end by `$`
 
 ```{r, results=F}
 x <- c("apple", "banana", "pear")
-str_view(x, "^a")
-str_view(x, "a$")
+# str_view(x, "^a")
+# str_view(x, "a$")
 ```
 
 
@@ -110,9 +110,9 @@ You can also use both in one pattern and this is useful when the entire string i
 ```{r, results=F}
 # this will output all possible matches
 x <- c("apple pie", "apple", "apple cake")
-str_view(x, "apple")
+# str_view(x, "apple")
 # notice the difference in the result here
-str_view(x, "^apple$")
+# str_view(x, "^apple$")
 ```
 
 
@@ -147,9 +147,9 @@ A character class containing a single character is a nice alternative to backsla
 
 ```{r, results= F }
 # Look for a literal character that normally has special meaning in a regex
-str_view(c("abc", "a.c", "a*c", "a c"), "a[.]c")
-str_view(c("abc", "a.c", "a*c", "a c"), ".[*]c")
-str_view(c("abc", "a.c", "a*c", "a c"), "a[ ]")
+# str_view(c("abc", "a.c", "a*c", "a c"), "a[.]c")
+# str_view(c("abc", "a.c", "a*c", "a c"), ".[*]c")
+# str_view(c("abc", "a.c", "a*c", "a c"), "a[ ]")
 ```
 
 
@@ -159,7 +159,7 @@ Alternation is used to pick between patterns, for example `abc|d..f` will pick a
 
 
 ```{r, results = F}
-str_view(c("grey", "gray"), "gr(e|a)y")
+# str_view(c("grey", "gray"), "gr(e|a)y")
 ```
 
 
@@ -188,9 +188,9 @@ for example:
 
 ```{r}
 x <- "1888 is the longest year in Roman numerals: MDCCCLXXXVIII"
-str_view(x, "CC?")
-str_view(x, "CC+")
-str_view(x, 'C[LX]+')
+# str_view(x, "CC?")
+# str_view(x, "CC+")
+# str_view(x, 'C[LX]+')
 ```
 
 Another key aspect of the above code is that the number or precedence here dictates that the character just before the operator will be affected. This means that parenthesis will need to be used as in `bana(na)+` to capture more than one character.
@@ -203,17 +203,17 @@ It is also possible to specify the number of repetitions explicitly by using:
 + `{n,m}`: between n and m
 
 ```{r}
-str_view(x, "C{2}")
-str_view(x, "C{2,}")
-str_view(x, "C{2,3}")
+# str_view(x, "C{2}")
+# str_view(x, "C{2,}")
+# str_view(x, "C{2,3}")
 ```
 
 
 To also note here that the system will match as many of the characters that it can find. To switch this behavior off and use what is called "lazy" matching (instead of "greedy" as specified earlier) the `?` operator can be used as follows:
 
 ```{r}
-str_view(x, 'C{2,3}?')
-str_view(x, 'C[LX]+?')
+# str_view(x, 'C{2,3}?')
+# str_view(x, 'C[LX]+?')
 ```
 
 #### Exercises

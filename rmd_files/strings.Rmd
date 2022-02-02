@@ -253,7 +253,7 @@ To better understand the mechanics behind the matching process it helps to know 
 
 ```{r, results = FALSE}
 more <- sentences[str_count(sentences, colour_match) > 1]
-str_view_all(more, colour_match)
+# str_view_all(more, colour_match)
 ```
 
 Notice how `str_extract` works with these source vectors.
