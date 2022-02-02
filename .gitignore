@@ -7,3 +7,4 @@
 .Rprofile
 core
 renv/
+rmd_files/*.html
