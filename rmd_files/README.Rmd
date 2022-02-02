@@ -56,10 +56,10 @@ All the examples in the presentation and README are available in the R script ex
 ```{r source_content, child = 'iteration.Rmd'}
 ```
 
-```{r source_content, child = 'strings.Rmd'}
+```{r source_content, child = 'reshaping.Rmd'}
 ```
 
-```{r source_content, child = 'reshaping.Rmd'}
+```{r source_content, child = 'strings.Rmd'}
 ```
 
 ```{r source_content, child = 'further_reading.Rmd'}
