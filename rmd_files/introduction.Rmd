@@ -2,34 +2,30 @@
 
 This course builds on the original Introduction to R training course, and covers additional programming concepts. It provides examples that demonstrate how the Tidyverse packages can assist with tasks typically encountered in DASD.
 
+Development of the Tidyverse suite of packages was led by Hadley Wickham, and more information about these packages can be found on the [Tidyverse website](https://www.tidyverse.org/) as well as in the book [R for Data Science](https://r4ds.had.co.nz/).
+
 ## Learning outcomes
 
 ### By the end of this session you should know how to:
 
  - Classify a variable in a dataframe, based on a set of conditions
- - Apply a function to multiple columns in a dataframe
+ - Deal with missing values in a dataframe
+ - Easily apply a function to any number of columns in a dataframe
  - Search for a string pattern in a dataframe
  - Reshape dataframes
- - Deal with missing values in a dataframe
 
 
 ## Before we start
 
-To follow along with the code run during this session and participate in the exercises, open the script "example_code.R" in RStudio. All the code that we'll show in this session is stored in "example_code.R", and you can edit this script to write solutions to the exercises. You may also want to have the course [read me](https://github.com/moj-analytical-services/intro_r_training_extension) open as a reference.
+To follow along with the code run during this session and participate in the exercises, open the script "example_code.R" in RStudio. All the code that we'll show in this session is stored in "example_code.R", and you can edit this script to write solutions to the exercises. You may also want to have the course [README](https://github.com/moj-analytical-services/intro_r_training_extension) open as a reference.
 
-First, we need to load a few packages and an example dataset.
+First, we need to load a few packages.
 
-```{r message=F, warning=F}
+```{r message=F, warning=F, purl=purl_example_code}
 # Load packages
 library(botor)
 library(dplyr)
 library(tidyr)
 library(stringr)
-```
-
-```{r message=F, warning=F}
-# Read data
-offenders <- botor::s3_read("s3://alpha-r-training/intro-r-training/Offenders_Chicago_Police_Dept_Main.csv", read.csv)
-
 ```
 

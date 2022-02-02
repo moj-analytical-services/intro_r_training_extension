@@ -6,7 +6,6 @@
 # 
 library(tidyverse)
 library(stringr)
-
 ```
 
 
@@ -35,13 +34,11 @@ df <- tibble(
   c = rnorm(10),
   d = rnorm(10)
 )
-
 ```
 
 the task now is to calculate, for example, the mean or the median:
 
 ```{r}
-
 median(df$a)
 #> [1] -0.2457625
 median(df$b)
@@ -162,8 +159,6 @@ for(i in vowel){
   print(results[i])
   }
 
-
-
 ```
 
 
@@ -172,7 +167,6 @@ for(i in vowel){
 There are cases where the output from a loop is not known beforehand. In these cases, certain precautions need to be taken as it may result in clogging up the memory with vectors going out of control expanding indefinitely. 
 
 ```{r}
-
 a = 0 # initialize number
 
 # run a sequence of random length vectros to be appended
@@ -180,15 +174,12 @@ for(i in seq_len(10)){
   n = sample(20,1)
   a = c(a,rnorm(n))
 }
-
-
 ```
 
 
 A better way to achieving the above result would be to create a list and capture the results within each cell at each corresponding iteration. The result would be a list with a  predictable index length. 
 
 ```{r}
-
 a = list() # initilise a list
 
 # populate the contents of each cell of a list with a random size vector created in each iteration 
@@ -196,9 +187,6 @@ for(i in seq_len(10)){
   n = sample(20,1)
   a[[i]] = rnorm(n)
 }
-
-
-
 ```
 
 
@@ -209,19 +197,16 @@ for(i in seq_len(10)){
 In general, unknown sequence length translates to cases where we want to check for certain condition in order to stop the execution of a block of code. In these cases the use of the `while` loop is preferable as in the example below.
 
 ```{r, eval=FALSE, echo=TRUE, error = TRUE}
-
 ## while loop definition
 
 while (condition) {
   # body
 }
-
 ```
 
 Notice that the `while` loop execution differs that the `for` loop in that the body of code is executed first before the condition is checked and this is by design. One needs to first check the contents before accessing the validity of the condition to terminate the loop.   
 
 ```{r, error = TRUE}
-
 # The loop will first execute the body of code and then check if the condition is satisfied. If this is the case the loop will stop its iteration.
 numbers = 0
 
@@ -229,8 +214,6 @@ while(mean(numbers) < 0.5){
   numbers = rnorm(20)
   print(mean(numbers))
 }
-
-
 ```
 
 
@@ -239,11 +222,8 @@ while(mean(numbers) < 0.5){
 1. Imagine you have a directory full of files that you want to read in. You have the file names in the vector `files`, and now want to read each one. Write the for loop that will simulate reading them into a single data frame.
 
 ```{r, error = TRUE}
-
 # the following code will create a random colelction of file names
-
 files = paste0(str_extract(sentences[1:5], "^[:alpha:]+"), sample(c(".csv",".xlsx")))
-
 
 ```
 
@@ -252,12 +232,7 @@ files = paste0(str_extract(sentences[1:5], "^[:alpha:]+"), sample(c(".csv",".xls
 
 ```{r, error = TRUE}
 # try using the folling list of files 
-
 files2 = paste0(str_extract(sentences[1:10], "^[:alpha:]+"), ".xlsx") 
 files2[5] = NA
-
-
-
 ```
-
 

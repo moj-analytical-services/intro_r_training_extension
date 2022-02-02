@@ -50,7 +50,14 @@ dplyr::if_else(x > 0, 1, 0)
 
 When we're manipulating dataframes, it can be useful to combine `if_else()` with the `mutate()` function from dplyr. If we take a look at the `offenders` dataframe, let's say we wanted a simple way to be able to separate youths from adult offenders. We can add a column that contains 'Youth' if the offender is under the age of 18, and 'Adult' otherwise:
 
+```{r, message=F, warning=F, purl=purl_example_code}
+# First read and preview the data
+offenders <- botor::s3_read("s3://alpha-r-training/intro-r-training/Offenders_Chicago_Police_Dept_Main.csv", read.csv)
+str(offenders)
+```
+
 ```{r, purl=purl_example_code}
+# Now use mutate to add the new column
 offenders <- offenders %>%
   dplyr::mutate(YOUTH_OR_ADULT = dplyr::if_else(AGE < 18, "Youth", "Adult"))
 
@@ -124,6 +131,4 @@ offenders <- offenders %>%
 
 str(offenders)
 ```
-
-
 

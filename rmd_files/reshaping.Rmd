@@ -2,15 +2,11 @@
 
 
 ```{r, echo=F, message=F, results=F}
-
 # loading packages
 # 
 library(tidyr)
 library(dplyr)
 library(readr)
-
-
-
 ```
 
 The tidyr package can help us to reshape dataframes - this can be really helpful when we need to transform between tables that are easier to read and tables that are easier to analyse. The aim here is to structure the resulting datasets so that they could be manipulated easier in further stages of the processing. 
@@ -32,22 +28,14 @@ The aim now is to create a single variable to house the different weeks in order
 
 ```{r}
 ?billboard
-
 # notice the dimensions of the data
 dim(billboard)
-
-
 #to see the structure of the data
 billboard %>% arrange(desc(date.entered)) %>% tail()
-
-
-
 #starting by mapping a single month 
 billboard %>% pivot_longer(cols = c(wk1,wk2, wk3, wk4), names_to = "month1", values_to = "rank") %>% head()
-
 # and to see clearly the contents of the new variable
 billboard %>% pivot_longer(cols = c(wk1,wk2, wk3, wk4), names_to = "month1", values_to = "rank") %>% .$month1 %>% head()
-
 ```
 
 
@@ -62,13 +50,8 @@ In that case, the following structure comes into play where regular expressions 
 
 
 ```{r}
-
-
-
 #mapping all weeks to one varable called "weeks" 
 billboard %>% pivot_longer(cols = starts_with("wk"), names_to = "weeks", values_to = "rank") %>% head()
-
-
 ```
 
 
@@ -82,7 +65,6 @@ In some circumstances pivoting can also be used to construct a more robust for e
 ```{r}
 #dataset
 anscombe
-
 ```
 
 As it is apparent, the basis for each variable is the same (x1,x2, y1,y2 etc) and so it would make sense to simply create pair `x` and `y` and depict their corresponding identifier `1,2,3,4` in a separate variable. 
@@ -90,13 +72,10 @@ As it is apparent, the basis for each variable is the same (x1,x2, y1,y2 etc) an
 In such cases, `pivot_longer` offers an elegant solution to the problem by automatically selecting the common patterns and using them as the new variables.
 
 ```{r}
-
 # using ".value" and "everything()" to select common variables
 anscombe %>% pivot_longer(everything(),
    names_to = c(".value", "set"),
    names_pattern = "(.)(.)" )
-
-
 ```
 
 
@@ -116,7 +95,6 @@ The `names_pattern` or `name_sep()` options make explicit use of the `extract()`
 Consider the `fish_encounters` dataset, contributed by **Myfanwy Johnston** depicted below. It describes whether fish swimming down a river are detected or not by automatic monitoring stations.
 
 ```{r}
-
 fish_encounters
 #> # A tibble: 114 x 3
 #>    fish  station  seen
@@ -153,14 +131,10 @@ fish_encounters %>% pivot_wider(names_from = station, values_from = seen)
 #>  9 4851        1     1     NA    NA      NA    NA    NA    NA    NA    NA    NA
 #> 10 4854        1     1     NA    NA      NA    NA    NA    NA    NA    NA    NA
 #> # … with 9 more rows
-
 ```
 
 The general use is very similar to that presented in ``pivot_longer()` with `names_from` targeting the column containing the subcategories to split from and `values_from` the corresponding values associated with each category. 
-
 Notice that there will be cases where there is no match and these will initially be filled with `NA`. Simply setting the option `values_fill` to a value of your choice will replaced the `NA` values to something more meaningful.   
-
-
 ```{r}
 fish_encounters %>% pivot_wider(names_from = station, values_from = seen,
   values_fill = list(seen = 0))
@@ -187,12 +161,9 @@ Consider the  `warpbreaks` dataset that comes with basic R, it describes the res
 
 
 ```{r}
-
 #converting into a tibble and rearranging the vars
 warpbreaks %>% as_tibble() %>% select(wool,tension, breaks)
-
 # the code above aims attempts to instil clarity in the output
-
 ```
 
 
@@ -243,8 +214,6 @@ Consider `table3` for example that comes with the `tidyr` package. One look at t
 
 ```{r}
 table3
-
-
 ```
 
 ### Separate
@@ -255,7 +224,6 @@ The `separate()` function is build to help in cases where values in a column cou
 ```{r}
 # separate() automatically detects the separator
 table3 %>% separate(rate, into = c("cases", "population"))
-
 ```
 
 By default, the function will automatically detect any non-alphanumeric character and use that as a separator but its not limited to that. One can specify the separator manually using the `sep` option.
@@ -263,19 +231,14 @@ By default, the function will automatically detect any non-alphanumeric characte
 ```{r}
 # separate() manually  detects the separator
 table3 %>% separate(rate, into = c("cases", "population"), sep = "/")
-
-
 ```
 
 At its heart, `separate()` uses regular expressions to detect and pull the corresponding characters. As a result the new columns are now of `char` type, something that can be changed by altering the state of the `convert` flag as shown below:
 
 
 ```{r}
-
 # separate() manually detects the separator and convers the columns into the appropriate data type 
 table3 %>% separate(rate, into = c("cases", "population"), sep = "/", convert = TRUE)
-
-
 ```
 
 ### Extract
@@ -283,20 +246,15 @@ table3 %>% separate(rate, into = c("cases", "population"), sep = "/", convert = 
 The `extract()` function lets you go a step further and allows you to define your own regex to be used for pattern patching. Using the same example as above, lets see how to split the `year` variable to `century` and `years`.
 
 ```{r}
-
 #
 table3 %>% extract( col = year, into = c("century","years"), regex = "([0-9]{2})([0-9]{2})")
-
-
 ```
 
 The `regex` option shown above uses the same syntax as described earlier in the chapter, in fact, it is possible to split the target variable into several others by expanding the bracket list as shown in the following block of code. The year variable is now split into three variables to depict the `century`, `decade` and `year`.
 
 
 ```{r}
-
 table3 %>% extract( col = year, into = c("century","decade","year" ), regex = "([0-9]{2})([0-9])([0-9])")
-
 ```
 
 In addition, internally the pivot functions make explicit use of  `seaprate()` and `extract()` whenever a split or a regular expression is need to capture patterns present in name or within the content of a variable in the dataset. 
@@ -310,10 +268,8 @@ Of course, extracting and creating new variables would not be complete without a
 ```{r}
 #the reshaped dataset
 tab3 = table3 %>% extract( col = year, into = c("century","decade","year" ), regex = "([0-9]{2})([0-9])([0-9])")
-
 #going back to the original dataset - with separator
 tab3 %>% unite(new ,century, decade, year)
-
 ```
 
 By default, the `_` separator is used after each component of the composite variable but as always, there are option in place to customize this behavior. In the following block of code the separator is removed giving the original variable before any alteration takes place.
@@ -336,11 +292,7 @@ Why does the following code fail?
 ```{r, , eval= F}
 #the table to use
 table4a
-
-
 table4a %>% pivot_longer(1999,2000, names_to = "year",values_to = "value")
-
-
 ```
 
 
@@ -360,8 +312,6 @@ people = tribble(~name, ~key, ~value,
                  "Phil Woods", "age",50,
                  "Jess Cordero", "age",45,
                  "Jess Cordero", "height",156,)
-
-
 ```
 
 
@@ -373,13 +323,9 @@ Consider the followign simple tibble, what kind of pivoting would you use, `pivo
 
 
 ```{r}
-
 rcj = tribble( ~judge, ~male, ~female,
                     "yes", NA, 10, 
                     "no", 20, 12)
-
-
-
 ```
 
 
@@ -394,13 +340,10 @@ Experiment with the various option in using the following datasets.
 
 
 ```{r}
-
 tibble(x = c("a,b,c", "d,e,f,g", "h,i,j")) %>% 
   separate(x, c("one", "two", "three"))
-
 tibble(x = c("a,b,c", "d,e", "f,g,i")) %>% 
   separate(x, c("one", "two", "three"))
-
 ```
 
 
@@ -420,10 +363,7 @@ Compare `separate()` and `extract()`, why are there so many option to separate b
 #### Exercise 1
 
 ```{r, eval= F}
-
 table4a %>% pivot_longer(cols = !country, names_to = "year",values_to = "value")
-
-
 ```
 
 
@@ -432,7 +372,6 @@ table4a %>% pivot_longer(cols = !country, names_to = "year",values_to = "value")
 
 
 ```{r, eval=FALSE}
-
 #withough changing anything on the dataset
 people = tribble(~name, ~key, ~value,
                  #------------/------/-----,
@@ -442,9 +381,6 @@ people = tribble(~name, ~key, ~value,
                  "Jess Cordero", "age",45,
                  "Jess Cordero", "height",156,)
 people %>% pivot_wider(names_from = name, values_from = value)
-
-
-
 # solution 1 - adding a new column
 people = tribble(~name, ~key, ~value, ~dkey,
                  #------------/------/-----,
@@ -453,11 +389,7 @@ people = tribble(~name, ~key, ~value, ~dkey,
                  "Phil Woods", "age",50,0,
                  "Jess Cordero", "age",45,1,
                  "Jess Cordero", "height",156,1)
-
 people %>% pivot_wider(names_from = name, values_from = value)
-
-
-
 #solution 2  - uniqueness
 people = tribble(~name, ~key, ~value,
                  #------------/------/-----,
@@ -466,12 +398,7 @@ people = tribble(~name, ~key, ~value,
                  # "Phil Woods", "age",50,
                  "Jess Cordero", "age",45,
                  "Jess Cordero", "height",156,)
-
-
 people %>% pivot_wider(names_from = name, values_from = value)
-
-
-
 ```
 
 
@@ -483,22 +410,14 @@ people %>% pivot_wider(names_from = name, values_from = value)
 rcj = tribble( ~judge, ~male, ~female,
                     "yes", NA, 10, 
                     "no", 20, 12)
-
 #alternative table to try with no NAs
 # rcj = tribble( ~judge, ~male, ~female,
 #                     "yes", 4, 10, 
 #                     "no", 20, 12)
-
-
 #use of pivot_longer
 rcj %>% pivot_longer(cols = c(male, female),   names_to = "gender", values_to = "count")
-
-
 # use of  pivot_wider 
 rcj %>% pivot_wider(names_from = judge, values_from = c(male, female))
-
-
-
 ```
 
 
@@ -511,15 +430,10 @@ rcj %>% pivot_wider(names_from = judge, values_from = c(male, female))
 typing `?separate()` shows all the options and their meaning. Try experimenting with them to discover more of what they do.
 
 ```{r, eval=FALSE}
-
 tibble(x = c("a,b,c", "d,e,f,g", "h,i,j")) %>% 
   separate(x, c("one", "two", "three"))
-
 tibble(x = c("a,b,c", "d,e", "f,g,i")) %>% 
   separate(x, c("one", "two", "three"))
-
-
-
 ```
 
 
@@ -535,7 +449,6 @@ Solution: typing `?separate()` in the command line shows all the  information ne
 
 
 Solution: one suggestion is that there is only one way to unite the multiple strings but a number of different ways to split them apart. 
-
 
 
 

@@ -86,14 +86,16 @@ Sometimes it's necessary to replace missing values; for example, when displaying
 ### Replacing with a specific value
 
 We can also use the `replace()` function to replace missing values with a specific value. In this example we're replacing missing values with zero:
+
 ```{r, purl=purl_example_code}
 x <- c(7, 23, 5, -14, NA, -1, 11,NA)
 replace(x, is.na(x), 0)
 ```
 
 The `replace()` function can also be applied to a whole dataframe, like so:
-```{r, purl=purl_example_code, message=F, warning=F}
-df <- tibble::tibble(
+
+```{r, purl=purl_example_code}
+df <- tibble::data_frame(
   "x" = c(0, 1, 2, NA, 4),
   "y" = c(18, NA, 45, 15, 2),
 )
@@ -108,7 +110,8 @@ Here's an example of how to use `replace_na()` with the `offenders` dataframe, w
 offenders_replacena <- offenders %>%
   tidyr::replace_na(list(HEIGHT = "Unknown"))
 
-offenders_replacena %>% arrange(desc(HEIGHT)) %>% str()
+# Display the dataframe in descending height order, so we can see the 'Unknown' values
+offenders_replacena %>% dplyr::arrange(desc(HEIGHT)) %>% str()
 ```
 
 ### Exercise
@@ -121,7 +124,7 @@ fruit <- tibble::tibble(
   "Quantity" = c(23, NA, 15, 9, 11)
 )
 ```
-**Hint:** you add multiple arguments to `replace_na(list(...))`, with one argument for each column where NA values need replacing.
+**Hint:** you can add multiple arguments to `replace_na(list(...))`, with one argument for each column where NA values need replacing.
 
 ---
 
@@ -160,7 +163,7 @@ If we were to encounter a dataframe like the following, where each group name in
 
 ```{r, purl=purl_example_code}
 # Construct the example dataframe
-df <- tidyr::crossing(year = c("2015", "2016", "2017", "2018", "2019"),
+df <- tidyr::crossing(year = c("2017", "2018", "2019"),
                       quarter = c("Q1", "Q2", "Q3", "Q4")) %>%
       dplyr::mutate(count = sample(length(year)))
 

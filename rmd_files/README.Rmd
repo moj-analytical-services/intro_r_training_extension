@@ -10,7 +10,7 @@ purl_solutions <- FALSE # This variable relates to code blocks that are exercise
 purl_example_code <- TRUE # This variable relates to code blocks that aren't exercise solutions
 ```
 
-This repository is for Introduction to R extension course offered by the DASD R Training Group. 
+This repository is for the Introduction to R extension course offered by the DASD R Training Group. 
 
 The session is intended to be accessible to anyone who is familiar with the content of the [Introduction to R](https://github.com/moj-analytical-services/IntroRTraining) training session.
 
@@ -26,7 +26,7 @@ If you have any feedback on the content, please get in touch!
 * [Reshaping data](#reshaping-data)
 * [String manipulation](#string-manipulation)
 * [Further reading](#further-reading)
-* [Real world examples](#real-world-examples)
+* [Bonus examples](#bonus-examples)
 * [Appendix](#appendix)
 
 
@@ -41,7 +41,7 @@ A few days before the session, please make sure that -
 
 If you have any problems with the above please get in touch with the course organisers or ask for help on either the #analytical_platform or #intro_r channel on [ASD slack](https://asdslack.slack.com).
 
-All the examples in the presentation/README are available in the R script example_code.R.
+All the examples in the presentation and README are available in the R script example_code.R.
 
 
 ```{r source_content, child = 'introduction.Rmd'}
@@ -56,10 +56,10 @@ All the examples in the presentation/README are available in the R script exampl
 ```{r source_content, child = 'iteration.Rmd'}
 ```
 
-```{r source_content, child = 'reshaping.Rmd'}
+```{r source_content, child = 'strings.Rmd'}
 ```
 
-```{r source_content, child = 'strings.Rmd'}
+```{r source_content, child = 'reshaping.Rmd'}
 ```
 
 ```{r source_content, child = 'further_reading.Rmd'}

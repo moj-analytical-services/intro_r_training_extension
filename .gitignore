@@ -4,4 +4,6 @@
 .Ruserdata
 *.csv
 *.Rproj
+.Rprofile
+core
 renv/

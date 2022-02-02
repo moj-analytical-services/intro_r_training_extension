@@ -2,12 +2,10 @@
 
 
 ```{r, echo=F, message=F, results=F}
-
 # loading packages
 # 
 library(tidyverse)
 library(stringr)
-
 ```
 
 ### Introduction
@@ -27,20 +25,13 @@ To note here that one of the advantages of having two ways to define a string is
 
 ```{r, results=T}
 string1 = "a string using double quotes"
-
 is.character(string1)
-
 string2 = 'another string using single quotes'
-
 is.character(string2)
-
 # a string containing quotes
 string3 = "this is a 'string' within a string"
-
 # notice how the output changes when implementing the following code
 string4 = 'this is a "string" within a string'
-
-
 ```
 
 
@@ -51,15 +42,11 @@ If you need to `escape` a backslash then use a double backslash as in `\\` and t
 
 ```{r, results=T}
 string5 = "escaping a reserved character like \" quotes "
-
 # to see how the result would apear in text
 writeLines(string5)
-
 string6 = "escaping a backslash \\ "
-
 # to see how the result would apear in text
 writeLines(string6)
-
 ```
 
 
@@ -69,21 +56,15 @@ Furthermore, additional control in the form of newlines or tabs is provided by u
 Introducing non-English characters in your text strings is also possible using special characters of the form `\u00b5` for example for the Greek letter mu. 
 
 ```{r, results=T}
-
 # outputting non-English characters
 string7 = "\u00b5" 
-
-
 ```
 
 
 Adding strings into a character vector is very common and is usually done with the use of the `c()` function. 
 
 ```{r, results=T}
-
 s8 = c("a", "vector", "of", "strings")
-
-
 ```
 
 
@@ -93,11 +74,8 @@ s8 = c("a", "vector", "of", "strings")
 At times it is necessary to determine the length of a character string. A useful function to use in these cases is the `str_length()` function which helps with that.
 
 ```{r, results=T}
-
 # finding out how many characters in a char vector
 str_length(c(s8, NA))
-
-
 ```
 
 Notice that an `NA` character is translated as is and we will see other options on how to deal with this in the sections to follow. 
@@ -112,10 +90,8 @@ Using `str_c()` can be beneficial in many cases since it allows for additional f
 ```{r, results=T}
 # using custom separator
 str_c("an", "str_c vector", "with", "space", "character", "separating each entry", sep = " ")
-
 # the colapse option
 str_c("an", "str_c vector", "with", "space", "character", "separating each entry", collapse = T)
-
 ```
 
 What is more important however is that `str_c` is vectorised and in this way can help in cases where an action has to be applied to each element of an input vector instead of individual character strings.
@@ -124,16 +100,12 @@ In addition, it can also work to recycle shorter vectors to mach the longer ones
 
 
 ```{r, results=T}
-
 # vectorized form - translating a shorter vectror to match the longer one
 str_c("a", c("b", "c", "d"), "c", sep = " " )
-
 # simpler vectorizing 
 str_c("a", c("b", "c", "d"))
-
 # c() comparison
 c("a", c("b", "c", "d"))
-
 ```
 
 ### Substituting strings
@@ -146,16 +118,10 @@ It is also important to note that the function will not fail if the end point is
 ```{r, results=T}
 x <- c("OneValue", "SecondValue", "ThirdValue")
 str_sub(x, 1, 3)
-
 # negative numbers count backwards from end
 str_sub(x, -4, -1)
-
-
 # The function will not fail in the example below
 str_sub("a", 1,5)
-
-
-
 ```
 
 An additional use of the of the `str_sub` function is to assign values to a given range on the target string  
@@ -163,7 +129,6 @@ An additional use of the of the `str_sub` function is to assign values to a give
 ```{r, results=T}
 str_sub(x, 1, 1) <- str_to_lower(str_sub(x, 1, 1))
 x
-
 ```
 
 
@@ -176,15 +141,10 @@ for example how the sort order changes if the locale changes from English to Lit
 ```{r, results=T}
 #initial string
 x = c("y", "i", "k")
-
 #sort function in English
 str_sort(x)
-
 #sort function in Lithuanian
 str_sort(x,locale = "lt")
-
-
-
 ```
 
 ### Exercises
@@ -299,7 +259,6 @@ str_view_all(more, colour_match)
 Notice how `str_extract` works with these source vectors.
 
 ```{r, results = FALSE}
-
 str_extract(more, colour_match)
 #> [1] "blue"   "green"  "orange"
 ```
@@ -396,10 +355,8 @@ Simple pattern matching can be achieved by using the `str_view` function and spe
 
 
 ```{r, results=F}
-
 x <- c("apple", "banana", "pear")
 str_view(x, "an")
-
 ```
 
 
@@ -407,8 +364,6 @@ The complexity of the match can be adjusted and wildcards can be used as well in
 
 ```{r, results=F}
 str_view(x, ".a.")
-
-
 ```
 
 
@@ -424,17 +379,12 @@ For cases such as these there is a need to "escape" a character using the backla
 
 
 ```{r, results=F}
-
 # To create the regular expression, we need \\
 dot <- "\\."
-
 # But the expression itself only contains one:
 writeLines(dot)
-
-
 # And this tells R to look for an explicit .
 str_view(c("abc", "a.c", "bef"), "a\\.c")
-
 ```
 
 
@@ -445,10 +395,8 @@ If there is a need to match the `\` character itself then you will need to use t
 #to see this in a string
 x <- "a\\b"
 writeLines(x)
-
 # to view the result in a RegEx
 str_view(x, "\\\\")
-
 ```
 
 
@@ -475,13 +423,9 @@ It is sometimes useful to match a pattern starting from the beginning or the end
 More specifically, the start of the string is denoted by `^` and the end by `$`
 
 ```{r, results=F}
-
 x <- c("apple", "banana", "pear")
 str_view(x, "^a")
-
 str_view(x, "a$")
-
-
 ```
 
 
@@ -491,11 +435,8 @@ You can also use both in one pattern and this is useful when the entire string i
 # this will output all possible matches
 x <- c("apple pie", "apple", "apple cake")
 str_view(x, "apple")
-
 # notice the difference in the result here
 str_view(x, "^apple$")
-
-
 ```
 
 
@@ -531,12 +472,8 @@ A character class containing a single character is a nice alternative to backsla
 ```{r, results= F }
 # Look for a literal character that normally has special meaning in a regex
 str_view(c("abc", "a.c", "a*c", "a c"), "a[.]c")
-
-
 str_view(c("abc", "a.c", "a*c", "a c"), ".[*]c")
-
 str_view(c("abc", "a.c", "a*c", "a c"), "a[ ]")
-
 ```
 
 
@@ -546,10 +483,7 @@ Alternation is used to pick between patterns, for example `abc|d..f` will pick a
 
 
 ```{r, results = F}
-
 str_view(c("grey", "gray"), "gr(e|a)y")
-
-
 ```
 
 
@@ -577,14 +511,10 @@ for example:
 + `*`: 0 or more
 
 ```{r}
-
 x <- "1888 is the longest year in Roman numerals: MDCCCLXXXVIII"
 str_view(x, "CC?")
-
 str_view(x, "CC+")
-
 str_view(x, 'C[LX]+')
-
 ```
 
 Another key aspect of the above code is that the number or precedence here dictates that the character just before the operator will be affected. This means that parenthesis will need to be used as in `bana(na)+` to capture more than one character.
@@ -597,14 +527,9 @@ It is also possible to specify the number of repetitions explicitly by using:
 + `{n,m}`: between n and m
 
 ```{r}
-
 str_view(x, "C{2}")
-
-
 str_view(x, "C{2,}")
-
 str_view(x, "C{2,3}")
-
 ```
 
 
@@ -612,7 +537,6 @@ To also note here that the system will match as many of the characters that it c
 
 ```{r}
 str_view(x, 'C{2,3}?')
-
 str_view(x, 'C[LX]+?')
 ```
 
@@ -634,14 +558,6 @@ str_view(x, 'C[LX]+?')
       + Have two or more vowel-consonant pairs in a row.
       
 4. Solve the beginner regexp crosswords at [https://regexcrossword.com/challenges/beginner].
-
-
-
-
-
-
-
-
 
 
 
