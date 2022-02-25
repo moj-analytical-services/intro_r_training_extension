@@ -1,238 +1,210 @@
 
-# Iteration and Loops
-
-```{r,echo=F, message=F, results=F}
-# loading packages
-# 
-library(tidyverse)
-library(stringr)
-```
+# Iteration
 
 
 ## Introduction
 
+'For' and 'while' loops are used to repeatedly execute a piece of code, and are are a fundamental part of most programming languages. This chapter introduces how to use them in R, as well as showing how we can iterate over the rows or columns of a dataframe without needing to write a loop.  
 
-As part of any good coding practice is to reduce the number of repetitive tasks as much as possible. To help with this concept any programming language comes with a set of **control structures** to help reduce clutter in the code and make it more readable and easier to understand.
-
-A general rule in programming is to never copy an paste code more than twice; if you find that you are using repeated statements over and over again, this is a good sign that either a loop or a function or both are needed to make the code more compact and efficient. 
-
-Loops form part of the core of any programming platform and R is no different here. In the section to follow we will cover the for loos and its variants and explain a few things about `purrr` and how we can iterate through lists using a variety of *maps*. 
-
-A note here similar to what was mentioned in previous chapters, the content in this section can also be found in Hadley Wickham's and Garrett Grolemund's book [R For Data Science](https://r4ds.had.co.nz)
+A general rule of thumb in programming is to avoid copying and pasting a piece of code more than once; if you find that you are repeating similar pieces of code over and over again, this is a sign that either a loop or a [function](https://github.com/moj-analytical-services/writing_functions_in_r) (or both) are required. Keeping your code concise will help make it more readable and easier to understand.
 
 
-## For Loops
+## For loop basics
 
-The basics of how a for loop works can be understood best by using an example. Consider the following tibble:
+Let's start with a very basic example to illustrate what a for loop does. Say we wanted to print the numbers 1 to 5; without a for loop we'd need to write something like this:
 
-
-
-```{r}
-df <- tibble(
-  a = rnorm(10),
-  b = rnorm(10),
-  c = rnorm(10),
-  d = rnorm(10)
-)
+```{r, collapse = TRUE, purl=purl_example_code}
+print(1)
+print(2)
+print(3)
+print(4)
+print(5)
 ```
 
-the task now is to calculate, for example, the mean or the median:
+Clearly there is some code repetition here, so we can achieve the same result using a for loop:
 
-```{r}
-median(df$a)
-#> [1] -0.2457625
-median(df$b)
-#> [1] -0.2873072
-median(df$c)
-#> [1] -0.05669771
-median(df$d)
-#> [1] 0.1442633
-```
-
-
-one way of doing this is by copying and pasting the same code over and over again; inefficient, but possible at this stage. A much better way is to construct a for loop and iterate through the code that is repeated as above.
-
-```{r}
-output <- vector("double", ncol(df))  # 1. output
-for (i in seq_along(df)) {            # 2. sequence
-  output[[i]] <- median(df[[i]])      # 3. body
-}
-output
-#> [1] -0.24576245 -0.28730721 -0.05669771  0.14426335
-```
-
-In the example above the For loop has three primary components,  the *output*, the *sequence* and the *body*. The output is usually a list or a vector where the result of the loop is to be stored. the sequence is  a vector or a list containing the collection of items to cycle through while running. The iterator `i` is used as a place holder variable, changing each time the loop runs to the corresponding value ion the given sequence. As the loop runs `i` runs through all the values in the `sequence` in the order they appear.  
-
-The body of the loop contains the code to run at each iteration. The iterator `i` will be take the value of each element in the sequence on each run. 
-
-
-### Exercises
-
-1. Write for loops to:
-
-  1. Compute the mean of every column in mtcars.
-  2. Determine the type of each column in nycflights13::flights.
-  3. Compute the number of unique values in each column of iris.
-  4. Generate 10 random normals from distributions with means of -10, 0, 10, and 100.
-
-Think about the output, sequence, and body before you start writing the loop.
-
-
-## For loop variants
-
-Now that you know the basics of the for loop, it is time to see a few of its variants and how they can be used in very common programming tasks. 
-
-There are 4 variants to consider here:
-
-1. Modifying an existing object on the spot.
-2. Looping over a list of names or values.
-3. Handling outputs of unknown length.
-4. Handling sequences of unknown length.
-
-and we will cover each in the sections below. 
-
-
-### Modifying an existing object
-
-In many cases there will be a need to modify a given object based on the current data analysis task. In the example below the task is to scale the data frame for further processing. On way to achieve this is by manually change each column in the data; this could be fine for small dataframes but for larger ones this will very quickly become a problem. 
-
-
-```{r, error = TRUE}
-df <- tibble(
-  a = rnorm(10),
-  b = rnorm(10),
-  c = rnorm(10),
-  d = rnorm(10)
-)
-rescale01 <- function(x) {
-  rng <- range(x, na.rm = TRUE)
-  (x - rng[1]) / (rng[2] - rng[1])
-}
-
-df$a <- rescale01(df$a)
-df$b <- rescale01(df$b)
-df$c <- rescale01(df$c)
-df$d <- rescale01(df$d)
-```
-
-
-A for loop in this case would be recommended as you will notice that the same one line of code is repeated throughout. The code below illustrated this concept. 
-
-More specifically the components of the for loop are:
-
-+ The**output** -  in this case we don't output to a different object we just update the input. The output is the same as the input
-+ The **sequence** - This will be the number of columns in `df` we want to run the code to. As previously the `seq_along` function will help us with this as it will count the number of columns and turn this into a sequence we can use in the for loop
-
-+ The body of the loop is just the re scale one line of code running the defined `rescale01` function. It can be anything that will take the column as an argument to work with. Further restrictions would normally apply but we will not cover this here
-
-The code below simplifies what we want to do and as you can see, overall, we now have a much better structured and easier to read two lines of code!
-
-
-
-```{r}
-for (i in seq_along(df)) {
-  df[[i]] <- rescale01(df[[i]])
+```{r, purl=purl_example_code}
+for (i in 1:5) {
+  print(i)
 }
 ```
 
-### Looping patterns
+Inside the brackets of the for loop you define a variable - in this case called `i` - along with what you want to iterate over, referred to as the iterable. In this case the iterable is a sequence of the numbers 1 to 5, denoted `1:5` in R. For each iteration, the variable `i` will take on a value equal to the next element of the iterable. The loop body goes inside the curly brackets, which is where you define what you want to happen for each iteration (in this case printing the value of `i`).
 
-There are a couple of ways we can use to access the sequence part of the **for** loop depending on the coding style and the needs of the project. For example, in the code shown below, one could choose to loop over the list of indices of a vector using `for(i in se_along(x)` or alternatively iterate through the contents of the `results` vector using `for(i in vowel)`. Both formulations are valid with the first one allowing for more flexibility when it comes to accessing the resources of the vector.
+In the previous example we iterated over a sequence of numbers, but in R you can iterate over anything you like. Here's a similar example, but iterating over a vector of strings instead of a sequence of numbers:
 
-```{r, error = TRUE}
-x = letters # vector of letters
-vowel <- c('a', 'e', 'i', 'o', 'u')
+```{r, purl=purl_example_code}
+strings <- c("spam", "egg", "chips", "beans")
 
-results <- rnorm(length(x)) #create a random vector
-names(results) <- x # name the elements of the vector 
-
-## loop thourgh indices of a vector
-## 
-x1 = 0
-for(i in seq_along(x)){
-  x1[i] = paste(x[i],"23")
+for (string in strings) {
+  print(string)
 }
-
-## loop through contents of a vector
-## 
-for(i in vowel){
-  print(results[i])
-  }
-
 ```
 
+You can also use for loops to populate or modify a vector or dataframe. The following example shows how we can add the first ten numbers of the Fibonacci sequence to a vector:
+
+```{r, purl=purl_example_code}
+n <- 10 # Specify what length we want our output vector to be
+fibonacci <- vector("numeric", n) # Define an empty numeric vector of length n that we'll populate using the loop
+
+# Set up the first couple of numbers to get the sequence started
+fibonacci[1] <- 0 
+fibonacci[2] <- 1
+
+# Add the rest of the sequence
+for (i in 3:n) {
+  fibonacci[i] <- fibonacci[i-1] + fibonacci[i-2]
+}
+
+print(fibonacci)
+```
+
+When writing a for loop you must define something to iterate over a fixed number of times in advance. It is also possible to iterate indefinitely using a different kind of loop - this is covered in the section on while loops, below.
+
+
+### Exercise
+
+Write a for loop to print "The current date is ..." for each date in the following string vector:
+
+```{r, purl=purl_example_code}
+dates <- c("2020-03-01", "2020-06-01", "2020-09-01", "2020-12-01")
+```
+
+**Hint:** You can use the `paste()` function to join strings together, and the `print()` function to print the result in the Console.
+
+---
+
+```{r, include=show_solution, purl=purl_solutions}
+# Solution
+for (date in dates) {
+  print(paste("The current date is", date))
+}
+```
+
+---
+
+## More options with for loops
+
+### Iterating over the index of a vector
+
+If you wanted to get an index number for each element of the iterable, you can use the `seq_along()` function. For example:
+
+```{r, purl=purl_example_code}
+strings <- c("spam", "egg", "chips", "beans")
+
+for (i in seq_along(strings)) {
+  # Use paste() to combine two strings together
+  print(paste(i, strings[i]))
+}
+```
 
 ### Handling outputs of unknown length
 
-There are cases where the output from a loop is not known beforehand. In these cases, certain precautions need to be taken as it may result in clogging up the memory with vectors going out of control expanding indefinitely. 
+There are cases where the size of an output from a loop is not known beforehand. For example, this might be because different iterations result in outputs of different lengths.
 
-```{r}
-a = 0 # initialize number
+Let's say we want to join together dataframes of different lengths. There is a shared folder prepared in the alpha-r-training s3 bucket, which contains some data for us to read in and combine together. First we need to get a list of file paths to read from:
 
-# run a sequence of random length vectros to be appended
-for(i in seq_len(10)){
-  n = sample(20,1)
-  a = c(a,rnorm(n))
+```{r, message=F, warning=F, purl=purl_example_code}
+# Get dataframe with all available files/folders from an s3 path
+files <- botor::s3_ls("s3://alpha-r-training/intro-r-extension")
+# Get a list of csv files
+files <- files %>%
+  filter(grepl(".csv", uri)) %>%
+  pull(uri)
+
+files
+```
+
+Now we can use a for loop to read in each file as a dataframe, and add each dataframe to a list. After the for loop, the `bind_rows()` function from dplyr can be used to combine the data into a single dataframe. This is more memory efficient than appending the dataframes in each loop iteration.
+
+```{r, message=F, warning=F, purl=purl_example_code}
+# First define an empty list
+fruit_list <- list()
+
+# Loop over each file, and add the data to a list
+for (i in seq_along(files)) {
+  fruit_list[[i]] <- botor::s3_read(files[i], read.csv)
+}
+
+# Combine the list of dataframes into a single dataframe
+fruit <- dplyr::bind_rows(fruit_list)
+fruit
+```
+By doing this we've combined together various segments of a dataset, without needing to know how many segments there are or how many rows are in each segment beforehand.
+
+
+### Conditionally exiting a for loop
+
+You might want to stop a for loop iterating under a certain condition. In this case you can use a `break` statement in combination with an 'if' or 'if...else' statement, like so:
+
+```{r, purl=purl_example_code}
+
+for (i in 1:10) {
+  # Exit the for loop if i is greater than 5
+  if (i > 5) {
+    break
+  }
+  
+  print(i)
 }
 ```
 
+### Conditionally skip to the next iteration
 
-A better way to achieving the above result would be to create a list and capture the results within each cell at each corresponding iteration. The result would be a list with a  predictable index length. 
+The `next` statement can be use to skip to the next iteration of the loop under a certain condition. For example, we can skip to the next iteration if the iterable is NA (not available):
 
-```{r}
-a = list() # initilise a list
+```{r, purl=purl_example_code}
 
-# populate the contents of each cell of a list with a random size vector created in each iteration 
-for(i in seq_len(10)){
-  n = sample(20,1)
-  a[[i]] = rnorm(n)
+data <- c(56, 92, NA, 40, 11)
+
+for (i in data) {
+  # Skip this iteration if i is NA
+  if (is.na(i)) {
+    next
+  }
+  
+  print(i)
 }
 ```
 
+## While loops
 
+There may be cases where we want to keep looping over a piece of code until a certain condition is met, rather than having to specify in advance how many times a loop should run. In these cases a while loop can be used, which can be thought of as a repeating if statement.
 
+For example, we can use a while loop to achieve a similar result to the first for loop example above:
 
-### Handling sequences of unknown length
+```{r, purl=purl_example_code}
+# First specify an initial value for the variable used in the while loop
+i <- 1
 
-In general, unknown sequence length translates to cases where we want to check for certain condition in order to stop the execution of a block of code. In these cases the use of the `while` loop is preferable as in the example below.
-
-```{r, eval=FALSE, echo=TRUE, error = TRUE}
-## while loop definition
-
-while (condition) {
-  # body
+# Now define a while loop
+while (i <= 5) { # The loop will continue until the condition i<=5 is met
+  print(i)
+  i = i + 1 # Set the value of the variable for the next loop iteration
 }
 ```
 
-Notice that the `while` loop execution differs that the `for` loop in that the body of code is executed first before the condition is checked and this is by design. One needs to first check the contents before accessing the validity of the condition to terminate the loop.   
+The syntax for a while loop is similar to that of a for loop, but in the brackets a condition is specified instead of an iterable. Prior to writing the while loop you'll also need to specify a start value for the variable used in the loop, and there should be something in the body of the loop to change the variable during each iteration - otherwise the condition can never be met!
 
-```{r, error = TRUE}
-# The loop will first execute the body of code and then check if the condition is satisfied. If this is the case the loop will stop its iteration.
-numbers = 0
+Generally a while loop should only be used in circumstances where it isn't possible to achieve the desired result using a for loop. The reason for this is that it can be easy to accidentally set up an infinite loop, where a bug in the code means that the condition is never met for a while loop to end.
 
-while(mean(numbers) < 0.5){
-  numbers = rnorm(20)
-  print(mean(numbers))
-}
+
+## Iterating over dataframes
+
+Although loops are an essential programming tool, Tidyverse includes functions that allow us to apply operations across all (or a subset) of the rows and columns in a dataframe. The advantages of using these built-in functions are that they can make the code more concise and easier to read, plus they're often faster to run than the for loop equivalent.
+
+
+### Iterating over rows in a dataframe
+
+We've already met one of these functions in the [Introduction to R](https://github.com/moj-analytical-services/IntroRTraining) course: the `mutate()` function from dplyr is a convenient way to apply an operation to all rows in a single column of a dataframe. For example, going back to the `fruit` dataset that we combined together earlier, here's how we can multiply all values in the `Quantity` column by two:
+
+```{r, purl=purl_example_code}
+double_fruit <- fruit %>%
+  dplyr::mutate(Quantity = Quantity * 2)
+
+double_fruit
 ```
+### Iterating over columns in a dataframe
 
-
-##Exercises
-
-1. Imagine you have a directory full of files that you want to read in. You have the file names in the vector `files`, and now want to read each one. Write the for loop that will simulate reading them into a single data frame.
-
-```{r, error = TRUE}
-# the following code will create a random colelction of file names
-files = paste0(str_extract(sentences[1:5], "^[:alpha:]+"), sample(c(".csv",".xlsx")))
-
-```
-
-
-2. What happens if you use `for (nm in names(x))` and x has no names? What if only some of the elements are named? What if the names are not unique?
-
-```{r, error = TRUE}
-# try using the folling list of files 
-files2 = paste0(str_extract(sentences[1:10], "^[:alpha:]+"), ".xlsx") 
-files2[5] = NA
-```
+The `across()` function from dplyr can be used with `mutate()` to allow us to apply a function to multiple columns in one go.
 
