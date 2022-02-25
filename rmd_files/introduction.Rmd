@@ -1,6 +1,6 @@
 # Introduction
 
-This course builds on the original Introduction to R training course, and covers additional programming concepts. It provides examples that demonstrate how the Tidyverse packages can assist with tasks typically encountered in MoJ Data & Analysis.
+This course builds on the original [Introduction to R training course](https://github.com/moj-analytical-services/IntroRTraining), and covers additional programming concepts. It provides examples that demonstrate how the Tidyverse packages can assist with tasks typically encountered in MoJ Data & Analysis.
 
 Development of the Tidyverse suite of packages was led by Hadley Wickham, and more information about these packages can be found on the [Tidyverse website](https://www.tidyverse.org/) as well as in the book [R for Data Science](https://r4ds.had.co.nz/).
 
@@ -28,5 +28,8 @@ library(dplyr)
 library(tidyr)
 library(stringr)
 library(readr)
+
+# Change botor settings to avoid printing debugger messages to the console
+logger::log_threshold('WARN', namespace = 'botor')
 ```
 
