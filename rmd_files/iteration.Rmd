@@ -199,12 +199,17 @@ Although loops are an essential programming tool, Tidyverse includes functions t
 We've already met one of these functions in the [Introduction to R](https://github.com/moj-analytical-services/IntroRTraining) course: the `mutate()` function from dplyr is a convenient way to apply an operation to all rows in a single column of a dataframe. For example, going back to the `fruit` dataset that we combined together earlier, here's how we can multiply all values in the `Quantity` column by two:
 
 ```{r, purl=purl_example_code}
-double_fruit <- fruit %>%
-  dplyr::mutate(Quantity = Quantity * 2)
+double_fruit <- fruit %>% dplyr::mutate(Quantity = Quantity * 2)
 
 double_fruit
 ```
 ### Iterating over columns in a dataframe
 
 The `across()` function from dplyr can be used with `mutate()` to allow us to apply a function to multiple columns in one go.
+
+```{r, purl=purl_example_code}
+more_fruit <- fruit %>% dplyr::mutate(fruit, across(where(is.numeric), ~ .x * 10))
+
+more_fruit
+```
 

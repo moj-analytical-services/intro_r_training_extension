@@ -108,6 +108,7 @@ The `replace_na()` function from tidyr also provides a convenient way to replace
 Here's an example of how to use `replace_na()` with the `offenders` dataframe, where we're replacing missing values in the `HEIGHT` column with 'Unknown':
 ```{r, purl=purl_example_code}
 offenders_replacena <- offenders %>%
+  dplyr::mutate(HEIGHT = as.character(HEIGHT)) %>%
   tidyr::replace_na(list(HEIGHT = "Unknown"))
 
 # Display the dataframe in descending height order, so we can see the 'Unknown' values
@@ -120,7 +121,7 @@ For the following dataframe, use the `replace_na()` function from tidyr to repla
 ```{r, purl=purl_example_code}
 fruit <- tibble::tibble(
   "Item" = c("Orange", "Apple", "Banana", "Lemon", "Pear"),
-  "Cost" = c(0.5, 0.4, 0.1, 0.3, NA),
+  "Cost" = c("£0.50", "£0.40", "£0.10", "£0.30", NA),
   "Quantity" = c(23, NA, 15, 9, 11)
 )
 ```
