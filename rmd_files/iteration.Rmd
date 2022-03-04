@@ -4,7 +4,7 @@
 
 ## Introduction
 
-'For' and 'while' loops are used to repeatedly execute a piece of code, and are are a fundamental part of most programming languages. This chapter introduces how to use them in R, as well as showing how we can iterate over the rows or columns of a dataframe without needing to write a loop.  
+'For' and 'while' loops are used to repeatedly execute a piece of code, and are a fundamental part of most programming languages. This chapter introduces how to use them in R, as well as showing how we can iterate over the columns of a dataframe without needing to write a loop.  
 
 A general rule of thumb in programming is to avoid copying and pasting a piece of code more than once; if you find that you are repeating similar pieces of code over and over again, this is a sign that either a loop or a [function](https://github.com/moj-analytical-services/writing_functions_in_r) (or both) are required. Keeping your code concise will help make it more readable and easier to understand.
 
@@ -21,6 +21,8 @@ print(4)
 print(5)
 ```
 
+---
+
 Clearly there is some code repetition here, so we can achieve the same result using a for loop:
 
 ```{r, purl=purl_example_code}
@@ -30,6 +32,8 @@ for (i in 1:5) {
 ```
 
 Inside the brackets of the for loop you define a variable - in this case called `i` - along with what you want to iterate over, referred to as the iterable. In this case the iterable is a sequence of the numbers 1 to 5, denoted `1:5` in R. For each iteration, the variable `i` will take on a value equal to the next element of the iterable. The loop body goes inside the curly brackets, which is where you define what you want to happen for each iteration (in this case printing the value of `i`).
+
+---
 
 In the previous example we iterated over a sequence of numbers, but in R you can iterate over anything you like. Here's a similar example, but iterating over a vector of strings instead of a sequence of numbers:
 
@@ -41,11 +45,13 @@ for (string in strings) {
 }
 ```
 
+---
+
 You can also use for loops to populate or modify a vector or dataframe. The following example shows how we can add the first ten numbers of the Fibonacci sequence to a vector:
 
 ```{r, purl=purl_example_code}
 n <- 10 # Specify what length we want our output vector to be
-fibonacci <- vector("numeric", n) # Define an empty numeric vector of length n that we'll populate using the loop
+fibonacci <- vector("numeric", n) # Define an empty numeric vector of length n to populate using the loop
 
 # Set up the first couple of numbers to get the sequence started
 fibonacci[1] <- 0 
@@ -59,8 +65,9 @@ for (i in 3:n) {
 print(fibonacci)
 ```
 
-When writing a for loop you must define something to iterate over a fixed number of times in advance. It is also possible to iterate indefinitely using a different kind of loop - this is covered in the section on while loops, below.
+When writing a for loop you must define something to iterate over a fixed number of times in advance. It is also possible to iterate indefinitely using a different kind of loop - this is covered later on in the section on while loops`.
 
+---
 
 ### Exercise
 
@@ -81,7 +88,6 @@ for (date in dates) {
 }
 ```
 
----
 
 ## More options with for loops
 
@@ -98,16 +104,19 @@ for (i in seq_along(strings)) {
 }
 ```
 
+---
+
 ### Handling outputs of unknown length
 
 There are cases where the size of an output from a loop is not known beforehand. For example, this might be because different iterations result in outputs of different lengths.
 
-Let's say we want to join together dataframes of different lengths. There is a shared folder prepared in the alpha-r-training s3 bucket, which contains some data for us to read in and combine together. First we need to get a list of file paths to read from:
+Let's say we want to combine segments of a dataset, and we don't know in advance how many segments there are or how many rows they have. There is a shared folder prepared in the alpha-r-training s3 bucket, which contains some data for us to read in and combine together. First we need to get a list of files to read in, which we can do using the `s3_ls()` function from botor:
 
 ```{r, message=F, warning=F, purl=purl_example_code}
 # Get dataframe with all available files/folders from an s3 path
 files <- botor::s3_ls("s3://alpha-r-training/intro-r-extension")
-# Get a list of csv files
+
+# Get a list of csv file names
 files <- files %>%
   filter(grepl(".csv", uri)) %>%
   pull(uri)
@@ -115,31 +124,40 @@ files <- files %>%
 files
 ```
 
-Now we can use a for loop to read in each file as a dataframe, and add each dataframe to a list. After the for loop, the `bind_rows()` function from dplyr can be used to combine the data into a single dataframe. This is more memory efficient than appending the dataframes in each loop iteration.
+---
+
+Now we can use a for loop to read in each file as a dataframe, and add each dataframe to a list. After the for loop, the `bind_rows()` function from dplyr can be used to combine the data into a single dataframe.
 
 ```{r, message=F, warning=F, purl=purl_example_code}
-# First define an empty list
-fruit_list <- list()
+# First define an empty list to be filled by the loop
+fruit_list <- vector("list", length(files))
 
 # Loop over each file, and add the data to a list
 for (i in seq_along(files)) {
-  fruit_list[[i]] <- botor::s3_read(files[i], read.csv)
+  fruit_list[[i]] <- botor::s3_read(files[i], readr::read_csv, show_col_types = FALSE)
 }
 
 # Combine the list of dataframes into a single dataframe
 fruit <- dplyr::bind_rows(fruit_list)
 fruit
 ```
+
+---
+
 By doing this we've combined together various segments of a dataset, without needing to know how many segments there are or how many rows are in each segment beforehand.
 
+Note: We've introduced a type of R object called a list in this example. Lists are type of vector that allow us to put a whole dataframe as an element in the list. Compare this to the atomic vectors we've met before, where the elements can only contain a single value and they all need to be the same type (numeric, character, etc). Adding the dataframes to a list and using `bind_rows()` afterwards is more memory efficient than appending the dataframes in each loop iteration.
 
-### Conditionally exiting a for loop
+---
 
-You might want to stop a for loop iterating under a certain condition. In this case you can use a `break` statement in combination with an 'if' or 'if...else' statement, like so:
+### Conditionally exiting a loop
+
+You might want to stop a loop iterating under a certain condition. In this case you can use a `break` statement in combination with an 'if' or 'if...else' statement, like so:
 
 ```{r, purl=purl_example_code}
 
 for (i in 1:10) {
+  
   # Exit the for loop if i is greater than 5
   if (i > 5) {
     break
@@ -148,6 +166,8 @@ for (i in 1:10) {
   print(i)
 }
 ```
+
+---
 
 ### Conditionally skip to the next iteration
 
@@ -158,6 +178,7 @@ The `next` statement can be use to skip to the next iteration of the loop under 
 data <- c(56, 92, NA, 40, 11)
 
 for (i in data) {
+  
   # Skip this iteration if i is NA
   if (is.na(i)) {
     next
@@ -184,32 +205,44 @@ while (i <= 5) { # The loop will continue until the condition i<=5 is met
 }
 ```
 
-The syntax for a while loop is similar to that of a for loop, but in the brackets a condition is specified instead of an iterable. Prior to writing the while loop you'll also need to specify a start value for the variable used in the loop, and there should be something in the body of the loop to change the variable during each iteration - otherwise the condition can never be met!
+---
+
+The syntax for a while loop is similar to that of a for loop, but in the brackets a condition is specified instead of an iterable. Prior to writing the while loop you'll also need to specify am initial value for the variable used in the loop, and there should be something in the body of the loop to change the variable during each iteration - otherwise the condition can never be met!
 
 Generally a while loop should only be used in circumstances where it isn't possible to achieve the desired result using a for loop. The reason for this is that it can be easy to accidentally set up an infinite loop, where a bug in the code means that the condition is never met for a while loop to end.
 
 
-## Iterating over dataframes
+## Iterating over columns of a dataframe
 
-Although loops are an essential programming tool, Tidyverse includes functions that allow us to apply operations across all (or a subset) of the rows and columns in a dataframe. The advantages of using these built-in functions are that they can make the code more concise and easier to read, plus they're often faster to run than the for loop equivalent.
+Although loops are an essential programming tool, there are cases where the same outcome can be achieved in a more efficient way by using a built-in function. For example, the tidyverse packages include functions that allow us to apply operations across all (or a subset) of the columns in a dataframe at the same time. The advantages of using these built-in functions are that they can make the code more concise and easier to read, plus they're often faster to run than the loop equivalent.
 
-
-### Iterating over rows in a dataframe
-
-We've already met one of these functions in the [Introduction to R](https://github.com/moj-analytical-services/IntroRTraining) course: the `mutate()` function from dplyr is a convenient way to apply an operation to all rows in a single column of a dataframe. For example, going back to the `fruit` dataset that we combined together earlier, here's how we can multiply all values in the `Quantity` column by two:
+We've already met the `mutate()` function from dplyr, which is a convenient way to apply an operation to all values in a column of a dataframe. For example, going back to the `fruit` dataset that we combined together earlier, here's how we can make all characters in the `Item` column uppercase, using the `toupper()` function:
 
 ```{r, purl=purl_example_code}
-double_fruit <- fruit %>% dplyr::mutate(Quantity = Quantity * 2)
-
-double_fruit
+fruit <- fruit %>% dplyr::mutate(Item = toupper(Item))
+fruit
 ```
-### Iterating over columns in a dataframe
 
-The `across()` function from dplyr can be used with `mutate()` to allow us to apply a function to multiple columns in one go.
+---
+
+We can also use `mutate()` to apply a function to multiple columns in one go by combining it with the `across()` function from dplyr. This example demonstrates how to multiply the values in all numeric columns by 100:
 
 ```{r, purl=purl_example_code}
-more_fruit <- fruit %>% dplyr::mutate(fruit, across(where(is.numeric), ~ .x * 10))
-
-more_fruit
+fruit_pence <- fruit %>% dplyr::mutate(across(where(is.numeric), ~ .x * 100))
+fruit_pence
 ```
 
+---
+
+Here we're using `mutate()` with `across()` to apply a function to all numeric columns. The `~ .x * 10` part is what's called a lambda or anonymous function, and this is what tells `mutate()` and `across()` to multiply by 10. The lambda function is a function with no name - they're generally used in combination with another function (in this case `across()`) to apply a simple operation without needing to define a dedicated function elsewhere in the code.
+
+---
+
+Of course `across()` can also be used to apply a named function to multiple columns of a dataframe. Here's how we can apply the `signif()` function to round values in all numeric columns to 1 decimal place:
+
+```{r, purl=purl_example_code}
+rounded_fruit <- fruit %>% dplyr::mutate(across(where(is.numeric), signif, 1))
+
+rounded_fruit
+```
+Note: When the `signif()` function is passed as an argument to `across()`, the brackets aren't included (i.e. `signif` is passed rather than `signif()`). This means that any arguments for `signif` need to be included as extra arguments for `across()` instead (i.e. putting `signif, 1` rather than `signif(1)` when using with `across()`).

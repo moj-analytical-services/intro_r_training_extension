@@ -11,33 +11,36 @@ output:
 show_solution <- TRUE # This determines if the solutions are displayed in the slides
 purl_solutions <- FALSE # This variable relates to code blocks that are exercise solutions
 purl_example_code <- TRUE # This variable relates to code blocks that aren't exercise solutions
+
+# Change botor settings to avoid printing debugger messages to the console
+logger::log_threshold('WARN', namespace = 'botor')
 ```
 
 ## Setup
 
-Before we start, make sure you've:
+For those of you who'd like to 'code along' and attempt the exercises, please make sure you've:
 
 1. Got access to the `alpha-r-training` bucket
-2. Cloned the `intro_r_training_extension` repo
-3. Pulled any changes (the blue arrow on the Git tab in the top right panel)
+2. Cloned the (C&C repo)[https://github.com/moj-analytical-services/Coffee-and-Coding] (or copied example_code.R into your RStudio) - instructions on cloning from GitHub can be found [here](https://user-guidance.services.alpha.mojanalytics.xyz/github.html#r-studio)
+3. Installed the packages `tidyverse` and `botor` - guidance can be found [here](https://user-guidance.services.alpha.mojanalytics.xyz/appendix/botor.html#installation)
 4. Got `example_code.R` open
-5. Opened the `intro_r_training_extension` repo on GitHub, so you can refer to the read me
+5. Opened the (C&C repo)[https://github.com/moj-analytical-services/Coffee-and-Coding] on GitHub, so you can refer to the session material in the README
 
-If you need any help, just ask! For anyone joining remotely, we will be monitoring Teams throughout the session.
 
 
 # Introduction
 
+## Introduction
+
 This Coffee and Coding session is trialing some new material that will build on the original [Introduction to R training course](https://github.com/moj-analytical-services/IntroRTraining), therefore we appreciate any feedback. It provides examples that demonstrate how the Tidyverse packages can assist with tasks typically encountered in MoJ Data & Analysis.
 
-Development of the Tidyverse suite of packages was led by Hadley Wickham, and more information about these packages can be found on the [Tidyverse website](https://www.tidyverse.org/) as well as in the book [R for Data Science](https://r4ds.had.co.nz/).
-
-## Learning outcomes
 
 ### By the end of this session you should know how to:
 
- - Classify a variable in a dataframe, based on a set of conditions
- - Easily apply a function to any number of columns in a dataframe
+ - Change what the code does based on a condition
+ - Classify values in a dataframe, based on a set of conditions
+ - Read and combine data from multiple csv files
+ - Easily apply a function to multiple columns in a dataframe
 
 
 ## Before we start
@@ -48,13 +51,10 @@ First, we need to load a few packages.
 
 ```{r message=F, warning=F, purl=purl_example_code}
 # Load packages
-library(botor)
-library(dplyr)
-library(tidyr)
-library(stringr)
-library(readr)
+library(botor) # Used to help R interact with s3 cloud storage
+library(dplyr) # Used for data manipulation
+library(readr) # Used to help read in data
 ```
-
 
 
 ```{r source_content, child = '../rmd_files/conditional_statements.Rmd'}
@@ -71,7 +71,7 @@ library(readr)
 ### General
 
  * [Tidyverse website](https://www.tidyverse.org)
- * [Tidyverse style guide](https://style.tidyverse.org/) (has some guidance on choosing function and argument names)
+ * [MoJ Analytical Platform Guidance](https://user-guidance.services.alpha.mojanalytics.xyz)
  * [MoJ coding standards](https://moj-analytical-services.github.io/our-coding-standards/)
  
 ### Conditional statements
