@@ -8,6 +8,11 @@
       }
     ]
   },
+  "Python": {
+    "Version": "3.8.10",
+    "Type": "virtualenv",
+    "Name": null
+  },
   "Packages": {
     "Matrix": {
       "Package": "Matrix",
@@ -170,6 +175,13 @@
       "Repository": "RSPM",
       "Hash": "af2c2531e55df5cf230c4b5444fc973c"
     },
+    "jquerylib": {
+      "Package": "jquerylib",
+      "Version": "0.1.4",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "5aab57a3bd297eee1c1d862735972182"
+    },
     "jsonlite": {
       "Package": "jsonlite",
       "Version": "1.7.2",
@@ -305,10 +317,10 @@
     },
     "rmarkdown": {
       "Package": "rmarkdown",
-      "Version": "2.8",
+      "Version": "2.11",
       "Source": "Repository",
-      "Repository": "RSPM",
-      "Hash": "f518ba47713f92d0d603eec7c6888faf"
+      "Repository": "CRAN",
+      "Hash": "320017b52d05a943981272b295750388"
     },
     "stringi": {
       "Package": "stringi",
@@ -401,9 +413,5 @@
       "Repository": "RSPM",
       "Hash": "2826c5d9efb0a88f657c7a679c7106db"
     }
-  },
-  "Python": {
-    "Version": "3.8.10",
-    "Type": "virtualenv"
   }
 }
