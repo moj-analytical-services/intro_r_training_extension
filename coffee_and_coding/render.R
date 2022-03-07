@@ -5,6 +5,7 @@ show_solution <- FALSE # This determines if the solutions are displayed in the s
 purl_solutions <- FALSE # This variable relates to code blocks that are exercise solutions
 purl_example_code <- TRUE # This variable relates to code blocks that aren't exercise solutions
 rmarkdown::render("coffee_and_coding/coffee_coding_1.Rmd", output_format = "github_document")
+file.rename("coffee_and_coding/coffee_coding_1.md", "coffee_and_coding/README.md")
 file.remove("coffee_and_coding/coffee_coding_1.html")
 
 # render slides.Rmd as an ioslides presentation
