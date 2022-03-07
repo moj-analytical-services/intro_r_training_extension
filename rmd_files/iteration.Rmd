@@ -26,6 +26,7 @@ print(5)
 Clearly there is some code repetition here, so we can achieve the same result using a for loop:
 
 ```{r, purl=purl_example_code}
+# A basic for loop
 for (i in 1:5) {
   print(i)
 }
@@ -38,10 +39,11 @@ Inside the brackets of the for loop you define a variable - in this case called 
 In the previous example we iterated over a sequence of numbers, but in R you can iterate over anything you like. Here's a similar example, but iterating over a vector of strings instead of a sequence of numbers:
 
 ```{r, purl=purl_example_code}
-strings <- c("spam", "egg", "chips", "beans")
+fruits <- c("strawberry", "apple", "pear", "orange")
 
-for (string in strings) {
-  print(string)
+# Iterating over a vector
+for (fruit in fruits) {
+  print(fruit)
 }
 ```
 
@@ -65,7 +67,7 @@ for (i in 3:n) {
 print(fibonacci)
 ```
 
-When writing a for loop you must define something to iterate over a fixed number of times in advance. It is also possible to iterate indefinitely using a different kind of loop - this is covered later on in the section on while loops`.
+When writing a for loop you must define something to iterate over a fixed number of times in advance. It is also possible to iterate indefinitely using a different kind of loop - this is covered later on in the section on while loops.
 
 ---
 
@@ -96,11 +98,12 @@ for (date in dates) {
 If you wanted to get an index number for each element of the iterable, you can use the `seq_along()` function. For example:
 
 ```{r, purl=purl_example_code}
-strings <- c("spam", "egg", "chips", "beans")
+fruits <- c("strawberry", "apple", "pear", "orange")
 
-for (i in seq_along(strings)) {
+# Iterating over the indices of a vector
+for (i in seq_along(fruits)) {
   # Use paste() to combine two strings together
-  print(paste(i, strings[i]))
+  print(paste(i, fruits[i]))
 }
 ```
 
@@ -118,8 +121,8 @@ files <- botor::s3_ls("s3://alpha-r-training/intro-r-extension")
 
 # Get a list of csv file names
 files <- files %>%
-  filter(grepl(".csv", uri)) %>%
-  pull(uri)
+  dplyr::filter(grepl(".csv", uri)) %>%
+  dplyr::pull(uri)
 
 files
 ```
@@ -146,7 +149,7 @@ fruit
 
 By doing this we've combined together various segments of a dataset, without needing to know how many segments there are or how many rows are in each segment beforehand.
 
-Note: We've introduced a type of R object called a list in this example. Lists are type of vector that allow us to put a whole dataframe as an element in the list. Compare this to the atomic vectors we've met before, where the elements can only contain a single value and they all need to be the same type (numeric, character, etc). Adding the dataframes to a list and using `bind_rows()` afterwards is more memory efficient than appending the dataframes in each loop iteration.
+Note: We've introduced a type of R object called a list in this example. Lists are type of vector that allow us to put a whole dataframe as an element in the list. Compare this to the vectors we've met before, known as 'atomic vectors', where the elements can only contain a single value and they all need to be the same type (numeric, character, etc). The reason for doing it this way is because it's more memory efficient to add the dataframes to a list and use `bind_rows()` afterwards compared to appending the dataframes in each loop iteration.
 
 ---
 
@@ -207,7 +210,7 @@ while (i <= 5) { # The loop will continue until the condition i<=5 is met
 
 ---
 
-The syntax for a while loop is similar to that of a for loop, but in the brackets a condition is specified instead of an iterable. Prior to writing the while loop you'll also need to specify am initial value for the variable used in the loop, and there should be something in the body of the loop to change the variable during each iteration - otherwise the condition can never be met!
+The syntax for a while loop is similar to that of a for loop, but in the brackets a condition is specified instead of an iterable. Prior to writing the while loop you'll also need to specify an initial value for the variable used in the loop, and there should be something in the body of the loop to change the variable during each iteration - otherwise the condition can never be met!
 
 Generally a while loop should only be used in circumstances where it isn't possible to achieve the desired result using a for loop. The reason for this is that it can be easy to accidentally set up an infinite loop, where a bug in the code means that the condition is never met for a while loop to end.
 
@@ -216,9 +219,12 @@ Generally a while loop should only be used in circumstances where it isn't possi
 
 Although loops are an essential programming tool, there are cases where the same outcome can be achieved in a more efficient way by using a built-in function. For example, the tidyverse packages include functions that allow us to apply operations across all (or a subset) of the columns in a dataframe at the same time. The advantages of using these built-in functions are that they can make the code more concise and easier to read, plus they're often faster to run than the loop equivalent.
 
-We've already met the `mutate()` function from dplyr, which is a convenient way to apply an operation to all values in a column of a dataframe. For example, going back to the `fruit` dataset that we combined together earlier, here's how we can make all characters in the `Item` column uppercase, using the `toupper()` function:
+---
+
+We've already met the `mutate()` function from dplyr in the [Introduction to R](https://github.com/moj-analytical-services/IntroRTraining) course, which is a convenient way to apply an operation to all values in a column of a dataframe. For example, going back to the `fruit` dataset that we combined together earlier, here's how we can make all characters in the `Item` column uppercase, using the `toupper()` function:
 
 ```{r, purl=purl_example_code}
+# Convert Item column to uppercase
 fruit <- fruit %>% dplyr::mutate(Item = toupper(Item))
 fruit
 ```
@@ -231,8 +237,6 @@ We can also use `mutate()` to apply a function to multiple columns in one go by 
 fruit_pence <- fruit %>% dplyr::mutate(across(where(is.numeric), ~ .x * 100))
 fruit_pence
 ```
-
----
 
 Here we're using `mutate()` with `across()` to apply a function to all numeric columns. The `~ .x * 10` part is what's called a lambda or anonymous function, and this is what tells `mutate()` and `across()` to multiply by 10. The lambda function is a function with no name - they're generally used in combination with another function (in this case `across()`) to apply a simple operation without needing to define a dedicated function elsewhere in the code.
 

@@ -7,6 +7,15 @@ Conditional statements can be used when you want a piece of code to be executed 
 ```{r, purl=purl_example_code}
 x <- 9
 
+# A basic if statement
+if (x < 10) {
+  print("x is less than 10")
+}
+```
+
+```{r, purl=purl_example_code}
+x <- 11
+
 if (x < 10) {
   print("x is less than 10")
 }
@@ -42,21 +51,23 @@ if (x < 10) {
 }
 ```
 
-For the conditions themselves, we can make use of any of R's relational and logical operators. Here's a list of common operators:
+---
+
+For the conditions themselves, we can make use of R's relational and logical operators:
 
 | Operator | Definition |
 | :------: | :--------- |
-|    ==    | Equal to                      |
-|    !=    | Not equal to                  |
-|    >     | Greater than                  |
-|    <     | Less than                     |
-|    >=    | Greater than or equal to      |
-|    <=    | Less than or equal to         |
-|  &#448;  | Or                            |
-|    &     | And                           |
-|    !     | Not                           |
-|   %in%   | The subject appears in a list |
-| is.na()  | The subject is NA             |
+|    ==    | Equal to                        |
+|    !=    | Not equal to                    |
+|    >     | Greater than                    |
+|    <     | Less than                       |
+|    >=    | Greater than or equal to        |
+|    <=    | Less than or equal to           |
+|  &#448;  | Or                              |
+|    &     | And                             |
+|    !     | Not                             |
+|   %in%   | The subject appears in a vector |
+| is.na()  | The subject is NA               |
 
 
 ## Vectorising an if...else statement
@@ -68,6 +79,7 @@ For example, if we had a vector containing a set of numbers, and we wanted to cr
 ```{r, purl=purl_example_code}
 x <- c(0, 74, 0, 8, 23, 15, 3, 0, -1, 9)
 
+# Vectorised if...else
 dplyr::if_else(x > 0, 1, 0)
 ```
 
@@ -116,24 +128,28 @@ str(offenders)
 
 ## Vectorising multiple if...else statements
 
-In the previous section we saw how we can apply a single condition to a vector, but what if we want to apply several conditions, each with a different outcome, at the same time? We can use the `case_when()` function from dplyr to do this. Let's say that we wanted to add a column to the `offenders` dataframe with an age band for each offender. We could do something like this:
+In the previous section we saw how we can apply a single condition to a vector, but what if we want to apply several conditions, each with a different outcome, at the same time? We can use the `case_when()` function from dplyr to do this. Let's say that we wanted to add a column to the `offenders` dataframe with an age band for each offender. We can do something like this:
 
 ```{r, purl=purl_example_code}
+# Add an age band column
 offenders <- offenders %>%
   dplyr::mutate(AGE_BAND = dplyr::case_when(
-    AGE < 30 ~ "<30",
-    AGE < 50 ~ "30-49",
-    AGE >= 50 ~ "50+",
+    AGE < 18 ~ "<18",
+    AGE < 30 ~ "18-29",
+    AGE < 40 ~ "30-39",
+    AGE < 50 ~ "40-49",
+    AGE < 60 ~ "50-59",
+    AGE >= 60 ~ "60+",
     TRUE ~ "Unknown"
   ))
-offenders %>% select(BIRTH_DATE, AGE, AGE_BAND) %>% str()
+offenders %>% select(BIRTH_DATE, AGE, AGE_BAND) %>% str(vec.len=6)
 ```
 
 ---
 
 In the `case_when()` function, each argument should be a two-sided formula. For each formula, the condition appears to the left of a '`~`' symbol, and on the right is the value to assign if the condition evaluates to `TRUE`.
 
-Note that the order of conditional statements in the `case_when()` function is important if there are overlapping conditions. The conditions will be evaluated in the order that they appear in, so in the above example, the `case_when()` will first check if the person is under 30, then if they are under 50 (but over 30), and so on.
+Note that the order of conditional statements in the `case_when()` function is important if there are overlapping conditions. The conditions will be evaluated in the order that they appear in, so in the above example, the `case_when()` will first check if the person is under 18, then if they are under 30 (but over 18), and so on.
 
 A default value can be assigned in the event that none of the conditions are met. This is done by putting `TRUE` in the place of a condition. In the example above, if none of the conditions are met, then a value of `"Unknown"` is assigned.
 
