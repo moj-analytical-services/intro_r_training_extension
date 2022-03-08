@@ -166,21 +166,23 @@ slide:not(.current) .plotly.html-widget{
           </hgroup>
   </slide>
 
-<slide class=""><hgroup><h2>Setup</h2></hgroup><article  class="smaller " id="setup">
+<slide class=""><hgroup><h2>Setup</h2></hgroup><article  id="setup" class="smaller ">
 
 <p>For those of you who’d like to &lsquo;code along&rsquo; and attempt the exercises, please make sure you’ve:</p>
 
 <ol>
-<li>Got access to the <code>alpha-r-training</code> bucket</li>
+<li>Got access to the <code>alpha-r-training</code> s3 bucket</li>
 <li>Cloned the <a href='https://github.com/moj-analytical-services/Coffee-and-Coding' title=''>C&amp;C repo</a> (or copied example_code.R into your RStudio) - instructions on cloning from GitHub can be found <a href='https://user-guidance.services.alpha.mojanalytics.xyz/github.html#r-studio' title=''>here</a></li>
 <li>Installed the packages <code>tidyverse</code> and <code>botor</code> - see guidance on how to do this <a href='https://user-guidance.services.alpha.mojanalytics.xyz/appendix/botor.html#installation' title=''>here</a></li>
 <li>Opened <code>example_code.R</code> in RStudio</li>
 <li>Opened the <a href='https://github.com/moj-analytical-services/Coffee-and-Coding/tree/master/2022-03-09%20Introduction%20to%20conditional%20statements%20and%20loops%20in%20R' title=''>C&amp;C repo</a> on GitHub, so you can refer to the session material in the README</li>
 </ol>
 
-</article></slide><slide class=""><hgroup><h2>Introduction</h2></hgroup><article  class="smaller " id="introduction">
+</article></slide><slide class=""><hgroup><h2>Introduction</h2></hgroup><article  id="introduction" class="smaller ">
 
-<p>This Coffee and Coding session is trialling some new material that will build on the original <a href='https://github.com/moj-analytical-services/IntroRTraining' title=''>Introduction to R training course</a>, therefore we appreciate any feedback. It provides examples that demonstrate how the tidyverse packages can assist with tasks typically encountered in MoJ Data &amp; Analysis.</p>
+<p>This Coffee and Coding session is trialling some new material that will build on the original <a href='https://github.com/moj-analytical-services/IntroRTraining' title=''>Introduction to R training course</a>, therefore we appreciate any feedback.</p>
+
+<p>In this session we’ll cover two fundamentals of programming in R: conditional statements and loops. These two topics come under the umbrella of &lsquo;control flow&rsquo;, which refers to how we can change the order that pieces of code are run in. With conditional statements we can introduce choices, where different pieces of code are run depending on the input, and loops allow us to repeatedly run the same piece of code.</p>
 
 <h3>By the end of this session you should know how to:</h3>
 
@@ -191,7 +193,7 @@ slide:not(.current) .plotly.html-widget{
 <li>Easily apply a function to multiple columns in a dataframe</li>
 </ul>
 
-</article></slide><slide class=""><hgroup><h2>Before we start</h2></hgroup><article  class="smaller " id="before-we-start">
+</article></slide><slide class=""><hgroup><h2>Before we start</h2></hgroup><article  id="before-we-start" class="smaller ">
 
 <p>To follow along with the code and participate in the exercises, open the script &ldquo;example_code.R&rdquo; in RStudio. All the code that we’ll show in this session is stored in &ldquo;example_code.R&rdquo;, and you can edit this script to write solutions to the exercises. You may also want to have the <a href='https://github.com/moj-analytical-services/Coffee-and-Coding/tree/master/2022-03-09%20Introduction%20to%20conditional%20statements%20and%20loops%20in%20R' title=''>session material</a> open as a reference.</p>
 
@@ -202,11 +204,11 @@ library(botor) # Used to help R interact with s3 cloud storage
 library(dplyr) # Used for data manipulation
 library(readr) # Used to help read in data</pre>
 
-</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Conditional statements</h2></hgroup><article  class="smaller " id="conditional-statements">
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Conditional statements</h2></hgroup><article  id="conditional-statements" class="smaller ">
 
-</article></slide><slide class=""><hgroup><h2>if…else statements</h2></hgroup><article  class="smaller " id="ifelse-statements">
+</article></slide><slide class=""><hgroup><h2>if statements</h2></hgroup><article  id="if-statements" class="smaller ">
 
-<p>Conditional statements can be used when you want a piece of code to be executed only if a particular condition is met. The most basic form of these are &lsquo;if…else&rsquo; statements. As a simple example, let’s say we wanted to check if a variable <code>x</code> is less than 10. We can write something like:</p>
+<p>Conditional statements can be used when you want a piece of code to be executed only if a particular condition is met. The most basic form of these are &lsquo;if&rsquo; statements. As a simple example, let’s say we wanted to check if a variable <code>x</code> is less than 10. We can write something like:</p>
 
 <pre class = 'prettyprint lang-r'>x &lt;- 9
 
@@ -223,9 +225,9 @@ if (x &lt; 10) {
   print(&quot;x is less than 10&quot;)
 }</pre>
 
-</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
+</article></slide><slide class=""><hgroup><h2>if…else statements</h2></hgroup><article  id="ifelse-statements" class="smaller ">
 
-<p>We can also specify if we want something different to happen if the condition is not met:</p>
+<p>We can also specify if we want something different to happen if the condition is not met, using an &lsquo;if…else&rsquo; statement:</p>
 
 <pre class = 'prettyprint lang-r'>x &lt;- 11
 
@@ -308,7 +310,7 @@ if (x &lt; 10) {
 </tr>
 </table>
 
-</article></slide><slide class=""><hgroup><h2>Vectorising an if…else statement</h2></hgroup><article  class="smaller " id="vectorising-an-ifelse-statement">
+</article></slide><slide class=""><hgroup><h2>Vectorising an if…else statement</h2></hgroup><article  id="vectorising-an-ifelse-statement" class="smaller ">
 
 <p>Dplyr’s <code>if_else()</code> function is useful if we want to apply an &lsquo;if…else&rsquo; statement to a vector, rather than a single value. When we use <code>if_else()</code> we need to provide it with three arguments, like this: <code>if_else(condition, true, false)</code>, where <code>condition</code> is the condition we want to test, <code>true</code> is the value to use if the condition evaluates to <code>TRUE</code>, and <code>false</code> is the value to use if the condition evaluates to <code>FALSE</code>.</p>
 
@@ -399,7 +401,7 @@ str(offenders)</pre>
 ##  $ YOUTH_OR_ADULT  : chr  &quot;Adult&quot; &quot;Adult&quot; &quot;Adult&quot; &quot;Adult&quot; ...
 ##  $ COURT_ORDER     : num  1 0 1 1 0 0 0 1 1 0 ...</pre>
 
-</article></slide><slide class=""><hgroup><h2>Vectorising multiple if…else statements</h2></hgroup><article  class="smaller " id="vectorising-multiple-ifelse-statements">
+</article></slide><slide class=""><hgroup><h2>Vectorising multiple if…else statements</h2></hgroup><article  id="vectorising-multiple-ifelse-statements" class="smaller ">
 
 <p>In the previous section we saw how we can apply a single condition to a vector, but what if we want to apply several conditions, each with a different outcome, at the same time? We can use the <code>case_when()</code> function from dplyr to do this. Let’s say that we wanted to add a column to the <code>offenders</code> dataframe with an age band for each offender. We can do something like this:</p>
 
@@ -433,7 +435,7 @@ offenders %&gt;% select(BIRTH_DATE, AGE, AGE_BAND) %&gt;% str(vec.len=6)</pre>
 
 <h3>Exercise</h3>
 
-<p>Add a column called &lsquo;PREV_CONVICTIONS_BAND&rsquo; to the <code>offenders</code> dataframe. The column should contain the following categories: &lsquo;0-1&rsquo;, &lsquo;1-5&rsquo;, &lsquo;5-10&rsquo;, &lsquo;10+&rsquo;, based on the number of convictions given in the &lsquo;PREV_CONVICTIONS&rsquo; column.</p>
+<p>Add a column called &lsquo;PREV_CONVICTIONS_BAND&rsquo; to the <code>offenders</code> dataframe. The column should contain the following categories: &lsquo;0&rsquo;, &lsquo;1-5&rsquo;, &lsquo;6-10&rsquo;, &lsquo;&gt;10&rsquo;, based on the number of convictions given in the &lsquo;PREV_CONVICTIONS&rsquo; column.</p>
 
 <p><strong>Hint:</strong> you’ll need to use the <code>case_when()</code> function with <code>mutate()</code>.</p>
 
@@ -442,10 +444,10 @@ offenders %&gt;% select(BIRTH_DATE, AGE, AGE_BAND) %&gt;% str(vec.len=6)</pre>
 <pre class = 'prettyprint lang-r'># Solution
 offenders &lt;- offenders %&gt;%
   dplyr::mutate(PREV_CONVICTIONS_BAND = dplyr::case_when(
-    PREV_CONVICTIONS &lt; 1 ~ &quot;0-1&quot;,
-    PREV_CONVICTIONS &lt; 5 ~ &quot;1-5&quot;,
-    PREV_CONVICTIONS &lt; 10 ~ &quot;5-10&quot;,
-    PREV_CONVICTIONS &gt;= 10 ~ &quot;10+&quot;,
+    PREV_CONVICTIONS == 0 ~ &quot;0&quot;,
+    PREV_CONVICTIONS &lt;= 5 ~ &quot;1-5&quot;,
+    PREV_CONVICTIONS &lt;= 10 ~ &quot;6-10&quot;,
+    PREV_CONVICTIONS &gt; 10 ~ &quot;&gt;10&quot;,
     TRUE ~ &quot;Unknown&quot;
   ))
 str(offenders)</pre>
@@ -465,17 +467,17 @@ str(offenders)</pre>
 ##  $ YOUTH_OR_ADULT       : chr  &quot;Adult&quot; &quot;Adult&quot; &quot;Adult&quot; &quot;Adult&quot; ...
 ##  $ COURT_ORDER          : num  1 0 1 1 0 0 0 1 1 0 ...
 ##  $ AGE_BAND             : chr  &quot;50-59&quot; &quot;50-59&quot; &quot;40-49&quot; &quot;50-59&quot; ...
-##  $ PREV_CONVICTIONS_BAND: chr  &quot;0-1&quot; &quot;0-1&quot; &quot;0-1&quot; &quot;0-1&quot; ...</pre>
+##  $ PREV_CONVICTIONS_BAND: chr  &quot;0&quot; &quot;0&quot; &quot;0&quot; &quot;0&quot; ...</pre>
 
-</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Iteration</h2></hgroup><article  class="smaller " id="iteration">
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Iteration</h2></hgroup><article  id="iteration" class="smaller ">
 
-</article></slide><slide class=""><hgroup><h2>Introduction</h2></hgroup><article  class="smaller " id="introduction-1">
+</article></slide><slide class=""><hgroup><h2>Introduction</h2></hgroup><article  id="introduction-1" class="smaller ">
 
 <p>&lsquo;For&rsquo; and &lsquo;while&rsquo; loops are used to repeatedly execute a piece of code, and are a fundamental part of most programming languages. This chapter introduces how to use them in R, as well as showing how we can iterate over the columns of a dataframe without needing to write a loop.</p>
 
 <p>A general rule of thumb in programming is to avoid copying and pasting a piece of code more than once; if you find that you are repeating similar pieces of code over and over again, this is a sign that either a loop or a <a href='https://github.com/moj-analytical-services/writing_functions_in_r' title=''>function</a> (or both) are required. Keeping your code concise will help make it more readable and easier to understand.</p>
 
-</article></slide><slide class=""><hgroup><h2>For loop basics</h2></hgroup><article  class="smaller " id="for-loop-basics">
+</article></slide><slide class=""><hgroup><h2>For loop basics</h2></hgroup><article  id="for-loop-basics" class="smaller ">
 
 <p>Let’s start with a very basic example to illustrate what a for loop does. Say we wanted to print the numbers 1 to 5; without a for loop we’d need to write something like this:</p>
 
@@ -567,7 +569,7 @@ for (date in dates) {
 ## [1] &quot;The current date is 2020-09-01&quot;
 ## [1] &quot;The current date is 2020-12-01&quot;</pre>
 
-</article></slide><slide class=""><hgroup><h2>More options with for loops</h2></hgroup><article  class="smaller " id="more-options-with-for-loops">
+</article></slide><slide class=""><hgroup><h2>More options with for loops</h2></hgroup><article  id="more-options-with-for-loops" class="smaller ">
 
 <h3>Iterating over the index of a vector</h3>
 
@@ -688,7 +690,7 @@ for (i in data) {
 ## [1] 40
 ## [1] 11</pre>
 
-</article></slide><slide class=""><hgroup><h2>While loops</h2></hgroup><article  class="smaller " id="while-loops">
+</article></slide><slide class=""><hgroup><h2>While loops</h2></hgroup><article  id="while-loops" class="smaller ">
 
 <p>There may be cases where we want to keep looping over a piece of code until a certain condition is met, rather than having to specify in advance how many times a loop should run. In these cases a while loop can be used, which can be thought of as a repeating if statement.</p>
 
@@ -715,7 +717,7 @@ while (i &lt;= 5) { # The loop will continue until the condition i&lt;=5 is met
 
 <p>Generally a while loop should only be used in circumstances where it isn’t possible to achieve the desired result using a for loop. The reason for this is that it can be easy to accidentally set up an infinite loop, where a bug in the code means that the condition is never met for a while loop to end.</p>
 
-</article></slide><slide class=""><hgroup><h2>Iterating over columns of a dataframe</h2></hgroup><article  class="smaller " id="iterating-over-columns-of-a-dataframe">
+</article></slide><slide class=""><hgroup><h2>Iterating over columns of a dataframe</h2></hgroup><article  id="iterating-over-columns-of-a-dataframe" class="smaller ">
 
 <p>Although loops are an essential programming tool, there are cases where the same outcome can be achieved in a more efficient way by using a built-in function. For example, the tidyverse packages include functions that allow us to apply operations across all (or a subset) of the columns in a dataframe at the same time. The advantages of using these built-in functions are that they can make the code more concise and easier to read, plus they’re often faster to run than the loop equivalent.</p>
 
@@ -760,7 +762,7 @@ fruit_pence</pre>
 ## 8 PEACH             55         53         58
 ## 9 PLUM              38         41         41</pre>
 
-<p>Here we’re using <code>mutate()</code> with <code>across()</code> to apply a function to all numeric columns. The <code>~ .x * 10</code> part is what’s called a lambda or anonymous function, and this is what tells <code>mutate()</code> and <code>across()</code> to multiply by 10. The lambda function is a function with no name - they’re generally used in combination with another function (in this case <code>across()</code>) to apply a simple operation without needing to define a dedicated function elsewhere in the code.</p>
+<p>Here we’re using <code>mutate()</code> with <code>across()</code> to apply a function to all numeric columns. The <code>~ .x * 100</code> part is what’s called a lambda or anonymous function, and this is what tells <code>mutate()</code> and <code>across()</code> to multiply by 100. The lambda function is a function with no name - they’re generally used in combination with another function (in this case <code>across()</code>) to apply a simple operation without needing to define a dedicated function elsewhere in the code.</p>
 
 </article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
 
@@ -785,9 +787,9 @@ rounded_fruit</pre>
 
 <p>Note: When the <code>signif()</code> function is passed as an argument to <code>across()</code>, the brackets aren’t included (i.e. <code>signif</code> is passed rather than <code>signif()</code>). This means that any arguments for <code>signif</code> need to be included as extra arguments for <code>across()</code> instead (i.e. putting <code>signif, 1</code> rather than <code>signif(1)</code> when using with <code>across()</code>).</p>
 
-</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Further Reading</h2></hgroup><article  class="smaller " id="further-reading">
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Further Reading</h2></hgroup><article  id="further-reading" class="smaller ">
 
-</article></slide><slide class=""><hgroup><h2>Further Reading</h2></hgroup><article  class="smaller " id="further-reading-1">
+</article></slide><slide class=""><hgroup><h2>Further Reading</h2></hgroup><article  id="further-reading-1" class="smaller ">
 
 <h3>General</h3>
 
@@ -810,7 +812,7 @@ rounded_fruit</pre>
 <li><a href='https://adv-r.hadley.nz/control-flow.html#loops' title=''>Advanced R - loops section</a></li>
 </ul>
 
-</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Any questions?</h2></hgroup><article  class="smaller " id="any-questions"></article></slide>
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Any questions?</h2></hgroup><article  id="any-questions" class="smaller "></article></slide>
 
 
   <slide class="backdrop"></slide>

@@ -238,7 +238,7 @@ fruit_pence <- fruit %>% dplyr::mutate(across(where(is.numeric), ~ .x * 100))
 fruit_pence
 ```
 
-Here we're using `mutate()` with `across()` to apply a function to all numeric columns. The `~ .x * 10` part is what's called a lambda or anonymous function, and this is what tells `mutate()` and `across()` to multiply by 10. The lambda function is a function with no name - they're generally used in combination with another function (in this case `across()`) to apply a simple operation without needing to define a dedicated function elsewhere in the code.
+Here we're using `mutate()` with `across()` to apply a function to all numeric columns. The `~ .x * 100` part is what's called a lambda or anonymous function, and this is what tells `mutate()` and `across()` to multiply by 100. The lambda function is a function with no name - they're generally used in combination with another function (in this case `across()`) to apply a simple operation without needing to define a dedicated function elsewhere in the code.
 
 ---
 

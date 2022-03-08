@@ -1,8 +1,8 @@
 # Conditional statements
 
-## if...else statements
+## if statements
 
-Conditional statements can be used when you want a piece of code to be executed only if a particular condition is met. The most basic form of these are 'if...else' statements. As a simple example, let's say we wanted to check if a variable `x` is less than 10. We can write something like:
+Conditional statements can be used when you want a piece of code to be executed only if a particular condition is met. The most basic form of these are 'if' statements. As a simple example, let's say we wanted to check if a variable `x` is less than 10. We can write something like:
 
 ```{r, purl=purl_example_code}
 x <- 9
@@ -21,9 +21,10 @@ if (x < 10) {
 }
 ```
 
----
 
-We can also specify if we want something different to happen if the condition is not met:
+## if...else statements
+
+We can also specify if we want something different to happen if the condition is not met, using an 'if...else' statement:
 
 ```{r, purl=purl_example_code}
 x <- 11
@@ -157,7 +158,7 @@ A default value can be assigned in the event that none of the conditions are met
 
 ### Exercise
 
-Add a column called 'PREV_CONVICTIONS_BAND' to the `offenders` dataframe. The column should contain the following categories: '0-1', '1-5', '5-10', '10+', based on the number of convictions given in the 'PREV_CONVICTIONS' column.
+Add a column called 'PREV_CONVICTIONS_BAND' to the `offenders` dataframe. The column should contain the following categories: '0', '1-5', '6-10', '>10', based on the number of convictions given in the 'PREV_CONVICTIONS' column.
 
 **Hint:** you'll need to use the `case_when()` function with `mutate()`.
 
@@ -167,10 +168,10 @@ Add a column called 'PREV_CONVICTIONS_BAND' to the `offenders` dataframe. The co
 # Solution
 offenders <- offenders %>%
   dplyr::mutate(PREV_CONVICTIONS_BAND = dplyr::case_when(
-    PREV_CONVICTIONS < 1 ~ "0-1",
-    PREV_CONVICTIONS < 5 ~ "1-5",
-    PREV_CONVICTIONS < 10 ~ "5-10",
-    PREV_CONVICTIONS >= 10 ~ "10+",
+    PREV_CONVICTIONS == 0 ~ "0",
+    PREV_CONVICTIONS <= 5 ~ "1-5",
+    PREV_CONVICTIONS <= 10 ~ "6-10",
+    PREV_CONVICTIONS > 10 ~ ">10",
     TRUE ~ "Unknown"
   ))
 str(offenders)

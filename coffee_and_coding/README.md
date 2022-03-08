@@ -6,7 +6,7 @@ Introduction to conditional statements and loops in R
 For those of you who’d like to ‘code along’ and attempt the exercises,
 please make sure you’ve:
 
-1.  Got access to the `alpha-r-training` bucket
+1.  Got access to the `alpha-r-training` s3 bucket
 2.  Cloned the [C&C
     repo](https://github.com/moj-analytical-services/Coffee-and-Coding)
     (or copied example_code.R into your RStudio) - instructions on
@@ -25,9 +25,14 @@ please make sure you’ve:
 This Coffee and Coding session is trialling some new material that will
 build on the original [Introduction to R training
 course](https://github.com/moj-analytical-services/IntroRTraining),
-therefore we appreciate any feedback. It provides examples that
-demonstrate how the tidyverse packages can assist with tasks typically
-encountered in MoJ Data & Analysis.
+therefore we appreciate any feedback.
+
+In this session we’ll cover two fundamentals of programming in R:
+conditional statements and loops. These two topics come under the
+umbrella of ‘control flow’, which refers to how we can change the order
+that pieces of code are run in. With conditional statements we can
+introduce choices, where different pieces of code are run depending on
+the input, and loops allow us to repeatedly run the same piece of code.
 
 ### By the end of this session you should know how to:
 
@@ -56,12 +61,12 @@ library(readr) # Used to help read in data
 
 # Conditional statements
 
-## if…else statements
+## if statements
 
 Conditional statements can be used when you want a piece of code to be
 executed only if a particular condition is met. The most basic form of
-these are ‘if…else’ statements. As a simple example, let’s say we wanted
-to check if a variable `x` is less than 10. We can write something like:
+these are ‘if’ statements. As a simple example, let’s say we wanted to
+check if a variable `x` is less than 10. We can write something like:
 
 ``` r
 x <- 9
@@ -82,10 +87,10 @@ if (x < 10) {
 }
 ```
 
-------------------------------------------------------------------------
+## if…else statements
 
 We can also specify if we want something different to happen if the
-condition is not met:
+condition is not met, using an ‘if…else’ statement:
 
 ``` r
 x <- 11
@@ -281,8 +286,8 @@ the example above, if none of the conditions are met, then a value of
 ### Exercise
 
 Add a column called ‘PREV_CONVICTIONS_BAND’ to the `offenders`
-dataframe. The column should contain the following categories: ‘0-1’,
-‘1-5’, ‘5-10’, ‘10+’, based on the number of convictions given in the
+dataframe. The column should contain the following categories: ‘0’,
+‘1-5’, ‘6-10’, ‘\>10’, based on the number of convictions given in the
 ‘PREV_CONVICTIONS’ column.
 
 **Hint:** you’ll need to use the `case_when()` function with `mutate()`.
@@ -678,11 +683,11 @@ fruit_pence
     ## 9 PLUM              38         41         41
 
 Here we’re using `mutate()` with `across()` to apply a function to all
-numeric columns. The `~ .x * 10` part is what’s called a lambda or
+numeric columns. The `~ .x * 100` part is what’s called a lambda or
 anonymous function, and this is what tells `mutate()` and `across()` to
-multiply by 10. The lambda function is a function with no name - they’re
-generally used in combination with another function (in this case
-`across()`) to apply a simple operation without needing to define a
+multiply by 100. The lambda function is a function with no name -
+they’re generally used in combination with another function (in this
+case `across()`) to apply a simple operation without needing to define a
 dedicated function elsewhere in the code.
 
 ------------------------------------------------------------------------

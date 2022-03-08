@@ -24,7 +24,7 @@ logger::log_threshold('WARN', namespace = 'botor')
 
 For those of you who'd like to 'code along' and attempt the exercises, please make sure you've:
 
-1. Got access to the `alpha-r-training` bucket
+1. Got access to the `alpha-r-training` s3 bucket
 2. Cloned the [C&C repo](https://github.com/moj-analytical-services/Coffee-and-Coding) (or copied example_code.R into your RStudio) - instructions on cloning from GitHub can be found [here](https://user-guidance.services.alpha.mojanalytics.xyz/github.html#r-studio)
 3. Installed the packages `tidyverse` and `botor` - see guidance on how to do this [here](https://user-guidance.services.alpha.mojanalytics.xyz/appendix/botor.html#installation)
 4. Opened `example_code.R` in RStudio
@@ -34,7 +34,9 @@ For those of you who'd like to 'code along' and attempt the exercises, please ma
 
 ## Introduction
 
-This Coffee and Coding session is trialling some new material that will build on the original [Introduction to R training course](https://github.com/moj-analytical-services/IntroRTraining), therefore we appreciate any feedback. It provides examples that demonstrate how the tidyverse packages can assist with tasks typically encountered in MoJ Data & Analysis.
+This Coffee and Coding session is trialling some new material that will build on the original [Introduction to R training course](https://github.com/moj-analytical-services/IntroRTraining), therefore we appreciate any feedback.
+
+In this session we’ll cover two fundamentals of programming in R: conditional statements and loops. These two topics come under the umbrella of 'control flow', which refers to how we can change the order that pieces of code are run in. With conditional statements we can introduce choices, where different pieces of code are run depending on the input, and loops allow us to repeatedly run the same piece of code.
 
 
 ### By the end of this session you should know how to:

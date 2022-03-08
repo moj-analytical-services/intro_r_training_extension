@@ -25,3 +25,4 @@ purl_solutions <- TRUE # This means solutions will be included
 purl_example_code <- FALSE # This means code that isn't an exercise solution won't be included
 knitr::purl("coffee_and_coding/coffee_coding_1.Rmd", documentation=0)
 file.rename("coffee_coding_1.R", "coffee_and_coding/solutions.R")
+
