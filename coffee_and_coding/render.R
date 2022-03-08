@@ -13,7 +13,7 @@ show_solution <- TRUE
 purl_solutions <- FALSE
 purl_example_code <- TRUE
 rmarkdown::render("coffee_and_coding/coffee_coding_1.Rmd", output_format = "ioslides_presentation")
-file.rename("coffee_and_coding/coffee_coding_1.html", "coffee_and_coding/coffee_coding_1_slides.html")
+file.rename("coffee_and_coding/coffee_coding_1.html", "coffee_and_coding/slides.html")
 
 # extract R code from content.Rmd into separate script
 purl_solutions <- FALSE # This means solutions won't be included

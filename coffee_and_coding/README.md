@@ -22,7 +22,7 @@ please make sure you’ve:
 
 ## Introduction
 
-This Coffee and Coding session is trialing some new material that will
+This Coffee and Coding session is trialling some new material that will
 build on the original [Introduction to R training
 course](https://github.com/moj-analytical-services/IntroRTraining),
 therefore we appreciate any feedback. It provides examples that

@@ -34,7 +34,7 @@ For those of you who'd like to 'code along' and attempt the exercises, please ma
 
 ## Introduction
 
-This Coffee and Coding session is trialing some new material that will build on the original [Introduction to R training course](https://github.com/moj-analytical-services/IntroRTraining), therefore we appreciate any feedback. It provides examples that demonstrate how the tidyverse packages can assist with tasks typically encountered in MoJ Data & Analysis.
+This Coffee and Coding session is trialling some new material that will build on the original [Introduction to R training course](https://github.com/moj-analytical-services/IntroRTraining), therefore we appreciate any feedback. It provides examples that demonstrate how the tidyverse packages can assist with tasks typically encountered in MoJ Data & Analysis.
 
 
 ### By the end of this session you should know how to:
