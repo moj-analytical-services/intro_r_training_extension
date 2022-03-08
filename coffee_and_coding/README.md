@@ -278,7 +278,7 @@ above example, the `case_when()` will first check if the person is under
 
 A default value can be assigned in the event that none of the conditions
 are met. This is done by putting `TRUE` in the place of a condition. In
-the example above, if none of the conditions are met, then a value of
+the example above, if none of the conditions are met then a value of
 `"Unknown"` is assigned.
 
 ------------------------------------------------------------------------
@@ -694,7 +694,7 @@ dedicated function elsewhere in the code.
 
 Of course `across()` can also be used to apply a named function to
 multiple columns of a dataframe. Here’s how we can apply the `signif()`
-function to round values in all numeric columns to 1 decimal place:
+function to round values in all numeric columns to 1 significant figure:
 
 ``` r
 rounded_fruit <- fruit %>% dplyr::mutate(across(where(is.numeric), signif, 1))
@@ -720,6 +720,31 @@ Note: When the `signif()` function is passed as an argument to
 than `signif()`). This means that any arguments for `signif` need to be
 included as extra arguments for `across()` instead (i.e. putting
 `signif, 1` rather than `signif(1)` when using with `across()`).
+
+# Summary
+
+## Summary
+
+### Conditional statements
+
+We’ve looked at:
+
+-   If…else statements, which allow us to choose what code gets run
+    based on a condition or set of conditions
+-   `if_else()` from dplyr, which allows us to handle vector inputs and
+    outputs
+-   `case_when()` from dplyr, which allows us to specify multiple
+    conditions in one go
+
+### Iteration
+
+We’ve looked at:
+
+-   For loops and while loops, which allow us to repeatedly execute a
+    piece of code
+-   Extra functionalities that can be combined with loops to help apply
+    them in more situations
+-   How to apply a function to multiple columns of a dataframe in one go
 
 # Further Reading
 

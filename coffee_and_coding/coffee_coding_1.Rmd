@@ -67,6 +67,26 @@ library(readr) # Used to help read in data
 ```{r source_content, child = '../rmd_files/iteration.Rmd'}
 ```
 
+# Summary
+
+## Summary
+
+### Conditional statements
+
+We've looked at:
+
+ * If...else statements, which allow us to choose what code gets run based on a condition or set of conditions
+ * `if_else()` from dplyr, which allows us to handle vector inputs and outputs
+ * `case_when()` from dplyr, which allows us to specify multiple conditions in one go
+
+### Iteration
+
+We've looked at:
+
+ * For loops and while loops, which allow us to repeatedly execute a piece of code
+ * Extra functionalities that can be combined with loops to help apply them in more situations
+ * How to apply a function to multiple columns of a dataframe in one go
+ 
 
 # Further Reading
 

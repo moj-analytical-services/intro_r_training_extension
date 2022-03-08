@@ -429,7 +429,7 @@ offenders %&gt;% select(BIRTH_DATE, AGE, AGE_BAND) %&gt;% str(vec.len=6)</pre>
 
 <p>Note that the order of conditional statements in the <code>case_when()</code> function is important if there are overlapping conditions. The conditions will be evaluated in the order that they appear in, so in the above example, the <code>case_when()</code> will first check if the person is under 18, then if they are under 30 (but over 18), and so on.</p>
 
-<p>A default value can be assigned in the event that none of the conditions are met. This is done by putting <code>TRUE</code> in the place of a condition. In the example above, if none of the conditions are met, then a value of <code>&quot;Unknown&quot;</code> is assigned.</p>
+<p>A default value can be assigned in the event that none of the conditions are met. This is done by putting <code>TRUE</code> in the place of a condition. In the example above, if none of the conditions are met then a value of <code>&quot;Unknown&quot;</code> is assigned.</p>
 
 </article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
 
@@ -766,7 +766,7 @@ fruit_pence</pre>
 
 </article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
 
-<p>Of course <code>across()</code> can also be used to apply a named function to multiple columns of a dataframe. Here’s how we can apply the <code>signif()</code> function to round values in all numeric columns to 1 decimal place:</p>
+<p>Of course <code>across()</code> can also be used to apply a named function to multiple columns of a dataframe. Here’s how we can apply the <code>signif()</code> function to round values in all numeric columns to 1 significant figure:</p>
 
 <pre class = 'prettyprint lang-r'>rounded_fruit &lt;- fruit %&gt;% dplyr::mutate(across(where(is.numeric), signif, 1))
 
@@ -786,6 +786,30 @@ rounded_fruit</pre>
 ## 9 PLUM             0.4        0.4        0.4</pre>
 
 <p>Note: When the <code>signif()</code> function is passed as an argument to <code>across()</code>, the brackets aren’t included (i.e. <code>signif</code> is passed rather than <code>signif()</code>). This means that any arguments for <code>signif</code> need to be included as extra arguments for <code>across()</code> instead (i.e. putting <code>signif, 1</code> rather than <code>signif(1)</code> when using with <code>across()</code>).</p>
+
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Summary</h2></hgroup><article  id="summary" class="smaller ">
+
+</article></slide><slide class=""><hgroup><h2>Summary</h2></hgroup><article  id="summary-1" class="smaller ">
+
+<h3>Conditional statements</h3>
+
+<p>We’ve looked at:</p>
+
+<ul>
+<li>If…else statements, which allow us to choose what code gets run based on a condition or set of conditions</li>
+<li><code>if_else()</code> from dplyr, which allows us to handle vector inputs and outputs</li>
+<li><code>case_when()</code> from dplyr, which allows us to specify multiple conditions in one go</li>
+</ul>
+
+<h3>Iteration</h3>
+
+<p>We’ve looked at:</p>
+
+<ul>
+<li>For loops and while loops, which allow us to repeatedly execute a piece of code</li>
+<li>Extra functionalities that can be combined with loops to help apply them in more situations</li>
+<li>How to apply a function to multiple columns of a dataframe in one go</li>
+</ul>
 
 </article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Further Reading</h2></hgroup><article  id="further-reading" class="smaller ">
 
