@@ -109,6 +109,46 @@ for (i in seq_along(fruits)) {
 
 ---
 
+### Conditionally exiting a loop
+
+You might want to stop a loop iterating under a certain condition. In this case you can use a `break` statement in combination with an 'if' or 'if...else' statement, like so:
+
+```{r, purl=purl_example_code}
+
+for (i in 1:10) {
+  
+  # Exit the for loop if i is greater than 5
+  if (i > 5) {
+    break
+  }
+  
+  print(i)
+}
+```
+
+---
+
+### Conditionally skip to the next iteration
+
+The `next` statement can be use to skip to the next iteration of the loop under a certain condition. For example, we can skip to the next iteration if the iterable is NA (not available):
+
+```{r, purl=purl_example_code}
+
+data <- c(56, 92, NA, 40, 11)
+
+for (i in data) {
+  
+  # Skip this iteration if i is NA
+  if (is.na(i)) {
+    next
+  }
+  
+  print(i)
+}
+```
+
+---
+
 ### Handling outputs of unknown length
 
 There are cases where the size of an output from a loop is not known beforehand. For example, this might be because different iterations result in outputs of different lengths.
@@ -151,45 +191,6 @@ By doing this we've combined together various segments of a dataset, without nee
 
 Note: We've introduced a type of R object called a list in this example. Lists are type of vector that allow us to put a whole dataframe as an element in the list. Compare this to the vectors we've met before, known as 'atomic vectors', where the elements can only contain a single value and they all need to be the same type (numeric, character, etc). The reason for doing it this way is because it's more memory efficient to add the dataframes to a list and use `bind_rows()` afterwards compared to appending the dataframes in each loop iteration.
 
----
-
-### Conditionally exiting a loop
-
-You might want to stop a loop iterating under a certain condition. In this case you can use a `break` statement in combination with an 'if' or 'if...else' statement, like so:
-
-```{r, purl=purl_example_code}
-
-for (i in 1:10) {
-  
-  # Exit the for loop if i is greater than 5
-  if (i > 5) {
-    break
-  }
-  
-  print(i)
-}
-```
-
----
-
-### Conditionally skip to the next iteration
-
-The `next` statement can be use to skip to the next iteration of the loop under a certain condition. For example, we can skip to the next iteration if the iterable is NA (not available):
-
-```{r, purl=purl_example_code}
-
-data <- c(56, 92, NA, 40, 11)
-
-for (i in data) {
-  
-  # Skip this iteration if i is NA
-  if (is.na(i)) {
-    next
-  }
-  
-  print(i)
-}
-```
 
 ## While loops
 

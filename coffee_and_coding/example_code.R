@@ -112,28 +112,6 @@ for (i in seq_along(fruits)) {
   print(paste(i, fruits[i]))
 }
 
-# Get dataframe with all available files/folders from an s3 path
-files <- botor::s3_ls("s3://alpha-r-training/intro-r-extension")
-
-# Get a list of csv file names
-files <- files %>%
-  dplyr::filter(grepl(".csv", uri)) %>%
-  dplyr::pull(uri)
-
-files
-
-# First define an empty list to be filled by the loop
-fruit_list <- vector("list", length(files))
-
-# Loop over each file, and add the data to a list
-for (i in seq_along(files)) {
-  fruit_list[[i]] <- botor::s3_read(files[i], readr::read_csv, show_col_types = FALSE)
-}
-
-# Combine the list of dataframes into a single dataframe
-fruit <- dplyr::bind_rows(fruit_list)
-fruit
-
 
 for (i in 1:10) {
   
@@ -157,6 +135,28 @@ for (i in data) {
   
   print(i)
 }
+
+# Get dataframe with all available files/folders from an s3 path
+files <- botor::s3_ls("s3://alpha-r-training/intro-r-extension")
+
+# Get a list of csv file names
+files <- files %>%
+  dplyr::filter(grepl(".csv", uri)) %>%
+  dplyr::pull(uri)
+
+files
+
+# First define an empty list to be filled by the loop
+fruit_list <- vector("list", length(files))
+
+# Loop over each file, and add the data to a list
+for (i in seq_along(files)) {
+  fruit_list[[i]] <- botor::s3_read(files[i], readr::read_csv, show_col_types = FALSE)
+}
+
+# Combine the list of dataframes into a single dataframe
+fruit <- dplyr::bind_rows(fruit_list)
+fruit
 
 # First specify an initial value for the variable used in the while loop
 i <- 1
