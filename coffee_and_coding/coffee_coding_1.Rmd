@@ -1,0 +1,112 @@
+---
+title: Introduction to conditional statements and loops in R
+output:
+  ioslides_presentation:
+    widescreen: true
+    smaller: true
+---
+
+```{r setup, include=FALSE, purl=FALSE}
+# These variables determine whether or not exercise solutions are included
+# (if running from render.R then these will already be defined)
+if (!(exists("show_solution") & exists("purl_solutions") & exists("purl_example_code"))) {
+  show_solution <- TRUE # This determines if the solutions are displayed in the slides
+  purl_solutions <- FALSE # This variable relates to code blocks that are exercise solutions
+  purl_example_code <- TRUE # This variable relates to code blocks that aren't exercise solutions
+}
+
+
+# Change botor settings to avoid printing debugger messages to the console
+logger::log_threshold('WARN', namespace = 'botor')
+```
+
+## Setup
+
+For those of you who'd like to 'code along' and attempt the exercises, please make sure you've:
+
+1. Got access to the `alpha-r-training` s3 bucket
+2. Cloned the [C&C repo](https://github.com/moj-analytical-services/Coffee-and-Coding) (or copied example_code.R into your RStudio) - instructions on cloning from GitHub can be found [here](https://user-guidance.services.alpha.mojanalytics.xyz/github.html#r-studio)
+3. Installed the packages `tidyverse` and `botor` - see guidance on how to do this [here](https://user-guidance.services.alpha.mojanalytics.xyz/appendix/botor.html#installation)
+4. Opened `example_code.R` in RStudio
+5. Opened the [C&C repo](https://github.com/moj-analytical-services/Coffee-and-Coding/tree/master/2022-03-09 Introduction to conditional statements and loops in R) on GitHub, so you can refer to the session material in the README
+
+
+
+## Introduction
+
+This Coffee and Coding session is trialling some new material that will build on the original [Introduction to R training course](https://github.com/moj-analytical-services/IntroRTraining), therefore we appreciate any feedback.
+
+In this session we’ll cover two fundamentals of programming in R: conditional statements and loops. These two topics come under the umbrella of 'control flow', which refers to how we can change the order that pieces of code are run in. With conditional statements we can introduce choices, where different pieces of code are run depending on the input, and loops allow us to repeatedly run the same piece of code.
+
+
+### By the end of this session you should know how to:
+
+ - Change what the code does based on a condition
+ - Classify values in a dataframe, based on a set of conditions
+ - Read and combine data from multiple csv files
+ - Easily apply a function to multiple columns in a dataframe
+
+
+## Before we start
+
+To follow along with the code and participate in the exercises, open the script "example_code.R" in RStudio. All the code that we'll show in this session is stored in "example_code.R", and you can edit this script to write solutions to the exercises. You may also want to have the [session material](https://github.com/moj-analytical-services/Coffee-and-Coding/tree/master/2022-03-09 Introduction to conditional statements and loops in R) open as a reference.
+
+First, we need to load a few packages:
+
+```{r message=F, warning=F, purl=purl_example_code}
+# Load packages
+library(botor) # Used to help R interact with s3 cloud storage
+library(dplyr) # Used for data manipulation
+library(readr) # Used to help read in data
+```
+
+
+```{r source_content, child = '../rmd_files/conditional_statements.Rmd'}
+```
+
+```{r source_content, child = '../rmd_files/iteration.Rmd'}
+```
+
+# Summary
+
+## Summary
+
+### Conditional statements
+
+We've looked at:
+
+ * If...else statements, which allow us to choose what code gets run based on a condition or set of conditions
+ * `if_else()` from dplyr, which allows us to handle vector inputs and outputs
+ * `case_when()` from dplyr, which allows us to specify multiple conditions in one go
+
+### Iteration
+
+We've looked at:
+
+ * For loops and while loops, which allow us to repeatedly execute a piece of code
+ * Extra functionalities that can be combined with loops to help apply them in more situations
+ * How to apply a function to multiple columns of a dataframe in one go
+ 
+
+# Further Reading
+
+## Further Reading
+
+### General
+
+ * [Tidyverse website](https://www.tidyverse.org)
+ * [MoJ Analytical Platform Guidance](https://user-guidance.services.alpha.mojanalytics.xyz)
+ * [MoJ coding standards](https://moj-analytical-services.github.io/our-coding-standards/)
+ 
+### Conditional statements
+
+ * [Advanced R - choices section](https://adv-r.hadley.nz/control-flow.html#choices)
+
+### Iteration
+
+ * [R for Data Science - iteration chapter](https://r4ds.had.co.nz/iteration.html)
+ * [Advanced R - loops section](https://adv-r.hadley.nz/control-flow.html#loops)
+
+
+# Any questions?
+

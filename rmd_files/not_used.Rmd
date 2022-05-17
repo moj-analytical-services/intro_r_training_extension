@@ -28,7 +28,7 @@ for (i in 1:5) {
 }
 ```
 
-Inside the brackets of the for loop you define a variable (in this case called `i`), along with what you want to iterate over (referred to as the iterable - in this case the numbers 1 to 5, denoted `1:5` in R). For each iteration, the variable `i` will take on a value equal to the next element of the iterable. The loop body goes inside the curly brackets, which is where you define what you want to happen for each iteration (in this case printing the value of `i`).
+Inside the brackets of the for loop you define a variable - in this case called `i` - along with what you want to iterate over, referred to as the iterable. In this case the iterable is a sequence of the numbers 1 to 5, denoted `1:5` in R. For each iteration, the variable `i` will take on a value equal to the next element of the iterable. The loop body goes inside the curly brackets, which is where you define what you want to happen for each iteration (in this case printing the value of `i`).
 
 In the previous example we iterated over a sequence of numbers, but in R you can iterate over anything you like. Here's a similar example, but iterating over a vector of strings instead of a sequence of numbers:
 
