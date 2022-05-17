@@ -31,24 +31,7 @@ df <- tibble::tibble(
 complete.cases(df)
 ```
 
-### Exercise
 
-For the following dataframe, use the `filter()` function from dplyr with `complete.cases()` to extract the rows **with** missing values:
-```{r, purl=purl_example_code}
-fruit <- tibble::tibble(
-  "Item" = c("Orange", "Apple", "Banana", "Lemon", "Pear"),
-  "Cost" = c(0.5, 0.4, 0.1, 0.3, NA),
-  "Quantity" = c(23, NA, 15, 9, 11)
-)
-```
-**Hint:** you can use a `.` inside the `complete.cases()` function to apply it to all columns of the dataframe.
-
----
-
-```{r, include=show_solution, purl=purl_solutions}
-# Solution
-fruit %>% dplyr::filter(!complete.cases(.))
-```
 
 
 ## Handling missing values using a function argument
@@ -115,25 +98,7 @@ offenders_replacena <- offenders %>%
 offenders_replacena %>% dplyr::arrange(desc(HEIGHT)) %>% str()
 ```
 
-### Exercise
 
-For the following dataframe, use the `replace_na()` function from tidyr to replace missing values in the `Cost` column with "Unknown" and the `Quantity` column with 0.
-```{r, purl=purl_example_code}
-fruit <- tibble::tibble(
-  "Item" = c("Orange", "Apple", "Banana", "Lemon", "Pear"),
-  "Cost" = c("£0.50", "£0.40", "£0.10", "£0.30", NA),
-  "Quantity" = c(23, NA, 15, 9, 11)
-)
-```
-**Hint:** you can add multiple arguments to `replace_na(list(...))`, with one argument for each column where NA values need replacing.
-
----
-
-```{r, include=show_solution, purl=purl_solutions}
-# Solution
-fruit %>% tidyr::replace_na(list(Cost = "Unknown",
-                                 Quantity = 0))
-```
 
 ---
 
@@ -194,3 +159,50 @@ offenders_nona <- offenders %>% tidyr::drop_na(HEIGHT, WEIGHT)
 
 str(offenders_nona)
 ```
+
+
+---
+
+### Exercise
+
+For the following dataframe, use the `filter()` function from dplyr with `complete.cases()` to extract the rows **with** missing values:
+```{r, purl=purl_example_code}
+fruit <- tibble::tibble(
+  "Item" = c("Orange", "Apple", "Banana", "Lemon", "Pear"),
+  "Cost" = c(0.5, 0.4, 0.1, 0.3, NA),
+  "Quantity" = c(23, NA, 15, 9, 11)
+)
+```
+**Hint:** you can use a `.` inside the `complete.cases()` function to apply it to all columns of the dataframe.
+
+---
+
+```{r, include=show_solution, purl=purl_solutions}
+# Solution
+fruit %>% dplyr::filter(!complete.cases(.))
+```
+
+---
+
+### Exercise
+
+For the following dataframe, use the `replace_na()` function from tidyr to replace missing values in the `Cost` column with "Unknown" and the `Quantity` column with 0.
+```{r, purl=purl_example_code}
+fruit <- tibble::tibble(
+  "Item" = c("Orange", "Apple", "Banana", "Lemon", "Pear"),
+  "Cost" = c("£0.50", "£0.40", "£0.10", "£0.30", NA),
+  "Quantity" = c(23, NA, 15, 9, 11)
+)
+```
+**Hint:** you can add multiple arguments to `replace_na(list(...))`, with one argument for each column where NA values need replacing.
+
+---
+
+```{r, include=show_solution, purl=purl_solutions}
+# Solution
+fruit %>% tidyr::replace_na(list(Cost = "Unknown",
+                                 Quantity = 0))
+```
+
+
+

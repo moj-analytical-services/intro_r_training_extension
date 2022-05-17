@@ -69,26 +69,7 @@ print(fibonacci)
 
 When writing a for loop you must define something to iterate over a fixed number of times in advance. It is also possible to iterate indefinitely using a different kind of loop - this is covered later on in the section on while loops.
 
----
 
-### Exercise
-
-Write a for loop to print "The current date is ..." for each date in the following string vector:
-
-```{r, purl=purl_example_code}
-dates <- c("2020-03-01", "2020-06-01", "2020-09-01", "2020-12-01")
-```
-
-**Hint:** You can use the `paste()` function to join strings together, and the `print()` function to print the result in the Console.
-
----
-
-```{r, include=show_solution, purl=purl_solutions}
-# Solution
-for (date in dates) {
-  print(paste("The current date is", date))
-}
-```
 
 
 ## More options with for loops
@@ -251,3 +232,45 @@ rounded_fruit <- fruit %>% dplyr::mutate(across(where(is.numeric), signif, 1))
 rounded_fruit
 ```
 Note: When the `signif()` function is passed as an argument to `across()`, the brackets aren't included (i.e. `signif` is passed rather than `signif()`). This means that any arguments for `signif` need to be included as extra arguments for `across()` instead (i.e. putting `signif, 1` rather than `signif(1)` when using with `across()`).
+
+
+---
+
+### Exercise
+
+Write a for loop to print "The current date is ..." for each date in the following string vector:
+
+```{r, purl=purl_example_code}
+dates <- c("2020-03-01", "2020-06-01", "2020-09-01", "2020-12-01")
+```
+
+**Hint:** You can use the `paste()` function to join strings together, and the `print()` function to print the result in the Console.
+
+---
+
+```{r, include=show_solution, purl=purl_solutions}
+# Solution
+for (date in dates) {
+  print(paste("The current date is", date))
+}
+```
+
+---
+
+### Exercise
+
+Modify your solution to the previous exercise to skip to the next loop iteration if `date` is equal to '2020-06-01'.
+
+---
+
+```{r, include=show_solution, purl=purl_solutions}
+# Solution
+for (date in dates) {
+
+  if (date == "2020-06-01") {
+    next
+  }
+
+  print(paste("The current date is", date))
+}
+```

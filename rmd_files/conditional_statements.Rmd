@@ -108,24 +108,6 @@ offenders <- offenders %>%
 str(offenders)
 ```
 
----
-
-### Exercise
-
-Add a column called 'COURT_ORDER' to the `offenders` dataframe. The column should contain a '1' if the offender received a court order, or a '0' otherwise, based on the categories in the 'SENTENCE' column.
-
-**Hint:** you'll need to apply the `if_else()` function with `mutate()`.
-
----
-
-```{r, include=show_solution, purl=purl_solutions}
-# Solution
-offenders <- offenders %>%
-  dplyr::mutate(COURT_ORDER = dplyr::if_else(SENTENCE == "Court_order", 1, 0))
-
-str(offenders)
-```
-
 
 ## Vectorising multiple if...else statements
 
@@ -154,6 +136,25 @@ Note that the order of conditional statements in the `case_when()` function is i
 
 A default value can be assigned in the event that none of the conditions are met. This is done by putting `TRUE` in the place of a condition. In the example above, if none of the conditions are met then a value of `"Unknown"` is assigned.
 
+
+---
+
+### Exercise
+
+Add a column called 'COURT_ORDER' to the `offenders` dataframe. The column should contain a '1' if the offender received a court order, or a '0' otherwise, based on the categories in the 'SENTENCE' column.
+
+**Hint:** you'll need to apply the `if_else()` function with `mutate()`.
+
+---
+
+```{r, include=show_solution, purl=purl_solutions}
+# Solution
+offenders <- offenders %>%
+  dplyr::mutate(COURT_ORDER = dplyr::if_else(SENTENCE == "Court_order", 1, 0))
+
+str(offenders)
+```
+
 ---
 
 ### Exercise
@@ -176,4 +177,3 @@ offenders <- offenders %>%
   ))
 str(offenders)
 ```
-
