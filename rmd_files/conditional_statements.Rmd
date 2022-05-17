@@ -29,6 +29,7 @@ We can also specify if we want something different to happen if the condition is
 ```{r, purl=purl_example_code}
 x <- 11
 
+# A basic if...else statement
 if (x < 10) {
   print("x is less than 10")
 } else {

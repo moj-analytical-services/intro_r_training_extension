@@ -40,16 +40,19 @@ A few days before the session, please make sure that -
     [here](https://user-guidance.services.alpha.mojanalytics.xyz/github.html#creating-your-project-repo-on-github))
 
 If you have any problems with the above please get in touch with the
-course organisers or ask for help on either the \#analytical\_platform
-or \#intro\_r channel on [ASD slack](https://asdslack.slack.com).
+course organisers or ask for help on either the #analytical_platform or
+#intro_r channel on [ASD slack](https://asdslack.slack.com).
 
 All the examples in the presentation and README are available in the R
-script example\_code.R.
+script example_code.R.
 
 # Introduction
 
-This course builds on the original Introduction to R training course,
-and covers additional programming concepts. It provides examples that
+## Introduction
+
+This course builds on the original [Introduction to R training
+course](https://github.com/moj-analytical-services/IntroRTraining), and
+covers additional programming concepts. It provides examples that
 demonstrate how the Tidyverse packages can assist with tasks typically
 encountered in MoJ Data & Analysis.
 
@@ -58,49 +61,59 @@ Wickham, and more information about these packages can be found on the
 [Tidyverse website](https://www.tidyverse.org/) as well as in the book
 [R for Data Science](https://r4ds.had.co.nz/).
 
+The first two chapters of this course cover two fundamentals of
+programming in R: conditional statements and loops. These two topics
+come under the umbrella of ‘control flow’, which refers to how we can
+change the order that pieces of code are run in. With conditional
+statements we can introduce choices, where different pieces of code are
+run depending on the input, and loops allow us to repeatedly run the
+same piece of code.
+
 ## Learning outcomes
 
 ### By the end of this session you should know how to:
 
--   Classify a variable in a dataframe, based on a set of conditions
+-   Change what the code does based on a condition
+-   Classify values in a dataframe, based on a set of conditions
+-   Read and combine data from multiple csv files
+-   Easily apply a function to multiple columns in a dataframe
 -   Deal with missing values in a dataframe
--   Easily apply a function to any number of columns in a dataframe
--   Search for a string pattern in a dataframe
 -   Reshape dataframes
+-   Search for a string pattern in a dataframe
 
 ## Before we start
 
-To follow along with the code run during this session and participate in
-the exercises, open the script “example\_code.R” in RStudio. All the
-code that we’ll show in this session is stored in “example\_code.R”, and
-you can edit this script to write solutions to the exercises. You may
-also want to have the course
+To follow along with the code and participate in the exercises, open the
+script “example_code.R” in RStudio. All the code that we’ll show in this
+session is stored in “example_code.R”, and you can edit this script to
+write solutions to the exercises. You may also want to have the course
 [README](https://github.com/moj-analytical-services/intro_r_training_extension)
 open as a reference.
 
-First, we need to load a few packages.
+First, we need to load a few packages:
 
 ``` r
 # Load packages
-library(botor)
-library(dplyr)
-library(tidyr)
-library(stringr)
-library(readr)
+library(botor) # Used to help R interact with s3 cloud storage
+library(dplyr) # Used for data manipulation
+library(tidyr) # Used to help reshape and deal with missing data
+library(stringr) # Used for string manipulation
+library(readr) # Used to help read in data
 ```
 
 # Conditional statements
 
-## if…else statements
+## if statements
 
 Conditional statements can be used when you want a piece of code to be
 executed only if a particular condition is met. The most basic form of
-these are ‘if…else’ statements. As a simple example, let’s say we wanted
-to check if a variable `x` is less than 10. We can write something like:
+these are ‘if’ statements. As a simple example, let’s say we wanted to
+check if a variable `x` is less than 10. We can write something like:
 
 ``` r
 x <- 9
 
+# A basic if statement
 if (x < 10) {
   print("x is less than 10")
 }
@@ -108,12 +121,23 @@ if (x < 10) {
 
     ## [1] "x is less than 10"
 
+``` r
+x <- 11
+
+if (x < 10) {
+  print("x is less than 10")
+}
+```
+
+## if…else statements
+
 We can also specify if we want something different to happen if the
-condition is not met:
+condition is not met, using an ‘if…else’ statement:
 
 ``` r
 x <- 11
 
+# A basic if...else statement
 if (x < 10) {
   print("x is less than 10")
 } else {
@@ -122,6 +146,8 @@ if (x < 10) {
 ```
 
     ## [1] "x is 10 or greater"
+
+------------------------------------------------------------------------
 
 Or if there are multiple conditions where we want different things to
 happen, we can add ‘else if’ commands:
@@ -140,14 +166,29 @@ if (x < 10) {
 
     ## [1] "x is less than 10"
 
-For the conditions themselves, we can make use of any of R’s relational
-and logical operators. For a list of common operators, see the
-[appendix](#table-of-operators).
+------------------------------------------------------------------------
+
+For the conditions themselves, we can make use of R’s relational and
+logical operators:
+
+| Operator | Definition                      |
+|:--------:|:--------------------------------|
+|    ==    | Equal to                        |
+|    !=    | Not equal to                    |
+|    \>    | Greater than                    |
+|    \<    | Less than                       |
+|   \>=    | Greater than or equal to        |
+|   \<=    | Less than or equal to           |
+|    ǀ     | Or                              |
+|    &     | And                             |
+|    !     | Not                             |
+|   %in%   | The subject appears in a vector |
+| is.na()  | The subject is NA               |
 
 ## Vectorising an if…else statement
 
 Dplyr’s `if_else()` function is useful if we want to apply an ‘if…else’
-statement to a vector, rather than a single variable. When we use
+statement to a vector, rather than a single value. When we use
 `if_else()` we need to provide it with three arguments, like this:
 `if_else(condition, true, false)`, where `condition` is the condition we
 want to test, `true` is the value to use if the condition evaluates to
@@ -160,23 +201,26 @@ greater than zero, or a ‘0’ if the number is less than or equal to zero,
 then we could do:
 
 ``` r
-x <- c(0, 74, 0, 8, 23, 15, 3, 0, 0, 9)
+x <- c(0, 74, 0, 8, 23, 15, 3, 0, -1, 9)
 
+# Vectorised if...else
 dplyr::if_else(x > 0, 1, 0)
 ```
 
     ##  [1] 0 1 0 1 1 1 1 0 0 1
 
+------------------------------------------------------------------------
+
 When we’re manipulating dataframes, it can be useful to combine
-`if_else()` with the `mutate()` function from dplyr. If we take a look
-at the `offenders` dataframe, let’s say we wanted a simple way to be
-able to separate youths from adult offenders. We can add a column that
-contains ‘Youth’ if the offender is under the age of 18, and ‘Adult’
-otherwise:
+`if_else()` with the `mutate()` function from dplyr. Let’s take a look
+at the `offenders` dataframe, which is also used in the [Introduction to
+R](https://github.com/moj-analytical-services/IntroRTraining) course:
 
 ``` r
 # First read and preview the data
-offenders <- botor::s3_read("s3://alpha-r-training/intro-r-training/Offenders_Chicago_Police_Dept_Main.csv", read.csv)
+offenders <- botor::s3_read(
+  "s3://alpha-r-training/intro-r-training/Offenders_Chicago_Police_Dept_Main.csv", read.csv
+)
 str(offenders)
 ```
 
@@ -192,6 +236,12 @@ str(offenders)
     ##  $ PREV_CONVICTIONS: num  0 0 0 0 0 0 0 0 0 0 ...
     ##  $ SENTENCE        : chr  "Court_order" "Prison_<12m" "Court_order" "Court_order" ...
     ##  $ AGE             : int  58 59 43 54 34 50 32 43 34 18 ...
+
+------------------------------------------------------------------------
+
+Let’s say we wanted a simple way to be able to separate youths from
+adult offenders. We can add a column that contains ‘Youth’ if the
+offender is under the age of 18, and ‘Adult’ otherwise:
 
 ``` r
 # Now use mutate to add the new column
@@ -215,61 +265,39 @@ str(offenders)
     ##  $ AGE             : int  58 59 43 54 34 50 32 43 34 18 ...
     ##  $ YOUTH_OR_ADULT  : chr  "Adult" "Adult" "Adult" "Adult" ...
 
-### Exercise
-
-Add a column called ‘PRISON\_SENTENCE’ to the `offenders` dataframe. The
-column should contain a ‘1’ if the offender received a prison sentence,
-or a ‘0’ if the offender received a court order.
-
-**Hint:** you’ll need to apply the `dplyr::if_else()` function to the
-‘SENTENCE’ column.
-
-------------------------------------------------------------------------
-
 ## Vectorising multiple if…else statements
 
 In the previous section we saw how we can apply a single condition to a
 vector, but what if we want to apply several conditions, each with a
 different outcome, at the same time? We can use the `case_when()`
-function from dplyr to do this.
-
-Let’s say that we wanted to add a column to the `offenders` dataframe
-with an age band for each offender. We could do something like this:
+function from dplyr to do this. Let’s say that we wanted to add a column
+to the `offenders` dataframe with an age band for each offender. We can
+do something like this:
 
 ``` r
+# Add an age band column
 offenders <- offenders %>%
-  dplyr::mutate(age_band = dplyr::case_when(
+  dplyr::mutate(AGE_BAND = dplyr::case_when(
     AGE < 18 ~ "<18",
-    AGE < 25 ~ "18-24",
-    AGE < 35 ~ "25-34",
-    AGE < 45 ~ "35-44",
-    AGE < 55 ~ "45-54",
-    AGE < 65 ~ "55-64",
-    AGE >= 65 ~ "65+",
+    AGE < 30 ~ "18-29",
+    AGE < 40 ~ "30-39",
+    AGE < 50 ~ "40-49",
+    AGE < 60 ~ "50-59",
+    AGE >= 60 ~ "60+",
     TRUE ~ "Unknown"
   ))
-
-str(offenders)
+offenders %>% select(BIRTH_DATE, AGE, AGE_BAND) %>% str(vec.len=6)
 ```
 
-    ## 'data.frame':    1413 obs. of  14 variables:
-    ##  $ LAST            : chr  "RODRIGUEZ" "MARTINEZ" "GARCIA" "RODRIGUEZ" ...
-    ##  $ FIRST           : chr  "JUAN" "MOISES" "ELLIOTT" "JOSE" ...
-    ##  $ BLOCK           : chr  "009XX W CUYLER AVE" "011XX N KILBOURN AVE" "011XX W 18TH ST" "012XX W RACE AVE" ...
-    ##  $ GENDER          : chr  "MALE" "MALE" "MALE" "MALE" ...
-    ##  $ REGION          : chr  "West" "East" "South" "North" ...
-    ##  $ BIRTH_DATE      : chr  "06/22/1955" "02/07/1954" "08/11/1970" "02/10/1959" ...
-    ##  $ HEIGHT          : int  198 198 201 237 201 199 201 236 198 199 ...
-    ##  $ WEIGHT          : int  190 180 200 195 220 130 200 235 140 130 ...
-    ##  $ PREV_CONVICTIONS: num  0 0 0 0 0 0 0 0 0 0 ...
-    ##  $ SENTENCE        : chr  "Court_order" "Prison_<12m" "Court_order" "Court_order" ...
-    ##  $ AGE             : int  58 59 43 54 34 50 32 43 34 18 ...
-    ##  $ YOUTH_OR_ADULT  : chr  "Adult" "Adult" "Adult" "Adult" ...
-    ##  $ PRISON_SENTENCE : num  0 1 0 0 1 1 1 0 0 1 ...
-    ##  $ age_band        : chr  "55-64" "55-64" "35-44" "45-54" ...
+    ## 'data.frame':    1413 obs. of  3 variables:
+    ##  $ BIRTH_DATE: chr  "06/22/1955" "02/07/1954" "08/11/1970" "02/10/1959" "04/16/1979" "11/19/1963" ...
+    ##  $ AGE       : int  58 59 43 54 34 50 32 43 34 18 42 38 41 22 45 ...
+    ##  $ AGE_BAND  : chr  "50-59" "50-59" "40-49" "50-59" "30-39" "50-59" ...
+
+------------------------------------------------------------------------
 
 In the `case_when()` function, each argument should be a two-sided
-formula. For each formula, the condition appears to the left of a ‘\~’
+formula. For each formula, the condition appears to the left of a ‘`~`’
 symbol, and on the right is the value to assign if the condition
 evaluates to `TRUE`.
 
@@ -277,25 +305,480 @@ Note that the order of conditional statements in the `case_when()`
 function is important if there are overlapping conditions. The
 conditions will be evaluated in the order that they appear in, so in the
 above example, the `case_when()` will first check if the person is under
-18, then if they are under 25 (but 18 or over), and so on.
+18, then if they are under 30 (but over 18), and so on.
 
 A default value can be assigned in the event that none of the conditions
 are met. This is done by putting `TRUE` in the place of a condition. In
-the example above, if none of the conditions are met, then a value of
+the example above, if none of the conditions are met then a value of
 `"Unknown"` is assigned.
+
+------------------------------------------------------------------------
 
 ### Exercise
 
-Add a column called ‘PREV\_CONVICTIONS\_BAND’ to the `offenders`
-dataframe. The column should contain the following categories: “0-1”,
-“1-5”, “5-10”, “10+”, based on the number of convictions given in the
-‘PREV\_CONVICTIONS’ column.
+Add a column called ‘COURT_ORDER’ to the `offenders` dataframe. The
+column should contain a ‘1’ if the offender received a court order, or a
+‘0’ otherwise, based on the categories in the ‘SENTENCE’ column.
 
-**Hint:** you’ll need to use the `dplyr::case_when()` function.
+**Hint:** you’ll need to apply the `if_else()` function with `mutate()`.
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+
+### Exercise
+
+Add a column called ‘PREV_CONVICTIONS_BAND’ to the `offenders`
+dataframe. The column should contain the following categories: ‘0’,
+‘1-5’, ‘6-10’, ‘\>10’, based on the number of convictions given in the
+‘PREV_CONVICTIONS’ column.
+
+**Hint:** you’ll need to use the `case_when()` function with `mutate()`.
+
+------------------------------------------------------------------------
+
+# Iteration
+
+## Introduction
+
+‘For’ and ‘while’ loops are used to repeatedly execute a piece of code,
+and are a fundamental part of most programming languages. This chapter
+introduces how to use them in R, as well as showing how we can iterate
+over the columns of a dataframe without needing to write a loop.
+
+A general rule of thumb in programming is to avoid copying and pasting a
+piece of code more than once; if you find that you are repeating similar
+pieces of code over and over again, this is a sign that either a loop or
+a
+[function](https://github.com/moj-analytical-services/writing_functions_in_r)
+(or both) are required. Keeping your code concise will help make it more
+readable and easier to understand.
+
+## For loop basics
+
+Let’s start with a very basic example to illustrate what a for loop
+does. Say we wanted to print the numbers 1 to 5; without a for loop we’d
+need to write something like this:
+
+``` r
+# Example of repeating the same piece of code for a set of values
+print(1)
+## [1] 1
+print(2)
+## [1] 2
+print(3)
+## [1] 3
+print(4)
+## [1] 4
+print(5)
+## [1] 5
+```
+
+------------------------------------------------------------------------
+
+Clearly there is some code repetition here, so we can achieve the same
+result using a for loop:
+
+``` r
+# A basic for loop
+for (i in 1:5) {
+  print(i)
+}
+```
+
+    ## [1] 1
+    ## [1] 2
+    ## [1] 3
+    ## [1] 4
+    ## [1] 5
+
+Inside the brackets of the for loop you define a variable - in this case
+called `i` - along with what you want to iterate over, referred to as
+the iterable. In this case the iterable is a sequence of the numbers 1
+to 5, denoted `1:5` in R. For each iteration, the variable `i` will take
+on a value equal to the next element of the iterable. The loop body goes
+inside the curly brackets, which is where you define what you want to
+happen for each iteration (in this case printing the value of `i`).
+
+------------------------------------------------------------------------
+
+In the previous example we iterated over a sequence of numbers, but in R
+you can iterate over anything you like. Here’s a similar example, but
+iterating over a vector of strings instead of a sequence of numbers:
+
+``` r
+fruits <- c("strawberry", "apple", "pear", "orange")
+
+# Iterating over a vector
+for (fruit in fruits) {
+  print(fruit)
+}
+```
+
+    ## [1] "strawberry"
+    ## [1] "apple"
+    ## [1] "pear"
+    ## [1] "orange"
+
+------------------------------------------------------------------------
+
+You can also use for loops to populate or modify a vector or dataframe.
+The following example shows how we can add the first ten numbers of the
+Fibonacci sequence to a vector:
+
+``` r
+# Fibonacci for loop example
+
+n <- 10 # Specify what length we want our output vector to be
+fibonacci <- vector("numeric", n) # Define an empty numeric vector of length n to populate using the loop
+
+# Set up the first couple of numbers to get the sequence started
+fibonacci[1] <- 0 
+fibonacci[2] <- 1
+
+# Add the rest of the sequence
+for (i in 3:n) {
+  fibonacci[i] <- fibonacci[i-1] + fibonacci[i-2]
+}
+
+print(fibonacci)
+```
+
+    ##  [1]  0  1  1  2  3  5  8 13 21 34
+
+When writing a for loop you must define something to iterate over a
+fixed number of times in advance. It is also possible to iterate
+indefinitely using a different kind of loop - this is covered later on
+in the section on while loops.
+
+## More options with for loops
+
+### Iterating over the index of a vector
+
+If you wanted to get an index number for each element of the iterable,
+you can use the `seq_along()` function. For example:
+
+``` r
+# Iterating over the indices of a vector
+
+fruits <- c("strawberry", "apple", "pear", "orange")
+
+for (i in seq_along(fruits)) {
+  # Use paste() to combine two strings together
+  print(paste(i, fruits[i]))
+}
+```
+
+    ## [1] "1 strawberry"
+    ## [1] "2 apple"
+    ## [1] "3 pear"
+    ## [1] "4 orange"
+
+------------------------------------------------------------------------
+
+### Conditionally exiting a loop
+
+You might want to stop a loop iterating under a certain condition. In
+this case you can use a `break` statement in combination with an ‘if’ or
+‘if…else’ statement, like so:
+
+``` r
+for (i in 1:10) {
+  
+  # Exit the for loop if i is greater than 5
+  if (i > 5) {
+    break
+  }
+  
+  print(i)
+}
+```
+
+    ## [1] 1
+    ## [1] 2
+    ## [1] 3
+    ## [1] 4
+    ## [1] 5
+
+------------------------------------------------------------------------
+
+### Conditionally skip to the next iteration
+
+The `next` statement can be use to skip to the next iteration of the
+loop under a certain condition. For example, we can skip to the next
+iteration if the iterable is NA (not available):
+
+``` r
+data <- c(56, 92, NA, 40, 11)
+
+for (i in data) {
+  
+  # Skip this iteration if i is NA
+  if (is.na(i)) {
+    next
+  }
+  
+  print(i)
+}
+```
+
+    ## [1] 56
+    ## [1] 92
+    ## [1] 40
+    ## [1] 11
+
+------------------------------------------------------------------------
+
+### Handling outputs of unknown length
+
+There are cases where the size of an output from a loop is not known
+beforehand. For example, this might be because different iterations
+result in outputs of different lengths.
+
+Let’s say we want to combine segments of a dataset, and we don’t know in
+advance how many segments there are or how many rows they have. There is
+a shared folder prepared in the alpha-r-training s3 bucket, which
+contains some data for us to read in and combine together. First we need
+to get a list of files to read in, which we can do using the `s3_ls()`
+function from botor:
+
+``` r
+# Get dataframe with all available files/folders from an s3 path
+files <- botor::s3_ls("s3://alpha-r-training/intro-r-extension")
+
+# Get a list of csv file names
+files <- files %>%
+  dplyr::filter(grepl(".csv", uri)) %>%
+  dplyr::pull(uri)
+
+files
+```
+
+    ## [1] "s3://alpha-r-training/intro-r-extension/fruit1.csv" "s3://alpha-r-training/intro-r-extension/fruit2.csv"
+    ## [3] "s3://alpha-r-training/intro-r-extension/fruit3.csv"
+
+------------------------------------------------------------------------
+
+Now we can use a for loop to read in each file as a dataframe, and add
+each dataframe to a list. After the for loop, the `bind_rows()` function
+from dplyr can be used to combine the data into a single dataframe.
+
+``` r
+# First define an empty list to be filled by the loop
+fruit_list <- vector("list", length(files))
+
+# Loop over each file, and add the data to a list
+for (i in seq_along(files)) {
+  fruit_list[[i]] <- botor::s3_read(files[i], readr::read_csv, show_col_types = FALSE)
+}
+
+# Combine the list of dataframes into a single dataframe
+fruit <- dplyr::bind_rows(fruit_list)
+fruit
+```
+
+    ## # A tibble: 9 × 4
+    ##   Item      `Cost-Jan` `Cost-Feb` `Cost-Mar`
+    ##   <chr>          <dbl>      <dbl>      <dbl>
+    ## 1 Orange          0.56       0.5        0.57
+    ## 2 Apple           0.42       0.51       0.49
+    ## 3 Banana          0.15       0.17       0.21
+    ## 4 Lemon           0.3        0.32       0.35
+    ## 5 Pear            0.41       0.39       0.44
+    ## 6 Melon           1.1        1.15       1.11
+    ## 7 Pineapple       1.18       1.19       1.24
+    ## 8 Peach           0.55       0.53       0.58
+    ## 9 Plum            0.38       0.41       0.41
+
+------------------------------------------------------------------------
+
+By doing this we’ve combined together various segments of a dataset,
+without needing to know how many segments there are or how many rows are
+in each segment beforehand.
+
+Note: We’ve introduced a type of R object called a list in this example.
+Lists are type of vector that allow us to put a whole dataframe as an
+element in the list. Compare this to the vectors we’ve met before, known
+as ‘atomic vectors’, where the elements can only contain a single value
+and they all need to be the same type (numeric, character, etc). The
+reason for doing it this way is because it’s more memory efficient to
+add the dataframes to a list and use `bind_rows()` afterwards compared
+to appending the dataframes in each loop iteration.
+
+## While loops
+
+There may be cases where we want to keep looping over a piece of code
+until a certain condition is met, rather than having to specify in
+advance how many times a loop should run. In these cases a while loop
+can be used, which can be thought of as a repeating if statement.
+
+For example, we can use a while loop to achieve a similar result to the
+first for loop example above:
+
+``` r
+# First specify an initial value for the variable used in the while loop
+i <- 1
+
+# Now define a while loop
+while (i <= 5) { # The loop will continue until the condition i<=5 is met
+  print(i)
+  i = i + 1 # Set the value of the variable for the next loop iteration
+}
+```
+
+    ## [1] 1
+    ## [1] 2
+    ## [1] 3
+    ## [1] 4
+    ## [1] 5
+
+------------------------------------------------------------------------
+
+The syntax for a while loop is similar to that of a for loop, but in the
+brackets a condition is specified instead of an iterable. Prior to
+writing the while loop you’ll also need to specify an initial value for
+the variable used in the loop, and there should be something in the body
+of the loop to change the variable during each iteration - otherwise the
+condition can never be met!
+
+Generally a while loop should only be used in circumstances where it
+isn’t possible to achieve the desired result using a for loop. The
+reason for this is that it can be easy to accidentally set up an
+infinite loop, where a bug in the code means that the condition is never
+met for a while loop to end.
+
+## Iterating over columns of a dataframe
+
+Although loops are an essential programming tool, there are cases where
+the same outcome can be achieved in a more efficient way by using a
+built-in function. For example, the tidyverse packages include functions
+that allow us to apply operations across all (or a subset) of the
+columns in a dataframe at the same time. The advantages of using these
+built-in functions are that they can make the code more concise and
+easier to read, plus they’re often faster to run than the loop
+equivalent.
+
+------------------------------------------------------------------------
+
+We’ve already met the `mutate()` function from dplyr in the
+[Introduction to
+R](https://github.com/moj-analytical-services/IntroRTraining) course,
+which is a convenient way to apply an operation to all values in a
+column of a dataframe. For example, going back to the `fruit` dataset
+that we combined together earlier, here’s how we can make all characters
+in the `Item` column uppercase, using the `toupper()` function:
+
+``` r
+# Convert Item column to uppercase
+fruit <- fruit %>% dplyr::mutate(Item = toupper(Item))
+fruit
+```
+
+    ## # A tibble: 9 × 4
+    ##   Item      `Cost-Jan` `Cost-Feb` `Cost-Mar`
+    ##   <chr>          <dbl>      <dbl>      <dbl>
+    ## 1 ORANGE          0.56       0.5        0.57
+    ## 2 APPLE           0.42       0.51       0.49
+    ## 3 BANANA          0.15       0.17       0.21
+    ## 4 LEMON           0.3        0.32       0.35
+    ## 5 PEAR            0.41       0.39       0.44
+    ## 6 MELON           1.1        1.15       1.11
+    ## 7 PINEAPPLE       1.18       1.19       1.24
+    ## 8 PEACH           0.55       0.53       0.58
+    ## 9 PLUM            0.38       0.41       0.41
+
+------------------------------------------------------------------------
+
+We can also use `mutate()` to apply a function to multiple columns in
+one go by combining it with the `across()` function from dplyr. This
+example demonstrates how to multiply the values in all numeric columns
+by 100:
+
+``` r
+fruit_pence <- fruit %>% dplyr::mutate(across(where(is.numeric), ~ .x * 100))
+fruit_pence
+```
+
+    ## # A tibble: 9 × 4
+    ##   Item      `Cost-Jan` `Cost-Feb` `Cost-Mar`
+    ##   <chr>          <dbl>      <dbl>      <dbl>
+    ## 1 ORANGE            56         50         57
+    ## 2 APPLE             42         51         49
+    ## 3 BANANA            15         17         21
+    ## 4 LEMON             30         32         35
+    ## 5 PEAR              41         39         44
+    ## 6 MELON            110        115        111
+    ## 7 PINEAPPLE        118        119        124
+    ## 8 PEACH             55         53         58
+    ## 9 PLUM              38         41         41
+
+Here we’re using `mutate()` with `across()` to apply a function to all
+numeric columns. The `~ .x * 100` part is what’s called a lambda or
+anonymous function, and this is what tells `mutate()` and `across()` to
+multiply by 100. The lambda function is a function with no name -
+they’re generally used in combination with another function (in this
+case `across()`) to apply a simple operation without needing to define a
+dedicated function elsewhere in the code.
+
+------------------------------------------------------------------------
+
+Of course `across()` can also be used to apply a named function to
+multiple columns of a dataframe. Here’s how we can apply the `signif()`
+function to round values in all numeric columns to 1 significant figure:
+
+``` r
+rounded_fruit <- fruit %>% dplyr::mutate(across(where(is.numeric), signif, 1))
+
+rounded_fruit
+```
+
+    ## # A tibble: 9 × 4
+    ##   Item      `Cost-Jan` `Cost-Feb` `Cost-Mar`
+    ##   <chr>          <dbl>      <dbl>      <dbl>
+    ## 1 ORANGE           0.6        0.5        0.6
+    ## 2 APPLE            0.4        0.5        0.5
+    ## 3 BANANA           0.2        0.2        0.2
+    ## 4 LEMON            0.3        0.3        0.4
+    ## 5 PEAR             0.4        0.4        0.4
+    ## 6 MELON            1          1          1  
+    ## 7 PINEAPPLE        1          1          1  
+    ## 8 PEACH            0.6        0.5        0.6
+    ## 9 PLUM             0.4        0.4        0.4
+
+Note: When the `signif()` function is passed as an argument to
+`across()`, the brackets aren’t included (i.e. `signif` is passed rather
+than `signif()`). This means that any arguments for `signif` need to be
+included as extra arguments for `across()` instead (i.e. putting
+`signif, 1` rather than `signif(1)` when using with `across()`).
+
+------------------------------------------------------------------------
+
+### Exercise
+
+Write a for loop to print “The current date is …” for each date in the
+following string vector:
+
+``` r
+dates <- c("2020-03-01", "2020-06-01", "2020-09-01", "2020-12-01")
+```
+
+**Hint:** You can use the `paste()` function to join strings together,
+and the `print()` function to print the result in the Console.
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+
+### Exercise
+
+Modify your solution to the previous exercise to skip to the next loop
+iteration if `date` is equal to ‘2020-06-01’.
 
 ------------------------------------------------------------------------
 
 # Handling missing data
+
+## Introduction
 
 It’s often the case that datasets will contain missing values, which are
 usually denoted by `NA` in R. ‘NA’ stands for ‘not available’, while
@@ -325,6 +808,8 @@ is.na(x)
 
     ## [1] FALSE FALSE FALSE FALSE  TRUE FALSE FALSE  TRUE
 
+------------------------------------------------------------------------
+
 If instead you wanted to identify values that are not missing, then you
 can combine `is.na()` with the ‘not’ operator, `!`, like so:
 
@@ -334,6 +819,8 @@ x <- c(7, 23, 5, 14, NA, 1, 11, NA)
 ```
 
     ## [1]  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE FALSE
+
+------------------------------------------------------------------------
 
 When working with dataframes, the `complete.cases()` function is useful
 to check which rows are complete (i.e. the row doesn’t contain any
@@ -349,24 +836,6 @@ complete.cases(df)
 ```
 
     ## [1]  TRUE FALSE  TRUE FALSE  TRUE
-
-### Exercise
-
-For the following dataframe, use the `filter()` function from dplyr with
-`complete.cases()` to extract the rows **with** missing values:
-
-``` r
-fruit <- tibble::tibble(
-  "Item" = c("Orange", "Apple", "Banana", "Lemon", "Pear"),
-  "Cost" = c(0.5, 0.4, 0.1, 0.3, NA),
-  "Quantity" = c(23, NA, 15, 9, 11)
-)
-```
-
-**Hint:** you can use a `.` inside the `complete.cases()` function to
-apply it to all columns of the dataframe.
-
-------------------------------------------------------------------------
 
 ## Handling missing values using a function argument
 
@@ -428,6 +897,8 @@ replace(x, is.na(x), 0)
 
     ## [1]   7  23   5 -14   0  -1  11   0
 
+------------------------------------------------------------------------
+
 The `replace()` function can also be applied to a whole dataframe, like
 so:
 
@@ -436,11 +907,16 @@ df <- tibble::data_frame(
   "x" = c(0, 1, 2, NA, 4),
   "y" = c(18, NA, 45, 15, 2),
 )
+```
 
+    ## Warning: `data_frame()` was deprecated in tibble 1.1.0.
+    ## Please use `tibble()` instead.
+
+``` r
 df %>% replace(is.na(.), 0)
 ```
 
-    ## # A tibble: 5 x 2
+    ## # A tibble: 5 × 2
     ##       x     y
     ##   <dbl> <dbl>
     ## 1     0    18
@@ -448,6 +924,8 @@ df %>% replace(is.na(.), 0)
     ## 3     2    45
     ## 4     0    15
     ## 5     4     2
+
+------------------------------------------------------------------------
 
 The `replace_na()` function from tidyr also provides a convenient way to
 replace missing values in a dataframe, and is especially useful if you
@@ -459,6 +937,7 @@ with ‘Unknown’:
 
 ``` r
 offenders_replacena <- offenders %>%
+  dplyr::mutate(HEIGHT = as.character(HEIGHT)) %>%
   tidyr::replace_na(list(HEIGHT = "Unknown"))
 
 # Display the dataframe in descending height order, so we can see the 'Unknown' values
@@ -478,28 +957,9 @@ offenders_replacena %>% dplyr::arrange(desc(HEIGHT)) %>% str()
     ##  $ SENTENCE             : chr  "Court_order" "Prison_<12m" "Prison_<12m" "Court_order" ...
     ##  $ AGE                  : int  32 42 28 50 48 61 45 32 43 41 ...
     ##  $ YOUTH_OR_ADULT       : chr  "Adult" "Adult" "Adult" "Adult" ...
-    ##  $ PRISON_SENTENCE      : num  0 1 1 0 0 1 0 0 0 1 ...
-    ##  $ age_band             : chr  "25-34" "35-44" "25-34" "45-54" ...
-    ##  $ PREV_CONVICTIONS_BAND: chr  "0-1" "0-1" "0-1" "0-1" ...
-
-### Exercise
-
-For the following dataframe, use the `replace_na()` function from tidyr
-to replace missing values in the `Cost` column with “Unknown” and the
-`Quantity` column with 0.
-
-``` r
-fruit <- tibble::tibble(
-  "Item" = c("Orange", "Apple", "Banana", "Lemon", "Pear"),
-  "Cost" = c(0.5, 0.4, 0.1, 0.3, NA),
-  "Quantity" = c(23, NA, 15, 9, 11)
-)
-```
-
-**Hint:** you can add multiple arguments to `replace_na(list(...))`,
-with one argument for each column where NA values need replacing.
-
-------------------------------------------------------------------------
+    ##  $ AGE_BAND             : chr  "30-39" "40-49" "18-29" "50-59" ...
+    ##  $ COURT_ORDER          : num  1 0 0 1 1 0 1 1 1 0 ...
+    ##  $ PREV_CONVICTIONS_BAND: chr  "0" "0" "0" "0" ...
 
 ------------------------------------------------------------------------
 
@@ -519,7 +979,7 @@ event_dates <- tibble::tibble(
 event_dates
 ```
 
-    ## # A tibble: 6 x 3
+    ## # A tibble: 6 × 3
     ##   event_id date       new_date  
     ##      <dbl> <chr>      <chr>     
     ## 1        0 2016-04-13 2016-08-16
@@ -537,7 +997,7 @@ event_dates %>%
   dplyr::mutate(new_date = dplyr::coalesce(new_date, date))
 ```
 
-    ## # A tibble: 6 x 3
+    ## # A tibble: 6 × 3
     ##   event_id date       new_date  
     ##      <dbl> <chr>      <chr>     
     ## 1        0 2016-04-13 2016-08-16
@@ -546,6 +1006,8 @@ event_dates %>%
     ## 4        3 2017-01-27 2017-03-02
     ## 5        4 2015-10-21 2015-10-21
     ## 6        5 2018-03-15 2018-11-20
+
+------------------------------------------------------------------------
 
 ### Replacing with the previous value in a column
 
@@ -565,21 +1027,21 @@ df$year[duplicated(df$year)] <- NA
 df
 ```
 
-    ## # A tibble: 12 x 3
+    ## # A tibble: 12 × 3
     ##    year  quarter count
     ##    <chr> <chr>   <int>
-    ##  1 2017  Q1          2
-    ##  2 <NA>  Q2         10
-    ##  3 <NA>  Q3          4
-    ##  4 <NA>  Q4          1
+    ##  1 2017  Q1          3
+    ##  2 <NA>  Q2          6
+    ##  3 <NA>  Q3          5
+    ##  4 <NA>  Q4         10
     ##  5 2018  Q1         12
-    ##  6 <NA>  Q2          7
-    ##  7 <NA>  Q3          5
-    ##  8 <NA>  Q4          9
-    ##  9 2019  Q1          6
-    ## 10 <NA>  Q2          3
-    ## 11 <NA>  Q3          8
-    ## 12 <NA>  Q4         11
+    ##  6 <NA>  Q2          1
+    ##  7 <NA>  Q3         11
+    ##  8 <NA>  Q4          4
+    ##  9 2019  Q1          7
+    ## 10 <NA>  Q2          2
+    ## 11 <NA>  Q3          9
+    ## 12 <NA>  Q4          8
 
 The `fill()` function from tidyr is a convenient way to do this, and can
 be used like this:
@@ -588,21 +1050,21 @@ be used like this:
 df %>% tidyr::fill(year)
 ```
 
-    ## # A tibble: 12 x 3
+    ## # A tibble: 12 × 3
     ##    year  quarter count
     ##    <chr> <chr>   <int>
-    ##  1 2017  Q1          2
-    ##  2 2017  Q2         10
-    ##  3 2017  Q3          4
-    ##  4 2017  Q4          1
+    ##  1 2017  Q1          3
+    ##  2 2017  Q2          6
+    ##  3 2017  Q3          5
+    ##  4 2017  Q4         10
     ##  5 2018  Q1         12
-    ##  6 2018  Q2          7
-    ##  7 2018  Q3          5
-    ##  8 2018  Q4          9
-    ##  9 2019  Q1          6
-    ## 10 2019  Q2          3
-    ## 11 2019  Q3          8
-    ## 12 2019  Q4         11
+    ##  6 2018  Q2          1
+    ##  7 2018  Q3         11
+    ##  8 2018  Q4          4
+    ##  9 2019  Q1          7
+    ## 10 2019  Q2          2
+    ## 11 2019  Q3          9
+    ## 12 2019  Q4          8
 
 ## Removing rows with missing values from a dataframe
 
@@ -629,9 +1091,11 @@ str(offenders_nona)
     ##  $ SENTENCE             : chr  "Court_order" "Prison_<12m" "Court_order" "Court_order" ...
     ##  $ AGE                  : int  58 59 43 54 34 50 32 43 34 18 ...
     ##  $ YOUTH_OR_ADULT       : chr  "Adult" "Adult" "Adult" "Adult" ...
-    ##  $ PRISON_SENTENCE      : num  0 1 0 0 1 1 1 0 0 1 ...
-    ##  $ age_band             : chr  "55-64" "55-64" "35-44" "45-54" ...
-    ##  $ PREV_CONVICTIONS_BAND: chr  "0-1" "0-1" "0-1" "0-1" ...
+    ##  $ AGE_BAND             : chr  "50-59" "50-59" "40-49" "50-59" ...
+    ##  $ COURT_ORDER          : num  1 0 1 1 0 0 0 1 1 0 ...
+    ##  $ PREV_CONVICTIONS_BAND: chr  "0" "0" "0" "0" ...
+
+------------------------------------------------------------------------
 
 Or alternatively you can remove rows that contain `NA` values in
 specific columns:
@@ -655,352 +1119,50 @@ str(offenders_nona)
     ##  $ SENTENCE             : chr  "Court_order" "Prison_<12m" "Court_order" "Court_order" ...
     ##  $ AGE                  : int  58 59 43 54 34 50 32 43 34 18 ...
     ##  $ YOUTH_OR_ADULT       : chr  "Adult" "Adult" "Adult" "Adult" ...
-    ##  $ PRISON_SENTENCE      : num  0 1 0 0 1 1 1 0 0 1 ...
-    ##  $ age_band             : chr  "55-64" "55-64" "35-44" "45-54" ...
-    ##  $ PREV_CONVICTIONS_BAND: chr  "0-1" "0-1" "0-1" "0-1" ...
+    ##  $ AGE_BAND             : chr  "50-59" "50-59" "40-49" "50-59" ...
+    ##  $ COURT_ORDER          : num  1 0 1 1 0 0 0 1 1 0 ...
+    ##  $ PREV_CONVICTIONS_BAND: chr  "0" "0" "0" "0" ...
 
-# Iteration and Loops
+------------------------------------------------------------------------
 
-## Introduction
+### Exercise
 
-As part of any good coding practice is to reduce the number of
-repetitive tasks as much as possible. To help with this concept any
-programming language comes with a set of **control structures** to help
-reduce clutter in the code and make it more readable and easier to
-understand.
-
-A general rule in programming is to never copy an paste code more than
-twice; if you find that you are using repeated statements over and over
-again, this is a good sign that either a loop or a function or both are
-needed to make the code more compact and efficient.
-
-Loops form part of the core of any programming platform and R is no
-different here. In the section to follow we will cover the for loos and
-its variants and explain a few things about `purrr` and how we can
-iterate through lists using a variety of *maps*.
-
-A note here similar to what was mentioned in previous chapters, the
-content in this section can also be found in Hadley Wickham’s and
-Garrett Grolemund’s book [R For Data Science](https://r4ds.had.co.nz)
-
-## For Loops
-
-The basics of how a for loop works can be understood best by using an
-example. Consider the following tibble:
+For the following dataframe, use the `filter()` function from dplyr with
+`complete.cases()` to extract the rows **with** missing values:
 
 ``` r
-df <- tibble(
-  a = rnorm(10),
-  b = rnorm(10),
-  c = rnorm(10),
-  d = rnorm(10)
+fruit <- tibble::tibble(
+  "Item" = c("Orange", "Apple", "Banana", "Lemon", "Pear"),
+  "Cost" = c(0.5, 0.4, 0.1, 0.3, NA),
+  "Quantity" = c(23, NA, 15, 9, 11)
 )
 ```
 
-the task now is to calculate, for example, the mean or the median:
+**Hint:** you can use a `.` inside the `complete.cases()` function to
+apply it to all columns of the dataframe.
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+
+### Exercise
+
+For the following dataframe, use the `replace_na()` function from tidyr
+to replace missing values in the `Cost` column with “Unknown” and the
+`Quantity` column with 0.
 
 ``` r
-median(df$a)
-```
-
-    ## [1] -0.07256001
-
-``` r
-#> [1] -0.2457625
-median(df$b)
-```
-
-    ## [1] -0.8204447
-
-``` r
-#> [1] -0.2873072
-median(df$c)
-```
-
-    ## [1] -0.2224024
-
-``` r
-#> [1] -0.05669771
-median(df$d)
-```
-
-    ## [1] 0.2211465
-
-``` r
-#> [1] 0.1442633
-```
-
-one way of doing this is by copying and pasting the same code over and
-over again; inefficient, but possible at this stage. A much better way
-is to construct a for loop and iterate through the code that is repeated
-as above.
-
-``` r
-output <- vector("double", ncol(df))  # 1. output
-for (i in seq_along(df)) {            # 2. sequence
-  output[[i]] <- median(df[[i]])      # 3. body
-}
-output
-```
-
-    ## [1] -0.07256001 -0.82044466 -0.22240237  0.22114655
-
-``` r
-#> [1] -0.24576245 -0.28730721 -0.05669771  0.14426335
-```
-
-In the example above the For loop has three primary components, the
-*output*, the *sequence* and the *body*. The output is usually a list or
-a vector where the result of the loop is to be stored. the sequence is a
-vector or a list containing the collection of items to cycle through
-while running. The iterator `i` is used as a place holder variable,
-changing each time the loop runs to the corresponding value ion the
-given sequence. As the loop runs `i` runs through all the values in the
-`sequence` in the order they appear.
-
-The body of the loop contains the code to run at each iteration. The
-iterator `i` will be take the value of each element in the sequence on
-each run.
-
-### Exercises
-
-1.  Write for loops to:
-
-2.  Compute the mean of every column in mtcars.
-
-3.  Determine the type of each column in nycflights13::flights.
-
-4.  Compute the number of unique values in each column of iris.
-
-5.  Generate 10 random normals from distributions with means of -10, 0,
-    10, and 100.
-
-Think about the output, sequence, and body before you start writing the
-loop.
-
-## For loop variants
-
-Now that you know the basics of the for loop, it is time to see a few of
-its variants and how they can be used in very common programming tasks.
-
-There are 4 variants to consider here:
-
-1.  Modifying an existing object on the spot.
-2.  Looping over a list of names or values.
-3.  Handling outputs of unknown length.
-4.  Handling sequences of unknown length.
-
-and we will cover each in the sections below.
-
-### Modifying an existing object
-
-In many cases there will be a need to modify a given object based on the
-current data analysis task. In the example below the task is to scale
-the data frame for further processing. On way to achieve this is by
-manually change each column in the data; this could be fine for small
-dataframes but for larger ones this will very quickly become a problem.
-
-``` r
-df <- tibble(
-  a = rnorm(10),
-  b = rnorm(10),
-  c = rnorm(10),
-  d = rnorm(10)
+fruit <- tibble::tibble(
+  "Item" = c("Orange", "Apple", "Banana", "Lemon", "Pear"),
+  "Cost" = c("£0.50", "£0.40", "£0.10", "£0.30", NA),
+  "Quantity" = c(23, NA, 15, 9, 11)
 )
-rescale01 <- function(x) {
-  rng <- range(x, na.rm = TRUE)
-  (x - rng[1]) / (rng[2] - rng[1])
-}
-
-df$a <- rescale01(df$a)
-df$b <- rescale01(df$b)
-df$c <- rescale01(df$c)
-df$d <- rescale01(df$d)
 ```
 
-A for loop in this case would be recommended as you will notice that the
-same one line of code is repeated throughout. The code below illustrated
-this concept.
+**Hint:** you can add multiple arguments to `replace_na(list(...))`,
+with one argument for each column where NA values need replacing.
 
-More specifically the components of the for loop are:
-
--   The**output** - in this case we don’t output to a different object
-    we just update the input. The output is the same as the input
-
--   The **sequence** - This will be the number of columns in `df` we
-    want to run the code to. As previously the `seq_along` function will
-    help us with this as it will count the number of columns and turn
-    this into a sequence we can use in the for loop
-
--   The body of the loop is just the re scale one line of code running
-    the defined `rescale01` function. It can be anything that will take
-    the column as an argument to work with. Further restrictions would
-    normally apply but we will not cover this here
-
-The code below simplifies what we want to do and as you can see,
-overall, we now have a much better structured and easier to read two
-lines of code!
-
-``` r
-for (i in seq_along(df)) {
-  df[[i]] <- rescale01(df[[i]])
-}
-```
-
-### Looping patterns
-
-There are a couple of ways we can use to access the sequence part of the
-**for** loop depending on the coding style and the needs of the project.
-For example, in the code shown below, one could choose to loop over the
-list of indices of a vector using `for(i in se_along(x)` or
-alternatively iterate through the contents of the `results` vector using
-`for(i in vowel)`. Both formulations are valid with the first one
-allowing for more flexibility when it comes to accessing the resources
-of the vector.
-
-``` r
-x = letters # vector of letters
-vowel <- c('a', 'e', 'i', 'o', 'u')
-
-results <- rnorm(length(x)) #create a random vector
-names(results) <- x # name the elements of the vector 
-
-## loop thourgh indices of a vector
-## 
-x1 = 0
-for(i in seq_along(x)){
-  x1[i] = paste(x[i],"23")
-}
-
-## loop through contents of a vector
-## 
-for(i in vowel){
-  print(results[i])
-  }
-```
-
-    ##        a 
-    ## 1.470786 
-    ##         e 
-    ## -1.010441 
-    ##          i 
-    ## -0.6262219 
-    ##         o 
-    ## 0.1456097 
-    ##          u 
-    ## 0.07179351
-
-### Handling outputs of unknown length
-
-There are cases where the output from a loop is not known beforehand. In
-these cases, certain precautions need to be taken as it may result in
-clogging up the memory with vectors going out of control expanding
-indefinitely.
-
-``` r
-a = 0 # initialize number
-
-# run a sequence of random length vectros to be appended
-for(i in seq_len(10)){
-  n = sample(20,1)
-  a = c(a,rnorm(n))
-}
-```
-
-A better way to achieving the above result would be to create a list and
-capture the results within each cell at each corresponding iteration.
-The result would be a list with a predictable index length.
-
-``` r
-a = list() # initilise a list
-
-# populate the contents of each cell of a list with a random size vector created in each iteration 
-for(i in seq_len(10)){
-  n = sample(20,1)
-  a[[i]] = rnorm(n)
-}
-```
-
-### Handling sequences of unknown length
-
-In general, unknown sequence length translates to cases where we want to
-check for certain condition in order to stop the execution of a block of
-code. In these cases the use of the `while` loop is preferable as in the
-example below.
-
-``` r
-## while loop definition
-
-while (condition) {
-  # body
-}
-```
-
-Notice that the `while` loop execution differs that the `for` loop in
-that the body of code is executed first before the condition is checked
-and this is by design. One needs to first check the contents before
-accessing the validity of the condition to terminate the loop.
-
-``` r
-# The loop will first execute the body of code and then check if the condition is satisfied. If this is the case the loop will stop its iteration.
-numbers = 0
-
-while(mean(numbers) < 0.5){
-  numbers = rnorm(20)
-  print(mean(numbers))
-}
-```
-
-    ## [1] 0.1050824
-    ## [1] 0.0332729
-    ## [1] 0.01856543
-    ## [1] -0.1789536
-    ## [1] 0.04177437
-    ## [1] 0.1426711
-    ## [1] 0.1867491
-    ## [1] 0.09228884
-    ## [1] 0.06974403
-    ## [1] -0.1173996
-    ## [1] 0.2098297
-    ## [1] 0.07347492
-    ## [1] 0.2546859
-    ## [1] -0.2142916
-    ## [1] 0.005483996
-    ## [1] 0.06432274
-    ## [1] 0.08071477
-    ## [1] -0.6033095
-    ## [1] 0.2181724
-    ## [1] 0.08646407
-    ## [1] -0.2064137
-    ## [1] -0.004804388
-    ## [1] -0.1034983
-    ## [1] 0.07727433
-    ## [1] -0.2602338
-    ## [1] 0.01251996
-    ## [1] 0.08961514
-    ## [1] 0.507244
-
-\#\#Exercises
-
-1.  Imagine you have a directory full of files that you want to read in.
-    You have the file names in the vector `files`, and now want to read
-    each one. Write the for loop that will simulate reading them into a
-    single data frame.
-
-``` r
-# the following code will create a random colelction of file names
-files = paste0(str_extract(sentences[1:5], "^[:alpha:]+"), sample(c(".csv",".xlsx")))
-```
-
-2.  What happens if you use `for (nm in names(x))` and x has no names?
-    What if only some of the elements are named? What if the names are
-    not unique?
-
-``` r
-# try using the folling list of files 
-files2 = paste0(str_extract(sentences[1:10], "^[:alpha:]+"), ".xlsx") 
-files2[5] = NA
-```
+------------------------------------------------------------------------
 
 # Reshaping data
 
@@ -1061,44 +1223,42 @@ dim(billboard)
 billboard %>% arrange(desc(date.entered)) %>% tail()
 ```
 
-    ## # A tibble: 6 x 79
-    ##   artist   track    date.entered   wk1   wk2   wk3   wk4   wk5   wk6   wk7   wk8   wk9  wk10  wk11  wk12  wk13  wk14  wk15
-    ##   <chr>    <chr>    <date>       <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
-    ## 1 IMx      Stay Th… 1999-10-09      84    61    45    43    40    38    36    31    34    34    40    36    36    23    41
-    ## 2 Train    Meet Vi… 1999-10-09      76    67    59    54    48    45    40    32    26    24    22    21    21    24    21
-    ## 3 Creed    Higher   1999-09-11      81    77    73    63    61    58    56    52    56    57    57    57    57    57    60
-    ## 4 Houston… My Love… 1999-09-04      81    68    44    16    11     9     8     7     8     7     8     8     6     6     5
-    ## 5 Amber    Sexual   1999-07-17      99    99    96    96   100    93    93    96    NA    NA    99    NA    96    96    99
-    ## 6 Lonestar Amazed   1999-06-05      81    54    44    39    38    33    29    29    32    27    26    24    27    32    33
-    ## # … with 61 more variables: wk16 <dbl>, wk17 <dbl>, wk18 <dbl>, wk19 <dbl>, wk20 <dbl>, wk21 <dbl>, wk22 <dbl>,
-    ## #   wk23 <dbl>, wk24 <dbl>, wk25 <dbl>, wk26 <dbl>, wk27 <dbl>, wk28 <dbl>, wk29 <dbl>, wk30 <dbl>, wk31 <dbl>,
-    ## #   wk32 <dbl>, wk33 <dbl>, wk34 <dbl>, wk35 <dbl>, wk36 <dbl>, wk37 <dbl>, wk38 <dbl>, wk39 <dbl>, wk40 <dbl>,
-    ## #   wk41 <dbl>, wk42 <dbl>, wk43 <dbl>, wk44 <dbl>, wk45 <dbl>, wk46 <dbl>, wk47 <dbl>, wk48 <dbl>, wk49 <dbl>,
-    ## #   wk50 <dbl>, wk51 <dbl>, wk52 <dbl>, wk53 <dbl>, wk54 <dbl>, wk55 <dbl>, wk56 <dbl>, wk57 <dbl>, wk58 <dbl>,
-    ## #   wk59 <dbl>, wk60 <dbl>, wk61 <dbl>, wk62 <dbl>, wk63 <dbl>, wk64 <dbl>, wk65 <dbl>, wk66 <lgl>, wk67 <lgl>,
-    ## #   wk68 <lgl>, wk69 <lgl>, wk70 <lgl>, wk71 <lgl>, wk72 <lgl>, wk73 <lgl>, wk74 <lgl>, wk75 <lgl>, wk76 <lgl>
+    ## # A tibble: 6 × 79
+    ##   artist      track date.entered   wk1   wk2   wk3   wk4   wk5   wk6   wk7   wk8   wk9  wk10  wk11  wk12  wk13  wk14  wk15  wk16  wk17  wk18
+    ##   <chr>       <chr> <date>       <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
+    ## 1 IMx         Stay… 1999-10-09      84    61    45    43    40    38    36    31    34    34    40    36    36    23    41    62    70    71
+    ## 2 Train       Meet… 1999-10-09      76    67    59    54    48    45    40    32    26    24    22    21    21    24    21    20    21    24
+    ## 3 Creed       High… 1999-09-11      81    77    73    63    61    58    56    52    56    57    57    57    57    57    60    61    61    57
+    ## 4 Houston, W… My L… 1999-09-04      81    68    44    16    11     9     8     7     8     7     8     8     6     6     5     5     5     5
+    ## 5 Amber       Sexu… 1999-07-17      99    99    96    96   100    93    93    96    NA    NA    99    NA    96    96    99    98    98    NA
+    ## 6 Lonestar    Amaz… 1999-06-05      81    54    44    39    38    33    29    29    32    27    26    24    27    32    33    35    35    40
+    ## # … with 58 more variables: wk19 <dbl>, wk20 <dbl>, wk21 <dbl>, wk22 <dbl>, wk23 <dbl>, wk24 <dbl>, wk25 <dbl>, wk26 <dbl>, wk27 <dbl>,
+    ## #   wk28 <dbl>, wk29 <dbl>, wk30 <dbl>, wk31 <dbl>, wk32 <dbl>, wk33 <dbl>, wk34 <dbl>, wk35 <dbl>, wk36 <dbl>, wk37 <dbl>, wk38 <dbl>,
+    ## #   wk39 <dbl>, wk40 <dbl>, wk41 <dbl>, wk42 <dbl>, wk43 <dbl>, wk44 <dbl>, wk45 <dbl>, wk46 <dbl>, wk47 <dbl>, wk48 <dbl>, wk49 <dbl>,
+    ## #   wk50 <dbl>, wk51 <dbl>, wk52 <dbl>, wk53 <dbl>, wk54 <dbl>, wk55 <dbl>, wk56 <dbl>, wk57 <dbl>, wk58 <dbl>, wk59 <dbl>, wk60 <dbl>,
+    ## #   wk61 <dbl>, wk62 <dbl>, wk63 <dbl>, wk64 <dbl>, wk65 <dbl>, wk66 <lgl>, wk67 <lgl>, wk68 <lgl>, wk69 <lgl>, wk70 <lgl>, wk71 <lgl>,
+    ## #   wk72 <lgl>, wk73 <lgl>, wk74 <lgl>, wk75 <lgl>, wk76 <lgl>
 
 ``` r
 #starting by mapping a single month 
 billboard %>% pivot_longer(cols = c(wk1,wk2, wk3, wk4), names_to = "month1", values_to = "rank") %>% head()
 ```
 
-    ## # A tibble: 6 x 77
-    ##   artist  track     date.entered   wk5   wk6   wk7   wk8   wk9  wk10  wk11  wk12  wk13  wk14  wk15  wk16  wk17  wk18  wk19
-    ##   <chr>   <chr>     <date>       <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
-    ## 1 2 Pac   Baby Don… 2000-02-26      87    94    99    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
-    ## 2 2 Pac   Baby Don… 2000-02-26      87    94    99    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
-    ## 3 2 Pac   Baby Don… 2000-02-26      87    94    99    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
-    ## 4 2 Pac   Baby Don… 2000-02-26      87    94    99    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
-    ## 5 2Ge+her The Hard… 2000-09-02      NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
-    ## 6 2Ge+her The Hard… 2000-09-02      NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
-    ## # … with 59 more variables: wk20 <dbl>, wk21 <dbl>, wk22 <dbl>, wk23 <dbl>, wk24 <dbl>, wk25 <dbl>, wk26 <dbl>,
-    ## #   wk27 <dbl>, wk28 <dbl>, wk29 <dbl>, wk30 <dbl>, wk31 <dbl>, wk32 <dbl>, wk33 <dbl>, wk34 <dbl>, wk35 <dbl>,
-    ## #   wk36 <dbl>, wk37 <dbl>, wk38 <dbl>, wk39 <dbl>, wk40 <dbl>, wk41 <dbl>, wk42 <dbl>, wk43 <dbl>, wk44 <dbl>,
-    ## #   wk45 <dbl>, wk46 <dbl>, wk47 <dbl>, wk48 <dbl>, wk49 <dbl>, wk50 <dbl>, wk51 <dbl>, wk52 <dbl>, wk53 <dbl>,
-    ## #   wk54 <dbl>, wk55 <dbl>, wk56 <dbl>, wk57 <dbl>, wk58 <dbl>, wk59 <dbl>, wk60 <dbl>, wk61 <dbl>, wk62 <dbl>,
-    ## #   wk63 <dbl>, wk64 <dbl>, wk65 <dbl>, wk66 <lgl>, wk67 <lgl>, wk68 <lgl>, wk69 <lgl>, wk70 <lgl>, wk71 <lgl>,
-    ## #   wk72 <lgl>, wk73 <lgl>, wk74 <lgl>, wk75 <lgl>, wk76 <lgl>, month1 <chr>, rank <dbl>
+    ## # A tibble: 6 × 77
+    ##   artist  track     date.entered   wk5   wk6   wk7   wk8   wk9  wk10  wk11  wk12  wk13  wk14  wk15  wk16  wk17  wk18  wk19  wk20  wk21  wk22
+    ##   <chr>   <chr>     <date>       <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
+    ## 1 2 Pac   Baby Don… 2000-02-26      87    94    99    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+    ## 2 2 Pac   Baby Don… 2000-02-26      87    94    99    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+    ## 3 2 Pac   Baby Don… 2000-02-26      87    94    99    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+    ## 4 2 Pac   Baby Don… 2000-02-26      87    94    99    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+    ## 5 2Ge+her The Hard… 2000-09-02      NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+    ## 6 2Ge+her The Hard… 2000-09-02      NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+    ## # … with 56 more variables: wk23 <dbl>, wk24 <dbl>, wk25 <dbl>, wk26 <dbl>, wk27 <dbl>, wk28 <dbl>, wk29 <dbl>, wk30 <dbl>, wk31 <dbl>,
+    ## #   wk32 <dbl>, wk33 <dbl>, wk34 <dbl>, wk35 <dbl>, wk36 <dbl>, wk37 <dbl>, wk38 <dbl>, wk39 <dbl>, wk40 <dbl>, wk41 <dbl>, wk42 <dbl>,
+    ## #   wk43 <dbl>, wk44 <dbl>, wk45 <dbl>, wk46 <dbl>, wk47 <dbl>, wk48 <dbl>, wk49 <dbl>, wk50 <dbl>, wk51 <dbl>, wk52 <dbl>, wk53 <dbl>,
+    ## #   wk54 <dbl>, wk55 <dbl>, wk56 <dbl>, wk57 <dbl>, wk58 <dbl>, wk59 <dbl>, wk60 <dbl>, wk61 <dbl>, wk62 <dbl>, wk63 <dbl>, wk64 <dbl>,
+    ## #   wk65 <dbl>, wk66 <lgl>, wk67 <lgl>, wk68 <lgl>, wk69 <lgl>, wk70 <lgl>, wk71 <lgl>, wk72 <lgl>, wk73 <lgl>, wk74 <lgl>, wk75 <lgl>,
+    ## #   wk76 <lgl>, month1 <chr>, rank <dbl>
 
 ``` r
 # and to see clearly the contents of the new variable
@@ -1125,7 +1285,7 @@ expressions are used to pick all the variables to be mapped.
 billboard %>% pivot_longer(cols = starts_with("wk"), names_to = "weeks", values_to = "rank") %>% head()
 ```
 
-    ## # A tibble: 6 x 5
+    ## # A tibble: 6 × 5
     ##   artist track                   date.entered weeks  rank
     ##   <chr>  <chr>                   <date>       <chr> <dbl>
     ## 1 2 Pac  Baby Don't Cry (Keep... 2000-02-26   wk1      87
@@ -1183,7 +1343,7 @@ anscombe %>% pivot_longer(everything(),
    names_pattern = "(.)(.)" )
 ```
 
-    ## # A tibble: 44 x 3
+    ## # A tibble: 44 × 3
     ##    set       x     y
     ##    <chr> <dbl> <dbl>
     ##  1 1        10  8.04
@@ -1231,7 +1391,7 @@ river are detected or not by automatic monitoring stations.
 fish_encounters %>% head(10)
 ```
 
-    ## # A tibble: 10 x 3
+    ## # A tibble: 10 × 3
     ##    fish  station  seen
     ##    <fct> <fct>   <int>
     ##  1 4842  Release     1
@@ -1254,7 +1414,7 @@ station can be utilized.
 fish_encounters %>% pivot_wider(names_from = station, values_from = seen)
 ```
 
-    ## # A tibble: 19 x 12
+    ## # A tibble: 19 × 12
     ##    fish  Release I80_1 Lisbon  Rstr Base_TD   BCE   BCW  BCE2  BCW2   MAE   MAW
     ##    <fct>   <int> <int>  <int> <int>   <int> <int> <int> <int> <int> <int> <int>
     ##  1 4842        1     1      1     1       1     1     1     1     1     1     1
@@ -1290,7 +1450,7 @@ fish_encounters %>% pivot_wider(names_from = station, values_from = seen,
   values_fill = list(seen = 0))
 ```
 
-    ## # A tibble: 19 x 12
+    ## # A tibble: 19 × 12
     ##    fish  Release I80_1 Lisbon  Rstr Base_TD   BCE   BCW  BCE2  BCW2   MAE   MAW
     ##    <fct>   <int> <int>  <int> <int>   <int> <int> <int> <int> <int> <int> <int>
     ##  1 4842        1     1      1     1       1     1     1     1     1     1     1
@@ -1324,7 +1484,7 @@ combination of wool (A and B) and tension (L, M, H).
 warpbreaks %>% as_tibble() %>% select(wool,tension, breaks)
 ```
 
-    ## # A tibble: 54 x 3
+    ## # A tibble: 54 × 3
     ##    wool  tension breaks
     ##    <fct> <fct>    <dbl>
     ##  1 A     L           26
@@ -1351,10 +1511,14 @@ the same value of breaks for each tension value.
 warpdata = warpbreaks %>% pivot_wider(names_from = wool, values_from = breaks)
 ```
 
-    ## Warning: Values are not uniquely identified; output will contain list-cols.
+    ## Warning: Values from `breaks` are not uniquely identified; output will contain list-cols.
     ## * Use `values_fn = list` to suppress this warning.
-    ## * Use `values_fn = length` to identify where the duplicates arise
-    ## * Use `values_fn = {summary_fun}` to summarise duplicates
+    ## * Use `values_fn = {summary_fun}` to summarise duplicates.
+    ## * Use the following dplyr code to identify duplicates.
+    ##   {data} %>%
+    ##     dplyr::group_by(tension, wool) %>%
+    ##     dplyr::summarise(n = dplyr::n(), .groups = "drop") %>%
+    ##     dplyr::filter(n > 1L)
 
 The default output here is a list containing all the associated
 **break** values. One other, and perhaps more informative, approach
@@ -1372,7 +1536,7 @@ warpbreaks %>%
   )
 ```
 
-    ## # A tibble: 3 x 3
+    ## # A tibble: 3 × 3
     ##   tension     A     B
     ##   <fct>   <dbl> <dbl>
     ## 1 L        44.6  28.2
@@ -1397,7 +1561,7 @@ could detect and pull out the values on either side of the separator.
 table3
 ```
 
-    ## # A tibble: 6 x 3
+    ## # A tibble: 6 × 3
     ##   country      year rate             
     ## * <chr>       <int> <chr>            
     ## 1 Afghanistan  1999 745/19987071     
@@ -1419,7 +1583,7 @@ example in `table3` the following code splits the `rate` variable into
 table3 %>% separate(rate, into = c("cases", "population"))
 ```
 
-    ## # A tibble: 6 x 4
+    ## # A tibble: 6 × 4
     ##   country      year cases  population
     ##   <chr>       <int> <chr>  <chr>     
     ## 1 Afghanistan  1999 745    19987071  
@@ -1438,7 +1602,7 @@ can specify the separator manually using the `sep` option.
 table3 %>% separate(rate, into = c("cases", "population"), sep = "/")
 ```
 
-    ## # A tibble: 6 x 4
+    ## # A tibble: 6 × 4
     ##   country      year cases  population
     ##   <chr>       <int> <chr>  <chr>     
     ## 1 Afghanistan  1999 745    19987071  
@@ -1458,7 +1622,7 @@ the corresponding characters. As a result the new columns are now of
 table3 %>% separate(rate, into = c("cases", "population"), sep = "/", convert = TRUE)
 ```
 
-    ## # A tibble: 6 x 4
+    ## # A tibble: 6 × 4
     ##   country      year  cases population
     ##   <chr>       <int>  <int>      <int>
     ## 1 Afghanistan  1999    745   19987071
@@ -1479,7 +1643,7 @@ and `years`.
 table3 %>% extract( col = year, into = c("century","years"), regex = "([0-9]{2})([0-9]{2})")
 ```
 
-    ## # A tibble: 6 x 4
+    ## # A tibble: 6 × 4
     ##   country     century years rate             
     ##   <chr>       <chr>   <chr> <chr>            
     ## 1 Afghanistan 19      99    745/19987071     
@@ -1499,7 +1663,7 @@ variables to depict the `century`, `decade` and `year`.
 table3 %>% extract( col = year, into = c("century","decade","year" ), regex = "([0-9]{2})([0-9])([0-9])")
 ```
 
-    ## # A tibble: 6 x 5
+    ## # A tibble: 6 × 5
     ##   country     century decade year  rate             
     ##   <chr>       <chr>   <chr>  <chr> <chr>            
     ## 1 Afghanistan 19      9      9     745/19987071     
@@ -1528,7 +1692,7 @@ tab3 = table3 %>% extract( col = year, into = c("century","decade","year" ), reg
 tab3 %>% unite(new ,century, decade, year)
 ```
 
-    ## # A tibble: 6 x 3
+    ## # A tibble: 6 × 3
     ##   country     new    rate             
     ##   <chr>       <chr>  <chr>            
     ## 1 Afghanistan 19_9_9 745/19987071     
@@ -1548,7 +1712,7 @@ giving the original variable before any alteration takes place.
 tab3 %>% unite(new ,century, decade, year, sep = "")
 ```
 
-    ## # A tibble: 6 x 3
+    ## # A tibble: 6 × 3
     ##   country     new   rate             
     ##   <chr>       <chr> <chr>            
     ## 1 Afghanistan 1999  745/19987071     
@@ -1616,7 +1780,7 @@ tibble(x = c("a,b,c", "d,e,f,g", "h,i,j")) %>%
 
     ## Warning: Expected 3 pieces. Additional pieces discarded in 1 rows [2].
 
-    ## # A tibble: 3 x 3
+    ## # A tibble: 3 × 3
     ##   one   two   three
     ##   <chr> <chr> <chr>
     ## 1 a     b     c    
@@ -1630,7 +1794,7 @@ tibble(x = c("a,b,c", "d,e", "f,g,i")) %>%
 
     ## Warning: Expected 3 pieces. Missing pieces filled with `NA` in 1 rows [2].
 
-    ## # A tibble: 3 x 3
+    ## # A tibble: 3 × 3
     ##   one   two   three
     ##   <chr> <chr> <chr>
     ## 1 a     b     c    
@@ -1967,15 +2131,15 @@ str_sort(x,locale = "lt")
     in their handling of NA?
 
 -   In your own words, describe the difference between the sep and
-    collapse arguments to str\_c().
+    collapse arguments to str_c().
 
--   Use str\_length() and str\_sub() to extract the middle character
-    from a string. What will you do if the string has an even number of
+-   Use str_length() and str_sub() to extract the middle character from
+    a string. What will you do if the string has an even number of
     characters?
 
--   What does str\_wrap() do? When might you want to use it?
+-   What does str_wrap() do? When might you want to use it?
 
--   What does str\_trim() do? What’s the opposite of str\_trim()?
+-   What does str_trim() do? What’s the opposite of str_trim()?
 
 -   Write a function that turns (e.g.) a vector c(“a”, “b”, “c”) into
     the string a, b, and c. Think carefully about what it should do if
@@ -2166,7 +2330,7 @@ sentences %>%
 
 1.  For each of the following challenges, try solving it by using both a
     single regular expression, and a combination of multiple
-    str\_detect() calls.
+    str_detect() calls.
 
     1.  Find all words that start or end with x.
 
@@ -2195,7 +2359,7 @@ sentences %>%
 
 1.  Replace all forward slashes in a string with backslashes.
 
-2.  Implement a simple version of str\_to\_lower() using replace\_all().
+2.  Implement a simple version of str_to_lower() using replace_all().
 
 3.  Switch the first and last letters in words. Which of those strings
     are still words?
@@ -2207,11 +2371,13 @@ sentences %>%
 -   [Bonus
     examples](https://github.com/moj-analytical-services/intro_r_training_extension#bonus-examples)
 -   [Appendix](https://github.com/moj-analytical-services/intro_r_training_extension#appendix)
--   [Tidyverse website](https://www.tidyverse.org)
 -   [R for Data Science](https://r4ds.had.co.nz)
 -   [Advanced R](https://adv-r.hadley.nz)
+-   [Tidyverse website](https://www.tidyverse.org)
 -   [Tidyverse style guide](https://style.tidyverse.org/) (has some
     guidance on choosing function and argument names)
+-   [MoJ Analytical Platform
+    Guidance](https://user-guidance.services.alpha.mojanalytics.xyz)
 -   [MoJ coding
     standards](https://moj-analytical-services.github.io/our-coding-standards/)
 
@@ -2265,7 +2431,7 @@ offenders_summary <- offenders %>%
 offenders_summary
 ```
 
-    ## # A tibble: 12 x 3
+    ## # A tibble: 12 × 3
     ## # Groups:   REGION [4]
     ##    REGION SENTENCE    offender_count
     ##    <chr>  <chr>                <int>
@@ -2299,7 +2465,7 @@ offenders_summary <- offenders_summary %>%
 offenders_summary
 ```
 
-    ## # A tibble: 4 x 4
+    ## # A tibble: 4 × 4
     ## # Groups:   REGION [4]
     ##   REGION Court_order `Prison_<12m` `Prison_12m+`
     ##   <chr>        <int>         <int>         <int>
@@ -2328,7 +2494,7 @@ offenders_summary <- offenders_summary %>%
 offenders_summary
 ```
 
-    ## # A tibble: 12 x 3
+    ## # A tibble: 12 × 3
     ## # Groups:   REGION [4]
     ##    REGION SENTENCE    offender_count
     ##    <chr>  <chr>                <int>
@@ -2390,7 +2556,7 @@ time_series$Offence.Type[duplicated(time_series$Offence.Type)] <- NA
 time_series
 ```
 
-    ## # A tibble: 22 x 7
+    ## # A tibble: 22 × 7
     ##    Offence.Type       Offence.Group                           `2014` `2015` `2016` `2017` `2018`
     ##    <chr>              <chr>                                    <int>  <int>  <int>  <int>  <int>
     ##  1 01 Indictable only 01 Violence against the person            7447   6930   6724   7233   6602
@@ -2420,7 +2586,7 @@ time_series_with_total$Total <- total
 time_series_with_total
 ```
 
-    ## # A tibble: 22 x 8
+    ## # A tibble: 22 × 8
     ##    Offence.Type       Offence.Group                           `2014` `2015` `2016` `2017` `2018` Total
     ##    <chr>              <chr>                                    <int>  <int>  <int>  <int>  <int> <int>
     ##  1 01 Indictable only 01 Violence against the person            7447   6930   6724   7233   6602 34936
@@ -2449,7 +2615,7 @@ time_series <- time_series %>% tidyr::fill(Offence.Type)
 time_series
 ```
 
-    ## # A tibble: 22 x 7
+    ## # A tibble: 22 × 7
     ##    Offence.Type       Offence.Group                           `2014` `2015` `2016` `2017` `2018`
     ##    <chr>              <chr>                                    <int>  <int>  <int>  <int>  <int>
     ##  1 01 Indictable only 01 Violence against the person            7447   6930   6724   7233   6602
@@ -2474,7 +2640,7 @@ time_series_long <- time_series %>%
 time_series_long
 ```
 
-    ## # A tibble: 110 x 4
+    ## # A tibble: 110 × 4
     ##    Offence.Type       Offence.Group                  year  count
     ##    <chr>              <chr>                          <chr> <int>
     ##  1 01 Indictable only 01 Violence against the person 2014   7447
@@ -2504,7 +2670,7 @@ totals <- time_series_long %>%
 totals
 ```
 
-    ## # A tibble: 22 x 3
+    ## # A tibble: 22 × 3
     ## # Groups:   Offence.Type [5]
     ##    Offence.Type       Offence.Group                           Total
     ##    <chr>              <chr>                                   <int>
@@ -2529,7 +2695,7 @@ time_series <- dplyr::left_join(time_series, totals, by=c("Offence.Type", "Offen
 time_series
 ```
 
-    ## # A tibble: 22 x 8
+    ## # A tibble: 22 × 8
     ##    Offence.Type       Offence.Group                           `2014` `2015` `2016` `2017` `2018` Total
     ##    <chr>              <chr>                                    <int>  <int>  <int>  <int>  <int> <int>
     ##  1 01 Indictable only 01 Violence against the person            7447   6930   6724   7233   6602 34936
@@ -2557,10 +2723,10 @@ to be edited.
 |:--------:|:------------------------------|
 |    ==    | Equal to                      |
 |    !=    | Not equal to                  |
-|   &gt;   | Greater than                  |
-|   &lt;   | Less than                     |
-|  &gt;=   | Greater than or equal to      |
-|  &lt;=   | Less than or equal to         |
+|    \>    | Greater than                  |
+|    \<    | Less than                     |
+|   \>=    | Greater than or equal to      |
+|   \<=    | Less than or equal to         |
 |    ǀ     | Or                            |
 |    &     | And                           |
 |    !     | Not                           |
@@ -2647,7 +2813,7 @@ throughout this section the pattern for a RegEx will be presented as
 
 1.  Explain why each of these strings don’t match a : “",”\\“,”\\".
 
-2.  How would you match the sequence "’?
+2.  How would you match the sequence “’?
 
 3.  What patterns will the regular expression ...... match? How would
     you represent it as a string?
@@ -2686,9 +2852,9 @@ x <- c("apple pie", "apple", "apple cake")
     expressions that find all words that:
 
     +Start with “y”. +End with “x” +Are exactly three letters long.
-    (Don’t cheat by using str\_length()!) +Have seven letters or more.
+    (Don’t cheat by using str_length()!) +Have seven letters or more.
     Hint: Since this list is long, you might want to use the match
-    argument to str\_view() to show only the matching or non-matching
+    argument to str_view() to show only the matching or non-matching
     words.
 
 ### Character Classes

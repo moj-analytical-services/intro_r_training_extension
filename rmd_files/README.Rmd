@@ -53,10 +53,10 @@ All the examples in the presentation and README are available in the R script ex
 ```{r source_content, child = 'conditional_statements.Rmd'}
 ```
 
-```{r source_content, child = 'missing_data.Rmd'}
+```{r source_content, child = 'iteration.Rmd'}
 ```
 
-```{r source_content, child = 'iteration.Rmd'}
+```{r source_content, child = 'missing_data.Rmd'}
 ```
 
 ```{r source_content, child = 'reshaping.Rmd'}

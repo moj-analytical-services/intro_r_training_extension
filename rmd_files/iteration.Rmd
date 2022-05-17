@@ -14,6 +14,7 @@ A general rule of thumb in programming is to avoid copying and pasting a piece o
 Let's start with a very basic example to illustrate what a for loop does. Say we wanted to print the numbers 1 to 5; without a for loop we'd need to write something like this:
 
 ```{r, collapse = TRUE, purl=purl_example_code}
+# Example of repeating the same piece of code for a set of values
 print(1)
 print(2)
 print(3)
@@ -52,6 +53,8 @@ for (fruit in fruits) {
 You can also use for loops to populate or modify a vector or dataframe. The following example shows how we can add the first ten numbers of the Fibonacci sequence to a vector:
 
 ```{r, purl=purl_example_code}
+# Fibonacci for loop example
+
 n <- 10 # Specify what length we want our output vector to be
 fibonacci <- vector("numeric", n) # Define an empty numeric vector of length n to populate using the loop
 
@@ -70,8 +73,6 @@ print(fibonacci)
 When writing a for loop you must define something to iterate over a fixed number of times in advance. It is also possible to iterate indefinitely using a different kind of loop - this is covered later on in the section on while loops.
 
 
-
-
 ## More options with for loops
 
 ### Iterating over the index of a vector
@@ -79,9 +80,10 @@ When writing a for loop you must define something to iterate over a fixed number
 If you wanted to get an index number for each element of the iterable, you can use the `seq_along()` function. For example:
 
 ```{r, purl=purl_example_code}
+# Iterating over the indices of a vector
+
 fruits <- c("strawberry", "apple", "pear", "orange")
 
-# Iterating over the indices of a vector
 for (i in seq_along(fruits)) {
   # Use paste() to combine two strings together
   print(paste(i, fruits[i]))

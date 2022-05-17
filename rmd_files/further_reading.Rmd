@@ -6,10 +6,11 @@
 
  * [Bonus examples](https://github.com/moj-analytical-services/intro_r_training_extension#bonus-examples)
  * [Appendix](https://github.com/moj-analytical-services/intro_r_training_extension#appendix)
- * [Tidyverse website](https://www.tidyverse.org)
  * [R for Data Science](https://r4ds.had.co.nz)
  * [Advanced R](https://adv-r.hadley.nz)
+ * [Tidyverse website](https://www.tidyverse.org)
  * [Tidyverse style guide](https://style.tidyverse.org/) (has some guidance on choosing function and argument names)
+ * [MoJ Analytical Platform Guidance](https://user-guidance.services.alpha.mojanalytics.xyz)
  * [MoJ coding standards](https://moj-analytical-services.github.io/our-coding-standards/)
  
 ### Conditional statements
