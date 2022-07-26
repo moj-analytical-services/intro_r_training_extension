@@ -22,11 +22,11 @@ For those of you who'd like to 'code along' and attempt the exercises, please ma
 
 1. Got access to the `alpha-r-training` s3 bucket
 2. Cloned the [intro_r_training_extension repo](https://github.com/moj-analytical-services/intro_r_training_extension) (or copied example_code.R into your RStudio) - instructions on cloning from GitHub can be found [here](https://user-guidance.services.alpha.mojanalytics.xyz/github.html#r-studio)
-3. Installed the packages `tidyverse` and `botor` - see guidance on how to do this [here](https://user-guidance.services.alpha.mojanalytics.xyz/appendix/botor.html#installation)
+3. Installed the required packages by entering the following commands in the Console window in RStudio: `install.packages("renv")` followed by `renv::restore()`
 4. Opened `example_code.R` in RStudio
 5. Opened the [intro_r_training_extension repo](https://github.com/moj-analytical-services/intro_r_training_extension) on GitHub, so you can refer to the session material in the README
 
-If you need any help, just ask! For anyone joining remotely, we will be monitoring Teams throughout the session.
+If you need any help, just ask! We will be monitoring Teams throughout the session.
 
 
 ```{r source_content, child = 'introduction.Rmd'}

@@ -13,7 +13,7 @@ purl_example_code <- TRUE # This variable relates to code blocks that aren't exe
 logger::log_threshold('WARN', namespace = 'botor')
 ```
 
-This repository is for the Introduction to R extension course offered by the Data & Analysis R Training Group. 
+This repository is for the Introduction to R+ course offered by the Data & Analysis R Training Group. 
 
 The session is intended to be accessible to anyone who is familiar with the content of the [Introduction to R](https://github.com/moj-analytical-services/IntroRTraining) training session.
 
@@ -35,14 +35,15 @@ If you have any feedback on the content, please get in touch!
 
 ## Pre-material
 
-A few days before the session, please make sure that -
+Before the session, please make sure that -
 
 1. You have access to RStudio on the Analytical Platform
-2. You have access to the [alpha-r-training s3 bucket](https://cpanel-master.services.alpha.mojanalytics.xyz/datasources/607/)
-3. You have followed the steps in the [Configure Git and Github section of the Platform User Guidance](https://user-guidance.services.alpha.mojanalytics.xyz/introduction.html#configure-git-and-github) to configure Git and GitHub (this only needs doing once)
-4. You have cloned this repository (instructions are in the Analytical Platform User Guidance [here](https://user-guidance.services.alpha.mojanalytics.xyz/github.html#creating-your-project-repo-on-github))
+2. You have access to the [alpha-r-training s3 bucket](https://controlpanel.services.analytical-platform.service.justice.gov.uk/datasources/607/)
+3. You have followed the steps in the [Configure Git and Github section of the Platform User Guidance](https://user-guidance.services.alpha.mojanalytics.xyz/github.html#setup-github-keys-to-access-it-from-r-studio-and-jupyter) to configure Git and GitHub (this only needs doing once)
+4. You have cloned this repository (instructions are in the Analytical Platform User Guidance if you follow step 1 [here](https://user-guidance.services.alpha.mojanalytics.xyz/github.html#r-studio))
+5. You have installed the required packages by entering the following commands in the Console window in RStudio (after following step 4, above): `install.packages("renv")` followed by `renv::restore()`
 
-If you have any problems with the above please get in touch with the course organisers or ask for help on either the #analytical_platform or #intro_r channel on [ASD slack](https://asdslack.slack.com).
+If you have any problems with the above please get in touch with the course organisers or ask for help on either the #analytical-platform-support or #intro_r channel on [ASD slack](https://asdslack.slack.com).
 
 All the examples in the presentation and README are available in the R script example_code.R.
 
