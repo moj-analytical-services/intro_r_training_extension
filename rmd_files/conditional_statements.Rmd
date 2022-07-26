@@ -140,25 +140,14 @@ A default value can be assigned in the event that none of the conditions are met
 
 ---
 
-### Exercise
+### Exercise 1
 
 Add a column called 'COURT_ORDER' to the `offenders` dataframe. The column should contain a '1' if the offender received a court order, or a '0' otherwise, based on the categories in the 'SENTENCE' column.
 
 **Hint:** you'll need to apply the `if_else()` function with `mutate()`.
 
----
 
-```{r, include=show_solution, purl=purl_solutions}
-# Solution
-offenders <- offenders %>%
-  dplyr::mutate(COURT_ORDER = dplyr::if_else(SENTENCE == "Court_order", 1, 0))
-
-str(offenders)
-```
-
----
-
-### Exercise
+### Exercise 2
 
 Add a column called 'PREV_CONVICTIONS_BAND' to the `offenders` dataframe. The column should contain the following categories: '0', '1-5', '6-10', '>10', based on the number of convictions given in the 'PREV_CONVICTIONS' column.
 
@@ -167,7 +156,17 @@ Add a column called 'PREV_CONVICTIONS_BAND' to the `offenders` dataframe. The co
 ---
 
 ```{r, include=show_solution, purl=purl_solutions}
-# Solution
+# Conditional statements - solution to exercise 1
+offenders <- offenders %>%
+  dplyr::mutate(COURT_ORDER = dplyr::if_else(SENTENCE == "Court_order", 1, 0))
+
+str(offenders)
+```
+
+---
+
+```{r, include=show_solution, purl=purl_solutions}
+# Conditional statements - solution to exercise 2
 offenders <- offenders %>%
   dplyr::mutate(PREV_CONVICTIONS_BAND = dplyr::case_when(
     PREV_CONVICTIONS == 0 ~ "0",

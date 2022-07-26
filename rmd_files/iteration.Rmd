@@ -238,7 +238,7 @@ Note: When the `signif()` function is passed as an argument to `across()`, the b
 
 ---
 
-### Exercise
+### Exercise 1
 
 Write a for loop to print "The current date is ..." for each date in the following string vector:
 
@@ -248,25 +248,23 @@ dates <- c("2020-03-01", "2020-06-01", "2020-09-01", "2020-12-01")
 
 **Hint:** You can use the `paste()` function to join strings together, and the `print()` function to print the result in the Console.
 
----
 
-```{r, include=show_solution, purl=purl_solutions}
-# Solution
-for (date in dates) {
-  print(paste("The current date is", date))
-}
-```
-
----
-
-### Exercise
+### Exercise 2
 
 Modify your solution to the previous exercise to skip to the next loop iteration if `date` is equal to '2020-06-01'.
 
 ---
 
 ```{r, include=show_solution, purl=purl_solutions}
-# Solution
+# Iteration - solution to exercise 1
+for (date in dates) {
+  print(paste("The current date is", date))
+}
+```
+
+
+```{r, include=show_solution, purl=purl_solutions}
+# Iteration - solution to exercise 2
 for (date in dates) {
 
   if (date == "2020-06-01") {
