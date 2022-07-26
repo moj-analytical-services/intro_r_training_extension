@@ -1,8 +1,8 @@
 Introduction to R extension
 ================
 
-This repository is for the Introduction to R extension course offered by
-the Data & Analysis R Training Group.
+This repository is for the Introduction to R+ course offered by the Data
+& Analysis R Training Group.
 
 The session is intended to be accessible to anyone who is familiar with
 the content of the [Introduction to
@@ -26,22 +26,26 @@ If you have any feedback on the content, please get in touch!
 
 ## Pre-material
 
-A few days before the session, please make sure that -
+Before the session, please make sure that -
 
 1.  You have access to RStudio on the Analytical Platform
 2.  You have access to the [alpha-r-training s3
-    bucket](https://cpanel-master.services.alpha.mojanalytics.xyz/datasources/607/)
+    bucket](https://controlpanel.services.analytical-platform.service.justice.gov.uk/datasources/607/)
 3.  You have followed the steps in the [Configure Git and Github section
     of the Platform User
-    Guidance](https://user-guidance.services.alpha.mojanalytics.xyz/introduction.html#configure-git-and-github)
+    Guidance](https://user-guidance.services.alpha.mojanalytics.xyz/github.html#setup-github-keys-to-access-it-from-r-studio-and-jupyter)
     to configure Git and GitHub (this only needs doing once)
 4.  You have cloned this repository (instructions are in the Analytical
-    Platform User Guidance
-    [here](https://user-guidance.services.alpha.mojanalytics.xyz/github.html#creating-your-project-repo-on-github))
+    Platform User Guidance if you follow step 1
+    [here](https://user-guidance.services.alpha.mojanalytics.xyz/github.html#r-studio))
+5.  You have installed the required packages by entering the following
+    commands in the Console window in RStudio (after following step 4,
+    above): `install.packages("renv")` followed by `renv::restore()`
 
 If you have any problems with the above please get in touch with the
-course organisers or ask for help on either the #analytical_platform or
-#intro_r channel on [ASD slack](https://asdslack.slack.com).
+course organisers or ask for help on either the
+\#analytical-platform-support or \#intro_r channel on [ASD
+slack](https://asdslack.slack.com).
 
 All the examples in the presentation and README are available in the R
 script example_code.R.
@@ -314,7 +318,7 @@ the example above, if none of the conditions are met then a value of
 
 ------------------------------------------------------------------------
 
-### Exercise
+### Exercise 1
 
 Add a column called ‘COURT_ORDER’ to the `offenders` dataframe. The
 column should contain a ‘1’ if the offender received a court order, or a
@@ -322,11 +326,7 @@ column should contain a ‘1’ if the offender received a court order, or a
 
 **Hint:** you’ll need to apply the `if_else()` function with `mutate()`.
 
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-
-### Exercise
+### Exercise 2
 
 Add a column called ‘PREV_CONVICTIONS_BAND’ to the `offenders`
 dataframe. The column should contain the following categories: ‘0’,
@@ -334,6 +334,8 @@ dataframe. The column should contain the following categories: ‘0’,
 ‘PREV_CONVICTIONS’ column.
 
 **Hint:** you’ll need to use the `case_when()` function with `mutate()`.
+
+------------------------------------------------------------------------
 
 ------------------------------------------------------------------------
 
@@ -753,7 +755,7 @@ included as extra arguments for `across()` instead (i.e. putting
 
 ------------------------------------------------------------------------
 
-### Exercise
+### Exercise 1
 
 Write a for loop to print “The current date is …” for each date in the
 following string vector:
@@ -765,11 +767,7 @@ dates <- c("2020-03-01", "2020-06-01", "2020-09-01", "2020-12-01")
 **Hint:** You can use the `paste()` function to join strings together,
 and the `print()` function to print the result in the Console.
 
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-
-### Exercise
+### Exercise 2
 
 Modify your solution to the previous exercise to skip to the next loop
 iteration if `date` is equal to ‘2020-06-01’.
@@ -808,13 +806,10 @@ is.na(x)
 
     ## [1] FALSE FALSE FALSE FALSE  TRUE FALSE FALSE  TRUE
 
-------------------------------------------------------------------------
-
 If instead you wanted to identify values that are not missing, then you
 can combine `is.na()` with the ‘not’ operator, `!`, like so:
 
 ``` r
-x <- c(7, 23, 5, 14, NA, 1, 11, NA)
 !is.na(x)
 ```
 
@@ -907,12 +902,7 @@ df <- tibble::data_frame(
   "x" = c(0, 1, 2, NA, 4),
   "y" = c(18, NA, 45, 15, 2),
 )
-```
 
-    ## Warning: `data_frame()` was deprecated in tibble 1.1.0.
-    ## Please use `tibble()` instead.
-
-``` r
 df %>% replace(is.na(.), 0)
 ```
 
@@ -989,6 +979,8 @@ event_dates
     ## 5        4 2015-10-21 <NA>      
     ## 6        5 2018-03-15 2018-11-20
 
+------------------------------------------------------------------------
+
 We can use `coalesce()` to fill in the missing dates in the `new_date`
 column with the equivalent date in the `date` column:
 
@@ -1021,27 +1013,27 @@ df <- tidyr::crossing(year = c("2017", "2018", "2019"),
                       quarter = c("Q1", "Q2", "Q3", "Q4")) %>%
       dplyr::mutate(count = sample(length(year)))
 
-# This removes repeated row labels
-df$year[duplicated(df$year)] <- NA
-
+df$year[duplicated(df$year)] <- NA # This removes repeated row labels
 df
 ```
 
     ## # A tibble: 12 × 3
     ##    year  quarter count
     ##    <chr> <chr>   <int>
-    ##  1 2017  Q1          3
-    ##  2 <NA>  Q2          6
-    ##  3 <NA>  Q3          5
-    ##  4 <NA>  Q4         10
-    ##  5 2018  Q1         12
+    ##  1 2017  Q1         10
+    ##  2 <NA>  Q2          9
+    ##  3 <NA>  Q3          7
+    ##  4 <NA>  Q4          6
+    ##  5 2018  Q1          2
     ##  6 <NA>  Q2          1
-    ##  7 <NA>  Q3         11
-    ##  8 <NA>  Q4          4
-    ##  9 2019  Q1          7
-    ## 10 <NA>  Q2          2
-    ## 11 <NA>  Q3          9
-    ## 12 <NA>  Q4          8
+    ##  7 <NA>  Q3          8
+    ##  8 <NA>  Q4         12
+    ##  9 2019  Q1          4
+    ## 10 <NA>  Q2         11
+    ## 11 <NA>  Q3          3
+    ## 12 <NA>  Q4          5
+
+------------------------------------------------------------------------
 
 The `fill()` function from tidyr is a convenient way to do this, and can
 be used like this:
@@ -1053,18 +1045,18 @@ df %>% tidyr::fill(year)
     ## # A tibble: 12 × 3
     ##    year  quarter count
     ##    <chr> <chr>   <int>
-    ##  1 2017  Q1          3
-    ##  2 2017  Q2          6
-    ##  3 2017  Q3          5
-    ##  4 2017  Q4         10
-    ##  5 2018  Q1         12
+    ##  1 2017  Q1         10
+    ##  2 2017  Q2          9
+    ##  3 2017  Q3          7
+    ##  4 2017  Q4          6
+    ##  5 2018  Q1          2
     ##  6 2018  Q2          1
-    ##  7 2018  Q3         11
-    ##  8 2018  Q4          4
-    ##  9 2019  Q1          7
-    ## 10 2019  Q2          2
-    ## 11 2019  Q3          9
-    ## 12 2019  Q4          8
+    ##  7 2018  Q3          8
+    ##  8 2018  Q4         12
+    ##  9 2019  Q1          4
+    ## 10 2019  Q2         11
+    ## 11 2019  Q3          3
+    ## 12 2019  Q4          5
 
 ## Removing rows with missing values from a dataframe
 
@@ -1074,7 +1066,6 @@ all incomplete rows from the `offenders` dataset. We can either do this:
 
 ``` r
 offenders_nona <- offenders %>% tidyr::drop_na()
-
 str(offenders_nona)
 ```
 
@@ -1102,7 +1093,6 @@ specific columns:
 
 ``` r
 offenders_nona <- offenders %>% tidyr::drop_na(HEIGHT, WEIGHT)
-
 str(offenders_nona)
 ```
 
@@ -1125,7 +1115,7 @@ str(offenders_nona)
 
 ------------------------------------------------------------------------
 
-### Exercise
+### Exercise 1
 
 For the following dataframe, use the `filter()` function from dplyr with
 `complete.cases()` to extract the rows **with** missing values:
@@ -1143,9 +1133,7 @@ apply it to all columns of the dataframe.
 
 ------------------------------------------------------------------------
 
-------------------------------------------------------------------------
-
-### Exercise
+### Exercise 2
 
 For the following dataframe, use the `replace_na()` function from tidyr
 to replace missing values in the `Cost` column with “Unknown” and the
@@ -1166,6 +1154,8 @@ with one argument for each column where NA values need replacing.
 
 # Reshaping data
 
+## Introduction
+
 The tidyr package can help us to reshape dataframes - this can be really
 helpful when we need to transform between tables that are easier to read
 and tables that are easier to analyse. The aim here is to structure the
@@ -1175,8 +1165,10 @@ stages of the processing.
 I should mention at this point that the source for the material
 presented in this chapter can be found in this [pivoting
 vignette](https://tidyr.tidyverse.org/dev/articles/pivot.html#generate-column-name-from-multiple-variables-1)
-as well as in the book by the same author, Hadley Wickam, titled [R For
+as well as in the book by the same author, Hadley Wickham, titled [R For
 Data Science](https://r4ds.had.co.nz/).
+
+------------------------------------------------------------------------
 
 In many scenarios, although the data could be complete in the sense of
 it containing the desired variables, it is not quite in the right format
@@ -1192,7 +1184,7 @@ say that the old versions cannot be used anymore, its just that they
 will no longer receive any updates from the developer given their more
 advance counterparts.
 
-As a general artifact of the reshaping process, the resulting data set
+As a general artefact of the reshaping process, the resulting dataset
 has either an increased number of rows or columns respectively.
 Interpretation largely deepens on the project at hand where the current
 stage of the system determines the optimal structure of the data to be
@@ -1207,69 +1199,62 @@ columns, one for each week (starting from Oct 1999) and also including a
 few additional identifiers.
 
 The aim now is to create a single variable to house the different weeks
-in order to create a different representation of for the data. First we
-start by the mapping the first month into a single variable.
+in order to create a different representation of for the data. We start
+by having a closer look at the data set and then mapping the first month
+into a single variable.
 
 ``` r
+# for more infomation on the data set 
 ?billboard
 # notice the dimensions of the data
-dim(billboard)
-```
+#dim(billboard)
 
-    ## [1] 317  79
-
-``` r
 #to see the structure of the data
-billboard %>% arrange(desc(date.entered)) %>% tail()
+billboard %>% arrange(desc(date.entered)) %>% select(1:6) %>% head()
 ```
 
-    ## # A tibble: 6 × 79
-    ##   artist      track date.entered   wk1   wk2   wk3   wk4   wk5   wk6   wk7   wk8   wk9  wk10  wk11  wk12  wk13  wk14  wk15  wk16  wk17  wk18
-    ##   <chr>       <chr> <date>       <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
-    ## 1 IMx         Stay… 1999-10-09      84    61    45    43    40    38    36    31    34    34    40    36    36    23    41    62    70    71
-    ## 2 Train       Meet… 1999-10-09      76    67    59    54    48    45    40    32    26    24    22    21    21    24    21    20    21    24
-    ## 3 Creed       High… 1999-09-11      81    77    73    63    61    58    56    52    56    57    57    57    57    57    60    61    61    57
-    ## 4 Houston, W… My L… 1999-09-04      81    68    44    16    11     9     8     7     8     7     8     8     6     6     5     5     5     5
-    ## 5 Amber       Sexu… 1999-07-17      99    99    96    96   100    93    93    96    NA    NA    99    NA    96    96    99    98    98    NA
-    ## 6 Lonestar    Amaz… 1999-06-05      81    54    44    39    38    33    29    29    32    27    26    24    27    32    33    35    35    40
-    ## # … with 58 more variables: wk19 <dbl>, wk20 <dbl>, wk21 <dbl>, wk22 <dbl>, wk23 <dbl>, wk24 <dbl>, wk25 <dbl>, wk26 <dbl>, wk27 <dbl>,
-    ## #   wk28 <dbl>, wk29 <dbl>, wk30 <dbl>, wk31 <dbl>, wk32 <dbl>, wk33 <dbl>, wk34 <dbl>, wk35 <dbl>, wk36 <dbl>, wk37 <dbl>, wk38 <dbl>,
-    ## #   wk39 <dbl>, wk40 <dbl>, wk41 <dbl>, wk42 <dbl>, wk43 <dbl>, wk44 <dbl>, wk45 <dbl>, wk46 <dbl>, wk47 <dbl>, wk48 <dbl>, wk49 <dbl>,
-    ## #   wk50 <dbl>, wk51 <dbl>, wk52 <dbl>, wk53 <dbl>, wk54 <dbl>, wk55 <dbl>, wk56 <dbl>, wk57 <dbl>, wk58 <dbl>, wk59 <dbl>, wk60 <dbl>,
-    ## #   wk61 <dbl>, wk62 <dbl>, wk63 <dbl>, wk64 <dbl>, wk65 <dbl>, wk66 <lgl>, wk67 <lgl>, wk68 <lgl>, wk69 <lgl>, wk70 <lgl>, wk71 <lgl>,
-    ## #   wk72 <lgl>, wk73 <lgl>, wk74 <lgl>, wk75 <lgl>, wk76 <lgl>
+    ## # A tibble: 6 × 6
+    ##   artist        track             date.entered   wk1   wk2   wk3
+    ##   <chr>         <chr>             <date>       <dbl> <dbl> <dbl>
+    ## 1 Tuesday       I Know            2000-12-30      98    98    NA
+    ## 2 De La Soul    All Good?         2000-12-23      96    96   100
+    ## 3 Clark, Terri  A Little Gasoline 2000-12-16      75    82    88
+    ## 4 Braxton, Toni Spanish Guitar    2000-12-02      98    98    98
+    ## 5 Nine Days     If I Am           2000-12-02      68    68    81
+    ## 6 Vitamin C     The Itch          2000-12-02      86    48    45
+
+------------------------------------------------------------------------
+
+Using `pivot_longer` allows us to map the given columns
+`(wk1,wk2, wk3, wk4)` to the specified variable, in this case, `month1`.
 
 ``` r
 #starting by mapping a single month 
-billboard %>% pivot_longer(cols = c(wk1,wk2, wk3, wk4), names_to = "month1", values_to = "rank") %>% head()
+billboard %>% pivot_longer(cols = c(wk1,wk2, wk3, wk4), names_to = "month1", values_to = "rank") %>% 
+  select(1:5, "month1", "rank") %>% head()
 ```
 
-    ## # A tibble: 6 × 77
-    ##   artist  track     date.entered   wk5   wk6   wk7   wk8   wk9  wk10  wk11  wk12  wk13  wk14  wk15  wk16  wk17  wk18  wk19  wk20  wk21  wk22
-    ##   <chr>   <chr>     <date>       <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
-    ## 1 2 Pac   Baby Don… 2000-02-26      87    94    99    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
-    ## 2 2 Pac   Baby Don… 2000-02-26      87    94    99    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
-    ## 3 2 Pac   Baby Don… 2000-02-26      87    94    99    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
-    ## 4 2 Pac   Baby Don… 2000-02-26      87    94    99    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
-    ## 5 2Ge+her The Hard… 2000-09-02      NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
-    ## 6 2Ge+her The Hard… 2000-09-02      NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
-    ## # … with 56 more variables: wk23 <dbl>, wk24 <dbl>, wk25 <dbl>, wk26 <dbl>, wk27 <dbl>, wk28 <dbl>, wk29 <dbl>, wk30 <dbl>, wk31 <dbl>,
-    ## #   wk32 <dbl>, wk33 <dbl>, wk34 <dbl>, wk35 <dbl>, wk36 <dbl>, wk37 <dbl>, wk38 <dbl>, wk39 <dbl>, wk40 <dbl>, wk41 <dbl>, wk42 <dbl>,
-    ## #   wk43 <dbl>, wk44 <dbl>, wk45 <dbl>, wk46 <dbl>, wk47 <dbl>, wk48 <dbl>, wk49 <dbl>, wk50 <dbl>, wk51 <dbl>, wk52 <dbl>, wk53 <dbl>,
-    ## #   wk54 <dbl>, wk55 <dbl>, wk56 <dbl>, wk57 <dbl>, wk58 <dbl>, wk59 <dbl>, wk60 <dbl>, wk61 <dbl>, wk62 <dbl>, wk63 <dbl>, wk64 <dbl>,
-    ## #   wk65 <dbl>, wk66 <lgl>, wk67 <lgl>, wk68 <lgl>, wk69 <lgl>, wk70 <lgl>, wk71 <lgl>, wk72 <lgl>, wk73 <lgl>, wk74 <lgl>, wk75 <lgl>,
-    ## #   wk76 <lgl>, month1 <chr>, rank <dbl>
+    ## # A tibble: 6 × 7
+    ##   artist  track                   date.entered   wk5   wk6 month1  rank
+    ##   <chr>   <chr>                   <date>       <dbl> <dbl> <chr>  <dbl>
+    ## 1 2 Pac   Baby Don't Cry (Keep... 2000-02-26      87    94 wk1       87
+    ## 2 2 Pac   Baby Don't Cry (Keep... 2000-02-26      87    94 wk2       82
+    ## 3 2 Pac   Baby Don't Cry (Keep... 2000-02-26      87    94 wk3       72
+    ## 4 2 Pac   Baby Don't Cry (Keep... 2000-02-26      87    94 wk4       77
+    ## 5 2Ge+her The Hardest Part Of ... 2000-09-02      NA    NA wk1       91
+    ## 6 2Ge+her The Hardest Part Of ... 2000-09-02      NA    NA wk2       87
 
 ``` r
-# and to see clearly the contents of the new variable
-billboard %>% pivot_longer(cols = c(wk1,wk2, wk3, wk4), names_to = "month1", values_to = "rank") %>% .$month1 %>% head()
+#and to see clearly the contents of the new variable
+# billboard %>% pivot_longer(cols = c(wk1,wk2, wk3, wk4), names_to = "month1", values_to = "rank") %>%
+# .$month1 %>% head()
 ```
-
-    ## [1] "wk1" "wk2" "wk3" "wk4" "wk1" "wk2"
 
 The way the `pivot_longer` function works is, you specify the columns to
 be **gathered** followed by defining the resultant new variables to
 store their names and corresponding values.
+
+------------------------------------------------------------------------
 
 ### Working with multiple columns
 
@@ -1297,10 +1282,12 @@ billboard %>% pivot_longer(cols = starts_with("wk"), names_to = "weeks", values_
 
 And so with this neat little trick, we’ve managed to bring the dataset
 into a better looking structure making further manipulation easier. Of
-courser, this is not all we can do with the data, there is a wide range
+course, this is not all we can do with the data, there are a wide range
 of tools at our disposal to allow us not only to pick the variables we
 need but also to split the contents of them into new columns, with more
 on that in the following sections.
+
+------------------------------------------------------------------------
 
 ### Working with similar columns
 
@@ -1332,6 +1319,8 @@ As it is apparent, the basis for each variable is the same (x1,x2, y1,y2
 etc) and so it would make sense to simply create pair `x` and `y` and
 depict their corresponding identifier `1,2,3,4` in a separate variable.
 
+------------------------------------------------------------------------
+
 In such cases, `pivot_longer` offers an elegant solution to the problem
 by automatically selecting the common patterns and using them as the new
 variables.
@@ -1357,6 +1346,8 @@ anscombe %>% pivot_longer(everything(),
     ##  9 1        13  7.58
     ## 10 2        13  8.74
     ## # … with 34 more rows
+
+------------------------------------------------------------------------
 
 In the example above, the `.value` identifier enables selection of the
 common elements between `x1,x2,etc` and `y1,y2,etc` and then uses the
@@ -1405,37 +1396,28 @@ fish_encounters %>% head(10)
     ##  9 4842  BCW2        1
     ## 10 4842  MAE         1
 
+------------------------------------------------------------------------
+
 A simple use of the function can provide a better understanding of what
 the data contains and also make it more useful for potential use in
 later stages of a processing system where specific input from each
 station can be utilized.
 
 ``` r
-fish_encounters %>% pivot_wider(names_from = station, values_from = seen)
+fish_encounters %>% pivot_wider(names_from = station, values_from = seen) %>% head()
 ```
 
-    ## # A tibble: 19 × 12
-    ##    fish  Release I80_1 Lisbon  Rstr Base_TD   BCE   BCW  BCE2  BCW2   MAE   MAW
-    ##    <fct>   <int> <int>  <int> <int>   <int> <int> <int> <int> <int> <int> <int>
-    ##  1 4842        1     1      1     1       1     1     1     1     1     1     1
-    ##  2 4843        1     1      1     1       1     1     1     1     1     1     1
-    ##  3 4844        1     1      1     1       1     1     1     1     1     1     1
-    ##  4 4845        1     1      1     1       1    NA    NA    NA    NA    NA    NA
-    ##  5 4847        1     1      1    NA      NA    NA    NA    NA    NA    NA    NA
-    ##  6 4848        1     1      1     1      NA    NA    NA    NA    NA    NA    NA
-    ##  7 4849        1     1     NA    NA      NA    NA    NA    NA    NA    NA    NA
-    ##  8 4850        1     1     NA     1       1     1     1    NA    NA    NA    NA
-    ##  9 4851        1     1     NA    NA      NA    NA    NA    NA    NA    NA    NA
-    ## 10 4854        1     1     NA    NA      NA    NA    NA    NA    NA    NA    NA
-    ## 11 4855        1     1      1     1       1    NA    NA    NA    NA    NA    NA
-    ## 12 4857        1     1      1     1       1     1     1     1     1    NA    NA
-    ## 13 4858        1     1      1     1       1     1     1     1     1     1     1
-    ## 14 4859        1     1      1     1       1    NA    NA    NA    NA    NA    NA
-    ## 15 4861        1     1      1     1       1     1     1     1     1     1     1
-    ## 16 4862        1     1      1     1       1     1     1     1     1    NA    NA
-    ## 17 4863        1     1     NA    NA      NA    NA    NA    NA    NA    NA    NA
-    ## 18 4864        1     1     NA    NA      NA    NA    NA    NA    NA    NA    NA
-    ## 19 4865        1     1      1    NA      NA    NA    NA    NA    NA    NA    NA
+    ## # A tibble: 6 × 12
+    ##   fish  Release I80_1 Lisbon  Rstr Base_TD   BCE   BCW  BCE2  BCW2   MAE   MAW
+    ##   <fct>   <int> <int>  <int> <int>   <int> <int> <int> <int> <int> <int> <int>
+    ## 1 4842        1     1      1     1       1     1     1     1     1     1     1
+    ## 2 4843        1     1      1     1       1     1     1     1     1     1     1
+    ## 3 4844        1     1      1     1       1     1     1     1     1     1     1
+    ## 4 4845        1     1      1     1       1    NA    NA    NA    NA    NA    NA
+    ## 5 4847        1     1      1    NA      NA    NA    NA    NA    NA    NA    NA
+    ## 6 4848        1     1      1     1      NA    NA    NA    NA    NA    NA    NA
+
+------------------------------------------------------------------------
 
 The general use is very similar to that presented in \``pivot_longer()`
 with `names_from` targeting the column containing the subcategories to
@@ -1447,33 +1429,20 @@ something more meaningful.
 
 ``` r
 fish_encounters %>% pivot_wider(names_from = station, values_from = seen,
-  values_fill = list(seen = 0))
+  values_fill = list(seen = 0)) %>% head()
 ```
 
-    ## # A tibble: 19 × 12
-    ##    fish  Release I80_1 Lisbon  Rstr Base_TD   BCE   BCW  BCE2  BCW2   MAE   MAW
-    ##    <fct>   <int> <int>  <int> <int>   <int> <int> <int> <int> <int> <int> <int>
-    ##  1 4842        1     1      1     1       1     1     1     1     1     1     1
-    ##  2 4843        1     1      1     1       1     1     1     1     1     1     1
-    ##  3 4844        1     1      1     1       1     1     1     1     1     1     1
-    ##  4 4845        1     1      1     1       1     0     0     0     0     0     0
-    ##  5 4847        1     1      1     0       0     0     0     0     0     0     0
-    ##  6 4848        1     1      1     1       0     0     0     0     0     0     0
-    ##  7 4849        1     1      0     0       0     0     0     0     0     0     0
-    ##  8 4850        1     1      0     1       1     1     1     0     0     0     0
-    ##  9 4851        1     1      0     0       0     0     0     0     0     0     0
-    ## 10 4854        1     1      0     0       0     0     0     0     0     0     0
-    ## 11 4855        1     1      1     1       1     0     0     0     0     0     0
-    ## 12 4857        1     1      1     1       1     1     1     1     1     0     0
-    ## 13 4858        1     1      1     1       1     1     1     1     1     1     1
-    ## 14 4859        1     1      1     1       1     0     0     0     0     0     0
-    ## 15 4861        1     1      1     1       1     1     1     1     1     1     1
-    ## 16 4862        1     1      1     1       1     1     1     1     1     0     0
-    ## 17 4863        1     1      0     0       0     0     0     0     0     0     0
-    ## 18 4864        1     1      0     0       0     0     0     0     0     0     0
-    ## 19 4865        1     1      1     0       0     0     0     0     0     0     0
+    ## # A tibble: 6 × 12
+    ##   fish  Release I80_1 Lisbon  Rstr Base_TD   BCE   BCW  BCE2  BCW2   MAE   MAW
+    ##   <fct>   <int> <int>  <int> <int>   <int> <int> <int> <int> <int> <int> <int>
+    ## 1 4842        1     1      1     1       1     1     1     1     1     1     1
+    ## 2 4843        1     1      1     1       1     1     1     1     1     1     1
+    ## 3 4844        1     1      1     1       1     1     1     1     1     1     1
+    ## 4 4845        1     1      1     1       1     0     0     0     0     0     0
+    ## 5 4847        1     1      1     0       0     0     0     0     0     0     0
+    ## 6 4848        1     1      1     1       0     0     0     0     0     0     0
 
-### Aggregating with with `pivot_wider`
+## Aggregating with with `pivot_wider`
 
 Consider the `warpbreaks` dataset that comes with basic R, it describes
 the results of a designed experiment with nine replicates for every
@@ -1499,9 +1468,7 @@ warpbreaks %>% as_tibble() %>% select(wool,tension, breaks)
     ## 10 A     M           18
     ## # … with 44 more rows
 
-``` r
-# the code above aims attempts to instil clarity in the output
-```
+------------------------------------------------------------------------
 
 Notice the problem that appears when trying to widen this dataset.
 Uniqueness is not maintained since this is a repeated experiment with
@@ -1520,12 +1487,14 @@ warpdata = warpbreaks %>% pivot_wider(names_from = wool, values_from = breaks)
     ##     dplyr::summarise(n = dplyr::n(), .groups = "drop") %>%
     ##     dplyr::filter(n > 1L)
 
+------------------------------------------------------------------------
+
 The default output here is a list containing all the associated
 **break** values. One other, and perhaps more informative, approach
 would be to include a statistic to describe the contents in that list.
 
 For that purpose, `pivot_wider()` offers the `values_fn` option where a
-suitable function is defined to describe the list with t single value.
+suitable function is defined to describe the list with a single value.
 
 ``` r
 warpbreaks %>%
@@ -1543,7 +1512,66 @@ warpbreaks %>%
     ## 2 M        24    28.8
     ## 3 H        24.6  18.8
 
-## Separating and extracting column contents
+## Exercises on Pivoting
+
+### Exercise 1
+
+Why does the following code fail?
+
+``` r
+#the table to use
+table4a
+table4a %>% pivot_longer(1999,2000, names_to = "year",values_to = "value")
+```
+
+### Exercise 2
+
+Consider the following dataset and apply `pivot_wider()` to **spread**
+the values in `name`, do you agree with the results after pivoting?
+
+Hint. Could a new column solve the problem, what other solution could we
+apply?
+
+``` r
+people = tribble(~name, ~key, ~value,
+                 #------------/------/-----,
+                 "Phil Woods", "age",45,
+                 "Phil Woods", "height",185,
+                 "Phil Woods", "age",50,
+                 "Jess Cordero", "age",45,
+                 "Jess Cordero", "height",156,)
+```
+
+------------------------------------------------------------------------
+
+### Exercise 3
+
+Consider the following simple tibble, what kind of pivoting would you
+use, `pivot_longer()` or `pivot_wider()`?
+
+``` r
+rcj = tribble(~judge, ~male, ~female,
+              "yes", NA, 10, 
+              "no", 20, 12)
+```
+
+## Solutions
+
+### Exercise 1
+
+------------------------------------------------------------------------
+
+### Exercise 2
+
+------------------------------------------------------------------------
+
+### Exercise 3
+
+------------------------------------------------------------------------
+
+# Separating and extracting column contents
+
+## Introduction
 
 An Important aspect of every data shaping mechanism is to be able to
 pick multiple columns or data entries within a variable with a certain
@@ -1571,7 +1599,7 @@ table3
     ## 5 China        1999 212258/1272915272
     ## 6 China        2000 213766/1280428583
 
-### Separate
+## Separate
 
 The `separate()` function is build to help in cases where values in a
 column could be split based on a separator in place. On the above
@@ -1593,6 +1621,8 @@ table3 %>% separate(rate, into = c("cases", "population"))
     ## 5 China        1999 212258 1272915272
     ## 6 China        2000 213766 1280428583
 
+------------------------------------------------------------------------
+
 By default, the function will automatically detect any non-alphanumeric
 character and use that as a separator but its not limited to that. One
 can specify the separator manually using the `sep` option.
@@ -1611,6 +1641,8 @@ table3 %>% separate(rate, into = c("cases", "population"), sep = "/")
     ## 4 Brazil       2000 80488  174504898 
     ## 5 China        1999 212258 1272915272
     ## 6 China        2000 213766 1280428583
+
+------------------------------------------------------------------------
 
 At its heart, `separate()` uses regular expressions to detect and pull
 the corresponding characters. As a result the new columns are now of
@@ -1632,7 +1664,7 @@ table3 %>% separate(rate, into = c("cases", "population"), sep = "/", convert = 
     ## 5 China        1999 212258 1272915272
     ## 6 China        2000 213766 1280428583
 
-### Extract
+## Extract
 
 The `extract()` function lets you go a step further and allows you to
 define your own regex to be used for pattern patching. Using the same
@@ -1652,6 +1684,8 @@ table3 %>% extract( col = year, into = c("century","years"), regex = "([0-9]{2})
     ## 4 Brazil      20      00    80488/174504898  
     ## 5 China       19      99    212258/1272915272
     ## 6 China       20      00    213766/1280428583
+
+------------------------------------------------------------------------
 
 The `regex` option shown above uses the same syntax as described earlier
 in the chapter, in fact, it is possible to split the target variable
@@ -1678,7 +1712,7 @@ In addition, internally the pivot functions make explicit use of
 need to capture patterns present in name or within the content of a
 variable in the dataset.
 
-### Unite
+## Unite
 
 Of course, extracting and creating new variables would not be complete
 without a function to revert back to the original target variable. In
@@ -1687,7 +1721,8 @@ as shown in the example below.
 
 ``` r
 #the reshaped dataset
-tab3 = table3 %>% extract( col = year, into = c("century","decade","year" ), regex = "([0-9]{2})([0-9])([0-9])")
+tab3 = table3 %>% 
+  extract( col = year, into = c("century","decade","year" ), regex = "([0-9]{2})([0-9])([0-9])")
 #going back to the original dataset - with separator
 tab3 %>% unite(new ,century, decade, year)
 ```
@@ -1701,6 +1736,8 @@ tab3 %>% unite(new ,century, decade, year)
     ## 4 Brazil      20_0_0 80488/174504898  
     ## 5 China       19_9_9 212258/1272915272
     ## 6 China       20_0_0 213766/1280428583
+
+------------------------------------------------------------------------
 
 By default, the `_` separator is used after each component of the
 composite variable but as always, there are option in place to customize
@@ -1722,179 +1759,44 @@ tab3 %>% unite(new ,century, decade, year, sep = "")
     ## 5 China       1999  212258/1272915272
     ## 6 China       2000  213766/1280428583
 
-## Exercises
-
-### Pivoting
+## Exercises on Separating and Extracting
 
 #### Exercise 1
 
-Why does the following code fail?
-
-``` r
-#the table to use
-table4a
-table4a %>% pivot_longer(1999,2000, names_to = "year",values_to = "value")
-```
-
-#### Exercise 2
-
-Consider the following dataset and apply `pivot_wider()` to **spread**
-the values in `name`, do you agree with the results after pivoting?
-
-Hint. Could a new column solve the problem, what other solution could we
-apply?
-
-``` r
-people = tribble(~name, ~key, ~value,
-                 #------------/------/-----,
-                 "Phil Woods", "age",45,
-                 "Phil Woods", "height",185,
-                 "Phil Woods", "age",50,
-                 "Jess Cordero", "age",45,
-                 "Jess Cordero", "height",156,)
-```
-
-#### Exercise 3
-
-Consider the followign simple tibble, what kind of pivoting would you
-use, `pivot_longer()` or `pivot_wider()` ?
-
-``` r
-rcj = tribble( ~judge, ~male, ~female,
-                    "yes", NA, 10, 
-                    "no", 20, 12)
-```
-
-### Separating and Extracting
-
-#### Exercise 1
-
-What to the additional arguments `extra` and `fill` do in `separate()`?
+What do the additional arguments `extra` and `fill` do in `separate()`?
 
 Experiment with the various option in using the following datasets.
 
 ``` r
 tibble(x = c("a,b,c", "d,e,f,g", "h,i,j")) %>% 
   separate(x, c("one", "two", "three"))
-```
-
-    ## Warning: Expected 3 pieces. Additional pieces discarded in 1 rows [2].
-
-    ## # A tibble: 3 × 3
-    ##   one   two   three
-    ##   <chr> <chr> <chr>
-    ## 1 a     b     c    
-    ## 2 d     e     f    
-    ## 3 h     i     j
-
-``` r
 tibble(x = c("a,b,c", "d,e", "f,g,i")) %>% 
   separate(x, c("one", "two", "three"))
 ```
 
-    ## Warning: Expected 3 pieces. Missing pieces filled with `NA` in 1 rows [2].
-
-    ## # A tibble: 3 × 3
-    ##   one   two   three
-    ##   <chr> <chr> <chr>
-    ## 1 a     b     c    
-    ## 2 d     e     <NA> 
-    ## 3 f     g     i
-
 #### Exercise 2
 
-Both `unite()` and `separate()` have a remove option. What does in to
-and how can it be utilized
+Both `unite()` and `separate()` have a remove option. What does it do
+and how can it be utilized?
 
 #### Exercise 3
 
-Compare `separate()` and `extract()`, why are there so many option to
+Compare `separate()` and `extract()`, why are there so many options to
 separate but only one `unite()`?
 
 ## Solutions
 
-### Pivoting
+### Exercise 1
 
-#### Exercise 1
+------------------------------------------------------------------------
 
-``` r
-table4a %>% pivot_longer(cols = !country, names_to = "year",values_to = "value")
-```
-
-#### Exercise 2
-
-``` r
-#withough changing anything on the dataset
-people = tribble(~name, ~key, ~value,
-                 #------------/------/-----,
-                 "Phil Woods", "age",45,
-                 "Phil Woods", "height",185,
-                 "Phil Woods", "age",50,
-                 "Jess Cordero", "age",45,
-                 "Jess Cordero", "height",156,)
-people %>% pivot_wider(names_from = name, values_from = value)
-# solution 1 - adding a new column
-people = tribble(~name, ~key, ~value, ~dkey,
-                 #------------/------/-----,
-                 "Phil Woods", "age",45,1,
-                 "Phil Woods", "height",185,1,
-                 "Phil Woods", "age",50,0,
-                 "Jess Cordero", "age",45,1,
-                 "Jess Cordero", "height",156,1)
-people %>% pivot_wider(names_from = name, values_from = value)
-#solution 2  - uniqueness
-people = tribble(~name, ~key, ~value,
-                 #------------/------/-----,
-                 "Phil Woods", "age",45,
-                 "Phil Woods", "height",185,
-                 # "Phil Woods", "age",50,
-                 "Jess Cordero", "age",45,
-                 "Jess Cordero", "height",156,)
-people %>% pivot_wider(names_from = name, values_from = value)
-```
+### Exercise 2
 
 ### Exercise 3
 
-``` r
-rcj = tribble( ~judge, ~male, ~female,
-                    "yes", NA, 10, 
-                    "no", 20, 12)
-#alternative table to try with no NAs
-# rcj = tribble( ~judge, ~male, ~female,
-#                     "yes", 4, 10, 
-#                     "no", 20, 12)
-#use of pivot_longer
-rcj %>% pivot_longer(cols = c(male, female),   names_to = "gender", values_to = "count")
-# use of  pivot_wider 
-rcj %>% pivot_wider(names_from = judge, values_from = c(male, female))
-```
-
-### Separating and Extracting
-
-#### Exercise 1
-
-typing `?separate()` shows all the options and their meaning. Try
-experimenting with them to discover more of what they do.
-
-``` r
-tibble(x = c("a,b,c", "d,e,f,g", "h,i,j")) %>% 
-  separate(x, c("one", "two", "three"))
-tibble(x = c("a,b,c", "d,e", "f,g,i")) %>% 
-  separate(x, c("one", "two", "three"))
-```
-
-#### Exercise 2
-
-# Solution: typing `?separate()` in the command line shows all the information needed here. The `remove` option is there to remove the input columns from the output.
-
-#### Exercise 3
-
-Solution: one suggestion is that there is only one way to unite the
-multiple strings but a number of different ways to split them apart.
-
 # String manipulation
 
-### Introduction
+## Introduction
 
 In this part we will introduce strings and how to manipulate them to
 suit the needs of a particular project. The packages needed (listed
@@ -1912,7 +1814,7 @@ follows is contained in the book `R for Data Science` by `Hadley Wickam`
 and `Garrett Grolemund` that can be found in this
 [link](https://r4ds.had.co.nz/index.html).
 
-### String Basics
+## String Basics
 
 There are two ways with which you can create a string in R, at the very
 basic level, by either using single of double quotes. There is no
@@ -1941,15 +1843,20 @@ is.character(string2)
 ``` r
 # a string containing quotes
 string3 = "this is a 'string' within a string"
-# notice how the output changes when implementing the following code
-string4 = 'this is a "string" within a string'
 ```
+
+------------------------------------------------------------------------
 
 Notice the difference in `string4`. This happens because the compiler
 cannot place two double quotes within the same string and so we need to
 `escape` it. To achieve that a `\` is used before the corresponding
 character. This can be used not only for `"` but for any other reserved
 character as well.
+
+``` r
+# notice how the output changes when implementing the following code
+string4 = 'this is a "string" within a string'
+```
 
 If you need to `escape` a backslash then use a double backslash as in
 `\\` and to see what the output would look like when used in text you
@@ -1971,6 +1878,8 @@ writeLines(string6)
 
     ## escaping a backslash \
 
+------------------------------------------------------------------------
+
 Furthermore, additional control in the form of newlines or tabs is
 provided by using `\n` and `\t` for example along with a plethora of
 available special characters that can be found by typing `?"'"` or
@@ -1983,16 +1892,22 @@ letter mu.
 ``` r
 # outputting non-English characters
 string7 = "\u00b5" 
+string7
 ```
+
+    ## [1] "µ"
 
 Adding strings into a character vector is very common and is usually
 done with the use of the `c()` function.
 
 ``` r
 s8 = c("a", "vector", "of", "strings")
+s8
 ```
 
-### String Length
+    ## [1] "a"       "vector"  "of"      "strings"
+
+## String Length
 
 At times it is necessary to determine the length of a character string.
 A useful function to use in these cases is the `str_length()` function
@@ -2008,7 +1923,7 @@ str_length(c(s8, NA))
 Notice that an `NA` character is translated as is and we will see other
 options on how to deal with this in the sections to follow.
 
-### Combining Strings
+## Combining Strings
 
 We already seen one way to combine strings in the previous section but
 with the `stringer` package we have an additional, more powerful tool at
@@ -2032,6 +1947,8 @@ str_c("an", "str_c vector", "with", "space", "character", "separating each entry
 ```
 
     ## [1] "anstr_c vectorwithspacecharacterseparating each entry"
+
+------------------------------------------------------------------------
 
 What is more important however is that `str_c` is vectorised and in this
 way can help in cases where an action has to be applied to each element
@@ -2061,7 +1978,7 @@ c("a", c("b", "c", "d"))
 
     ## [1] "a" "b" "c" "d"
 
-### Substituting strings
+## Substituting strings
 
 Extracting parts of a string can be done using the `str_sub` function
 and by specifying the `start` and `end` limits of the string to retain.
@@ -2090,6 +2007,8 @@ str_sub("a", 1,5)
 
     ## [1] "a"
 
+------------------------------------------------------------------------
+
 An additional use of the of the `str_sub` function is to assign values
 to a given range on the target string
 
@@ -2100,7 +2019,7 @@ x
 
     ## [1] "oneValue"    "secondValue" "thirdValue"
 
-### Customizing text for different language locales
+## Customizing text for different language locales
 
 In some cases the string manipulation functions have a `locale` argument
 where adjustments for certain languages can be made. Notice for example
@@ -2123,31 +2042,41 @@ str_sort(x,locale = "lt")
 
     ## [1] "i" "y" "k"
 
-### Exercises
+## Exercises
 
--   In code that doesn’t use stringr, you’ll often see paste() and
-    paste0(). What’s the difference between the two functions? What
-    stringr function are they equivalent to? How do the functions differ
-    in their handling of NA?
+### Exercise 1
 
--   In your own words, describe the difference between the sep and
-    collapse arguments to str_c().
+Use str_length() and str_sub() to extract the middle character from a
+string. What will you do if the string has an even number of characters?
 
--   Use str_length() and str_sub() to extract the middle character from
-    a string. What will you do if the string has an even number of
-    characters?
+### Exercise 2 (optional)
 
--   What does str_wrap() do? When might you want to use it?
+Write a function that turns (e.g.) a vector `c("a", "b", "c")` into the
+string `"a, b, and c"`. Think carefully about what it should do if given
+a vector of length 0, 1, or 2.
 
--   What does str_trim() do? What’s the opposite of str_trim()?
+## Exercise Solutions
 
--   Write a function that turns (e.g.) a vector c(“a”, “b”, “c”) into
-    the string a, b, and c. Think carefully about what it should do if
-    given a vector of length 0, 1, or 2.
+### Exercise 1
 
-NOTE: The content in this section as well as a more in depth analysis on
-each of the previous sections can be found in this book [R For Data
-Science](https://r4ds.had.co.nz/strings.html#exercises-32)
+The following function extracts the middle character. If the string has
+an even number of characters the choice is arbitrary. We choose to
+select \[*n*/2\], because that case works even if the string is only of
+length one. A more general method would allow the user to select either
+the floor or ceiling for the middle character of an even string.
+
+------------------------------------------------------------------------
+
+### Exercise 2 (optional)
+
+The function needs to have 4 cases
+
+1.  `n==0` for an empty vector
+2.  `n==1` for just one character string
+3.  `n==2` for the vector containing 2 character strings
+4.  `n > 2` for 2 or more
+
+------------------------------------------------------------------------
 
 ## Additional Functions
 
@@ -2165,7 +2094,7 @@ The list is actually a lot longer so here we will briefly discuss how
 the most popular string matching operations can be performed using the
 tools supplied by the `stringr` package.
 
-#### Detect Strings
+## Detect Strings
 
 Detecting strings is a very important aspect in many Data Analysis
 applications and `str_detect` was created with ease of use in mind. It
@@ -2179,6 +2108,8 @@ str_detect(x, "e")
 ```
 
     ## [1]  TRUE FALSE  TRUE
+
+------------------------------------------------------------------------
 
 A very handy way of using it, is by taking advantage of how `R`
 translates `TRUE` (evaluated as `1`) and `FALSE` (evaluated as `0`)
@@ -2199,6 +2130,8 @@ mean(str_detect(words, "[aeiou]$"))
 
     ## [1] 0.2765306
 
+------------------------------------------------------------------------
+
 A variation of `str_detect` is `str_count` and as the name suggests the
 function will count the instances of a pattern appearing in the target
 vector.
@@ -2217,7 +2150,7 @@ mean(str_count(words, "[aeiou]"))
 
     ## [1] 1.991837
 
-#### Extract Strings
+## Extract Strings
 
 To extract strings we use the `str_extract` function that takes the
 input source vector and the pattern to match as arguments. In this case
@@ -2239,6 +2172,8 @@ head(sentences)
     ## [1] "The birch canoe slid on the smooth planks."  "Glue the sheet to the dark blue background."
     ## [3] "It's easy to tell the depth of a well."      "These days a chicken leg is a rare dish."   
     ## [5] "Rice is often served in round bowls."        "The juice of lemons makes fine punch."
+
+------------------------------------------------------------------------
 
 A good way to start using regex in bulk is to see if we can construct a
 pattern to match that contains all the relevant information. In the
@@ -2265,6 +2200,8 @@ head(matches)
 
     ## [1] "blue" "blue" "red"  "red"  "red"  "blue"
 
+------------------------------------------------------------------------
+
 To better understand the mechanics behind the matching process it helps
 to know that `str_extract` only finds and extracts the first match in
 each row of a vector. To better illustrate this, the code below selects
@@ -2283,7 +2220,7 @@ str_extract(more, colour_match)
 
     ## [1] "blue"   "green"  "orange"
 
-#### Replace Strings
+## Replace Strings
 
 `str_replace` and `str_replace_all`allow you to replace parts of a
 string that match a pattern with a new replacement string.
@@ -2300,6 +2237,8 @@ str_replace_all(x, "[aeiou]", "-")
 ```
 
     ## [1] "-ppl-"  "p--r"   "b-n-n-"
+
+------------------------------------------------------------------------
 
 And with `str_replace_all` we can apply the same functionality as above
 in all the elements of a character vector.
@@ -2324,9 +2263,9 @@ sentences %>%
     ## [3] "It's to easy tell the depth of a well."      "These a days chicken leg is a rare dish."   
     ## [5] "Rice often is served in round bowls."
 
-#### Exercises
+## Exercises
 
-##### On detecting strings
+### Exercise 1: Detecting strings
 
 1.  For each of the following challenges, try solving it by using both a
     single regular expression, and a combination of multiple
@@ -2342,20 +2281,21 @@ sentences %>%
 2.  What word has the highest number of vowels? What word has the
     highest proportion of vowels? (Hint: what is the denominator?)
 
-##### On extracting strings
+------------------------------------------------------------------------
 
-1.  In the example in section [Extracting Strings](#extr_str) section,
-    you might have noticed that the regular expression matched
-    “flickered”, which is not a colour. Modify the regex to fix the
-    problem.
+### Exercise 2: Extracting strings
 
-2.  From the Harvard sentences data, extract:
+From the Harvard sentences data, extract:
 
-    1.  The first word from each sentence.
-    2.  All words ending in ing.
-    3.  All plurals.
+    1. The first word from each sentence.
 
-##### On Replacing Strings
+    2. All words ending in 'ing'.
+
+    3. All plurals.
+
+------------------------------------------------------------------------
+
+### Exercise 3: Replacing Strings
 
 1.  Replace all forward slashes in a string with backslashes.
 
@@ -2364,7 +2304,83 @@ sentences %>%
 3.  Switch the first and last letters in words. Which of those strings
     are still words?
 
+## Solutions
+
+### Exercise 1
+
+For part 1 we have the following:
+
+Words that start or end with x?
+
+------------------------------------------------------------------------
+
+For part 2 we have the following:
+
+Words starting with vowel and ending with consonant.
+
+------------------------------------------------------------------------
+
+For part 3, the following:
+
+There is not a simple regular expression to match words that that
+contain at least one of each vowel. The regular expression would need to
+consider all possible orders in which the vowels could occur.
+
+------------------------------------------------------------------------
+
+### Exercise 2
+
+Part 1: Finding the first word in each sentence requires defining what a
+pattern constitutes a word. For the purposes of this question, I’ll
+consider a word any contiguous set of letters. Since str_extract() will
+extract the first match, if it is provided a regular expression for
+words, it will return the first word.
+
+However, the third sentence begins with “It’s”. To catch this, I’ll
+change the regular expression to require the string to begin with a
+letter, but allow for a subsequent apostrophe.
+
+------------------------------------------------------------------------
+
+Part 2: This pattern finds all words ending in ‘ing’.
+
+------------------------------------------------------------------------
+
+Part 3: Finding all plurals cannot be correctly accomplished with
+regular expressions alone. Finding plural words would at least require
+morphological information about words in the language. See WordNet for a
+resource that would do that. However, identifying words that end in an
+“s” and with more than three characters, in order to remove “as”, “is”,
+“gas”, etc., is a reasonable heuristic.
+
+------------------------------------------------------------------------
+
+### Exercise 3
+
+Part 1: Replace forward slashes with backslashes.
+
+Part 2: Implement a simple version of str_to_lower() using
+replace_all().
+
+------------------------------------------------------------------------
+
+Part 3: Switch the first and last letters in words. Which of those
+strings are still words?
+
+First, make a vector of all the words with first and last letters
+swapped:
+
+Next, find what of “swapped” is also in the original list using the
+function intersect():
+
+------------------------------------------------------------------------
+
+Alternatively, the regex can be written using the POSIX character class
+for letter (\[\[:alpha:\]\]):
+
 # Further Reading
+
+## Further Reading
 
 ### General
 
@@ -2381,6 +2397,8 @@ sentences %>%
 -   [MoJ coding
     standards](https://moj-analytical-services.github.io/our-coding-standards/)
 
+------------------------------------------------------------------------
+
 ### Conditional statements
 
 -   [Advanced R - choices
@@ -2393,6 +2411,13 @@ sentences %>%
 -   [Advanced R - loops
     section](https://adv-r.hadley.nz/control-flow.html#loops)
 
+### Reshaping data
+
+-   [Tidyverse website - pivoting
+    section](https://tidyr.tidyverse.org/dev/articles/pivot.html)
+-   [R for Data Science - pivoting
+    chapter](https://r4ds.had.co.nz/tidy-data.html#pivoting)
+
 ### Strings and regex
 
 -   [R for Data Science - strings
@@ -2401,13 +2426,6 @@ sentences %>%
     cheatsheet](https://evoldyn.gitlab.io/evomics-2018/ref-sheets/R_strings.pdf)
 -   [Regex Coffee & Coding
     session](https://github.com/moj-analytical-services/Coffee-and-Coding/tree/master/2019-03-13%20Regex)
-
-### Reshaping data
-
--   [Tidyverse website - pivoting
-    section](https://tidyr.tidyverse.org/dev/articles/pivot.html)
--   [R for Data Science - pivoting
-    chapter](https://r4ds.had.co.nz/tidy-data.html#pivoting)
 
 # Bonus examples
 

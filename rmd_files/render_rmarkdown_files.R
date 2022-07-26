@@ -25,6 +25,3 @@ purl_example_code <- FALSE # This means code that isn't an exercise solution won
 knitr::purl("rmd_files/README.Rmd", documentation=0)
 file.rename("README.R", "solutions.R")
 
-# extract R code from content.Rmd into separate script
-# knitr::purl("rmd_files/README.Rmd")
-# file.rename("content.R", "example_code.R")

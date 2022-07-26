@@ -197,7 +197,6 @@ is.na(x)
 x <- c(7, 23, 5, 14, NA, 1, 11, NA)
 is.na(x)
 
-x <- c(7, 23, 5, 14, NA, 1, 11, NA)
 !is.na(x)
 
 df <- tibble::tibble(
@@ -249,19 +248,15 @@ df <- tidyr::crossing(year = c("2017", "2018", "2019"),
                       quarter = c("Q1", "Q2", "Q3", "Q4")) %>%
       dplyr::mutate(count = sample(length(year)))
 
-# This removes repeated row labels
-df$year[duplicated(df$year)] <- NA
-
+df$year[duplicated(df$year)] <- NA # This removes repeated row labels
 df
 
 df %>% tidyr::fill(year)
 
 offenders_nona <- offenders %>% tidyr::drop_na()
-
 str(offenders_nona)
 
 offenders_nona <- offenders %>% tidyr::drop_na(HEIGHT, WEIGHT)
-
 str(offenders_nona)
 
 fruit <- tibble::tibble(
@@ -270,8 +265,6 @@ fruit <- tibble::tibble(
   "Quantity" = c(23, NA, 15, 9, 11)
 )
 
-
-
 fruit <- tibble::tibble(
   "Item" = c("Orange", "Apple", "Banana", "Lemon", "Pear"),
   "Cost" = c("£0.50", "£0.40", "£0.10", "£0.30", NA),
@@ -279,15 +272,22 @@ fruit <- tibble::tibble(
 )
 
 
+# for more infomation on the data set 
 ?billboard
 # notice the dimensions of the data
-dim(billboard)
+#dim(billboard)
+
 #to see the structure of the data
-billboard %>% arrange(desc(date.entered)) %>% tail()
+billboard %>% arrange(desc(date.entered)) %>% select(1:6) %>% head()
+
+
+
 #starting by mapping a single month 
-billboard %>% pivot_longer(cols = c(wk1,wk2, wk3, wk4), names_to = "month1", values_to = "rank") %>% head()
-# and to see clearly the contents of the new variable
-billboard %>% pivot_longer(cols = c(wk1,wk2, wk3, wk4), names_to = "month1", values_to = "rank") %>% .$month1 %>% head()
+billboard %>% pivot_longer(cols = c(wk1,wk2, wk3, wk4), names_to = "month1", values_to = "rank") %>% 
+  select(1:5, "month1", "rank") %>% head()
+#and to see clearly the contents of the new variable
+# billboard %>% pivot_longer(cols = c(wk1,wk2, wk3, wk4), names_to = "month1", values_to = "rank") %>%
+# .$month1 %>% head()
 
 #mapping all weeks to one varable called "weeks" 
 billboard %>% pivot_longer(cols = starts_with("wk"), names_to = "weeks", values_to = "rank") %>% head()
@@ -302,14 +302,13 @@ anscombe %>% pivot_longer(everything(),
 
 fish_encounters %>% head(10)
 
-fish_encounters %>% pivot_wider(names_from = station, values_from = seen)
+fish_encounters %>% pivot_wider(names_from = station, values_from = seen) %>% head()
 
 fish_encounters %>% pivot_wider(names_from = station, values_from = seen,
-  values_fill = list(seen = 0))
+  values_fill = list(seen = 0)) %>% head()
 
 #converting into a tibble and rearranging the vars
 warpbreaks %>% as_tibble() %>% select(wool,tension, breaks)
-# the code above aims attempts to instil clarity in the output
 
 warpdata = warpbreaks %>% pivot_wider(names_from = wool, values_from = breaks)
 
@@ -319,6 +318,30 @@ warpbreaks %>%
     values_from = breaks,
     values_fn = list(breaks = mean)
   )
+
+## #the table to use
+## table4a
+## table4a %>% pivot_longer(1999,2000, names_to = "year",values_to = "value")
+
+## people = tribble(~name, ~key, ~value,
+##                  #------------/------/-----,
+##                  "Phil Woods", "age",45,
+##                  "Phil Woods", "height",185,
+##                  "Phil Woods", "age",50,
+##                  "Jess Cordero", "age",45,
+##                  "Jess Cordero", "height",156,)
+
+## rcj = tribble(~judge, ~male, ~female,
+##               "yes", NA, 10,
+##               "no", 20, 12)
+
+
+
+
+
+
+
+
 
 table3
 
@@ -336,75 +359,13 @@ table3 %>% extract( col = year, into = c("century","years"), regex = "([0-9]{2})
 table3 %>% extract( col = year, into = c("century","decade","year" ), regex = "([0-9]{2})([0-9])([0-9])")
 
 #the reshaped dataset
-tab3 = table3 %>% extract( col = year, into = c("century","decade","year" ), regex = "([0-9]{2})([0-9])([0-9])")
+tab3 = table3 %>% 
+  extract( col = year, into = c("century","decade","year" ), regex = "([0-9]{2})([0-9])([0-9])")
 #going back to the original dataset - with separator
 tab3 %>% unite(new ,century, decade, year)
 
 #going back to the original dataset - with no separators
 tab3 %>% unite(new ,century, decade, year, sep = "")
-
-## #the table to use
-## table4a
-## table4a %>% pivot_longer(1999,2000, names_to = "year",values_to = "value")
-
-## people = tribble(~name, ~key, ~value,
-##                  #------------/------/-----,
-##                  "Phil Woods", "age",45,
-##                  "Phil Woods", "height",185,
-##                  "Phil Woods", "age",50,
-##                  "Jess Cordero", "age",45,
-##                  "Jess Cordero", "height",156,)
-
-rcj = tribble( ~judge, ~male, ~female,
-                    "yes", NA, 10, 
-                    "no", 20, 12)
-
-tibble(x = c("a,b,c", "d,e,f,g", "h,i,j")) %>% 
-  separate(x, c("one", "two", "three"))
-tibble(x = c("a,b,c", "d,e", "f,g,i")) %>% 
-  separate(x, c("one", "two", "three"))
-
-## table4a %>% pivot_longer(cols = !country, names_to = "year",values_to = "value")
-
-## #withough changing anything on the dataset
-## people = tribble(~name, ~key, ~value,
-##                  #------------/------/-----,
-##                  "Phil Woods", "age",45,
-##                  "Phil Woods", "height",185,
-##                  "Phil Woods", "age",50,
-##                  "Jess Cordero", "age",45,
-##                  "Jess Cordero", "height",156,)
-## people %>% pivot_wider(names_from = name, values_from = value)
-## # solution 1 - adding a new column
-## people = tribble(~name, ~key, ~value, ~dkey,
-##                  #------------/------/-----,
-##                  "Phil Woods", "age",45,1,
-##                  "Phil Woods", "height",185,1,
-##                  "Phil Woods", "age",50,0,
-##                  "Jess Cordero", "age",45,1,
-##                  "Jess Cordero", "height",156,1)
-## people %>% pivot_wider(names_from = name, values_from = value)
-## #solution 2  - uniqueness
-## people = tribble(~name, ~key, ~value,
-##                  #------------/------/-----,
-##                  "Phil Woods", "age",45,
-##                  "Phil Woods", "height",185,
-##                  # "Phil Woods", "age",50,
-##                  "Jess Cordero", "age",45,
-##                  "Jess Cordero", "height",156,)
-## people %>% pivot_wider(names_from = name, values_from = value)
-
-## rcj = tribble( ~judge, ~male, ~female,
-##                     "yes", NA, 10,
-##                     "no", 20, 12)
-## #alternative table to try with no NAs
-## # rcj = tribble( ~judge, ~male, ~female,
-## #                     "yes", 4, 10,
-## #                     "no", 20, 12)
-## #use of pivot_longer
-## rcj %>% pivot_longer(cols = c(male, female),   names_to = "gender", values_to = "count")
-## # use of  pivot_wider
-## rcj %>% pivot_wider(names_from = judge, values_from = c(male, female))
 
 ## tibble(x = c("a,b,c", "d,e,f,g", "h,i,j")) %>%
 ##   separate(x, c("one", "two", "three"))
@@ -414,12 +375,17 @@ tibble(x = c("a,b,c", "d,e", "f,g,i")) %>%
 
 string1 = "a string using double quotes"
 is.character(string1)
+
 string2 = 'another string using single quotes'
 is.character(string2)
+
 # a string containing quotes
 string3 = "this is a 'string' within a string"
+
 # notice how the output changes when implementing the following code
 string4 = 'this is a "string" within a string'
+
+
 
 string5 = "escaping a reserved character like \" quotes "
 # to see how the result would apear in text
@@ -430,8 +396,10 @@ writeLines(string6)
 
 # outputting non-English characters
 string7 = "\u00b5" 
+string7
 
 s8 = c("a", "vector", "of", "strings")
+s8
 
 # finding out how many characters in a char vector
 str_length(c(s8, NA))
@@ -464,6 +432,12 @@ x = c("y", "i", "k")
 str_sort(x)
 #sort function in Lithuanian
 str_sort(x,locale = "lt")
+
+
+
+
+
+
 
 x <- c("apple", "banana", "pear")
 str_detect(x, "e")
