@@ -163,7 +163,7 @@ str_sort(x,locale = "lt")
 
 
 
-## Excercises 
+## Exercises 
 
 ### Exercise 1 
 
@@ -171,7 +171,7 @@ Use str_length() and str_sub() to extract the middle character from a string. Wh
 
 ### Exercise 2 (optional)
 
-Write a function that turns (e.g.) a vector c("a", "b", "c") into the string "a, b, and c". Think carefully about what it should do if given a vector of length 0, 1, or 2.
+Write a function that turns (e.g.) a vector `c("a", "b", "c")` into the string `"a, b, and c"`. Think carefully about what it should do if given a vector of length 0, 1, or 2.
 
 
 ## Exercise Solutions
@@ -180,7 +180,7 @@ Write a function that turns (e.g.) a vector c("a", "b", "c") into the string "a,
 
 The following function extracts the middle character. If the string has an even number of characters the choice is arbitrary. We choose to select  $[n/2]$, because that case works even if the string is only of length one. A more general method would allow the user to select either the floor or ceiling for the middle character of an even string.
  
-```{r, purl=purl_example_code, eval=F}
+```{r, include=show_solution, purl=purl_solutions}
 x <- c("a", "abc", "abcd", "abcde", "abcdef")
 L <- str_length(x)
 m <- ceiling(L / 2)
@@ -200,7 +200,7 @@ The function needs to have 4 cases
 3.    `n==2` for the vector containing 2 character strings
 4.    `n > 2` for 2 or more
 
-```{r,purl=purl_example_code, eval=F}
+```{r, include=show_solution, purl=purl_solutions}
 str_commasep <- function(x, delim = ",") {
   n <- length(x)
   if (n == 0) {
@@ -223,9 +223,10 @@ str_commasep <- function(x, delim = ",") {
 ```
 
 ---
-And if all goes well the output would be the following
 
-```{r,purl=purl_example_code, eval=F}
+
+```{r,include=show_solution, purl=purl_solutions, eval=FALSE}
+# And if all goes well the output would be the following:
 str_commasep("")
 #> [1] ""
 str_commasep("a")
@@ -391,10 +392,12 @@ sentences %>%
 
 ###  Exercise 2: Extracting strings
 
-1. From the Harvard sentences data, extract:
+From the Harvard sentences data, extract:
 
     1. The first word from each sentence.
-    2. All words ending in ing.
+
+    2. All words ending in 'ing'.
+
     3. All plurals.
 
 ---
@@ -415,11 +418,10 @@ sentences %>%
 
 For part 1 we have the following:
 
+Words that start or end with x?
 
-1. Words that start or end with x?
 
-
-```{r, purl=purl_example_code, eval=F}
+```{r, include=show_solution, purl=purl_solutions}
 
 # one regex
 words[str_detect(words, "^x|x$")]
@@ -437,9 +439,9 @@ words[start_with_x | end_with_x]
 
 For part 2 we have the following:
 
-2. Words starting with vowel and ending with consonant.
+Words starting with vowel and ending with consonant.
 
-```{r, purl=purl_example_code, eval=F}
+```{r, include=show_solution, purl=purl_solutions}
 str_subset(words, "^[aeiou].*[^aeiou]$") %>% head()
 #> [1] "about"   "accept"  "account" "across"  "act"     "actual"
 start_with_vowel <- str_detect(words, "^[aeiou]")
@@ -454,9 +456,10 @@ words[start_with_vowel & end_with_consonant] %>% head()
 
 For part 3, the following:
 
-3. There is not a simple regular expression to match words that that contain at least one of each vowel. The regular expression would need to consider all possible orders in which the vowels could occur.
+There is not a simple regular expression to match words that that contain at least one of each vowel. The regular expression would need to consider all possible orders in which the vowels could occur.
 
-```{r, purl=purl_example_code, eval=F}
+```{r, include=show_solution, purl=purl_solutions}
+library(purrr)
 
 pattern <-
   cross(rerun(5, c("a", "e", "i", "o", "u")),
@@ -476,10 +479,10 @@ pattern <-
 ### Exercise 2
 
 
-1. Finding the first word in each sentence requires defining what a pattern constitutes a word. For the purposes of this question, I’ll consider a word any contiguous set of letters. Since str_extract() will extract the first match, if it is provided a regular expression for words, it will return the first word.
+Part 1: Finding the first word in each sentence requires defining what a pattern constitutes a word. For the purposes of this question, I’ll consider a word any contiguous set of letters. Since str_extract() will extract the first match, if it is provided a regular expression for words, it will return the first word.
 
 
-```{r, purl=purl_example_code, eval=F}
+```{r, include=show_solution, purl=purl_solutions}
 str_extract(sentences, "[A-ZAa-z]+") %>% head()
 #> [1] "The"   "Glue"  "It"    "These" "Rice"  "The"
 
@@ -489,7 +492,7 @@ str_extract(sentences, "[A-ZAa-z]+") %>% head()
 However, the third sentence begins with “It’s”. To catch this, I’ll change the regular expression to require the string to begin with a letter, but allow for a subsequent apostrophe.
 
 
-```{r, purl=purl_example_code, eval=F}
+```{r, include=show_solution, purl=purl_solutions}
 str_extract(sentences, "[A-Za-z][A-Za-z']*") %>% head()
 #> [1] "The"   "Glue"  "It's"  "These" "Rice"  "The"
 
@@ -497,9 +500,9 @@ str_extract(sentences, "[A-Za-z][A-Za-z']*") %>% head()
 
 ---
 
-2. This pattern finds all words ending in ing.
+Part 2: This pattern finds all words ending in 'ing'.
 
-```{r, purl=purl_example_code, eval=F}
+```{r, include=show_solution, purl=purl_solutions}
 pattern <- "\\b[A-Za-z]+ing\\b"
 sentences_with_ing <- str_detect(sentences, pattern)
 unique(unlist(str_extract_all(sentences[sentences_with_ing], pattern))) %>%
@@ -510,9 +513,9 @@ unique(unlist(str_extract_all(sentences[sentences_with_ing], pattern))) %>%
 
 ---
 
-3. Finding all plurals cannot be correctly accomplished with regular expressions alone. Finding plural words would at least require morphological information about words in the language. See WordNet for a resource that would do that. However, identifying words that end in an “s” and with more than three characters, in order to remove “as”, “is”, “gas”, etc., is a reasonable heuristic.
+Part 3: Finding all plurals cannot be correctly accomplished with regular expressions alone. Finding plural words would at least require morphological information about words in the language. See WordNet for a resource that would do that. However, identifying words that end in an “s” and with more than three characters, in order to remove “as”, “is”, “gas”, etc., is a reasonable heuristic.
 
-```{r, purl=purl_example_code, eval=F}
+```{r, include=show_solution, purl=purl_solutions}
 
 unique(unlist(str_extract_all(sentences, "\\b[A-Za-z]{3,}s\\b"))) %>%
   head()
@@ -527,17 +530,17 @@ unique(unlist(str_extract_all(sentences, "\\b[A-Za-z]{3,}s\\b"))) %>%
 
 ### Exercise 3
 
-1. Replace forward slashes with backslashes.
+Part 1: Replace forward slashes with backslashes.
 
-```{r, purl=purl_example_code, eval=F}
+```{r, include=show_solution, purl=purl_solutions}
 str_replace_all("past/present/future", "/", "\\\\")
 #> [1] "past\\present\\future"
 ```
 
-2. Implement a simple version of str_to_lower() using replace_all().
+Part 2: Implement a simple version of str_to_lower() using replace_all().
 
 
-```{r, purl=purl_example_code, eval=F}
+```{r, include=show_solution, purl=purl_solutions}
 
 replacements <- c("A" = "a", "B" = "b", "C" = "c", "D" = "d", "E" = "e",
                   "F" = "f", "G" = "g", "H" = "h", "I" = "i", "J" = "j", 
@@ -552,49 +555,25 @@ head(lower_words)
 
 ---
 
-3. Switch the first and last letters in words. Which of those strings are still words?
+Part 3: Switch the first and last letters in words. Which of those strings are still words?
 
-First, make a vector of all the words with first and last letters swapped,
+First, make a vector of all the words with first and last letters swapped:
 
-
-
-```{r, purl=purl_example_code, eval=F}
+```{r, include=show_solution, purl=purl_solutions}
 swapped <- str_replace_all(words, "^([A-Za-z])(.*)([A-Za-z])$", "\\3\\2\\1")
 ```
-Next, find what of “swapped” is also in the original list using the function intersect(),
+Next, find what of “swapped” is also in the original list using the function intersect():
 
-```{r, purl=purl_example_code, eval=F}
-
+```{r, include=show_solution, purl=purl_solutions}
 intersect(swapped, words)
-#>  [1] "a"          "america"    "area"       "dad"        "dead"      
-#>  [6] "lead"       "read"       "depend"     "god"        "educate"   
-#> [11] "else"       "encourage"  "engine"     "europe"     "evidence"  
-#> [16] "example"    "excuse"     "exercise"   "expense"    "experience"
-#> [21] "eye"        "dog"        "health"     "high"       "knock"     
-#> [26] "deal"       "level"      "local"      "nation"     "on"        
-#> [31] "non"        "no"         "rather"     "dear"       "refer"     
-#> [36] "remember"   "serious"    "stairs"     "test"       "tonight"   
-#> [41] "transport"  "treat"      "trust"      "window"     "yesterday"
-
-
 ```
 
 ---
 
 Alternatively, the regex can be written using the POSIX character class for letter ([[:alpha:]]):
 
-```{r, purl=purl_example_code, eval=F}
+```{r, include=show_solution, purl=purl_solutions}
 swapped2 <- str_replace_all(words, "^([[:alpha:]])(.*)([[:alpha:]])$", "\\3\\2\\1")
 intersect(swapped2, words)
-#>  [1] "a"          "america"    "area"       "dad"        "dead"      
-#>  [6] "lead"       "read"       "depend"     "god"        "educate"   
-#> [11] "else"       "encourage"  "engine"     "europe"     "evidence"  
-#> [16] "example"    "excuse"     "exercise"   "expense"    "experience"
-#> [21] "eye"        "dog"        "health"     "high"       "knock"     
-#> [26] "deal"       "level"      "local"      "nation"     "on"        
-#> [31] "non"        "no"         "rather"     "dear"       "refer"     
-#> [36] "remember"   "serious"    "stairs"     "test"       "tonight"   
-#> [41] "transport"  "treat"      "trust"      "window"     "yesterday"
-
 ```
 
