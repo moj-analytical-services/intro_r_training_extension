@@ -1,11 +1,3 @@
-# These variables determine whether or not exercise solutions are included
-show_solution <- FALSE # This determines if the solutions are displayed in the readme
-purl_solutions <- FALSE # This variable relates to code blocks that are exercise solutions
-purl_example_code <- TRUE # This variable relates to code blocks that aren't exercise solutions
-
-# Change botor settings to avoid printing debugger messages to the console
-logger::log_threshold('WARN', namespace = 'botor')
-
 
 # Load packages
 library(botor) # Used to help R interact with s3 cloud storage
@@ -188,17 +180,22 @@ rounded_fruit <- fruit %>% dplyr::mutate(across(where(is.numeric), signif, 1))
 
 rounded_fruit
 
+# Set up a vector for Iteration - exercise 1
 dates <- c("2020-03-01", "2020-06-01", "2020-09-01", "2020-12-01")
 
 
+# Check whether or not a single value is missing
 x <- 7
 is.na(x)
 
+# Check whether or not each element of a vector is missing
 x <- c(7, 23, 5, 14, NA, 1, 11, NA)
 is.na(x)
 
+# Check if values are NOT missing
 !is.na(x)
 
+# Check which rows of a dataframe do not contain any missing values
 df <- tibble::tibble(
   "x" = c(0, 1, 2, NA, 4),
   "y" = c(18, NA, 45, 15, 2),
@@ -206,18 +203,23 @@ df <- tibble::tibble(
 
 complete.cases(df)
 
+# What happens if you sum a vector containing missing values
 x <- c(7, 23, 5, 14, NA, 1, 11, NA)
 sum(x)
 
+# We can use a function argument to ignore the missing values
 x <- c(7, 23, 5, 14, NA, 1, 11, NA)
 sum(x, na.rm=TRUE)
 
+# Setting values to NA under a certain condition
 x <- c(7, 23, 5, -14, 0, -1, 11, 0)
 replace(x, x < 0, NA)
 
+# Replacing NA values with 0 in a vector
 x <- c(7, 23, 5, -14, NA, -1, 11,NA)
 replace(x, is.na(x), 0)
 
+# Replacing NA values with 0 over a whole dataframe
 df <- tibble::data_frame(
   "x" = c(0, 1, 2, NA, 4),
   "y" = c(18, NA, 45, 15, 2),
@@ -225,6 +227,7 @@ df <- tibble::data_frame(
 
 df %>% replace(is.na(.), 0)
 
+# Replace NAs in a specific column of a dataframe
 offenders_replacena <- offenders %>%
   dplyr::mutate(HEIGHT = as.character(HEIGHT)) %>%
   tidyr::replace_na(list(HEIGHT = "Unknown"))
@@ -232,6 +235,7 @@ offenders_replacena <- offenders %>%
 # Display the dataframe in descending height order, so we can see the 'Unknown' values
 offenders_replacena %>% dplyr::arrange(desc(HEIGHT)) %>% str()
 
+# Set up a dataframe to use in the next example
 event_dates <- tibble::tibble(
   "event_id" = c(0, 1, 2, 3, 4, 5),
   "date" = c("2016-04-13", "2015-12-29", "2016-06-02", "2017-01-27", "2015-10-21", "2018-03-15"),
@@ -240,6 +244,7 @@ event_dates <- tibble::tibble(
 
 event_dates
 
+# Fill missing values in one column using corresponding values in another column
 event_dates %>%
   dplyr::mutate(new_date = dplyr::coalesce(new_date, date))
 
@@ -251,20 +256,25 @@ df <- tidyr::crossing(year = c("2017", "2018", "2019"),
 df$year[duplicated(df$year)] <- NA # This removes repeated row labels
 df
 
+# Fill missing values in a column using the nearest previous non-NA value from the same column
 df %>% tidyr::fill(year)
 
+# Remove entire row if it contains a missing value
 offenders_nona <- offenders %>% tidyr::drop_na()
 str(offenders_nona)
 
+# Remove entire row if it contains missing values in specific columns
 offenders_nona <- offenders %>% tidyr::drop_na(HEIGHT, WEIGHT)
 str(offenders_nona)
 
+# Set up example dataframe for Missing data - exercise 1
 fruit <- tibble::tibble(
   "Item" = c("Orange", "Apple", "Banana", "Lemon", "Pear"),
   "Cost" = c(0.5, 0.4, 0.1, 0.3, NA),
   "Quantity" = c(23, NA, 15, 9, 11)
 )
 
+# Set up example dataframe for Missing data - exercise 2
 fruit <- tibble::tibble(
   "Item" = c("Orange", "Apple", "Banana", "Lemon", "Pear"),
   "Cost" = c("£0.50", "£0.40", "£0.10", "£0.30", NA),
@@ -272,7 +282,7 @@ fruit <- tibble::tibble(
 )
 
 
-# for more infomation on the data set 
+# for more information on the dataset 
 ?billboard
 # notice the dimensions of the data
 #dim(billboard)

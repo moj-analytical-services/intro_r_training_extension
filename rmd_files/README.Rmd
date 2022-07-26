@@ -3,7 +3,7 @@ title: Introduction to R extension
 output: rmarkdown::github_document
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, purl=FALSE}
 # These variables determine whether or not exercise solutions are included
 show_solution <- FALSE # This determines if the solutions are displayed in the readme
 purl_solutions <- FALSE # This variable relates to code blocks that are exercise solutions

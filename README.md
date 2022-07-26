@@ -761,6 +761,7 @@ Write a for loop to print “The current date is …” for each date in the
 following string vector:
 
 ``` r
+# Set up a vector for Iteration - exercise 1
 dates <- c("2020-03-01", "2020-06-01", "2020-09-01", "2020-12-01")
 ```
 
@@ -793,6 +794,7 @@ can be applied to a single value or a vector. It returns `TRUE` if a
 value is `NA`, and `FALSE` otherwise:
 
 ``` r
+# Check whether or not a single value is missing
 x <- 7
 is.na(x)
 ```
@@ -800,28 +802,31 @@ is.na(x)
     ## [1] FALSE
 
 ``` r
+# Check whether or not each element of a vector is missing
 x <- c(7, 23, 5, 14, NA, 1, 11, NA)
 is.na(x)
 ```
 
     ## [1] FALSE FALSE FALSE FALSE  TRUE FALSE FALSE  TRUE
 
+------------------------------------------------------------------------
+
 If instead you wanted to identify values that are not missing, then you
 can combine `is.na()` with the ‘not’ operator, `!`, like so:
 
 ``` r
+# Check if values are NOT missing
 !is.na(x)
 ```
 
     ## [1]  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE FALSE
-
-------------------------------------------------------------------------
 
 When working with dataframes, the `complete.cases()` function is useful
 to check which rows are complete (i.e. the row doesn’t contain any
 missing values):
 
 ``` r
+# Check which rows of a dataframe do not contain any missing values
 df <- tibble::tibble(
   "x" = c(0, 1, 2, NA, 4),
   "y" = c(18, NA, 45, 15, 2),
@@ -841,6 +846,7 @@ an argument called `na.rm` that you can use to specify if you want the
 `na.rm` is set to `FALSE`:
 
 ``` r
+# What happens if you sum a vector containing missing values
 x <- c(7, 23, 5, 14, NA, 1, 11, NA)
 sum(x)
 ```
@@ -852,6 +858,7 @@ the result is `NA`. By setting `na.rm` to `TRUE`, however, we can remove
 the `NA` values before continuing with the sum:
 
 ``` r
+# We can use a function argument to ignore the missing values
 x <- c(7, 23, 5, 14, NA, 1, 11, NA)
 sum(x, na.rm=TRUE)
 ```
@@ -866,6 +873,7 @@ replace values based on a particular condition. This example shows how
 negative values in a vector can be replaced with `NA`:
 
 ``` r
+# Setting values to NA under a certain condition
 x <- c(7, 23, 5, -14, 0, -1, 11, 0)
 replace(x, x < 0, NA)
 ```
@@ -886,6 +894,7 @@ a specific value. In this example we’re replacing missing values with
 zero:
 
 ``` r
+# Replacing NA values with 0 in a vector
 x <- c(7, 23, 5, -14, NA, -1, 11,NA)
 replace(x, is.na(x), 0)
 ```
@@ -898,6 +907,7 @@ The `replace()` function can also be applied to a whole dataframe, like
 so:
 
 ``` r
+# Replacing NA values with 0 over a whole dataframe
 df <- tibble::data_frame(
   "x" = c(0, 1, 2, NA, 4),
   "y" = c(18, NA, 45, 15, 2),
@@ -926,6 +936,7 @@ dataframe, where we’re replacing missing values in the `HEIGHT` column
 with ‘Unknown’:
 
 ``` r
+# Replace NAs in a specific column of a dataframe
 offenders_replacena <- offenders %>%
   dplyr::mutate(HEIGHT = as.character(HEIGHT)) %>%
   tidyr::replace_na(list(HEIGHT = "Unknown"))
@@ -960,6 +971,7 @@ values with values from another column. Before we jump into an example,
 let’s first prepare a dataframe:
 
 ``` r
+# Set up a dataframe to use in the next example
 event_dates <- tibble::tibble(
   "event_id" = c(0, 1, 2, 3, 4, 5),
   "date" = c("2016-04-13", "2015-12-29", "2016-06-02", "2017-01-27", "2015-10-21", "2018-03-15"),
@@ -985,6 +997,7 @@ We can use `coalesce()` to fill in the missing dates in the `new_date`
 column with the equivalent date in the `date` column:
 
 ``` r
+# Fill missing values in one column using corresponding values in another column
 event_dates %>%
   dplyr::mutate(new_date = dplyr::coalesce(new_date, date))
 ```
@@ -1020,18 +1033,18 @@ df
     ## # A tibble: 12 × 3
     ##    year  quarter count
     ##    <chr> <chr>   <int>
-    ##  1 2017  Q1         10
-    ##  2 <NA>  Q2          9
-    ##  3 <NA>  Q3          7
-    ##  4 <NA>  Q4          6
-    ##  5 2018  Q1          2
-    ##  6 <NA>  Q2          1
-    ##  7 <NA>  Q3          8
+    ##  1 2017  Q1          2
+    ##  2 <NA>  Q2         11
+    ##  3 <NA>  Q3          4
+    ##  4 <NA>  Q4          7
+    ##  5 2018  Q1          5
+    ##  6 <NA>  Q2          9
+    ##  7 <NA>  Q3         10
     ##  8 <NA>  Q4         12
-    ##  9 2019  Q1          4
-    ## 10 <NA>  Q2         11
+    ##  9 2019  Q1          6
+    ## 10 <NA>  Q2          8
     ## 11 <NA>  Q3          3
-    ## 12 <NA>  Q4          5
+    ## 12 <NA>  Q4          1
 
 ------------------------------------------------------------------------
 
@@ -1039,24 +1052,25 @@ The `fill()` function from tidyr is a convenient way to do this, and can
 be used like this:
 
 ``` r
+# Fill missing values in a column using the nearest previous non-NA value from the same column
 df %>% tidyr::fill(year)
 ```
 
     ## # A tibble: 12 × 3
     ##    year  quarter count
     ##    <chr> <chr>   <int>
-    ##  1 2017  Q1         10
-    ##  2 2017  Q2          9
-    ##  3 2017  Q3          7
-    ##  4 2017  Q4          6
-    ##  5 2018  Q1          2
-    ##  6 2018  Q2          1
-    ##  7 2018  Q3          8
+    ##  1 2017  Q1          2
+    ##  2 2017  Q2         11
+    ##  3 2017  Q3          4
+    ##  4 2017  Q4          7
+    ##  5 2018  Q1          5
+    ##  6 2018  Q2          9
+    ##  7 2018  Q3         10
     ##  8 2018  Q4         12
-    ##  9 2019  Q1          4
-    ## 10 2019  Q2         11
+    ##  9 2019  Q1          6
+    ## 10 2019  Q2          8
     ## 11 2019  Q3          3
-    ## 12 2019  Q4          5
+    ## 12 2019  Q4          1
 
 ## Removing rows with missing values from a dataframe
 
@@ -1065,6 +1079,7 @@ containing `NA` values from a dataframe. Let’s say we wanted to remove
 all incomplete rows from the `offenders` dataset. We can either do this:
 
 ``` r
+# Remove entire row if it contains a missing value
 offenders_nona <- offenders %>% tidyr::drop_na()
 str(offenders_nona)
 ```
@@ -1092,6 +1107,7 @@ Or alternatively you can remove rows that contain `NA` values in
 specific columns:
 
 ``` r
+# Remove entire row if it contains missing values in specific columns
 offenders_nona <- offenders %>% tidyr::drop_na(HEIGHT, WEIGHT)
 str(offenders_nona)
 ```
@@ -1121,6 +1137,7 @@ For the following dataframe, use the `filter()` function from dplyr with
 `complete.cases()` to extract the rows **with** missing values:
 
 ``` r
+# Set up example dataframe for Missing data - exercise 1
 fruit <- tibble::tibble(
   "Item" = c("Orange", "Apple", "Banana", "Lemon", "Pear"),
   "Cost" = c(0.5, 0.4, 0.1, 0.3, NA),
@@ -1140,6 +1157,7 @@ to replace missing values in the `Cost` column with “Unknown” and the
 `Quantity` column with 0.
 
 ``` r
+# Set up example dataframe for Missing data - exercise 2
 fruit <- tibble::tibble(
   "Item" = c("Orange", "Apple", "Banana", "Lemon", "Pear"),
   "Cost" = c("£0.50", "£0.40", "£0.10", "£0.30", NA),
@@ -1204,7 +1222,7 @@ by having a closer look at the data set and then mapping the first month
 into a single variable.
 
 ``` r
-# for more infomation on the data set 
+# for more information on the dataset 
 ?billboard
 # notice the dimensions of the data
 #dim(billboard)

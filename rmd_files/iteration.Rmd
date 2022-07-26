@@ -243,6 +243,7 @@ Note: When the `signif()` function is passed as an argument to `across()`, the b
 Write a for loop to print "The current date is ..." for each date in the following string vector:
 
 ```{r, purl=purl_example_code}
+# Set up a vector for Iteration - exercise 1
 dates <- c("2020-03-01", "2020-06-01", "2020-09-01", "2020-12-01")
 ```
 

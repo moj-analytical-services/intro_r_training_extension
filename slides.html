@@ -3819,7 +3819,8 @@ rounded_fruit</pre>
 
 <p>Write a for loop to print &ldquo;The current date is …&rdquo; for each date in the following string vector:</p>
 
-<pre class = 'prettyprint lang-r'>dates &lt;- c(&quot;2020-03-01&quot;, &quot;2020-06-01&quot;, &quot;2020-09-01&quot;, &quot;2020-12-01&quot;)</pre>
+<pre class = 'prettyprint lang-r'># Set up a vector for Iteration - exercise 1
+dates &lt;- c(&quot;2020-03-01&quot;, &quot;2020-06-01&quot;, &quot;2020-09-01&quot;, &quot;2020-12-01&quot;)</pre>
 
 <p><strong>Hint:</strong> You can use the <code>paste()</code> function to join strings together, and the <code>print()</code> function to print the result in the Console.</p>
 
@@ -3863,27 +3864,31 @@ for (date in dates) {
 
 <p>The function <code>is.na()</code> can be used to identify missing values, and it can be applied to a single value or a vector. It returns <code>TRUE</code> if a value is <code>NA</code>, and <code>FALSE</code> otherwise:</p>
 
-<pre class = 'prettyprint lang-r'>x &lt;- 7
+<pre class = 'prettyprint lang-r'># Check whether or not a single value is missing
+x &lt;- 7
 is.na(x)</pre>
 
 <pre >## [1] FALSE</pre>
 
-<pre class = 'prettyprint lang-r'>x &lt;- c(7, 23, 5, 14, NA, 1, 11, NA)
+<pre class = 'prettyprint lang-r'># Check whether or not each element of a vector is missing
+x &lt;- c(7, 23, 5, 14, NA, 1, 11, NA)
 is.na(x)</pre>
 
 <pre >## [1] FALSE FALSE FALSE FALSE  TRUE FALSE FALSE  TRUE</pre>
 
+</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
+
 <p>If instead you wanted to identify values that are not missing, then you can combine <code>is.na()</code> with the &lsquo;not&rsquo; operator, <code>!</code>, like so:</p>
 
-<pre class = 'prettyprint lang-r'>!is.na(x)</pre>
+<pre class = 'prettyprint lang-r'># Check if values are NOT missing
+!is.na(x)</pre>
 
 <pre >## [1]  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE FALSE</pre>
 
-</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
-
 <p>When working with dataframes, the <code>complete.cases()</code> function is useful to check which rows are complete (i.e. the row doesn’t contain any missing values):</p>
 
-<pre class = 'prettyprint lang-r'>df &lt;- tibble::tibble(
+<pre class = 'prettyprint lang-r'># Check which rows of a dataframe do not contain any missing values
+df &lt;- tibble::tibble(
   &quot;x&quot; = c(0, 1, 2, NA, 4),
   &quot;y&quot; = c(18, NA, 45, 15, 2),
 )
@@ -3896,14 +3901,16 @@ complete.cases(df)</pre>
 
 <p>Some functions have built-in arguments where you can specify what you want to happen to missing values. For example, the <code>sum()</code> function has an argument called <code>na.rm</code> that you can use to specify if you want the <code>NA</code> values to be removed before the sum is calculated. By default <code>na.rm</code> is set to <code>FALSE</code>:</p>
 
-<pre class = 'prettyprint lang-r'>x &lt;- c(7, 23, 5, 14, NA, 1, 11, NA)
+<pre class = 'prettyprint lang-r'># What happens if you sum a vector containing missing values
+x &lt;- c(7, 23, 5, 14, NA, 1, 11, NA)
 sum(x)</pre>
 
 <pre >## [1] NA</pre>
 
 <p>So if we try to sum over numeric vector that contains <code>NA</code> values, then the result is <code>NA</code>. By setting <code>na.rm</code> to <code>TRUE</code>, however, we can remove the <code>NA</code> values before continuing with the sum:</p>
 
-<pre class = 'prettyprint lang-r'>x &lt;- c(7, 23, 5, 14, NA, 1, 11, NA)
+<pre class = 'prettyprint lang-r'># We can use a function argument to ignore the missing values
+x &lt;- c(7, 23, 5, 14, NA, 1, 11, NA)
 sum(x, na.rm=TRUE)</pre>
 
 <pre >## [1] 61</pre>
@@ -3912,7 +3919,8 @@ sum(x, na.rm=TRUE)</pre>
 
 <p>There might be occasions where we want to set some values to <code>NA</code>, for example if they are invalid. The <code>replace()</code> function can be used to replace values based on a particular condition. This example shows how negative values in a vector can be replaced with <code>NA</code>:</p>
 
-<pre class = 'prettyprint lang-r'>x &lt;- c(7, 23, 5, -14, 0, -1, 11, 0)
+<pre class = 'prettyprint lang-r'># Setting values to NA under a certain condition
+x &lt;- c(7, 23, 5, -14, 0, -1, 11, 0)
 replace(x, x &lt; 0, NA)</pre>
 
 <pre >## [1]  7 23  5 NA  0 NA 11  0</pre>
@@ -3925,7 +3933,8 @@ replace(x, x &lt; 0, NA)</pre>
 
 <p>We can also use the <code>replace()</code> function to replace missing values with a specific value. In this example we’re replacing missing values with zero:</p>
 
-<pre class = 'prettyprint lang-r'>x &lt;- c(7, 23, 5, -14, NA, -1, 11,NA)
+<pre class = 'prettyprint lang-r'># Replacing NA values with 0 in a vector
+x &lt;- c(7, 23, 5, -14, NA, -1, 11,NA)
 replace(x, is.na(x), 0)</pre>
 
 <pre >## [1]   7  23   5 -14   0  -1  11   0</pre>
@@ -3934,7 +3943,8 @@ replace(x, is.na(x), 0)</pre>
 
 <p>The <code>replace()</code> function can also be applied to a whole dataframe, like so:</p>
 
-<pre class = 'prettyprint lang-r'>df &lt;- tibble::data_frame(
+<pre class = 'prettyprint lang-r'># Replacing NA values with 0 over a whole dataframe
+df &lt;- tibble::data_frame(
   &quot;x&quot; = c(0, 1, 2, NA, 4),
   &quot;y&quot; = c(18, NA, 45, 15, 2),
 )
@@ -3956,7 +3966,8 @@ df %&gt;% replace(is.na(.), 0)</pre>
 
 <p>Here’s an example of how to use <code>replace_na()</code> with the <code>offenders</code> dataframe, where we’re replacing missing values in the <code>HEIGHT</code> column with &lsquo;Unknown&rsquo;:</p>
 
-<pre class = 'prettyprint lang-r'>offenders_replacena &lt;- offenders %&gt;%
+<pre class = 'prettyprint lang-r'># Replace NAs in a specific column of a dataframe
+offenders_replacena &lt;- offenders %&gt;%
   dplyr::mutate(HEIGHT = as.character(HEIGHT)) %&gt;%
   tidyr::replace_na(list(HEIGHT = &quot;Unknown&quot;))
 
@@ -3986,7 +3997,8 @@ offenders_replacena %&gt;% dplyr::arrange(desc(HEIGHT)) %&gt;% str()</pre>
 
 <p>The <code>coalesce()</code> function from dplyr can be used to fill in missing values with values from another column. Before we jump into an example, let’s first prepare a dataframe:</p>
 
-<pre class = 'prettyprint lang-r'>event_dates &lt;- tibble::tibble(
+<pre class = 'prettyprint lang-r'># Set up a dataframe to use in the next example
+event_dates &lt;- tibble::tibble(
   &quot;event_id&quot; = c(0, 1, 2, 3, 4, 5),
   &quot;date&quot; = c(&quot;2016-04-13&quot;, &quot;2015-12-29&quot;, &quot;2016-06-02&quot;, &quot;2017-01-27&quot;, &quot;2015-10-21&quot;, &quot;2018-03-15&quot;),
   &quot;new_date&quot; = c(&quot;2016-08-16&quot;, NA, NA, &quot;2017-03-02&quot;, NA, &quot;2018-11-20&quot;)
@@ -4008,7 +4020,8 @@ event_dates</pre>
 
 <p>We can use <code>coalesce()</code> to fill in the missing dates in the <code>new_date</code> column with the equivalent date in the <code>date</code> column:</p>
 
-<pre class = 'prettyprint lang-r'>event_dates %&gt;%
+<pre class = 'prettyprint lang-r'># Fill missing values in one column using corresponding values in another column
+event_dates %&gt;%
   dplyr::mutate(new_date = dplyr::coalesce(new_date, date))</pre>
 
 <pre >## # A tibble: 6 × 3
@@ -4038,46 +4051,48 @@ df</pre>
 <pre >## # A tibble: 12 × 3
 ##    year  quarter count
 ##    &lt;chr&gt; &lt;chr&gt;   &lt;int&gt;
-##  1 2017  Q1          4
-##  2 &lt;NA&gt;  Q2          5
-##  3 &lt;NA&gt;  Q3          9
-##  4 &lt;NA&gt;  Q4         12
-##  5 2018  Q1          2
-##  6 &lt;NA&gt;  Q2         10
-##  7 &lt;NA&gt;  Q3          8
-##  8 &lt;NA&gt;  Q4          1
-##  9 2019  Q1          3
-## 10 &lt;NA&gt;  Q2          7
-## 11 &lt;NA&gt;  Q3          6
-## 12 &lt;NA&gt;  Q4         11</pre>
+##  1 2017  Q1          8
+##  2 &lt;NA&gt;  Q2         11
+##  3 &lt;NA&gt;  Q3          2
+##  4 &lt;NA&gt;  Q4          9
+##  5 2018  Q1          4
+##  6 &lt;NA&gt;  Q2          1
+##  7 &lt;NA&gt;  Q3          7
+##  8 &lt;NA&gt;  Q4         12
+##  9 2019  Q1          5
+## 10 &lt;NA&gt;  Q2          3
+## 11 &lt;NA&gt;  Q3         10
+## 12 &lt;NA&gt;  Q4          6</pre>
 
 </article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
 
 <p>The <code>fill()</code> function from tidyr is a convenient way to do this, and can be used like this:</p>
 
-<pre class = 'prettyprint lang-r'>df %&gt;% tidyr::fill(year)</pre>
+<pre class = 'prettyprint lang-r'># Fill missing values in a column using the nearest previous non-NA value from the same column
+df %&gt;% tidyr::fill(year)</pre>
 
 <pre >## # A tibble: 12 × 3
 ##    year  quarter count
 ##    &lt;chr&gt; &lt;chr&gt;   &lt;int&gt;
-##  1 2017  Q1          4
-##  2 2017  Q2          5
-##  3 2017  Q3          9
-##  4 2017  Q4         12
-##  5 2018  Q1          2
-##  6 2018  Q2         10
-##  7 2018  Q3          8
-##  8 2018  Q4          1
-##  9 2019  Q1          3
-## 10 2019  Q2          7
-## 11 2019  Q3          6
-## 12 2019  Q4         11</pre>
+##  1 2017  Q1          8
+##  2 2017  Q2         11
+##  3 2017  Q3          2
+##  4 2017  Q4          9
+##  5 2018  Q1          4
+##  6 2018  Q2          1
+##  7 2018  Q3          7
+##  8 2018  Q4         12
+##  9 2019  Q1          5
+## 10 2019  Q2          3
+## 11 2019  Q3         10
+## 12 2019  Q4          6</pre>
 
 </article></slide><slide class=""><hgroup><h2>Removing rows with missing values from a dataframe</h2></hgroup><article  id="removing-rows-with-missing-values-from-a-dataframe" class="smaller ">
 
 <p>The <code>drop_na()</code> function from tidyr allows us to easily remove rows containing <code>NA</code> values from a dataframe. Let’s say we wanted to remove all incomplete rows from the <code>offenders</code> dataset. We can either do this:</p>
 
-<pre class = 'prettyprint lang-r'>offenders_nona &lt;- offenders %&gt;% tidyr::drop_na()
+<pre class = 'prettyprint lang-r'># Remove entire row if it contains a missing value
+offenders_nona &lt;- offenders %&gt;% tidyr::drop_na()
 str(offenders_nona)</pre>
 
 <pre >## &#39;data.frame&#39;:    1389 obs. of  15 variables:
@@ -4101,7 +4116,8 @@ str(offenders_nona)</pre>
 
 <p>Or alternatively you can remove rows that contain <code>NA</code> values in specific columns:</p>
 
-<pre class = 'prettyprint lang-r'>offenders_nona &lt;- offenders %&gt;% tidyr::drop_na(HEIGHT, WEIGHT)
+<pre class = 'prettyprint lang-r'># Remove entire row if it contains missing values in specific columns
+offenders_nona &lt;- offenders %&gt;% tidyr::drop_na(HEIGHT, WEIGHT)
 str(offenders_nona)</pre>
 
 <pre >## &#39;data.frame&#39;:    1389 obs. of  15 variables:
@@ -4127,7 +4143,8 @@ str(offenders_nona)</pre>
 
 <p>For the following dataframe, use the <code>filter()</code> function from dplyr with <code>complete.cases()</code> to extract the rows <strong>with</strong> missing values:</p>
 
-<pre class = 'prettyprint lang-r'>fruit &lt;- tibble::tibble(
+<pre class = 'prettyprint lang-r'># Set up example dataframe for Missing data - exercise 1
+fruit &lt;- tibble::tibble(
   &quot;Item&quot; = c(&quot;Orange&quot;, &quot;Apple&quot;, &quot;Banana&quot;, &quot;Lemon&quot;, &quot;Pear&quot;),
   &quot;Cost&quot; = c(0.5, 0.4, 0.1, 0.3, NA),
   &quot;Quantity&quot; = c(23, NA, 15, 9, 11)
@@ -4141,7 +4158,8 @@ str(offenders_nona)</pre>
 
 <p>For the following dataframe, use the <code>replace_na()</code> function from tidyr to replace missing values in the <code>Cost</code> column with &ldquo;Unknown&rdquo; and the <code>Quantity</code> column with 0.</p>
 
-<pre class = 'prettyprint lang-r'>fruit &lt;- tibble::tibble(
+<pre class = 'prettyprint lang-r'># Set up example dataframe for Missing data - exercise 2
+fruit &lt;- tibble::tibble(
   &quot;Item&quot; = c(&quot;Orange&quot;, &quot;Apple&quot;, &quot;Banana&quot;, &quot;Lemon&quot;, &quot;Pear&quot;),
   &quot;Cost&quot; = c(&quot;£0.50&quot;, &quot;£0.40&quot;, &quot;£0.10&quot;, &quot;£0.30&quot;, NA),
   &quot;Quantity&quot; = c(23, NA, 15, 9, 11)
@@ -4195,7 +4213,7 @@ fruit %&gt;% tidyr::replace_na(list(Cost = &quot;Unknown&quot;,
 
 <p>The aim now is to create a single variable to house the different weeks in order to create a different representation of for the data. We start by having a closer look at the data set and then mapping the first month into a single variable.</p>
 
-<pre class = 'prettyprint lang-r'># for more infomation on the data set 
+<pre class = 'prettyprint lang-r'># for more information on the dataset 
 ?billboard
 # notice the dimensions of the data
 #dim(billboard)

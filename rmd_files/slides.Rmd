@@ -6,7 +6,7 @@ output:
     smaller: true
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, purl=FALSE}
 # These variables determine whether or not exercise solutions are included
 show_solution <- TRUE # This determines if the solutions are displayed in the slides
 purl_solutions <- FALSE # This variable relates to code blocks that are exercise solutions

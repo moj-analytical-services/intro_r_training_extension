@@ -10,23 +10,27 @@ It's often the case that datasets will contain missing values, which are usually
 The function `is.na()` can be used to identify missing values, and it can be applied to a single value or a vector. It returns `TRUE` if a value is `NA`, and `FALSE` otherwise:
 
 ```{r, purl=purl_example_code}
+# Check whether or not a single value is missing
 x <- 7
 is.na(x)
 
+# Check whether or not each element of a vector is missing
 x <- c(7, 23, 5, 14, NA, 1, 11, NA)
 is.na(x)
 ```
 
+---
+
 If instead you wanted to identify values that are not missing, then you can combine `is.na()` with the 'not' operator, `!`, like so:
 ```{r, purl=purl_example_code}
+# Check if values are NOT missing
 !is.na(x)
 ```
-
----
 
 When working with dataframes, the `complete.cases()` function is useful to check which rows are complete (i.e. the row doesn't contain any missing values):
 
 ```{r, purl=purl_example_code}
+# Check which rows of a dataframe do not contain any missing values
 df <- tibble::tibble(
   "x" = c(0, 1, 2, NA, 4),
   "y" = c(18, NA, 45, 15, 2),
@@ -41,6 +45,7 @@ complete.cases(df)
 Some functions have built-in arguments where you can specify what you want to happen to missing values. For example, the `sum()` function has an argument called `na.rm` that you can use to specify if you want the `NA` values to be removed before the sum is calculated. By default `na.rm` is set to `FALSE`:
 
 ```{r, purl=purl_example_code}
+# What happens if you sum a vector containing missing values
 x <- c(7, 23, 5, 14, NA, 1, 11, NA)
 sum(x)
 ```
@@ -48,6 +53,7 @@ sum(x)
 So if we try to sum over numeric vector that contains `NA` values, then the result is `NA`. By setting `na.rm` to `TRUE`, however, we can remove the `NA` values before continuing with the sum:
 
 ```{r, purl=purl_example_code}
+# We can use a function argument to ignore the missing values
 x <- c(7, 23, 5, 14, NA, 1, 11, NA)
 sum(x, na.rm=TRUE)
 ```
@@ -58,6 +64,7 @@ sum(x, na.rm=TRUE)
 There might be occasions where we want to set some values to `NA`, for example if they are invalid. The `replace()` function can be used to replace values based on a particular condition. This example shows how negative values in a vector can be replaced with `NA`:
 
 ```{r, purl=purl_example_code}
+# Setting values to NA under a certain condition
 x <- c(7, 23, 5, -14, 0, -1, 11, 0)
 replace(x, x < 0, NA)
 ```
@@ -73,6 +80,7 @@ Sometimes it's necessary to replace missing values; for example, when displaying
 We can also use the `replace()` function to replace missing values with a specific value. In this example we're replacing missing values with zero:
 
 ```{r, purl=purl_example_code}
+# Replacing NA values with 0 in a vector
 x <- c(7, 23, 5, -14, NA, -1, 11,NA)
 replace(x, is.na(x), 0)
 ```
@@ -82,6 +90,7 @@ replace(x, is.na(x), 0)
 The `replace()` function can also be applied to a whole dataframe, like so:
 
 ```{r, purl=purl_example_code}
+# Replacing NA values with 0 over a whole dataframe
 df <- tibble::data_frame(
   "x" = c(0, 1, 2, NA, 4),
   "y" = c(18, NA, 45, 15, 2),
@@ -96,6 +105,7 @@ The `replace_na()` function from tidyr also provides a convenient way to replace
 
 Here's an example of how to use `replace_na()` with the `offenders` dataframe, where we're replacing missing values in the `HEIGHT` column with 'Unknown':
 ```{r, purl=purl_example_code}
+# Replace NAs in a specific column of a dataframe
 offenders_replacena <- offenders %>%
   dplyr::mutate(HEIGHT = as.character(HEIGHT)) %>%
   tidyr::replace_na(list(HEIGHT = "Unknown"))
@@ -105,7 +115,6 @@ offenders_replacena %>% dplyr::arrange(desc(HEIGHT)) %>% str()
 ```
 
 
-
 ---
 
 ### Replacing with values from another column
@@ -113,6 +122,7 @@ offenders_replacena %>% dplyr::arrange(desc(HEIGHT)) %>% str()
 The `coalesce()` function from dplyr can be used to fill in missing values with values from another column. Before we jump into an example, let's first prepare a dataframe:
 
 ```{r, purl=purl_example_code, message=F, warning=F}
+# Set up a dataframe to use in the next example
 event_dates <- tibble::tibble(
   "event_id" = c(0, 1, 2, 3, 4, 5),
   "date" = c("2016-04-13", "2015-12-29", "2016-06-02", "2017-01-27", "2015-10-21", "2018-03-15"),
@@ -127,6 +137,7 @@ event_dates
 We can use `coalesce()` to fill in the missing dates in the `new_date` column with the equivalent date in the `date` column:
 
 ```{r, purl=purl_example_code}
+# Fill missing values in one column using corresponding values in another column
 event_dates %>%
   dplyr::mutate(new_date = dplyr::coalesce(new_date, date))
 ```
@@ -152,6 +163,7 @@ df
 The `fill()` function from tidyr is a convenient way to do this, and can be used like this:
 
 ```{r, purl=purl_example_code}
+# Fill missing values in a column using the nearest previous non-NA value from the same column
 df %>% tidyr::fill(year)
 ```
 
@@ -161,6 +173,7 @@ df %>% tidyr::fill(year)
 The `drop_na()` function from tidyr allows us to easily remove rows containing `NA` values from a dataframe. Let's say we wanted to remove all incomplete rows from the `offenders` dataset. We can either do this:
 
 ```{r, purl=purl_example_code}
+# Remove entire row if it contains a missing value
 offenders_nona <- offenders %>% tidyr::drop_na()
 str(offenders_nona)
 ```
@@ -170,6 +183,7 @@ str(offenders_nona)
 Or alternatively you can remove rows that contain `NA` values in specific columns:
 
 ```{r, purl=purl_example_code}
+# Remove entire row if it contains missing values in specific columns
 offenders_nona <- offenders %>% tidyr::drop_na(HEIGHT, WEIGHT)
 str(offenders_nona)
 ```
@@ -182,6 +196,7 @@ str(offenders_nona)
 For the following dataframe, use the `filter()` function from dplyr with `complete.cases()` to extract the rows **with** missing values:
 
 ```{r, purl=purl_example_code}
+# Set up example dataframe for Missing data - exercise 1
 fruit <- tibble::tibble(
   "Item" = c("Orange", "Apple", "Banana", "Lemon", "Pear"),
   "Cost" = c(0.5, 0.4, 0.1, 0.3, NA),
@@ -198,6 +213,7 @@ fruit <- tibble::tibble(
 For the following dataframe, use the `replace_na()` function from tidyr to replace missing values in the `Cost` column with "Unknown" and the `Quantity` column with 0.
 
 ```{r, purl=purl_example_code}
+# Set up example dataframe for Missing data - exercise 2
 fruit <- tibble::tibble(
   "Item" = c("Orange", "Apple", "Banana", "Lemon", "Pear"),
   "Cost" = c("£0.50", "£0.40", "£0.10", "£0.30", NA),

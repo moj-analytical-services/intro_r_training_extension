@@ -1,14 +1,3 @@
-# These variables determine whether or not exercise solutions are included
-show_solution <- FALSE # This determines if the solutions are displayed in the readme
-purl_solutions <- FALSE # This variable relates to code blocks that are exercise solutions
-purl_example_code <- TRUE # This variable relates to code blocks that aren't exercise solutions
-
-# Change botor settings to avoid printing debugger messages to the console
-logger::log_threshold('WARN', namespace = 'botor')
-
-
-
-
 
 # Conditional statements - solution to exercise 1
 offenders <- offenders %>%
