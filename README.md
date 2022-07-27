@@ -329,9 +329,11 @@ column should contain a ‘1’ if the offender received a court order, or a
 ### Exercise 2
 
 Add a column called ‘PREV_CONVICTIONS_BAND’ to the `offenders`
-dataframe. The column should contain the following categories: ‘0’,
-‘1-5’, ‘6-10’, ‘\>10’, based on the number of convictions given in the
-‘PREV_CONVICTIONS’ column.
+dataframe. The column should contain the following categories: ‘Low’,
+‘Medium’, ‘High’, based on the number of convictions given in the
+‘PREV_CONVICTIONS’ column. For example, you can consider less than 5
+PREV_CONVICTIONS to be ‘Low’, 5 to 10 to be ‘Medium’, and over 10 to be
+‘High’.
 
 **Hint:** you’ll need to use the `case_when()` function with `mutate()`.
 
@@ -912,7 +914,12 @@ df <- tibble::data_frame(
   "x" = c(0, 1, 2, NA, 4),
   "y" = c(18, NA, 45, 15, 2),
 )
+```
 
+    ## Warning: `data_frame()` was deprecated in tibble 1.1.0.
+    ## Please use `tibble()` instead.
+
+``` r
 df %>% replace(is.na(.), 0)
 ```
 
@@ -960,7 +967,7 @@ offenders_replacena %>% dplyr::arrange(desc(HEIGHT)) %>% str()
     ##  $ YOUTH_OR_ADULT       : chr  "Adult" "Adult" "Adult" "Adult" ...
     ##  $ AGE_BAND             : chr  "30-39" "40-49" "18-29" "50-59" ...
     ##  $ COURT_ORDER          : num  1 0 0 1 1 0 1 1 1 0 ...
-    ##  $ PREV_CONVICTIONS_BAND: chr  "0" "0" "0" "0" ...
+    ##  $ PREV_CONVICTIONS_BAND: chr  "Low" "Low" "Low" "Low" ...
 
 ------------------------------------------------------------------------
 
@@ -1033,17 +1040,17 @@ df
     ## # A tibble: 12 × 3
     ##    year  quarter count
     ##    <chr> <chr>   <int>
-    ##  1 2017  Q1          2
-    ##  2 <NA>  Q2         11
-    ##  3 <NA>  Q3          4
-    ##  4 <NA>  Q4          7
-    ##  5 2018  Q1          5
+    ##  1 2017  Q1          6
+    ##  2 <NA>  Q2          3
+    ##  3 <NA>  Q3          7
+    ##  4 <NA>  Q4          4
+    ##  5 2018  Q1          2
     ##  6 <NA>  Q2          9
-    ##  7 <NA>  Q3         10
-    ##  8 <NA>  Q4         12
-    ##  9 2019  Q1          6
-    ## 10 <NA>  Q2          8
-    ## 11 <NA>  Q3          3
+    ##  7 <NA>  Q3          5
+    ##  8 <NA>  Q4          8
+    ##  9 2019  Q1         12
+    ## 10 <NA>  Q2         11
+    ## 11 <NA>  Q3         10
     ## 12 <NA>  Q4          1
 
 ------------------------------------------------------------------------
@@ -1059,17 +1066,17 @@ df %>% tidyr::fill(year)
     ## # A tibble: 12 × 3
     ##    year  quarter count
     ##    <chr> <chr>   <int>
-    ##  1 2017  Q1          2
-    ##  2 2017  Q2         11
-    ##  3 2017  Q3          4
-    ##  4 2017  Q4          7
-    ##  5 2018  Q1          5
+    ##  1 2017  Q1          6
+    ##  2 2017  Q2          3
+    ##  3 2017  Q3          7
+    ##  4 2017  Q4          4
+    ##  5 2018  Q1          2
     ##  6 2018  Q2          9
-    ##  7 2018  Q3         10
-    ##  8 2018  Q4         12
-    ##  9 2019  Q1          6
-    ## 10 2019  Q2          8
-    ## 11 2019  Q3          3
+    ##  7 2018  Q3          5
+    ##  8 2018  Q4          8
+    ##  9 2019  Q1         12
+    ## 10 2019  Q2         11
+    ## 11 2019  Q3         10
     ## 12 2019  Q4          1
 
 ## Removing rows with missing values from a dataframe
@@ -1099,7 +1106,7 @@ str(offenders_nona)
     ##  $ YOUTH_OR_ADULT       : chr  "Adult" "Adult" "Adult" "Adult" ...
     ##  $ AGE_BAND             : chr  "50-59" "50-59" "40-49" "50-59" ...
     ##  $ COURT_ORDER          : num  1 0 1 1 0 0 0 1 1 0 ...
-    ##  $ PREV_CONVICTIONS_BAND: chr  "0" "0" "0" "0" ...
+    ##  $ PREV_CONVICTIONS_BAND: chr  "Low" "Low" "Low" "Low" ...
 
 ------------------------------------------------------------------------
 
@@ -1127,7 +1134,7 @@ str(offenders_nona)
     ##  $ YOUTH_OR_ADULT       : chr  "Adult" "Adult" "Adult" "Adult" ...
     ##  $ AGE_BAND             : chr  "50-59" "50-59" "40-49" "50-59" ...
     ##  $ COURT_ORDER          : num  1 0 1 1 0 0 0 1 1 0 ...
-    ##  $ PREV_CONVICTIONS_BAND: chr  "0" "0" "0" "0" ...
+    ##  $ PREV_CONVICTIONS_BAND: chr  "Low" "Low" "Low" "Low" ...
 
 ------------------------------------------------------------------------
 
@@ -1379,7 +1386,7 @@ special kind of regex use where the values within the brackets are used
 to detect the kind of pattern to be used.
 
 The `names_pattern` or `name_sep()` options make explicit use of the
-`extract()` and `separete()` tools respectively (discussed in more
+`extract()` and `separate()` tools respectively (discussed in more
 detail in the next sections) utilizing regular expressions to detect the
 variable to pivot. In the former expression, the regex contained in the
 matching groups depicted within the brackets in the above expression, is
@@ -2240,7 +2247,7 @@ str_extract(more, colour_match)
 
 ## Replace Strings
 
-`str_replace` and `str_replace_all`allow you to replace parts of a
+`str_replace` and `str_replace_all` allow you to replace parts of a
 string that match a pattern with a new replacement string.
 
 ``` r
@@ -2268,8 +2275,8 @@ str_replace_all(x, c("1" = "one", "2" = "two", "3" = "three"))
 
     ## [1] "one house"    "two cars"     "three people"
 
-In addition, one can also use backrefferences and recycle elements of
-the same string as replacements
+In addition, one can also use backreferences and recycle elements of the
+same string as replacements
 
 ``` r
 sentences %>% 

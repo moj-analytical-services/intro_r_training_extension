@@ -8,10 +8,9 @@ str(offenders)
 # Conditional statements - solution to exercise 2
 offenders <- offenders %>%
   dplyr::mutate(PREV_CONVICTIONS_BAND = dplyr::case_when(
-    PREV_CONVICTIONS == 0 ~ "0",
-    PREV_CONVICTIONS <= 5 ~ "1-5",
-    PREV_CONVICTIONS <= 10 ~ "6-10",
-    PREV_CONVICTIONS > 10 ~ ">10",
+    PREV_CONVICTIONS < 5 ~ "Low",
+    PREV_CONVICTIONS <= 10 ~ "Medium",
+    PREV_CONVICTIONS > 10 ~ "High",
     TRUE ~ "Unknown"
   ))
 str(offenders)

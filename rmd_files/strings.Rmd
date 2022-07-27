@@ -343,7 +343,7 @@ str_extract(more, colour_match)
 
 ## Replace Strings
 
-`str_replace` and `str_replace_all`allow you to replace parts of a string that match a pattern with a new replacement string.
+`str_replace` and `str_replace_all` allow you to replace parts of a string that match a pattern with a new replacement string.
 
 
 ```{r, purl=purl_example_code, eval=T}
@@ -362,7 +362,7 @@ x <- c("1 house", "2 cars", "3 people")
 str_replace_all(x, c("1" = "one", "2" = "two", "3" = "three"))
 ```
 
-In addition, one can also use backrefferences and recycle elements of the same string as replacements
+In addition, one can also use backreferences and recycle elements of the same string as replacements
 
 ```{r, purl=purl_example_code, eval=T}
 sentences %>% 

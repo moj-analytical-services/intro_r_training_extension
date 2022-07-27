@@ -104,7 +104,7 @@ The `everything()` argument, as the name would suggest, picks the entire variabl
 Notice also the use of the `names_pattern = "(.)(.)"` option. This is a special kind of regex use where the values within the brackets are used to detect the kind of pattern to be used. 
 
 
-The `names_pattern` or `name_sep()` options make explicit use of the `extract()` and  `separete()` tools respectively (discussed in more detail in the  next sections) utilizing regular expressions to detect the variable to pivot. In the former expression, the regex contained in the matching groups depicted within the brackets in the above expression, is what distinguishes one part of the variable from the other.  
+The `names_pattern` or `name_sep()` options make explicit use of the `extract()` and  `separate()` tools respectively (discussed in more detail in the  next sections) utilizing regular expressions to detect the variable to pivot. In the former expression, the regex contained in the matching groups depicted within the brackets in the above expression, is what distinguishes one part of the variable from the other.  
 
 
 ## Widening the dataset
