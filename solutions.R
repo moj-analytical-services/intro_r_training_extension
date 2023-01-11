@@ -44,44 +44,44 @@ fruit %>% tidyr::replace_na(list(Cost = "Unknown",
 
 ## people = tibble::tribble(~name, ~key, ~value,
 ##                  #------------/------/-----,
-##                  "Phil Woods", "age",45,
-##                  "Phil Woods", "height",185,
-##                  "Phil Woods", "age",50,
-##                  "Jess Cordero", "age",45,
-##                  "Jess Cordero", "height",156,)
+##                  "Phil Woods", "age", 45,
+##                  "Phil Woods", "height", 185,
+##                  "Phil Woods", "age", 50,
+##                  "Jess Cordero", "age", 45,
+##                  "Jess Cordero", "height", 156,)
 
 ## rcj = tibble::tribble(~judge, ~male, ~female,
 ##                       "yes", NA, 10,
 ##                       "no", 20, 12)
 
-table4a %>% tidyr::pivot_longer(cols = !country, names_to = "year",values_to = "value")
+table4a %>% tidyr::pivot_longer(cols = !country, names_to = "year", values_to = "value")
 
 #without changing anything on the dataset
 people = tibble::tribble(~name, ~key, ~value,
                  #------------/------/-----,
-                 "Phil Woods", "age",45,
-                 "Phil Woods", "height",185,
-                 "Phil Woods", "age",50,
-                 "Jess Cordero", "age",45,
-                 "Jess Cordero", "height",156,)
+                 "Phil Woods", "age", 45,
+                 "Phil Woods", "height", 185,
+                 "Phil Woods", "age", 50,
+                 "Jess Cordero", "age", 45,
+                 "Jess Cordero", "height", 156,)
 people %>% tidyr::pivot_wider(names_from = name, values_from = value)
 # solution 1 - adding a new column
 people = tibble::tribble(~name, ~key, ~value, ~dkey,
                  #------------/------/-----,
-                 "Phil Woods", "age",45,1,
-                 "Phil Woods", "height",185,1,
-                 "Phil Woods", "age",50,0,
-                 "Jess Cordero", "age",45,1,
-                 "Jess Cordero", "height",156,1)
+                 "Phil Woods", "age", 45, 1,
+                 "Phil Woods", "height", 185, 1,
+                 "Phil Woods", "age", 50, 0,
+                 "Jess Cordero", "age", 45, 1,
+                 "Jess Cordero", "height", 156, 1)
 people %>% tidyr::pivot_wider(names_from = name, values_from = value)
 #solution 2  - uniqueness
 people = tibble::tribble(~name, ~key, ~value,
                  #------------/------/-----,
-                 "Phil Woods", "age",45,
-                 "Phil Woods", "height",185,
-                 # "Phil Woods", "age",50,
-                 "Jess Cordero", "age",45,
-                 "Jess Cordero", "height",156,)
+                 "Phil Woods", "age", 45,
+                 "Phil Woods", "height", 185,
+                 # "Phil Woods", "age", 50,
+                 "Jess Cordero", "age", 45,
+                 "Jess Cordero", "height", 156,)
 people %>% tidyr::pivot_wider(names_from = name, values_from = value)
 
 rcj = tibble::tribble( ~judge, ~male, ~female,
@@ -92,7 +92,7 @@ rcj = tibble::tribble( ~judge, ~male, ~female,
 #                     "yes", 4, 10, 
 #                     "no", 20, 12)
 #use of pivot_longer
-rcj %>% tidyr::pivot_longer(cols = c(male, female),   names_to = "gender", values_to = "count")
+rcj %>% tidyr::pivot_longer(cols = c(male, female), names_to = "gender", values_to = "count")
 
 # use of  pivot_wider 
 rcj %>% tidyr::pivot_wider(names_from = judge, values_from = c(male, female))
@@ -203,11 +203,11 @@ words[start_with_x | end_with_x] %>% head(5)
 #> [1] "add" "afford" "and" "around" "attend"
 
 stringr::str_subset(words, "^[aeiou].*[^aeiou]$") %>% head()
-#> [1] "about"   "accept"  "account" "across"  "act"     "actual"
+#> [1] "about"  "accept"  "account" "across"  "act"  "actual"
 start_with_vowel <- stringr::str_detect(words, "^[aeiou]")
 end_with_consonant <- stringr::str_detect(words, "[^aeiou]$")
 words[start_with_vowel & end_with_consonant] %>% head()
-#> [1] "about"   "accept"  "account" "across"  "act"     "actual"
+#> [1] "about"  "accept"  "account" "across"  "act"  "actual"
 
 
 

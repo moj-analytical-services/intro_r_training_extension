@@ -4053,18 +4053,18 @@ df</pre>
 <pre >## # A tibble: 12 × 3
 ##    year  quarter count
 ##    &lt;chr&gt; &lt;chr&gt;   &lt;int&gt;
-##  1 2017  Q1         11
+##  1 2017  Q1         10
 ##  2 &lt;NA&gt;  Q2         12
-##  3 &lt;NA&gt;  Q3          8
-##  4 &lt;NA&gt;  Q4          5
-##  5 2018  Q1          7
-##  6 &lt;NA&gt;  Q2          4
+##  3 &lt;NA&gt;  Q3          6
+##  4 &lt;NA&gt;  Q4         11
+##  5 2018  Q1          4
+##  6 &lt;NA&gt;  Q2          9
 ##  7 &lt;NA&gt;  Q3          2
-##  8 &lt;NA&gt;  Q4          9
-##  9 2019  Q1         10
+##  8 &lt;NA&gt;  Q4          8
+##  9 2019  Q1          3
 ## 10 &lt;NA&gt;  Q2          1
-## 11 &lt;NA&gt;  Q3          3
-## 12 &lt;NA&gt;  Q4          6</pre>
+## 11 &lt;NA&gt;  Q3          7
+## 12 &lt;NA&gt;  Q4          5</pre>
 
 </article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
 
@@ -4076,18 +4076,18 @@ df %&gt;% tidyr::fill(year)</pre>
 <pre >## # A tibble: 12 × 3
 ##    year  quarter count
 ##    &lt;chr&gt; &lt;chr&gt;   &lt;int&gt;
-##  1 2017  Q1         11
+##  1 2017  Q1         10
 ##  2 2017  Q2         12
-##  3 2017  Q3          8
-##  4 2017  Q4          5
-##  5 2018  Q1          7
-##  6 2018  Q2          4
+##  3 2017  Q3          6
+##  4 2017  Q4         11
+##  5 2018  Q1          4
+##  6 2018  Q2          9
 ##  7 2018  Q3          2
-##  8 2018  Q4          9
-##  9 2019  Q1         10
+##  8 2018  Q4          8
+##  9 2019  Q1          3
 ## 10 2019  Q2          1
-## 11 2019  Q3          3
-## 12 2019  Q4          6</pre>
+## 11 2019  Q3          7
+## 12 2019  Q4          5</pre>
 
 </article></slide><slide class=""><hgroup><h2>Removing rows with missing values from a dataframe</h2></hgroup><article  id="removing-rows-with-missing-values-from-a-dataframe" class="smaller ">
 
@@ -4238,7 +4238,7 @@ billboard %&gt;% dplyr::arrange(desc(date.entered)) %&gt;% dplyr::select(1:6) %&
 <p>Using <code>pivot_longer</code> allows us to map the given columns <code>(wk1,wk2, wk3, wk4)</code> to the specified variable, in this case, <code>month1</code>.</p>
 
 <pre class = 'prettyprint lang-r'>#starting by mapping a single month 
-billboard %&gt;% tidyr::pivot_longer(cols = c(wk1,wk2, wk3, wk4), names_to = &quot;month1&quot;, values_to = &quot;rank&quot;) %&gt;% 
+billboard %&gt;% tidyr::pivot_longer(cols = c(wk1, wk2, wk3, wk4), names_to = &quot;month1&quot;, values_to = &quot;rank&quot;) %&gt;% 
   dplyr::select(1:5, &quot;month1&quot;, &quot;rank&quot;) %&gt;% head()</pre>
 
 <pre >## # A tibble: 6 × 7
@@ -4311,7 +4311,7 @@ anscombe</pre>
 <pre class = 'prettyprint lang-r'># using &quot;.value&quot; and &quot;everything()&quot; to select common variables
 anscombe %&gt;% tidyr::pivot_longer(everything(),
    names_to = c(&quot;.value&quot;, &quot;set&quot;),
-   names_pattern = &quot;(.)(.)&quot; )</pre>
+   names_pattern = &quot;(.)(.)&quot;)</pre>
 
 <pre >## # A tibble: 44 × 3
 ##    set       x     y
@@ -4398,7 +4398,7 @@ anscombe %&gt;% tidyr::pivot_longer(everything(),
 <p>Consider the <code>warpbreaks</code> dataset that comes with basic R, it describes the results of a designed experiment with nine replicates for every combination of wool (A and B) and tension (L, M, H).</p>
 
 <pre class = 'prettyprint lang-r'>#converting into a tibble and rearranging the vars
-warpbreaks %&gt;% tibble::as_tibble() %&gt;% dplyr::select(wool,tension, breaks)</pre>
+warpbreaks %&gt;% tibble::as_tibble() %&gt;% dplyr::select(wool, tension, breaks)</pre>
 
 <pre >## # A tibble: 54 × 3
 ##    wool  tension breaks
@@ -4458,7 +4458,7 @@ warpbreaks %&gt;% tibble::as_tibble() %&gt;% dplyr::select(wool,tension, breaks)
 
 <pre class = 'prettyprint lang-r'>#the table to use
 table4a
-table4a %&gt;% tidyr::pivot_longer(1999,2000, names_to = &quot;year&quot;,values_to = &quot;value&quot;)</pre>
+table4a %&gt;% tidyr::pivot_longer(1999, 2000, names_to = &quot;year&quot;, values_to = &quot;value&quot;)</pre>
 
 <h3>Exercise 2</h3>
 
@@ -4468,11 +4468,11 @@ table4a %&gt;% tidyr::pivot_longer(1999,2000, names_to = &quot;year&quot;,values
 
 <pre class = 'prettyprint lang-r'>people = tibble::tribble(~name, ~key, ~value,
                  #------------/------/-----,
-                 &quot;Phil Woods&quot;, &quot;age&quot;,45,
-                 &quot;Phil Woods&quot;, &quot;height&quot;,185,
-                 &quot;Phil Woods&quot;, &quot;age&quot;,50,
-                 &quot;Jess Cordero&quot;, &quot;age&quot;,45,
-                 &quot;Jess Cordero&quot;, &quot;height&quot;,156,)</pre>
+                 &quot;Phil Woods&quot;, &quot;age&quot;, 45,
+                 &quot;Phil Woods&quot;, &quot;height&quot;, 185,
+                 &quot;Phil Woods&quot;, &quot;age&quot;, 50,
+                 &quot;Jess Cordero&quot;, &quot;age&quot;, 45,
+                 &quot;Jess Cordero&quot;, &quot;height&quot;, 156,)</pre>
 
 </article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
 
@@ -4488,7 +4488,7 @@ table4a %&gt;% tidyr::pivot_longer(1999,2000, names_to = &quot;year&quot;,values
 
 <h3>Exercise 1</h3>
 
-<pre class = 'prettyprint lang-r'>table4a %&gt;% tidyr::pivot_longer(cols = !country, names_to = &quot;year&quot;,values_to = &quot;value&quot;)</pre>
+<pre class = 'prettyprint lang-r'>table4a %&gt;% tidyr::pivot_longer(cols = !country, names_to = &quot;year&quot;, values_to = &quot;value&quot;)</pre>
 
 <pre >## # A tibble: 6 × 3
 ##   country     year   value
@@ -4507,11 +4507,11 @@ table4a %&gt;% tidyr::pivot_longer(1999,2000, names_to = &quot;year&quot;,values
 <pre class = 'prettyprint lang-r'>#without changing anything on the dataset
 people = tibble::tribble(~name, ~key, ~value,
                  #------------/------/-----,
-                 &quot;Phil Woods&quot;, &quot;age&quot;,45,
-                 &quot;Phil Woods&quot;, &quot;height&quot;,185,
-                 &quot;Phil Woods&quot;, &quot;age&quot;,50,
-                 &quot;Jess Cordero&quot;, &quot;age&quot;,45,
-                 &quot;Jess Cordero&quot;, &quot;height&quot;,156,)
+                 &quot;Phil Woods&quot;, &quot;age&quot;, 45,
+                 &quot;Phil Woods&quot;, &quot;height&quot;, 185,
+                 &quot;Phil Woods&quot;, &quot;age&quot;, 50,
+                 &quot;Jess Cordero&quot;, &quot;age&quot;, 45,
+                 &quot;Jess Cordero&quot;, &quot;height&quot;, 156,)
 people %&gt;% tidyr::pivot_wider(names_from = name, values_from = value)</pre>
 
 <pre >## # A tibble: 2 × 3
@@ -4523,11 +4523,11 @@ people %&gt;% tidyr::pivot_wider(names_from = name, values_from = value)</pre>
 <pre class = 'prettyprint lang-r'># solution 1 - adding a new column
 people = tibble::tribble(~name, ~key, ~value, ~dkey,
                  #------------/------/-----,
-                 &quot;Phil Woods&quot;, &quot;age&quot;,45,1,
-                 &quot;Phil Woods&quot;, &quot;height&quot;,185,1,
-                 &quot;Phil Woods&quot;, &quot;age&quot;,50,0,
-                 &quot;Jess Cordero&quot;, &quot;age&quot;,45,1,
-                 &quot;Jess Cordero&quot;, &quot;height&quot;,156,1)
+                 &quot;Phil Woods&quot;, &quot;age&quot;, 45, 1,
+                 &quot;Phil Woods&quot;, &quot;height&quot;, 185, 1,
+                 &quot;Phil Woods&quot;, &quot;age&quot;, 50, 0,
+                 &quot;Jess Cordero&quot;, &quot;age&quot;, 45, 1,
+                 &quot;Jess Cordero&quot;, &quot;height&quot;, 156, 1)
 people %&gt;% tidyr::pivot_wider(names_from = name, values_from = value)</pre>
 
 <pre >## # A tibble: 3 × 4
@@ -4540,11 +4540,11 @@ people %&gt;% tidyr::pivot_wider(names_from = name, values_from = value)</pre>
 <pre class = 'prettyprint lang-r'>#solution 2  - uniqueness
 people = tibble::tribble(~name, ~key, ~value,
                  #------------/------/-----,
-                 &quot;Phil Woods&quot;, &quot;age&quot;,45,
-                 &quot;Phil Woods&quot;, &quot;height&quot;,185,
-                 # &quot;Phil Woods&quot;, &quot;age&quot;,50,
-                 &quot;Jess Cordero&quot;, &quot;age&quot;,45,
-                 &quot;Jess Cordero&quot;, &quot;height&quot;,156,)
+                 &quot;Phil Woods&quot;, &quot;age&quot;, 45,
+                 &quot;Phil Woods&quot;, &quot;height&quot;, 185,
+                 # &quot;Phil Woods&quot;, &quot;age&quot;, 50,
+                 &quot;Jess Cordero&quot;, &quot;age&quot;, 45,
+                 &quot;Jess Cordero&quot;, &quot;height&quot;, 156,)
 people %&gt;% tidyr::pivot_wider(names_from = name, values_from = value)</pre>
 
 <pre >## # A tibble: 2 × 3
@@ -4565,7 +4565,7 @@ people %&gt;% tidyr::pivot_wider(names_from = name, values_from = value)</pre>
 #                     &quot;yes&quot;, 4, 10, 
 #                     &quot;no&quot;, 20, 12)
 #use of pivot_longer
-rcj %&gt;% tidyr::pivot_longer(cols = c(male, female),   names_to = &quot;gender&quot;, values_to = &quot;count&quot;)</pre>
+rcj %&gt;% tidyr::pivot_longer(cols = c(male, female), names_to = &quot;gender&quot;, values_to = &quot;count&quot;)</pre>
 
 <pre >## # A tibble: 4 × 3
 ##   judge gender count
@@ -4662,7 +4662,7 @@ table3 %&gt;% tidyr::separate(rate, into = c(&quot;cases&quot;, &quot;population
 
 <p>The <code>extract()</code> function lets you go a step further and allows you to define your own regex to be used for pattern patching. Using the same example as above, lets see how to split the <code>year</code> variable to <code>century</code> and <code>years</code>.</p>
 
-<pre class = 'prettyprint lang-r'>table3 %&gt;% tidyr::extract( col = year, into = c(&quot;century&quot;,&quot;years&quot;), regex = &quot;([0-9]{2})([0-9]{2})&quot;)</pre>
+<pre class = 'prettyprint lang-r'>table3 %&gt;% tidyr::extract(col = year, into = c(&quot;century&quot;, &quot;years&quot;), regex = &quot;([0-9]{2})([0-9]{2})&quot;)</pre>
 
 <pre >## # A tibble: 6 × 4
 ##   country     century years rate             
@@ -4678,7 +4678,7 @@ table3 %&gt;% tidyr::separate(rate, into = c(&quot;cases&quot;, &quot;population
 
 <p>The <code>regex</code> option shown above uses the same syntax as described earlier in the chapter, in fact, it is possible to split the target variable into several others by expanding the bracket list as shown in the following block of code. The year variable is now split into three variables to depict the <code>century</code>, <code>decade</code> and <code>year</code>.</p>
 
-<pre class = 'prettyprint lang-r'>table3 %&gt;% tidyr::extract( col = year, into = c(&quot;century&quot;,&quot;decade&quot;,&quot;year&quot; ), regex = &quot;([0-9]{2})([0-9])([0-9])&quot;)</pre>
+<pre class = 'prettyprint lang-r'>table3 %&gt;% tidyr::extract(col = year, into = c(&quot;century&quot;, &quot;decade&quot;, &quot;year&quot; ), regex = &quot;([0-9]{2})([0-9])([0-9])&quot;)</pre>
 
 <pre >## # A tibble: 6 × 5
 ##   country     century decade year  rate             
@@ -4698,9 +4698,9 @@ table3 %&gt;% tidyr::separate(rate, into = c(&quot;cases&quot;, &quot;population
 
 <pre class = 'prettyprint lang-r'>#the reshaped dataset
 tab3 = table3 %&gt;% 
-  tidyr::extract( col = year, into = c(&quot;century&quot;,&quot;decade&quot;,&quot;year&quot; ), regex = &quot;([0-9]{2})([0-9])([0-9])&quot;)
+  tidyr::extract(col = year, into = c(&quot;century&quot;, &quot;decade&quot;, &quot;year&quot; ), regex = &quot;([0-9]{2})([0-9])([0-9])&quot;)
 #going back to the original dataset - with separator
-tab3 %&gt;% tidyr::unite(new ,century, decade, year)</pre>
+tab3 %&gt;% tidyr::unite(new, century, decade, year)</pre>
 
 <pre >## # A tibble: 6 × 3
 ##   country     new    rate             
@@ -4717,7 +4717,7 @@ tab3 %&gt;% tidyr::unite(new ,century, decade, year)</pre>
 <p>By default, the <code>_</code> separator is used after each component of the composite variable but as always, there are option in place to customize this behavior. In the following block of code the separator is removed giving the original variable before any alteration takes place.</p>
 
 <pre class = 'prettyprint lang-r'>#going back to the original dataset - with no separators
-tab3 %&gt;% tidyr::unite(new ,century, decade, year, sep = &quot;&quot;)</pre>
+tab3 %&gt;% tidyr::unite(new, century, decade, year, sep = &quot;&quot;)</pre>
 
 <pre >## # A tibble: 6 × 3
 ##   country     new   rate             
@@ -4896,7 +4896,7 @@ stringr::str_c(&quot;an&quot;, &quot;str_c vector&quot;, &quot;with&quot;, &quot
 <p>In addition, it can also work to recycle shorter vectors to mach the longer ones as in the following example.</p>
 
 <pre class = 'prettyprint lang-r'># vectorized form - translating a shorter vector to match the longer one
-stringr::str_c(&quot;a&quot;, c(&quot;b&quot;, &quot;c&quot;, &quot;d&quot;), &quot;c&quot;, sep = &quot; &quot; )</pre>
+stringr::str_c(&quot;a&quot;, c(&quot;b&quot;, &quot;c&quot;, &quot;d&quot;), &quot;c&quot;, sep = &quot; &quot;)</pre>
 
 <pre >## [1] &quot;a b c&quot; &quot;a c c&quot; &quot;a d c&quot;</pre>
 
@@ -4927,7 +4927,7 @@ stringr::str_sub(x, -4, -1)</pre>
 <pre >## [1] &quot;alue&quot; &quot;alue&quot; &quot;alue&quot;</pre>
 
 <pre class = 'prettyprint lang-r'># The function will not fail in the example below
-stringr::str_sub(&quot;a&quot;, 1,5)</pre>
+stringr::str_sub(&quot;a&quot;, 1, 5)</pre>
 
 <pre >## [1] &quot;a&quot;</pre>
 
@@ -5051,7 +5051,7 @@ stringr::str_detect(x, &quot;e&quot;)</pre>
 
 </article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
 
-<p>A very handy way of using it, is by taking advantage of how <code>R</code> translates <code>TRUE</code> (evaluated as <code>1</code>) and <code>FALSE</code> (evaluated as <code>0</code>) responses. In the example below using the <code>sum</code> and <code>mean</code> functions makes counting instances of a pattern being detected much easier.</p>
+<p>A very handy way of using it, is by taking advantage of how R translates <code>TRUE</code> (evaluated as <code>1</code>) and <code>FALSE</code> (evaluated as <code>0</code>) responses. In the example below using the <code>sum</code> and <code>mean</code> functions makes counting instances of a pattern being detected much easier.</p>
 
 <pre class = 'prettyprint lang-r'># How many common words start with t?
 sum(stringr::str_detect(words, &quot;^t&quot;))</pre>
@@ -5223,14 +5223,14 @@ words[start_with_x | end_with_x] %&gt;% head(5)</pre>
 
 <pre >## [1] &quot;about&quot;   &quot;accept&quot;  &quot;account&quot; &quot;across&quot;  &quot;act&quot;     &quot;actual&quot;</pre>
 
-<pre class = 'prettyprint lang-r'>#&gt; [1] &quot;about&quot;   &quot;accept&quot;  &quot;account&quot; &quot;across&quot;  &quot;act&quot;     &quot;actual&quot;
+<pre class = 'prettyprint lang-r'>#&gt; [1] &quot;about&quot;  &quot;accept&quot;  &quot;account&quot; &quot;across&quot;  &quot;act&quot;  &quot;actual&quot;
 start_with_vowel &lt;- stringr::str_detect(words, &quot;^[aeiou]&quot;)
 end_with_consonant &lt;- stringr::str_detect(words, &quot;[^aeiou]$&quot;)
 words[start_with_vowel &amp; end_with_consonant] %&gt;% head()</pre>
 
 <pre >## [1] &quot;about&quot;   &quot;accept&quot;  &quot;account&quot; &quot;across&quot;  &quot;act&quot;     &quot;actual&quot;</pre>
 
-<pre class = 'prettyprint lang-r'>#&gt; [1] &quot;about&quot;   &quot;accept&quot;  &quot;account&quot; &quot;across&quot;  &quot;act&quot;     &quot;actual&quot;</pre>
+<pre class = 'prettyprint lang-r'>#&gt; [1] &quot;about&quot;  &quot;accept&quot;  &quot;account&quot; &quot;across&quot;  &quot;act&quot;  &quot;actual&quot;</pre>
 
 </article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
 

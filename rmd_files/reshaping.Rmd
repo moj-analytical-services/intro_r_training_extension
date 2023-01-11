@@ -43,7 +43,7 @@ Using `pivot_longer` allows us to map the given columns `(wk1,wk2, wk3, wk4)` to
 ```{r, purl=purl_example_code ,eval=T}
 
 #starting by mapping a single month 
-billboard %>% tidyr::pivot_longer(cols = c(wk1,wk2, wk3, wk4), names_to = "month1", values_to = "rank") %>% 
+billboard %>% tidyr::pivot_longer(cols = c(wk1, wk2, wk3, wk4), names_to = "month1", values_to = "rank") %>% 
   dplyr::select(1:5, "month1", "rank") %>% head()
 #and to see clearly the contents of the new variable
 # billboard %>% pivot_longer(cols = c(wk1,wk2, wk3, wk4), names_to = "month1", values_to = "rank") %>%
@@ -90,7 +90,7 @@ In such cases, `pivot_longer` offers an elegant solution to the problem by autom
 # using ".value" and "everything()" to select common variables
 anscombe %>% tidyr::pivot_longer(everything(),
    names_to = c(".value", "set"),
-   names_pattern = "(.)(.)" )
+   names_pattern = "(.)(.)")
 ```
 
 
@@ -145,7 +145,7 @@ Consider the  `warpbreaks` dataset that comes with basic R, it describes the res
 
 ```{r, purl=purl_example_code, eval=T}
 #converting into a tibble and rearranging the vars
-warpbreaks %>% tibble::as_tibble() %>% dplyr::select(wool,tension, breaks)
+warpbreaks %>% tibble::as_tibble() %>% dplyr::select(wool, tension, breaks)
 ```
 
 ---
@@ -182,7 +182,7 @@ Why does the following code fail?
 ```{r, purl=purl_example_code, eval=F}
 #the table to use
 table4a
-table4a %>% tidyr::pivot_longer(1999,2000, names_to = "year",values_to = "value")
+table4a %>% tidyr::pivot_longer(1999, 2000, names_to = "year", values_to = "value")
 ```
 
 
@@ -198,11 +198,11 @@ Hint. Could a new column solve the problem, what other solution could we apply?
 ```{r, eval=F}
 people = tibble::tribble(~name, ~key, ~value,
                  #------------/------/-----,
-                 "Phil Woods", "age",45,
-                 "Phil Woods", "height",185,
-                 "Phil Woods", "age",50,
-                 "Jess Cordero", "age",45,
-                 "Jess Cordero", "height",156,)
+                 "Phil Woods", "age", 45,
+                 "Phil Woods", "height", 185,
+                 "Phil Woods", "age", 50,
+                 "Jess Cordero", "age", 45,
+                 "Jess Cordero", "height", 156,)
 ```
 
 ---
@@ -225,7 +225,7 @@ rcj = tibble::tribble(~judge, ~male, ~female,
 ### Exercise 1
 
 ```{r, include=show_solution, purl=purl_solutions}
-table4a %>% tidyr::pivot_longer(cols = !country, names_to = "year",values_to = "value")
+table4a %>% tidyr::pivot_longer(cols = !country, names_to = "year", values_to = "value")
 ```
 
 ---
@@ -237,29 +237,29 @@ table4a %>% tidyr::pivot_longer(cols = !country, names_to = "year",values_to = "
 #without changing anything on the dataset
 people = tibble::tribble(~name, ~key, ~value,
                  #------------/------/-----,
-                 "Phil Woods", "age",45,
-                 "Phil Woods", "height",185,
-                 "Phil Woods", "age",50,
-                 "Jess Cordero", "age",45,
-                 "Jess Cordero", "height",156,)
+                 "Phil Woods", "age", 45,
+                 "Phil Woods", "height", 185,
+                 "Phil Woods", "age", 50,
+                 "Jess Cordero", "age", 45,
+                 "Jess Cordero", "height", 156,)
 people %>% tidyr::pivot_wider(names_from = name, values_from = value)
 # solution 1 - adding a new column
 people = tibble::tribble(~name, ~key, ~value, ~dkey,
                  #------------/------/-----,
-                 "Phil Woods", "age",45,1,
-                 "Phil Woods", "height",185,1,
-                 "Phil Woods", "age",50,0,
-                 "Jess Cordero", "age",45,1,
-                 "Jess Cordero", "height",156,1)
+                 "Phil Woods", "age", 45, 1,
+                 "Phil Woods", "height", 185, 1,
+                 "Phil Woods", "age", 50, 0,
+                 "Jess Cordero", "age", 45, 1,
+                 "Jess Cordero", "height", 156, 1)
 people %>% tidyr::pivot_wider(names_from = name, values_from = value)
 #solution 2  - uniqueness
 people = tibble::tribble(~name, ~key, ~value,
                  #------------/------/-----,
-                 "Phil Woods", "age",45,
-                 "Phil Woods", "height",185,
-                 # "Phil Woods", "age",50,
-                 "Jess Cordero", "age",45,
-                 "Jess Cordero", "height",156,)
+                 "Phil Woods", "age", 45,
+                 "Phil Woods", "height", 185,
+                 # "Phil Woods", "age", 50,
+                 "Jess Cordero", "age", 45,
+                 "Jess Cordero", "height", 156,)
 people %>% tidyr::pivot_wider(names_from = name, values_from = value)
 ```
 
@@ -277,7 +277,7 @@ rcj = tibble::tribble( ~judge, ~male, ~female,
 #                     "yes", 4, 10, 
 #                     "no", 20, 12)
 #use of pivot_longer
-rcj %>% tidyr::pivot_longer(cols = c(male, female),   names_to = "gender", values_to = "count")
+rcj %>% tidyr::pivot_longer(cols = c(male, female), names_to = "gender", values_to = "count")
 ```
 
 ---
@@ -342,7 +342,7 @@ table3 %>% tidyr::separate(rate, into = c("cases", "population"), sep = "/", con
 The `extract()` function lets you go a step further and allows you to define your own regex to be used for pattern patching. Using the same example as above, lets see how to split the `year` variable to `century` and `years`.
 
 ```{r, purl=purl_example_code, eval=T}
-table3 %>% tidyr::extract( col = year, into = c("century","years"), regex = "([0-9]{2})([0-9]{2})")
+table3 %>% tidyr::extract(col = year, into = c("century", "years"), regex = "([0-9]{2})([0-9]{2})")
 ```
 
 ---
@@ -351,7 +351,7 @@ The `regex` option shown above uses the same syntax as described earlier in the 
 
 
 ```{r, purl=purl_example_code, eval=T}
-table3 %>% tidyr::extract( col = year, into = c("century","decade","year" ), regex = "([0-9]{2})([0-9])([0-9])")
+table3 %>% tidyr::extract(col = year, into = c("century", "decade", "year" ), regex = "([0-9]{2})([0-9])([0-9])")
 ```
 
 In addition, internally the pivot functions make explicit use of  `separate()` and `extract()` whenever a split or a regular expression is need to capture patterns present in name or within the content of a variable in the dataset. 
@@ -366,9 +366,9 @@ Of course, extracting and creating new variables would not be complete without a
 ```{r, purl=purl_example_code, eval=T}
 #the reshaped dataset
 tab3 = table3 %>% 
-  tidyr::extract( col = year, into = c("century","decade","year" ), regex = "([0-9]{2})([0-9])([0-9])")
+  tidyr::extract(col = year, into = c("century", "decade", "year" ), regex = "([0-9]{2})([0-9])([0-9])")
 #going back to the original dataset - with separator
-tab3 %>% tidyr::unite(new ,century, decade, year)
+tab3 %>% tidyr::unite(new, century, decade, year)
 ```
 
 ---
@@ -378,7 +378,7 @@ By default, the `_` separator is used after each component of the composite vari
 
 ```{r, purl=purl_example_code, eval=T}
 #going back to the original dataset - with no separators
-tab3 %>% tidyr::unite(new ,century, decade, year, sep = "")
+tab3 %>% tidyr::unite(new, century, decade, year, sep = "")
 ```
 
 

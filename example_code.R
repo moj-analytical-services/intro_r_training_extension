@@ -293,7 +293,7 @@ billboard %>% dplyr::arrange(desc(date.entered)) %>% dplyr::select(1:6) %>% head
 
 
 #starting by mapping a single month 
-billboard %>% tidyr::pivot_longer(cols = c(wk1,wk2, wk3, wk4), names_to = "month1", values_to = "rank") %>% 
+billboard %>% tidyr::pivot_longer(cols = c(wk1, wk2, wk3, wk4), names_to = "month1", values_to = "rank") %>% 
   dplyr::select(1:5, "month1", "rank") %>% head()
 #and to see clearly the contents of the new variable
 # billboard %>% pivot_longer(cols = c(wk1,wk2, wk3, wk4), names_to = "month1", values_to = "rank") %>%
@@ -308,7 +308,7 @@ anscombe
 # using ".value" and "everything()" to select common variables
 anscombe %>% tidyr::pivot_longer(everything(),
    names_to = c(".value", "set"),
-   names_pattern = "(.)(.)" )
+   names_pattern = "(.)(.)")
 
 fish_encounters %>% head(10)
 
@@ -318,7 +318,7 @@ fish_encounters %>% tidyr::pivot_wider(names_from = station, values_from = seen,
   values_fill = list(seen = 0)) %>% head()
 
 #converting into a tibble and rearranging the vars
-warpbreaks %>% tibble::as_tibble() %>% dplyr::select(wool,tension, breaks)
+warpbreaks %>% tibble::as_tibble() %>% dplyr::select(wool, tension, breaks)
 
 warpdata = warpbreaks %>% tidyr::pivot_wider(names_from = wool, values_from = breaks)
 
@@ -331,15 +331,15 @@ warpbreaks %>%
 
 ## #the table to use
 ## table4a
-## table4a %>% tidyr::pivot_longer(1999,2000, names_to = "year",values_to = "value")
+## table4a %>% tidyr::pivot_longer(1999, 2000, names_to = "year", values_to = "value")
 
 ## people = tibble::tribble(~name, ~key, ~value,
 ##                  #------------/------/-----,
-##                  "Phil Woods", "age",45,
-##                  "Phil Woods", "height",185,
-##                  "Phil Woods", "age",50,
-##                  "Jess Cordero", "age",45,
-##                  "Jess Cordero", "height",156,)
+##                  "Phil Woods", "age", 45,
+##                  "Phil Woods", "height", 185,
+##                  "Phil Woods", "age", 50,
+##                  "Jess Cordero", "age", 45,
+##                  "Jess Cordero", "height", 156,)
 
 ## rcj = tibble::tribble(~judge, ~male, ~female,
 ##                       "yes", NA, 10,
@@ -364,18 +364,18 @@ table3 %>% tidyr::separate(rate, into = c("cases", "population"), sep = "/")
 # separate() manually detects the separator and converts the columns into the appropriate data type 
 table3 %>% tidyr::separate(rate, into = c("cases", "population"), sep = "/", convert = TRUE)
 
-table3 %>% tidyr::extract( col = year, into = c("century","years"), regex = "([0-9]{2})([0-9]{2})")
+table3 %>% tidyr::extract(col = year, into = c("century", "years"), regex = "([0-9]{2})([0-9]{2})")
 
-table3 %>% tidyr::extract( col = year, into = c("century","decade","year" ), regex = "([0-9]{2})([0-9])([0-9])")
+table3 %>% tidyr::extract(col = year, into = c("century", "decade", "year" ), regex = "([0-9]{2})([0-9])([0-9])")
 
 #the reshaped dataset
 tab3 = table3 %>% 
-  tidyr::extract( col = year, into = c("century","decade","year" ), regex = "([0-9]{2})([0-9])([0-9])")
+  tidyr::extract(col = year, into = c("century", "decade", "year" ), regex = "([0-9]{2})([0-9])([0-9])")
 #going back to the original dataset - with separator
-tab3 %>% tidyr::unite(new ,century, decade, year)
+tab3 %>% tidyr::unite(new, century, decade, year)
 
 #going back to the original dataset - with no separators
-tab3 %>% tidyr::unite(new ,century, decade, year, sep = "")
+tab3 %>% tidyr::unite(new, century, decade, year, sep = "")
 
 ## tibble::tibble(x = c("a,b,c", "d,e,f,g", "h,i,j")) %>%
 ##   tidyr::separate(x, c("one", "two", "three"))
@@ -418,7 +418,7 @@ stringr::str_c("an", "str_c vector", "with", "space", "character", "separating e
 stringr::str_c("an", "str_c vector", "with", "space", "character", "separating each entry", collapse = T)
 
 # vectorized form - translating a shorter vector to match the longer one
-stringr::str_c("a", c("b", "c", "d"), "c", sep = " " )
+stringr::str_c("a", c("b", "c", "d"), "c", sep = " ")
 # simpler vectorizing 
 stringr::str_c("a", c("b", "c", "d"))
 # c() comparison
@@ -429,7 +429,7 @@ stringr::str_sub(x, 1, 3)
 # negative numbers count backwards from end
 stringr::str_sub(x, -4, -1)
 # The function will not fail in the example below
-stringr::str_sub("a", 1,5)
+stringr::str_sub("a", 1, 5)
 
 stringr::str_sub(x, 1, 1) <- stringr::str_to_lower(stringr::str_sub(x, 1, 1))
 x

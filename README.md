@@ -1037,17 +1037,17 @@ df
     ##    year  quarter count
     ##    <chr> <chr>   <int>
     ##  1 2017  Q1          3
-    ##  2 <NA>  Q2         12
-    ##  3 <NA>  Q3          5
+    ##  2 <NA>  Q2          1
+    ##  3 <NA>  Q3          4
     ##  4 <NA>  Q4          2
-    ##  5 2018  Q1          8
-    ##  6 <NA>  Q2         10
-    ##  7 <NA>  Q3          4
-    ##  8 <NA>  Q4          7
-    ##  9 2019  Q1          6
+    ##  5 2018  Q1          9
+    ##  6 <NA>  Q2          6
+    ##  7 <NA>  Q3          7
+    ##  8 <NA>  Q4         10
+    ##  9 2019  Q1         12
     ## 10 <NA>  Q2         11
-    ## 11 <NA>  Q3          1
-    ## 12 <NA>  Q4          9
+    ## 11 <NA>  Q3          5
+    ## 12 <NA>  Q4          8
 
 ------------------------------------------------------------------------
 
@@ -1063,17 +1063,17 @@ df %>% tidyr::fill(year)
     ##    year  quarter count
     ##    <chr> <chr>   <int>
     ##  1 2017  Q1          3
-    ##  2 2017  Q2         12
-    ##  3 2017  Q3          5
+    ##  2 2017  Q2          1
+    ##  3 2017  Q3          4
     ##  4 2017  Q4          2
-    ##  5 2018  Q1          8
-    ##  6 2018  Q2         10
-    ##  7 2018  Q3          4
-    ##  8 2018  Q4          7
-    ##  9 2019  Q1          6
+    ##  5 2018  Q1          9
+    ##  6 2018  Q2          6
+    ##  7 2018  Q3          7
+    ##  8 2018  Q4         10
+    ##  9 2019  Q1         12
     ## 10 2019  Q2         11
-    ## 11 2019  Q3          1
-    ## 12 2019  Q4          9
+    ## 11 2019  Q3          5
+    ## 12 2019  Q4          8
 
 ## Removing rows with missing values from a dataframe
 
@@ -1251,7 +1251,7 @@ Using `pivot_longer` allows us to map the given columns
 
 ``` r
 #starting by mapping a single month 
-billboard %>% tidyr::pivot_longer(cols = c(wk1,wk2, wk3, wk4), names_to = "month1", values_to = "rank") %>% 
+billboard %>% tidyr::pivot_longer(cols = c(wk1, wk2, wk3, wk4), names_to = "month1", values_to = "rank") %>% 
   dplyr::select(1:5, "month1", "rank") %>% head()
 ```
 
@@ -1350,7 +1350,7 @@ variables.
 # using ".value" and "everything()" to select common variables
 anscombe %>% tidyr::pivot_longer(everything(),
    names_to = c(".value", "set"),
-   names_pattern = "(.)(.)" )
+   names_pattern = "(.)(.)")
 ```
 
     ## # A tibble: 44 × 3
@@ -1471,7 +1471,7 @@ combination of wool (A and B) and tension (L, M, H).
 
 ``` r
 #converting into a tibble and rearranging the vars
-warpbreaks %>% tibble::as_tibble() %>% dplyr::select(wool,tension, breaks)
+warpbreaks %>% tibble::as_tibble() %>% dplyr::select(wool, tension, breaks)
 ```
 
     ## # A tibble: 54 × 3
@@ -1542,7 +1542,7 @@ Why does the following code fail?
 ``` r
 #the table to use
 table4a
-table4a %>% tidyr::pivot_longer(1999,2000, names_to = "year",values_to = "value")
+table4a %>% tidyr::pivot_longer(1999, 2000, names_to = "year", values_to = "value")
 ```
 
 ### Exercise 2
@@ -1556,11 +1556,11 @@ apply?
 ``` r
 people = tibble::tribble(~name, ~key, ~value,
                  #------------/------/-----,
-                 "Phil Woods", "age",45,
-                 "Phil Woods", "height",185,
-                 "Phil Woods", "age",50,
-                 "Jess Cordero", "age",45,
-                 "Jess Cordero", "height",156,)
+                 "Phil Woods", "age", 45,
+                 "Phil Woods", "height", 185,
+                 "Phil Woods", "age", 50,
+                 "Jess Cordero", "age", 45,
+                 "Jess Cordero", "height", 156,)
 ```
 
 ------------------------------------------------------------------------
@@ -1693,7 +1693,7 @@ example as above, lets see how to split the `year` variable to `century`
 and `years`.
 
 ``` r
-table3 %>% tidyr::extract( col = year, into = c("century","years"), regex = "([0-9]{2})([0-9]{2})")
+table3 %>% tidyr::extract(col = year, into = c("century", "years"), regex = "([0-9]{2})([0-9]{2})")
 ```
 
     ## # A tibble: 6 × 4
@@ -1715,7 +1715,7 @@ following block of code. The year variable is now split into three
 variables to depict the `century`, `decade` and `year`.
 
 ``` r
-table3 %>% tidyr::extract( col = year, into = c("century","decade","year" ), regex = "([0-9]{2})([0-9])([0-9])")
+table3 %>% tidyr::extract(col = year, into = c("century", "decade", "year" ), regex = "([0-9]{2})([0-9])([0-9])")
 ```
 
     ## # A tibble: 6 × 5
@@ -1743,9 +1743,9 @@ as shown in the example below.
 ``` r
 #the reshaped dataset
 tab3 = table3 %>% 
-  tidyr::extract( col = year, into = c("century","decade","year" ), regex = "([0-9]{2})([0-9])([0-9])")
+  tidyr::extract(col = year, into = c("century", "decade", "year" ), regex = "([0-9]{2})([0-9])([0-9])")
 #going back to the original dataset - with separator
-tab3 %>% tidyr::unite(new ,century, decade, year)
+tab3 %>% tidyr::unite(new, century, decade, year)
 ```
 
     ## # A tibble: 6 × 3
@@ -1767,7 +1767,7 @@ giving the original variable before any alteration takes place.
 
 ``` r
 #going back to the original dataset - with no separators
-tab3 %>% tidyr::unite(new ,century, decade, year, sep = "")
+tab3 %>% tidyr::unite(new, century, decade, year, sep = "")
 ```
 
     ## # A tibble: 6 × 3
@@ -1980,7 +1980,7 @@ longer ones as in the following example.
 
 ``` r
 # vectorized form - translating a shorter vector to match the longer one
-stringr::str_c("a", c("b", "c", "d"), "c", sep = " " )
+stringr::str_c("a", c("b", "c", "d"), "c", sep = " ")
 ```
 
     ## [1] "a b c" "a c c" "a d c"
@@ -2023,7 +2023,7 @@ stringr::str_sub(x, -4, -1)
 
 ``` r
 # The function will not fail in the example below
-stringr::str_sub("a", 1,5)
+stringr::str_sub("a", 1, 5)
 ```
 
     ## [1] "a"
@@ -2132,10 +2132,10 @@ stringr::str_detect(x, "e")
 
 ------------------------------------------------------------------------
 
-A very handy way of using it, is by taking advantage of how `R`
-translates `TRUE` (evaluated as `1`) and `FALSE` (evaluated as `0`)
-responses. In the example below using the `sum` and `mean` functions
-makes counting instances of a pattern being detected much easier.
+A very handy way of using it, is by taking advantage of how R translates
+`TRUE` (evaluated as `1`) and `FALSE` (evaluated as `0`) responses. In
+the example below using the `sum` and `mean` functions makes counting
+instances of a pattern being detected much easier.
 
 ``` r
 # How many common words start with t?

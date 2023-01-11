@@ -3,7 +3,7 @@
 
 ## Introduction
 
-In this part we will introduce strings and how to manipulate them to suit the needs of a particular project. The packages needed (listed above) are mostly the `stringr` and  `tidyverse` package where the former contains a great number of functions to manipulate and work with strings and the latter is the base for most of the things we do in R. 
+In this part we will introduce strings and how to manipulate them to suit the needs of a particular project. The packages needed (listed above) are mostly the `stringr` and `tidyverse` package where the former contains a great number of functions to manipulate and work with strings and the latter is the base for most of the things we do in R. 
 
 Base R has a a number of functions to manipulate and work with strings but they can be inconsistent at times,  the above package was created in an effort to standardize character vector manipulation and make it easier to follow and replicate.  
 
@@ -106,7 +106,7 @@ In addition, it can also work to recycle shorter vectors to mach the longer ones
 
 ```{r, purl=purl_example_code, eval=T}
 # vectorized form - translating a shorter vector to match the longer one
-stringr::str_c("a", c("b", "c", "d"), "c", sep = " " )
+stringr::str_c("a", c("b", "c", "d"), "c", sep = " ")
 # simpler vectorizing 
 stringr::str_c("a", c("b", "c", "d"))
 # c() comparison
@@ -128,7 +128,7 @@ stringr::str_sub(x, 1, 3)
 # negative numbers count backwards from end
 stringr::str_sub(x, -4, -1)
 # The function will not fail in the example below
-stringr::str_sub("a", 1,5)
+stringr::str_sub("a", 1, 5)
 ```
 
 ---
@@ -146,8 +146,7 @@ x
 
 ## Customizing text for different language locales
 
-In some cases the string manipulation functions have a `locale` argument where adjustments for certain languages can be made. Notice
-for example how the sort order changes if the locale changes from English to Lithuanian in the example below.
+In some cases the string manipulation functions have a `locale` argument where adjustments for certain languages can be made. Notice for example how the sort order changes if the locale changes from English to Lithuanian in the example below.
 
 
 ```{r, purl=purl_example_code, eval=T}
@@ -176,7 +175,7 @@ Write a function that turns (e.g.) a vector `c("a", "b", "c")` into the string `
 
 ### Exercise 1
 
-The following function extracts the middle character. If the string has an even number of characters the choice is arbitrary. We choose to select  $[n/2]$, because that case works even if the string is only of length one. A more general method would allow the user to select either the floor or ceiling for the middle character of an even string.
+The following function extracts the middle character. If the string has an even number of characters the choice is arbitrary. We choose to select $[n/2]$, because that case works even if the string is only of length one. A more general method would allow the user to select either the floor or ceiling for the middle character of an even string.
  
 ```{r, include=show_solution, purl=purl_solutions}
 x <- c("a", "abc", "abcd", "abcde", "abcdef")
@@ -239,9 +238,6 @@ str_commasep(c("a", "b", "c", "d"))
 
 
 
-
-
-
 ## Additional Functions
 
 The `stringr` package comes with additional function wrappers that make the most common string operations somewhat easier. For example the following matching behavior can be conducted using the premade functions: 
@@ -264,11 +260,10 @@ x <- c("apple", "banana", "pear")
 stringr::str_detect(x, "e")
 ```
 
-
 ---
 
 
-A very handy way of using it, is by taking advantage of how `R` translates `TRUE` (evaluated as `1`) and `FALSE` (evaluated as `0`) responses. In the example below using the `sum` and `mean` functions makes counting instances of a pattern being detected much easier.
+A very handy way of using it, is by taking advantage of how R translates `TRUE` (evaluated as `1`) and `FALSE` (evaluated as `0`) responses. In the example below using the `sum` and `mean` functions makes counting instances of a pattern being detected much easier.
 
 ```{r, purl=purl_example_code, eval=T}
 # How many common words start with t?
@@ -370,8 +365,6 @@ sentences %>%
 
 
 
-
-
 ## Exercises 
 
 ### Exercise 1: Detecting strings
@@ -438,11 +431,11 @@ Words starting with vowel and ending with consonant.
 
 ```{r, include=show_solution, purl=purl_solutions}
 stringr::str_subset(words, "^[aeiou].*[^aeiou]$") %>% head()
-#> [1] "about"   "accept"  "account" "across"  "act"     "actual"
+#> [1] "about"  "accept"  "account" "across"  "act"  "actual"
 start_with_vowel <- stringr::str_detect(words, "^[aeiou]")
 end_with_consonant <- stringr::str_detect(words, "[^aeiou]$")
 words[start_with_vowel & end_with_consonant] %>% head()
-#> [1] "about"   "accept"  "account" "across"  "act"     "actual"
+#> [1] "about"  "accept"  "account" "across"  "act"  "actual"
 
 
 ```
