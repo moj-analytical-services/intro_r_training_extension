@@ -3831,6 +3831,8 @@ dates &lt;- c(&quot;2020-03-01&quot;, &quot;2020-06-01&quot;, &quot;2020-09-01&q
 </article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
 
 <pre class = 'prettyprint lang-r'># Iteration - solution to exercise 1
+dates &lt;- c(&quot;2020-03-01&quot;, &quot;2020-06-01&quot;, &quot;2020-09-01&quot;, &quot;2020-12-01&quot;)
+
 for (date in dates) {
   print(paste(&quot;The current date is&quot;, date))
 }</pre>
@@ -3944,7 +3946,7 @@ replace(x, is.na(x), 0)</pre>
 <p>The <code>replace()</code> function can also be applied to a whole dataframe, like so:</p>
 
 <pre class = 'prettyprint lang-r'># Replacing NA values with 0 over a whole dataframe
-df &lt;- tibble::data_frame(
+df &lt;- tibble::tibble(
   &quot;x&quot; = c(0, 1, 2, NA, 4),
   &quot;y&quot; = c(18, NA, 45, 15, 2),
 )
@@ -4051,18 +4053,18 @@ df</pre>
 <pre >## # A tibble: 12 × 3
 ##    year  quarter count
 ##    &lt;chr&gt; &lt;chr&gt;   &lt;int&gt;
-##  1 2017  Q1          9
-##  2 &lt;NA&gt;  Q2          4
+##  1 2017  Q1         11
+##  2 &lt;NA&gt;  Q2         12
 ##  3 &lt;NA&gt;  Q3          8
-##  4 &lt;NA&gt;  Q4          2
-##  5 2018  Q1          3
-##  6 &lt;NA&gt;  Q2         10
-##  7 &lt;NA&gt;  Q3          1
-##  8 &lt;NA&gt;  Q4         12
-##  9 2019  Q1         11
-## 10 &lt;NA&gt;  Q2          6
-## 11 &lt;NA&gt;  Q3          5
-## 12 &lt;NA&gt;  Q4          7</pre>
+##  4 &lt;NA&gt;  Q4          5
+##  5 2018  Q1          7
+##  6 &lt;NA&gt;  Q2          4
+##  7 &lt;NA&gt;  Q3          2
+##  8 &lt;NA&gt;  Q4          9
+##  9 2019  Q1         10
+## 10 &lt;NA&gt;  Q2          1
+## 11 &lt;NA&gt;  Q3          3
+## 12 &lt;NA&gt;  Q4          6</pre>
 
 </article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
 
@@ -4074,18 +4076,18 @@ df %&gt;% tidyr::fill(year)</pre>
 <pre >## # A tibble: 12 × 3
 ##    year  quarter count
 ##    &lt;chr&gt; &lt;chr&gt;   &lt;int&gt;
-##  1 2017  Q1          9
-##  2 2017  Q2          4
+##  1 2017  Q1         11
+##  2 2017  Q2         12
 ##  3 2017  Q3          8
-##  4 2017  Q4          2
-##  5 2018  Q1          3
-##  6 2018  Q2         10
-##  7 2018  Q3          1
-##  8 2018  Q4         12
-##  9 2019  Q1         11
-## 10 2019  Q2          6
-## 11 2019  Q3          5
-## 12 2019  Q4          7</pre>
+##  4 2017  Q4          5
+##  5 2018  Q1          7
+##  6 2018  Q2          4
+##  7 2018  Q3          2
+##  8 2018  Q4          9
+##  9 2019  Q1         10
+## 10 2019  Q2          1
+## 11 2019  Q3          3
+## 12 2019  Q4          6</pre>
 
 </article></slide><slide class=""><hgroup><h2>Removing rows with missing values from a dataframe</h2></hgroup><article  id="removing-rows-with-missing-values-from-a-dataframe" class="smaller ">
 
@@ -4263,7 +4265,7 @@ billboard %&gt;% tidyr::pivot_longer(cols = c(wk1,wk2, wk3, wk4), names_to = &qu
 
 <p>In that case, the following structure comes into play where regular expressions are used to pick all the variables to be mapped.</p>
 
-<pre class = 'prettyprint lang-r'>#mapping all weeks to one varable called &quot;weeks&quot; 
+<pre class = 'prettyprint lang-r'>#mapping all weeks to one variable called &quot;weeks&quot; 
 billboard %&gt;% tidyr::pivot_longer(cols = starts_with(&quot;wk&quot;), names_to = &quot;weeks&quot;, values_to = &quot;rank&quot;) %&gt;% head()</pre>
 
 <pre >## # A tibble: 6 × 5
@@ -4282,7 +4284,7 @@ billboard %&gt;% tidyr::pivot_longer(cols = starts_with(&quot;wk&quot;), names_t
 
 <h3>Working with similar columns</h3>
 
-<p>In some circumstances pivoting can also be used to construct a more robust for ease of use in later stages of the analysis. In these cases the dataset contains variables that are similar in their structure with the aim being to gather them in to one, cleaner, format. Consider the <code>asncombe</code> dataset that comes with basic R as shown below:</p>
+<p>In some circumstances pivoting can also be used to construct a more robust for ease of use in later stages of the analysis. In these cases the dataset contains variables that are similar in their structure with the aim being to gather them in to one, cleaner, format. Consider the <code>anscombe</code> dataset that comes with basic R as shown below:</p>
 
 <pre class = 'prettyprint lang-r'>#dataset
 anscombe</pre>
@@ -4376,7 +4378,7 @@ anscombe %&gt;% tidyr::pivot_longer(everything(),
 
 </article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
 
-<p>The general use is very similar to that presented in `<code>pivot_longer()</code> with <code>names_from</code> targeting the column containing the subcategories to split from and <code>values_from</code> the corresponding values associated with each category. Notice that there will be cases where there is no match and these will initially be filled with <code>NA</code>. Simply setting the option <code>values_fill</code> to a value of your choice will replaced the <code>NA</code> values to something more meaningful.</p>
+<p>The general use is very similar to that presented in <code>pivot_longer()</code> with <code>names_from</code> targeting the column containing the subcategories to split from and <code>values_from</code> the corresponding values associated with each category. Notice that there will be cases where there is no match and these will initially be filled with <code>NA</code>. Simply setting the option <code>values_fill</code> to a value of your choice will replaced the <code>NA</code> values to something more meaningful.</p>
 
 <pre class = 'prettyprint lang-r'>fish_encounters %&gt;% tidyr::pivot_wider(names_from = station, values_from = seen,
   values_fill = list(seen = 0)) %&gt;% head()</pre>
@@ -4502,7 +4504,7 @@ table4a %&gt;% tidyr::pivot_longer(1999,2000, names_to = &quot;year&quot;,values
 
 <h3>Exercise 2</h3>
 
-<pre class = 'prettyprint lang-r'>#withough changing anything on the dataset
+<pre class = 'prettyprint lang-r'>#without changing anything on the dataset
 people = tibble::tribble(~name, ~key, ~value,
                  #------------/------/-----,
                  &quot;Phil Woods&quot;, &quot;age&quot;,45,
@@ -4587,7 +4589,7 @@ rcj %&gt;% tidyr::pivot_wider(names_from = judge, values_from = c(male, female))
 
 </article></slide><slide class=""><hgroup><h2>Introduction</h2></hgroup><article  id="introduction-5" class="smaller ">
 
-<p>An Important aspect of every data shaping mechanism is to be able to pick multiple columns or data entries within a variable with a certain precision and without having to manually type them each time.</p>
+<p>An important aspect of every data shaping mechanism is to be able to pick multiple columns or data entries within a variable with a certain precision and without having to manually type them each time.</p>
 
 <p>The functions <code>separate()</code> and <code>extract()</code> were created for this purpose where regex is used to describe the pattern to pick and reshape.</p>
 
@@ -4643,7 +4645,7 @@ table3 %&gt;% tidyr::separate(rate, into = c(&quot;cases&quot;, &quot;population
 
 <p>At its heart, <code>separate()</code> uses regular expressions to detect and pull the corresponding characters. As a result the new columns are now of <code>char</code> type, something that can be changed by altering the state of the <code>convert</code> flag as shown below:</p>
 
-<pre class = 'prettyprint lang-r'># separate() manually detects the separator and convers the columns into the appropriate data type 
+<pre class = 'prettyprint lang-r'># separate() manually detects the separator and converts the columns into the appropriate data type 
 table3 %&gt;% tidyr::separate(rate, into = c(&quot;cases&quot;, &quot;population&quot;), sep = &quot;/&quot;, convert = TRUE)</pre>
 
 <pre >## # A tibble: 6 × 4
@@ -4688,7 +4690,7 @@ table3 %&gt;% tidyr::separate(rate, into = c(&quot;cases&quot;, &quot;population
 ## 5 China       19      9      9     212258/1272915272
 ## 6 China       20      0      0     213766/1280428583</pre>
 
-<p>In addition, internally the pivot functions make explicit use of <code>seaprate()</code> and <code>extract()</code> whenever a split or a regular expression is need to capture patterns present in name or within the content of a variable in the dataset.</p>
+<p>In addition, internally the pivot functions make explicit use of <code>separate()</code> and <code>extract()</code> whenever a split or a regular expression is need to capture patterns present in name or within the content of a variable in the dataset.</p>
 
 </article></slide><slide class=""><hgroup><h2>Unite</h2></hgroup><article  id="unite" class="smaller ">
 
@@ -4830,13 +4832,13 @@ string4 = &#39;this is a &quot;string&quot; within a string&#39;</pre>
 <p>If you need to <code>escape</code> a backslash then use a double backslash as in <code>\\</code> and to see what the output would look like when used in text you can use the <code>writeLines()</code> function to simulate that effect.</p>
 
 <pre class = 'prettyprint lang-r'>string5 = &quot;escaping a reserved character like \&quot; quotes &quot;
-# to see how the result would apear in text
+# to see how the result would appear in text
 writeLines(string5)</pre>
 
 <pre >## escaping a reserved character like &quot; quotes</pre>
 
 <pre class = 'prettyprint lang-r'>string6 = &quot;escaping a backslash \\ &quot;
-# to see how the result would apear in text
+# to see how the result would appear in text
 writeLines(string6)</pre>
 
 <pre >## escaping a backslash \</pre>
@@ -4882,7 +4884,7 @@ stringr::str_c(&quot;an&quot;, &quot;str_c vector&quot;, &quot;with&quot;, &quot
 
 <pre >## [1] &quot;an str_c vector with space character separating each entry&quot;</pre>
 
-<pre class = 'prettyprint lang-r'># the colapse option
+<pre class = 'prettyprint lang-r'># the collapse option
 stringr::str_c(&quot;an&quot;, &quot;str_c vector&quot;, &quot;with&quot;, &quot;space&quot;, &quot;character&quot;, &quot;separating each entry&quot;, collapse = T)</pre>
 
 <pre >## [1] &quot;anstr_c vectorwithspacecharacterseparating each entry&quot;</pre>
@@ -4893,7 +4895,7 @@ stringr::str_c(&quot;an&quot;, &quot;str_c vector&quot;, &quot;with&quot;, &quot
 
 <p>In addition, it can also work to recycle shorter vectors to mach the longer ones as in the following example.</p>
 
-<pre class = 'prettyprint lang-r'># vectorized form - translating a shorter vectror to match the longer one
+<pre class = 'prettyprint lang-r'># vectorized form - translating a shorter vector to match the longer one
 stringr::str_c(&quot;a&quot;, c(&quot;b&quot;, &quot;c&quot;, &quot;d&quot;), &quot;c&quot;, sep = &quot; &quot; )</pre>
 
 <pre >## [1] &quot;a b c&quot; &quot;a c c&quot; &quot;a d c&quot;</pre>
@@ -5040,7 +5042,7 @@ str_commasep(c(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;))
 
 </article></slide><slide class=""><hgroup><h2>Detect Strings</h2></hgroup><article  id="detect-strings" class="smaller ">
 
-<p>Detecting strings is a very important aspect in many Data Analysis applications and <code>str_detect</code> was created with ease of use in mind. It returns a logical vector depending whether there was a match in the corresponding location and based on the supplied pattern, as the example below illustrates.</p>
+<p>Detecting strings is a very important aspect in many Data and Analysis applications and <code>str_detect</code> was created with ease of use in mind. It returns a logical vector depending whether there was a match in the corresponding location and based on the supplied pattern, as the example below illustrates.</p>
 
 <pre class = 'prettyprint lang-r'>x &lt;- c(&quot;apple&quot;, &quot;banana&quot;, &quot;pear&quot;)
 stringr::str_detect(x, &quot;e&quot;)</pre>

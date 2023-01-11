@@ -220,7 +220,7 @@ x <- c(7, 23, 5, -14, NA, -1, 11,NA)
 replace(x, is.na(x), 0)
 
 # Replacing NA values with 0 over a whole dataframe
-df <- tibble::data_frame(
+df <- tibble::tibble(
   "x" = c(0, 1, 2, NA, 4),
   "y" = c(18, NA, 45, 15, 2),
 )
@@ -299,7 +299,7 @@ billboard %>% tidyr::pivot_longer(cols = c(wk1,wk2, wk3, wk4), names_to = "month
 # billboard %>% pivot_longer(cols = c(wk1,wk2, wk3, wk4), names_to = "month1", values_to = "rank") %>%
 # .$month1 %>% head()
 
-#mapping all weeks to one varable called "weeks" 
+#mapping all weeks to one variable called "weeks" 
 billboard %>% tidyr::pivot_longer(cols = starts_with("wk"), names_to = "weeks", values_to = "rank") %>% head()
 
 #dataset
@@ -361,7 +361,7 @@ table3 %>% tidyr::separate(rate, into = c("cases", "population"))
 # separate() manually  detects the separator
 table3 %>% tidyr::separate(rate, into = c("cases", "population"), sep = "/")
 
-# separate() manually detects the separator and convers the columns into the appropriate data type 
+# separate() manually detects the separator and converts the columns into the appropriate data type 
 table3 %>% tidyr::separate(rate, into = c("cases", "population"), sep = "/", convert = TRUE)
 
 table3 %>% tidyr::extract( col = year, into = c("century","years"), regex = "([0-9]{2})([0-9]{2})")
@@ -396,10 +396,10 @@ string3 = "this is a 'string' within a string"
 string4 = 'this is a "string" within a string'
 
 string5 = "escaping a reserved character like \" quotes "
-# to see how the result would apear in text
+# to see how the result would appear in text
 writeLines(string5)
 string6 = "escaping a backslash \\ "
-# to see how the result would apear in text
+# to see how the result would appear in text
 writeLines(string6)
 
 # outputting non-English characters
@@ -414,10 +414,10 @@ stringr::str_length(c(s8, NA))
 
 # using custom separator
 stringr::str_c("an", "str_c vector", "with", "space", "character", "separating each entry", sep = " ")
-# the colapse option
+# the collapse option
 stringr::str_c("an", "str_c vector", "with", "space", "character", "separating each entry", collapse = T)
 
-# vectorized form - translating a shorter vectror to match the longer one
+# vectorized form - translating a shorter vector to match the longer one
 stringr::str_c("a", c("b", "c", "d"), "c", sep = " " )
 # simpler vectorizing 
 stringr::str_c("a", c("b", "c", "d"))

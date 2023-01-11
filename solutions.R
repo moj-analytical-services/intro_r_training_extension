@@ -17,6 +17,8 @@ str(offenders)
 
 
 # Iteration - solution to exercise 1
+dates <- c("2020-03-01", "2020-06-01", "2020-09-01", "2020-12-01")
+
 for (date in dates) {
   print(paste("The current date is", date))
 }
@@ -54,7 +56,7 @@ fruit %>% tidyr::replace_na(list(Cost = "Unknown",
 
 table4a %>% tidyr::pivot_longer(cols = !country, names_to = "year",values_to = "value")
 
-#withough changing anything on the dataset
+#without changing anything on the dataset
 people = tibble::tribble(~name, ~key, ~value,
                  #------------/------/-----,
                  "Phil Woods", "age",45,

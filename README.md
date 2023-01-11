@@ -911,16 +911,11 @@ so:
 
 ``` r
 # Replacing NA values with 0 over a whole dataframe
-df <- tibble::data_frame(
+df <- tibble::tibble(
   "x" = c(0, 1, 2, NA, 4),
   "y" = c(18, NA, 45, 15, 2),
 )
-```
 
-    ## Warning: `data_frame()` was deprecated in tibble 1.1.0.
-    ## Please use `tibble()` instead.
-
-``` r
 df %>% replace(is.na(.), 0)
 ```
 
@@ -1041,18 +1036,18 @@ df
     ## # A tibble: 12 × 3
     ##    year  quarter count
     ##    <chr> <chr>   <int>
-    ##  1 2017  Q1         12
-    ##  2 <NA>  Q2          4
-    ##  3 <NA>  Q3          2
-    ##  4 <NA>  Q4          6
-    ##  5 2018  Q1          7
-    ##  6 <NA>  Q2         11
-    ##  7 <NA>  Q3          9
-    ##  8 <NA>  Q4         10
-    ##  9 2019  Q1          5
-    ## 10 <NA>  Q2          1
-    ## 11 <NA>  Q3          8
-    ## 12 <NA>  Q4          3
+    ##  1 2017  Q1          3
+    ##  2 <NA>  Q2         12
+    ##  3 <NA>  Q3          5
+    ##  4 <NA>  Q4          2
+    ##  5 2018  Q1          8
+    ##  6 <NA>  Q2         10
+    ##  7 <NA>  Q3          4
+    ##  8 <NA>  Q4          7
+    ##  9 2019  Q1          6
+    ## 10 <NA>  Q2         11
+    ## 11 <NA>  Q3          1
+    ## 12 <NA>  Q4          9
 
 ------------------------------------------------------------------------
 
@@ -1067,18 +1062,18 @@ df %>% tidyr::fill(year)
     ## # A tibble: 12 × 3
     ##    year  quarter count
     ##    <chr> <chr>   <int>
-    ##  1 2017  Q1         12
-    ##  2 2017  Q2          4
-    ##  3 2017  Q3          2
-    ##  4 2017  Q4          6
-    ##  5 2018  Q1          7
-    ##  6 2018  Q2         11
-    ##  7 2018  Q3          9
-    ##  8 2018  Q4         10
-    ##  9 2019  Q1          5
-    ## 10 2019  Q2          1
-    ## 11 2019  Q3          8
-    ## 12 2019  Q4          3
+    ##  1 2017  Q1          3
+    ##  2 2017  Q2         12
+    ##  3 2017  Q3          5
+    ##  4 2017  Q4          2
+    ##  5 2018  Q1          8
+    ##  6 2018  Q2         10
+    ##  7 2018  Q3          4
+    ##  8 2018  Q4          7
+    ##  9 2019  Q1          6
+    ## 10 2019  Q2         11
+    ## 11 2019  Q3          1
+    ## 12 2019  Q4          9
 
 ## Removing rows with missing values from a dataframe
 
@@ -1292,7 +1287,7 @@ In that case, the following structure comes into play where regular
 expressions are used to pick all the variables to be mapped.
 
 ``` r
-#mapping all weeks to one varable called "weeks" 
+#mapping all weeks to one variable called "weeks" 
 billboard %>% tidyr::pivot_longer(cols = starts_with("wk"), names_to = "weeks", values_to = "rank") %>% head()
 ```
 
@@ -1321,7 +1316,7 @@ In some circumstances pivoting can also be used to construct a more
 robust for ease of use in later stages of the analysis. In these cases
 the dataset contains variables that are similar in their structure with
 the aim being to gather them in to one, cleaner, format. Consider the
-`asncombe` dataset that comes with basic R as shown below:
+`anscombe` dataset that comes with basic R as shown below:
 
 ``` r
 #dataset
@@ -1445,7 +1440,7 @@ fish_encounters %>% tidyr::pivot_wider(names_from = station, values_from = seen)
 
 ------------------------------------------------------------------------
 
-The general use is very similar to that presented in \``pivot_longer()`
+The general use is very similar to that presented in `pivot_longer()`
 with `names_from` targeting the column containing the subcategories to
 split from and `values_from` the corresponding values associated with
 each category. Notice that there will be cases where there is no match
@@ -1599,7 +1594,7 @@ rcj = tibble::tribble(~judge, ~male, ~female,
 
 ## Introduction
 
-An Important aspect of every data shaping mechanism is to be able to
+An important aspect of every data shaping mechanism is to be able to
 pick multiple columns or data entries within a variable with a certain
 precision and without having to manually type them each time.
 
@@ -1676,7 +1671,7 @@ the corresponding characters. As a result the new columns are now of
 `convert` flag as shown below:
 
 ``` r
-# separate() manually detects the separator and convers the columns into the appropriate data type 
+# separate() manually detects the separator and converts the columns into the appropriate data type 
 table3 %>% tidyr::separate(rate, into = c("cases", "population"), sep = "/", convert = TRUE)
 ```
 
@@ -1734,7 +1729,7 @@ table3 %>% tidyr::extract( col = year, into = c("century","decade","year" ), reg
     ## 6 China       20      0      0     213766/1280428583
 
 In addition, internally the pivot functions make explicit use of
-`seaprate()` and `extract()` whenever a split or a regular expression is
+`separate()` and `extract()` whenever a split or a regular expression is
 need to capture patterns present in name or within the content of a
 variable in the dataset.
 
@@ -1890,7 +1885,7 @@ can use the `writeLines()` function to simulate that effect.
 
 ``` r
 string5 = "escaping a reserved character like \" quotes "
-# to see how the result would apear in text
+# to see how the result would appear in text
 writeLines(string5)
 ```
 
@@ -1898,7 +1893,7 @@ writeLines(string5)
 
 ``` r
 string6 = "escaping a backslash \\ "
-# to see how the result would apear in text
+# to see how the result would appear in text
 writeLines(string6)
 ```
 
@@ -1968,7 +1963,7 @@ stringr::str_c("an", "str_c vector", "with", "space", "character", "separating e
     ## [1] "an str_c vector with space character separating each entry"
 
 ``` r
-# the colapse option
+# the collapse option
 stringr::str_c("an", "str_c vector", "with", "space", "character", "separating each entry", collapse = T)
 ```
 
@@ -1984,7 +1979,7 @@ In addition, it can also work to recycle shorter vectors to mach the
 longer ones as in the following example.
 
 ``` r
-# vectorized form - translating a shorter vectror to match the longer one
+# vectorized form - translating a shorter vector to match the longer one
 stringr::str_c("a", c("b", "c", "d"), "c", sep = " " )
 ```
 
@@ -2122,7 +2117,7 @@ tools supplied by the `stringr` package.
 
 ## Detect Strings
 
-Detecting strings is a very important aspect in many Data Analysis
+Detecting strings is a very important aspect in many Data and Analysis
 applications and `str_detect` was created with ease of use in mind. It
 returns a logical vector depending whether there was a match in the
 corresponding location and based on the supplied pattern, as the example

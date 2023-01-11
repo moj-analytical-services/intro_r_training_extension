@@ -62,7 +62,7 @@ In that case, the following structure comes into play where regular expressions 
 
 
 ```{r, purl=purl_example_code, eval=T}
-#mapping all weeks to one varable called "weeks" 
+#mapping all weeks to one variable called "weeks" 
 billboard %>% tidyr::pivot_longer(cols = starts_with("wk"), names_to = "weeks", values_to = "rank") %>% head()
 ```
 
@@ -73,7 +73,7 @@ And so with this neat little trick, we've managed to bring the dataset into a be
 
 ### Working with similar columns 
 
-In some circumstances pivoting can also be used to construct a more robust for ease of use in later stages of the analysis. In these cases the dataset contains variables that are similar in their structure with the aim being to gather them in to one, cleaner, format. Consider the `asncombe` dataset that comes with basic R as shown below:
+In some circumstances pivoting can also be used to construct a more robust for ease of use in later stages of the analysis. In these cases the dataset contains variables that are similar in their structure with the aim being to gather them in to one, cleaner, format. Consider the `anscombe` dataset that comes with basic R as shown below:
 
 ```{r, purl=purl_example_code, eval=T}
 #dataset
@@ -129,7 +129,7 @@ fish_encounters %>% tidyr::pivot_wider(names_from = station, values_from = seen)
 ---
 
 
-The general use is very similar to that presented in ``pivot_longer()` with `names_from` targeting the column containing the subcategories to split from and `values_from` the corresponding values associated with each category. 
+The general use is very similar to that presented in `pivot_longer()` with `names_from` targeting the column containing the subcategories to split from and `values_from` the corresponding values associated with each category. 
 Notice that there will be cases where there is no match and these will initially be filled with `NA`. Simply setting the option `values_fill` to a value of your choice will replaced the `NA` values to something more meaningful.
 
 ```{r, purl=purl_example_code, eval=T}
@@ -234,7 +234,7 @@ table4a %>% tidyr::pivot_longer(cols = !country, names_to = "year",values_to = "
 
 
 ```{r, include=show_solution, purl=purl_solutions, warning = FALSE, message = FALSE}
-#withough changing anything on the dataset
+#without changing anything on the dataset
 people = tibble::tribble(~name, ~key, ~value,
                  #------------/------/-----,
                  "Phil Woods", "age",45,
@@ -293,7 +293,7 @@ rcj %>% tidyr::pivot_wider(names_from = judge, values_from = c(male, female))
 
 ## Introduction 
 
-An Important aspect of every data shaping mechanism is to be able to pick multiple columns or data entries within a variable  with a certain precision and without having to manually type them each time. 
+An important aspect of every data shaping mechanism is to be able to pick multiple columns or data entries within a variable  with a certain precision and without having to manually type them each time. 
 
 The functions `separate()` and `extract()` were created for this purpose where regex is used to describe the pattern to pick and reshape.
 
@@ -331,7 +331,7 @@ At its heart, `separate()` uses regular expressions to detect and pull the corre
 
 
 ```{r, purl=purl_example_code, eval=T}
-# separate() manually detects the separator and convers the columns into the appropriate data type 
+# separate() manually detects the separator and converts the columns into the appropriate data type 
 table3 %>% tidyr::separate(rate, into = c("cases", "population"), sep = "/", convert = TRUE)
 ```
 
@@ -354,7 +354,7 @@ The `regex` option shown above uses the same syntax as described earlier in the 
 table3 %>% tidyr::extract( col = year, into = c("century","decade","year" ), regex = "([0-9]{2})([0-9])([0-9])")
 ```
 
-In addition, internally the pivot functions make explicit use of  `seaprate()` and `extract()` whenever a split or a regular expression is need to capture patterns present in name or within the content of a variable in the dataset. 
+In addition, internally the pivot functions make explicit use of  `separate()` and `extract()` whenever a split or a regular expression is need to capture patterns present in name or within the content of a variable in the dataset. 
 
 
 

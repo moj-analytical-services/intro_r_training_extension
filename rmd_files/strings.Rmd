@@ -44,10 +44,10 @@ If you need to `escape` a backslash then use a double backslash as in `\\` and t
 
 ```{r, purl=purl_example_code, eval=T}
 string5 = "escaping a reserved character like \" quotes "
-# to see how the result would apear in text
+# to see how the result would appear in text
 writeLines(string5)
 string6 = "escaping a backslash \\ "
-# to see how the result would apear in text
+# to see how the result would appear in text
 writeLines(string6)
 ```
 
@@ -93,7 +93,7 @@ Using `str_c()` can be beneficial in many cases since it allows for additional f
 ```{r, purl=purl_example_code, eval=T}
 # using custom separator
 stringr::str_c("an", "str_c vector", "with", "space", "character", "separating each entry", sep = " ")
-# the colapse option
+# the collapse option
 stringr::str_c("an", "str_c vector", "with", "space", "character", "separating each entry", collapse = T)
 ```
 
@@ -105,7 +105,7 @@ In addition, it can also work to recycle shorter vectors to mach the longer ones
 
 
 ```{r, purl=purl_example_code, eval=T}
-# vectorized form - translating a shorter vectror to match the longer one
+# vectorized form - translating a shorter vector to match the longer one
 stringr::str_c("a", c("b", "c", "d"), "c", sep = " " )
 # simpler vectorizing 
 stringr::str_c("a", c("b", "c", "d"))
@@ -257,7 +257,7 @@ The list is actually a lot longer so here we will briefly discuss how the most p
 
 ## Detect Strings
 
-Detecting strings is a very important aspect in many Data Analysis applications and `str_detect` was created with ease of use in mind. It returns a logical vector depending whether there was a match in the corresponding location and based on the supplied pattern, as the example below illustrates.   
+Detecting strings is a very important aspect in many Data and Analysis applications and `str_detect` was created with ease of use in mind. It returns a logical vector depending whether there was a match in the corresponding location and based on the supplied pattern, as the example below illustrates.   
 
 ```{r, purl=purl_example_code, eval=T}
 x <- c("apple", "banana", "pear")
