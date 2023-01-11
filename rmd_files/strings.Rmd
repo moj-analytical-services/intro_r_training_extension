@@ -36,8 +36,6 @@ Notice the difference in `string4`. This happens because the compiler cannot pla
 ```{r,purl=purl_example_code, eval=T}
 # notice how the output changes when implementing the following code
 string4 = 'this is a "string" within a string'
-
-
 ```
 
 
@@ -80,7 +78,7 @@ At times it is necessary to determine the length of a character string. A useful
 
 ```{r, purl=purl_example_code, eval=T}
 # finding out how many characters in a char vector
-str_length(c(s8, NA))
+stringr::str_length(c(s8, NA))
 ```
 
 Notice that an `NA` character is translated as is and we will see other options on how to deal with this in the sections to follow. 
@@ -88,15 +86,15 @@ Notice that an `NA` character is translated as is and we will see other options 
 
 ## Combining Strings
 
-We already seen one way to combine strings in the previous section but with the `stringer` package we have an additional, more powerful tool at our disposal. 
+We've already seen one way to combine strings in the previous section but with the `stringr` package we have an additional, more powerful tool at our disposal. 
 
 Using `str_c()` can be beneficial in many cases since it allows for additional flexibility in the form of parameters for separators to be used or the option to collapse individual entries into one composite character string. 
 
 ```{r, purl=purl_example_code, eval=T}
 # using custom separator
-str_c("an", "str_c vector", "with", "space", "character", "separating each entry", sep = " ")
+stringr::str_c("an", "str_c vector", "with", "space", "character", "separating each entry", sep = " ")
 # the colapse option
-str_c("an", "str_c vector", "with", "space", "character", "separating each entry", collapse = T)
+stringr::str_c("an", "str_c vector", "with", "space", "character", "separating each entry", collapse = T)
 ```
 
 ---
@@ -108,9 +106,9 @@ In addition, it can also work to recycle shorter vectors to mach the longer ones
 
 ```{r, purl=purl_example_code, eval=T}
 # vectorized form - translating a shorter vectror to match the longer one
-str_c("a", c("b", "c", "d"), "c", sep = " " )
+stringr::str_c("a", c("b", "c", "d"), "c", sep = " " )
 # simpler vectorizing 
-str_c("a", c("b", "c", "d"))
+stringr::str_c("a", c("b", "c", "d"))
 # c() comparison
 c("a", c("b", "c", "d"))
 ```
@@ -126,11 +124,11 @@ It is also important to note that the function will not fail if the end point is
 
 ```{r, purl=purl_example_code, eval=T}
 x <- c("OneValue", "SecondValue", "ThirdValue")
-str_sub(x, 1, 3)
+stringr::str_sub(x, 1, 3)
 # negative numbers count backwards from end
-str_sub(x, -4, -1)
+stringr::str_sub(x, -4, -1)
 # The function will not fail in the example below
-str_sub("a", 1,5)
+stringr::str_sub("a", 1,5)
 ```
 
 ---
@@ -138,7 +136,7 @@ str_sub("a", 1,5)
 An additional use of the of the `str_sub` function is to assign values to a given range on the target string  
 
 ```{r, purl=purl_example_code, eval=T}
-str_sub(x, 1, 1) <- str_to_lower(str_sub(x, 1, 1))
+stringr::str_sub(x, 1, 1) <- stringr::str_to_lower(stringr::str_sub(x, 1, 1))
 x
 ```
 
@@ -156,9 +154,9 @@ for example how the sort order changes if the locale changes from English to Lit
 #initial string
 x = c("y", "i", "k")
 #sort function in English
-str_sort(x)
+stringr::str_sort(x)
 #sort function in Lithuanian
-str_sort(x,locale = "lt")
+stringr::str_sort(x,locale = "lt")
 ```
 
 
@@ -182,9 +180,9 @@ The following function extracts the middle character. If the string has an even 
  
 ```{r, include=show_solution, purl=purl_solutions}
 x <- c("a", "abc", "abcd", "abcde", "abcdef")
-L <- str_length(x)
+L <- stringr::str_length(x)
 m <- ceiling(L / 2)
-str_sub(x, m, m)
+stringr::str_sub(x, m, m)
 #> [1] "a" "b" "b" "c" "c"
 ```
  
@@ -209,14 +207,14 @@ str_commasep <- function(x, delim = ",") {
     x
   } else if (n == 2) {
     # no comma before and when n == 2
-    str_c(x[[1]], "and", x[[2]], sep = " ")
+    stringr::str_c(x[[1]], "and", x[[2]], sep = " ")
   } else {
     # commas after all n - 1 elements
-    not_last <- str_c(x[seq_len(n - 1)], delim)
+    not_last <- stringr::str_c(x[seq_len(n - 1)], delim)
     # prepend "and" to the last element
-    last <- str_c("and", x[[n]], sep = " ")
+    last <- stringr::str_c("and", x[[n]], sep = " ")
     # combine parts with spaces
-    str_c(c(not_last, last), collapse = " ")
+    stringr::str_c(c(not_last, last), collapse = " ")
   }
 }
 
@@ -263,7 +261,7 @@ Detecting strings is a very important aspect in many Data Analysis applications 
 
 ```{r, purl=purl_example_code, eval=T}
 x <- c("apple", "banana", "pear")
-str_detect(x, "e")
+stringr::str_detect(x, "e")
 ```
 
 
@@ -274,10 +272,10 @@ A very handy way of using it, is by taking advantage of how `R` translates `TRUE
 
 ```{r, purl=purl_example_code, eval=T}
 # How many common words start with t?
-sum(str_detect(words, "^t"))
+sum(stringr::str_detect(words, "^t"))
 
 # What proportion of common words end with a vowel?
-mean(str_detect(words, "[aeiou]$"))
+mean(stringr::str_detect(words, "[aeiou]$"))
 ```
 
 ---
@@ -287,10 +285,10 @@ A variation of `str_detect` is `str_count` and as the name suggests the function
 
 ```{r, purl=purl_example_code, eval=T}
 x <- c("apple", "banana", "pear")
-str_count(x, "a")
+stringr::str_count(x, "a")
 
 # On average, how many vowels per word?
-mean(str_count(words, "[aeiou]"))
+mean(stringr::str_count(words, "[aeiou]"))
 ```
 
 
@@ -311,7 +309,7 @@ A good way to start using regex in bulk is to see if we can construct a pattern 
 
 ```{r, purl=purl_example_code, eval=T}
 colours <- c("red", "orange", "yellow", "green", "blue", "purple")
-colour_match <- str_c(colours, collapse = "|")
+colour_match <- stringr::str_c(colours, collapse = "|")
 colour_match
 ```
 
@@ -319,8 +317,8 @@ colour_match
 The next stage is to select the relevant examples from the collection of `sentences` and then proceed in matching based on the pattern we created. 
 
 ```{r, purl=purl_example_code, eval=T}
-has_colour <- str_subset(sentences, colour_match)
-matches <- str_extract(has_colour, colour_match)
+has_colour <- stringr::str_subset(sentences, colour_match)
+matches <- stringr::str_extract(has_colour, colour_match)
 head(matches)
 ```
 
@@ -330,13 +328,13 @@ head(matches)
 To better understand the mechanics behind the matching process it helps to know that `str_extract` only finds and extracts the first match in each row of a vector.  To better illustrate this, the code below selects the phrases from the `sentences` collection where there are more than one match.    
 
 ```{r, purl=purl_example_code, eval=T}
-more <- sentences[str_count(sentences, colour_match) > 1]
+more <- sentences[stringr::str_count(sentences, colour_match) > 1]
 ```
 
 Notice how `str_extract` works with these source vectors.
 
 ```{r, purl=purl_example_code, eval=T}
-str_extract(more, colour_match)
+stringr::str_extract(more, colour_match)
 ```
 
 
@@ -348,8 +346,8 @@ str_extract(more, colour_match)
 
 ```{r, purl=purl_example_code, eval=T}
 x <- c("apple", "pear", "banana")
-str_replace(x, "[aeiou]", "-")
-str_replace_all(x, "[aeiou]", "-")
+stringr::str_replace(x, "[aeiou]", "-")
+stringr::str_replace_all(x, "[aeiou]", "-")
 ```
 
 ---
@@ -359,14 +357,14 @@ And with `str_replace_all` we can apply the same functionality as above in all t
 
 ```{r, purl=purl_example_code, eval=T}
 x <- c("1 house", "2 cars", "3 people")
-str_replace_all(x, c("1" = "one", "2" = "two", "3" = "three"))
+stringr::str_replace_all(x, c("1" = "one", "2" = "two", "3" = "three"))
 ```
 
 In addition, one can also use backreferences and recycle elements of the same string as replacements
 
 ```{r, purl=purl_example_code, eval=T}
 sentences %>% 
-  str_replace("([^ ]+) ([^ ]+) ([^ ]+)", "\\1 \\3 \\2") %>% 
+  stringr::str_replace("([^ ]+) ([^ ]+) ([^ ]+)", "\\1 \\3 \\2") %>% 
   head(5)
 ```
 
@@ -380,7 +378,7 @@ sentences %>%
 
 1. For each of the following challenges, try solving it by using both a single regular expression, and a combination of multiple str_detect() calls.
 
-    1. Find all words that start or end with x.
+    1. Find all words that start or end with 'd'.
 
     2. Find all words that start with a vowel and end with a consonant.
 
@@ -418,21 +416,18 @@ From the Harvard sentences data, extract:
 
 For part 1 we have the following:
 
-Words that start or end with x?
+Words that start or end with 'd'?
 
 
 ```{r, include=show_solution, purl=purl_solutions}
-
 # one regex
-words[str_detect(words, "^x|x$")]
-#> [1] "box" "sex" "six" "tax"
+words[stringr::str_detect(words, "^d|d$")] %>% head(5)
+#> [1] "add" "afford" "and" "around" "attend"
 # split regex into parts
-start_with_x <- str_detect(words, "^x")
-end_with_x <- str_detect(words, "x$")
-words[start_with_x | end_with_x]
-#> [1] "box" "sex" "six" "tax"
-
-
+start_with_x <- stringr::str_detect(words, "^d")
+end_with_x <- stringr::str_detect(words, "d$")
+words[start_with_x | end_with_x] %>% head(5)
+#> [1] "add" "afford" "and" "around" "attend"
 ```
 
 ---
@@ -442,10 +437,10 @@ For part 2 we have the following:
 Words starting with vowel and ending with consonant.
 
 ```{r, include=show_solution, purl=purl_solutions}
-str_subset(words, "^[aeiou].*[^aeiou]$") %>% head()
+stringr::str_subset(words, "^[aeiou].*[^aeiou]$") %>% head()
 #> [1] "about"   "accept"  "account" "across"  "act"     "actual"
-start_with_vowel <- str_detect(words, "^[aeiou]")
-end_with_consonant <- str_detect(words, "[^aeiou]$")
+start_with_vowel <- stringr::str_detect(words, "^[aeiou]")
+end_with_consonant <- stringr::str_detect(words, "[^aeiou]$")
 words[start_with_vowel & end_with_consonant] %>% head()
 #> [1] "about"   "accept"  "account" "across"  "act"     "actual"
 
@@ -468,8 +463,8 @@ pattern <-
       length(x) != length(unique(x))
     }
   ) %>%
-  map_chr(~str_c(unlist(.x), collapse = ".*")) %>%
-  str_c(collapse = "|")
+  purrr::map_chr(~stringr::str_c(unlist(.x), collapse = ".*")) %>%
+  stringr::str_c(collapse = "|")
 
 ```
 
@@ -483,7 +478,7 @@ Part 1: Finding the first word in each sentence requires defining what a pattern
 
 
 ```{r, include=show_solution, purl=purl_solutions}
-str_extract(sentences, "[A-ZAa-z]+") %>% head()
+stringr::str_extract(sentences, "[A-ZAa-z]+") %>% head()
 #> [1] "The"   "Glue"  "It"    "These" "Rice"  "The"
 
 ```
@@ -493,7 +488,7 @@ However, the third sentence begins with “It’s”. To catch this, I’ll chan
 
 
 ```{r, include=show_solution, purl=purl_solutions}
-str_extract(sentences, "[A-Za-z][A-Za-z']*") %>% head()
+stringr::str_extract(sentences, "[A-Za-z][A-Za-z']*") %>% head()
 #> [1] "The"   "Glue"  "It's"  "These" "Rice"  "The"
 
 ```
@@ -504,8 +499,8 @@ Part 2: This pattern finds all words ending in 'ing'.
 
 ```{r, include=show_solution, purl=purl_solutions}
 pattern <- "\\b[A-Za-z]+ing\\b"
-sentences_with_ing <- str_detect(sentences, pattern)
-unique(unlist(str_extract_all(sentences[sentences_with_ing], pattern))) %>%
+sentences_with_ing <- stringr::str_detect(sentences, pattern)
+unique(unlist(stringr::str_extract_all(sentences[sentences_with_ing], pattern))) %>%
   head()
 #> [1] "spring"  "evening" "morning" "winding" "living"  "king"
 
@@ -517,7 +512,7 @@ Part 3: Finding all plurals cannot be correctly accomplished with regular expres
 
 ```{r, include=show_solution, purl=purl_solutions}
 
-unique(unlist(str_extract_all(sentences, "\\b[A-Za-z]{3,}s\\b"))) %>%
+unique(unlist(stringr::str_extract_all(sentences, "\\b[A-Za-z]{3,}s\\b"))) %>%
   head()
 #> [1] "planks" "days"   "bowls"  "lemons" "makes"  "hogs"
 
@@ -533,7 +528,7 @@ unique(unlist(str_extract_all(sentences, "\\b[A-Za-z]{3,}s\\b"))) %>%
 Part 1: Replace forward slashes with backslashes.
 
 ```{r, include=show_solution, purl=purl_solutions}
-str_replace_all("past/present/future", "/", "\\\\")
+stringr::str_replace_all("past/present/future", "/", "\\\\")
 #> [1] "past\\present\\future"
 ```
 
@@ -548,7 +543,7 @@ replacements <- c("A" = "a", "B" = "b", "C" = "c", "D" = "d", "E" = "e",
                   "P" = "p", "Q" = "q", "R" = "r", "S" = "s", "T" = "t", 
                   "U" = "u", "V" = "v", "W" = "w", "X" = "x", "Y" = "y", 
                   "Z" = "z")
-lower_words <- str_replace_all(words, pattern = replacements)
+lower_words <- stringr::str_replace_all(words, pattern = replacements)
 head(lower_words)
 #> [1] "a"        "able"     "about"    "absolute" "accept"   "account"
 ```
@@ -560,7 +555,7 @@ Part 3: Switch the first and last letters in words. Which of those strings are s
 First, make a vector of all the words with first and last letters swapped:
 
 ```{r, include=show_solution, purl=purl_solutions}
-swapped <- str_replace_all(words, "^([A-Za-z])(.*)([A-Za-z])$", "\\3\\2\\1")
+swapped <- stringr::str_replace_all(words, "^([A-Za-z])(.*)([A-Za-z])$", "\\3\\2\\1")
 ```
 Next, find what of “swapped” is also in the original list using the function intersect():
 
@@ -573,7 +568,7 @@ intersect(swapped, words)
 Alternatively, the regex can be written using the POSIX character class for letter ([[:alpha:]]):
 
 ```{r, include=show_solution, purl=purl_solutions}
-swapped2 <- str_replace_all(words, "^([[:alpha:]])(.*)([[:alpha:]])$", "\\3\\2\\1")
+swapped2 <- stringr::str_replace_all(words, "^([[:alpha:]])(.*)([[:alpha:]])$", "\\3\\2\\1")
 intersect(swapped2, words)
 ```
 

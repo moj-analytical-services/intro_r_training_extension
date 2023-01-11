@@ -3677,7 +3677,8 @@ files &lt;- files %&gt;%
 
 files</pre>
 
-<pre >## [1] &quot;s3://alpha-r-training/intro-r-extension/fruit1.csv&quot; &quot;s3://alpha-r-training/intro-r-extension/fruit2.csv&quot;
+<pre >## [1] &quot;s3://alpha-r-training/intro-r-extension/fruit1.csv&quot;
+## [2] &quot;s3://alpha-r-training/intro-r-extension/fruit2.csv&quot;
 ## [3] &quot;s3://alpha-r-training/intro-r-extension/fruit3.csv&quot;</pre>
 
 </article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
@@ -4050,18 +4051,18 @@ df</pre>
 <pre >## # A tibble: 12 × 3
 ##    year  quarter count
 ##    &lt;chr&gt; &lt;chr&gt;   &lt;int&gt;
-##  1 2017  Q1          6
-##  2 &lt;NA&gt;  Q2          9
-##  3 &lt;NA&gt;  Q3          5
-##  4 &lt;NA&gt;  Q4          8
+##  1 2017  Q1          9
+##  2 &lt;NA&gt;  Q2          4
+##  3 &lt;NA&gt;  Q3          8
+##  4 &lt;NA&gt;  Q4          2
 ##  5 2018  Q1          3
 ##  6 &lt;NA&gt;  Q2         10
-##  7 &lt;NA&gt;  Q3         12
-##  8 &lt;NA&gt;  Q4          4
-##  9 2019  Q1          1
-## 10 &lt;NA&gt;  Q2          7
-## 11 &lt;NA&gt;  Q3          2
-## 12 &lt;NA&gt;  Q4         11</pre>
+##  7 &lt;NA&gt;  Q3          1
+##  8 &lt;NA&gt;  Q4         12
+##  9 2019  Q1         11
+## 10 &lt;NA&gt;  Q2          6
+## 11 &lt;NA&gt;  Q3          5
+## 12 &lt;NA&gt;  Q4          7</pre>
 
 </article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
 
@@ -4073,18 +4074,18 @@ df %&gt;% tidyr::fill(year)</pre>
 <pre >## # A tibble: 12 × 3
 ##    year  quarter count
 ##    &lt;chr&gt; &lt;chr&gt;   &lt;int&gt;
-##  1 2017  Q1          6
-##  2 2017  Q2          9
-##  3 2017  Q3          5
-##  4 2017  Q4          8
+##  1 2017  Q1          9
+##  2 2017  Q2          4
+##  3 2017  Q3          8
+##  4 2017  Q4          2
 ##  5 2018  Q1          3
 ##  6 2018  Q2         10
-##  7 2018  Q3         12
-##  8 2018  Q4          4
-##  9 2019  Q1          1
-## 10 2019  Q2          7
-## 11 2019  Q3          2
-## 12 2019  Q4         11</pre>
+##  7 2018  Q3          1
+##  8 2018  Q4         12
+##  9 2019  Q1         11
+## 10 2019  Q2          6
+## 11 2019  Q3          5
+## 12 2019  Q4          7</pre>
 
 </article></slide><slide class=""><hgroup><h2>Removing rows with missing values from a dataframe</h2></hgroup><article  id="removing-rows-with-missing-values-from-a-dataframe" class="smaller ">
 
@@ -4218,7 +4219,7 @@ fruit %&gt;% tidyr::replace_na(list(Cost = &quot;Unknown&quot;,
 #dim(billboard)
 
 #to see the structure of the data
-billboard %&gt;% arrange(desc(date.entered)) %&gt;% select(1:6) %&gt;% head()</pre>
+billboard %&gt;% dplyr::arrange(desc(date.entered)) %&gt;% dplyr::select(1:6) %&gt;% head()</pre>
 
 <pre >## # A tibble: 6 × 6
 ##   artist        track             date.entered   wk1   wk2   wk3
@@ -4235,8 +4236,8 @@ billboard %&gt;% arrange(desc(date.entered)) %&gt;% select(1:6) %&gt;% head()</p
 <p>Using <code>pivot_longer</code> allows us to map the given columns <code>(wk1,wk2, wk3, wk4)</code> to the specified variable, in this case, <code>month1</code>.</p>
 
 <pre class = 'prettyprint lang-r'>#starting by mapping a single month 
-billboard %&gt;% pivot_longer(cols = c(wk1,wk2, wk3, wk4), names_to = &quot;month1&quot;, values_to = &quot;rank&quot;) %&gt;% 
-  select(1:5, &quot;month1&quot;, &quot;rank&quot;) %&gt;% head()</pre>
+billboard %&gt;% tidyr::pivot_longer(cols = c(wk1,wk2, wk3, wk4), names_to = &quot;month1&quot;, values_to = &quot;rank&quot;) %&gt;% 
+  dplyr::select(1:5, &quot;month1&quot;, &quot;rank&quot;) %&gt;% head()</pre>
 
 <pre >## # A tibble: 6 × 7
 ##   artist  track                   date.entered   wk5   wk6 month1  rank
@@ -4263,7 +4264,7 @@ billboard %&gt;% pivot_longer(cols = c(wk1,wk2, wk3, wk4), names_to = &quot;mont
 <p>In that case, the following structure comes into play where regular expressions are used to pick all the variables to be mapped.</p>
 
 <pre class = 'prettyprint lang-r'>#mapping all weeks to one varable called &quot;weeks&quot; 
-billboard %&gt;% pivot_longer(cols = starts_with(&quot;wk&quot;), names_to = &quot;weeks&quot;, values_to = &quot;rank&quot;) %&gt;% head()</pre>
+billboard %&gt;% tidyr::pivot_longer(cols = starts_with(&quot;wk&quot;), names_to = &quot;weeks&quot;, values_to = &quot;rank&quot;) %&gt;% head()</pre>
 
 <pre >## # A tibble: 6 × 5
 ##   artist track                   date.entered weeks  rank
@@ -4306,7 +4307,7 @@ anscombe</pre>
 <p>In such cases, <code>pivot_longer</code> offers an elegant solution to the problem by automatically selecting the common patterns and using them as the new variables.</p>
 
 <pre class = 'prettyprint lang-r'># using &quot;.value&quot; and &quot;everything()&quot; to select common variables
-anscombe %&gt;% pivot_longer(everything(),
+anscombe %&gt;% tidyr::pivot_longer(everything(),
    names_to = c(&quot;.value&quot;, &quot;set&quot;),
    names_pattern = &quot;(.)(.)&quot; )</pre>
 
@@ -4361,7 +4362,7 @@ anscombe %&gt;% pivot_longer(everything(),
 
 <p>A simple use of the function can provide a better understanding of what the data contains and also make it more useful for potential use in later stages of a processing system where specific input from each station can be utilized.</p>
 
-<pre class = 'prettyprint lang-r'>fish_encounters %&gt;% pivot_wider(names_from = station, values_from = seen) %&gt;% head()</pre>
+<pre class = 'prettyprint lang-r'>fish_encounters %&gt;% tidyr::pivot_wider(names_from = station, values_from = seen) %&gt;% head()</pre>
 
 <pre >## # A tibble: 6 × 12
 ##   fish  Release I80_1 Lisbon  Rstr Base_TD   BCE   BCW  BCE2  BCW2   MAE   MAW
@@ -4377,7 +4378,7 @@ anscombe %&gt;% pivot_longer(everything(),
 
 <p>The general use is very similar to that presented in `<code>pivot_longer()</code> with <code>names_from</code> targeting the column containing the subcategories to split from and <code>values_from</code> the corresponding values associated with each category. Notice that there will be cases where there is no match and these will initially be filled with <code>NA</code>. Simply setting the option <code>values_fill</code> to a value of your choice will replaced the <code>NA</code> values to something more meaningful.</p>
 
-<pre class = 'prettyprint lang-r'>fish_encounters %&gt;% pivot_wider(names_from = station, values_from = seen,
+<pre class = 'prettyprint lang-r'>fish_encounters %&gt;% tidyr::pivot_wider(names_from = station, values_from = seen,
   values_fill = list(seen = 0)) %&gt;% head()</pre>
 
 <pre >## # A tibble: 6 × 12
@@ -4395,7 +4396,7 @@ anscombe %&gt;% pivot_longer(everything(),
 <p>Consider the <code>warpbreaks</code> dataset that comes with basic R, it describes the results of a designed experiment with nine replicates for every combination of wool (A and B) and tension (L, M, H).</p>
 
 <pre class = 'prettyprint lang-r'>#converting into a tibble and rearranging the vars
-warpbreaks %&gt;% as_tibble() %&gt;% select(wool,tension, breaks)</pre>
+warpbreaks %&gt;% tibble::as_tibble() %&gt;% dplyr::select(wool,tension, breaks)</pre>
 
 <pre >## # A tibble: 54 × 3
 ##    wool  tension breaks
@@ -4416,7 +4417,7 @@ warpbreaks %&gt;% as_tibble() %&gt;% select(wool,tension, breaks)</pre>
 
 <p>Notice the problem that appears when trying to widen this dataset. Uniqueness is not maintained since this is a repeated experiment with the same value of breaks for each tension value.</p>
 
-<pre class = 'prettyprint lang-r'>warpdata = warpbreaks %&gt;% pivot_wider(names_from = wool, values_from = breaks)</pre>
+<pre class = 'prettyprint lang-r'>warpdata = warpbreaks %&gt;% tidyr::pivot_wider(names_from = wool, values_from = breaks)</pre>
 
 <pre >## Warning: Values from `breaks` are not uniquely identified; output will contain list-cols.
 ## * Use `values_fn = list` to suppress this warning.
@@ -4434,7 +4435,7 @@ warpbreaks %&gt;% as_tibble() %&gt;% select(wool,tension, breaks)</pre>
 <p>For that purpose, <code>pivot_wider()</code> offers the <code>values_fn</code> option where a suitable function is defined to describe the list with a single value.</p>
 
 <pre class = 'prettyprint lang-r'>warpbreaks %&gt;%
-  pivot_wider(
+  tidyr::pivot_wider(
     names_from = wool,
     values_from = breaks,
     values_fn = list(breaks = mean)
@@ -4455,7 +4456,7 @@ warpbreaks %&gt;% as_tibble() %&gt;% select(wool,tension, breaks)</pre>
 
 <pre class = 'prettyprint lang-r'>#the table to use
 table4a
-table4a %&gt;% pivot_longer(1999,2000, names_to = &quot;year&quot;,values_to = &quot;value&quot;)</pre>
+table4a %&gt;% tidyr::pivot_longer(1999,2000, names_to = &quot;year&quot;,values_to = &quot;value&quot;)</pre>
 
 <h3>Exercise 2</h3>
 
@@ -4463,7 +4464,7 @@ table4a %&gt;% pivot_longer(1999,2000, names_to = &quot;year&quot;,values_to = &
 
 <p>Hint. Could a new column solve the problem, what other solution could we apply?</p>
 
-<pre class = 'prettyprint lang-r'>people = tribble(~name, ~key, ~value,
+<pre class = 'prettyprint lang-r'>people = tibble::tribble(~name, ~key, ~value,
                  #------------/------/-----,
                  &quot;Phil Woods&quot;, &quot;age&quot;,45,
                  &quot;Phil Woods&quot;, &quot;height&quot;,185,
@@ -4477,15 +4478,15 @@ table4a %&gt;% pivot_longer(1999,2000, names_to = &quot;year&quot;,values_to = &
 
 <p>Consider the following simple tibble, what kind of pivoting would you use, <code>pivot_longer()</code> or <code>pivot_wider()</code>?</p>
 
-<pre class = 'prettyprint lang-r'>rcj = tribble(~judge, ~male, ~female,
-              &quot;yes&quot;, NA, 10, 
-              &quot;no&quot;, 20, 12)</pre>
+<pre class = 'prettyprint lang-r'>rcj = tibble::tribble(~judge, ~male, ~female,
+                      &quot;yes&quot;, NA, 10, 
+                      &quot;no&quot;, 20, 12)</pre>
 
 </article></slide><slide class=""><hgroup><h2>Solutions</h2></hgroup><article  id="solutions" class="smaller ">
 
 <h3>Exercise 1</h3>
 
-<pre class = 'prettyprint lang-r'>table4a %&gt;% pivot_longer(cols = !country, names_to = &quot;year&quot;,values_to = &quot;value&quot;)</pre>
+<pre class = 'prettyprint lang-r'>table4a %&gt;% tidyr::pivot_longer(cols = !country, names_to = &quot;year&quot;,values_to = &quot;value&quot;)</pre>
 
 <pre >## # A tibble: 6 × 3
 ##   country     year   value
@@ -4502,14 +4503,14 @@ table4a %&gt;% pivot_longer(1999,2000, names_to = &quot;year&quot;,values_to = &
 <h3>Exercise 2</h3>
 
 <pre class = 'prettyprint lang-r'>#withough changing anything on the dataset
-people = tribble(~name, ~key, ~value,
+people = tibble::tribble(~name, ~key, ~value,
                  #------------/------/-----,
                  &quot;Phil Woods&quot;, &quot;age&quot;,45,
                  &quot;Phil Woods&quot;, &quot;height&quot;,185,
                  &quot;Phil Woods&quot;, &quot;age&quot;,50,
                  &quot;Jess Cordero&quot;, &quot;age&quot;,45,
                  &quot;Jess Cordero&quot;, &quot;height&quot;,156,)
-people %&gt;% pivot_wider(names_from = name, values_from = value)</pre>
+people %&gt;% tidyr::pivot_wider(names_from = name, values_from = value)</pre>
 
 <pre >## # A tibble: 2 × 3
 ##   key    `Phil Woods` `Jess Cordero`
@@ -4518,14 +4519,14 @@ people %&gt;% pivot_wider(names_from = name, values_from = value)</pre>
 ## 2 height &lt;dbl [1]&gt;    &lt;dbl [1]&gt;</pre>
 
 <pre class = 'prettyprint lang-r'># solution 1 - adding a new column
-people = tribble(~name, ~key, ~value, ~dkey,
+people = tibble::tribble(~name, ~key, ~value, ~dkey,
                  #------------/------/-----,
                  &quot;Phil Woods&quot;, &quot;age&quot;,45,1,
                  &quot;Phil Woods&quot;, &quot;height&quot;,185,1,
                  &quot;Phil Woods&quot;, &quot;age&quot;,50,0,
                  &quot;Jess Cordero&quot;, &quot;age&quot;,45,1,
                  &quot;Jess Cordero&quot;, &quot;height&quot;,156,1)
-people %&gt;% pivot_wider(names_from = name, values_from = value)</pre>
+people %&gt;% tidyr::pivot_wider(names_from = name, values_from = value)</pre>
 
 <pre >## # A tibble: 3 × 4
 ##   key     dkey `Phil Woods` `Jess Cordero`
@@ -4535,14 +4536,14 @@ people %&gt;% pivot_wider(names_from = name, values_from = value)</pre>
 ## 3 age        0           50             NA</pre>
 
 <pre class = 'prettyprint lang-r'>#solution 2  - uniqueness
-people = tribble(~name, ~key, ~value,
+people = tibble::tribble(~name, ~key, ~value,
                  #------------/------/-----,
                  &quot;Phil Woods&quot;, &quot;age&quot;,45,
                  &quot;Phil Woods&quot;, &quot;height&quot;,185,
                  # &quot;Phil Woods&quot;, &quot;age&quot;,50,
                  &quot;Jess Cordero&quot;, &quot;age&quot;,45,
                  &quot;Jess Cordero&quot;, &quot;height&quot;,156,)
-people %&gt;% pivot_wider(names_from = name, values_from = value)</pre>
+people %&gt;% tidyr::pivot_wider(names_from = name, values_from = value)</pre>
 
 <pre >## # A tibble: 2 × 3
 ##   key    `Phil Woods` `Jess Cordero`
@@ -4554,7 +4555,7 @@ people %&gt;% pivot_wider(names_from = name, values_from = value)</pre>
 
 <h3>Exercise 3</h3>
 
-<pre class = 'prettyprint lang-r'>rcj = tribble( ~judge, ~male, ~female,
+<pre class = 'prettyprint lang-r'>rcj = tibble::tribble( ~judge, ~male, ~female,
                     &quot;yes&quot;, NA, 10, 
                     &quot;no&quot;, 20, 12)
 #alternative table to try with no NAs
@@ -4562,7 +4563,7 @@ people %&gt;% pivot_wider(names_from = name, values_from = value)</pre>
 #                     &quot;yes&quot;, 4, 10, 
 #                     &quot;no&quot;, 20, 12)
 #use of pivot_longer
-rcj %&gt;% pivot_longer(cols = c(male, female),   names_to = &quot;gender&quot;, values_to = &quot;count&quot;)</pre>
+rcj %&gt;% tidyr::pivot_longer(cols = c(male, female),   names_to = &quot;gender&quot;, values_to = &quot;count&quot;)</pre>
 
 <pre >## # A tibble: 4 × 3
 ##   judge gender count
@@ -4575,7 +4576,7 @@ rcj %&gt;% pivot_longer(cols = c(male, female),   names_to = &quot;gender&quot;,
 </article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
 
 <pre class = 'prettyprint lang-r'># use of  pivot_wider 
-rcj %&gt;% pivot_wider(names_from = judge, values_from = c(male, female))</pre>
+rcj %&gt;% tidyr::pivot_wider(names_from = judge, values_from = c(male, female))</pre>
 
 <pre >## # A tibble: 1 × 4
 ##   male_yes male_no female_yes female_no
@@ -4609,7 +4610,7 @@ rcj %&gt;% pivot_wider(names_from = judge, values_from = c(male, female))</pre>
 <p>The <code>separate()</code> function is build to help in cases where values in a column could be split based on a separator in place. On the above example in <code>table3</code> the following code splits the <code>rate</code> variable into <code>cases</code> and <code>population</code> accordingly</p>
 
 <pre class = 'prettyprint lang-r'># separate() automatically detects the separator
-table3 %&gt;% separate(rate, into = c(&quot;cases&quot;, &quot;population&quot;))</pre>
+table3 %&gt;% tidyr::separate(rate, into = c(&quot;cases&quot;, &quot;population&quot;))</pre>
 
 <pre >## # A tibble: 6 × 4
 ##   country      year cases  population
@@ -4626,7 +4627,7 @@ table3 %&gt;% separate(rate, into = c(&quot;cases&quot;, &quot;population&quot;)
 <p>By default, the function will automatically detect any non-alphanumeric character and use that as a separator but its not limited to that. One can specify the separator manually using the <code>sep</code> option.</p>
 
 <pre class = 'prettyprint lang-r'># separate() manually  detects the separator
-table3 %&gt;% separate(rate, into = c(&quot;cases&quot;, &quot;population&quot;), sep = &quot;/&quot;)</pre>
+table3 %&gt;% tidyr::separate(rate, into = c(&quot;cases&quot;, &quot;population&quot;), sep = &quot;/&quot;)</pre>
 
 <pre >## # A tibble: 6 × 4
 ##   country      year cases  population
@@ -4643,7 +4644,7 @@ table3 %&gt;% separate(rate, into = c(&quot;cases&quot;, &quot;population&quot;)
 <p>At its heart, <code>separate()</code> uses regular expressions to detect and pull the corresponding characters. As a result the new columns are now of <code>char</code> type, something that can be changed by altering the state of the <code>convert</code> flag as shown below:</p>
 
 <pre class = 'prettyprint lang-r'># separate() manually detects the separator and convers the columns into the appropriate data type 
-table3 %&gt;% separate(rate, into = c(&quot;cases&quot;, &quot;population&quot;), sep = &quot;/&quot;, convert = TRUE)</pre>
+table3 %&gt;% tidyr::separate(rate, into = c(&quot;cases&quot;, &quot;population&quot;), sep = &quot;/&quot;, convert = TRUE)</pre>
 
 <pre >## # A tibble: 6 × 4
 ##   country      year  cases population
@@ -4659,7 +4660,7 @@ table3 %&gt;% separate(rate, into = c(&quot;cases&quot;, &quot;population&quot;)
 
 <p>The <code>extract()</code> function lets you go a step further and allows you to define your own regex to be used for pattern patching. Using the same example as above, lets see how to split the <code>year</code> variable to <code>century</code> and <code>years</code>.</p>
 
-<pre class = 'prettyprint lang-r'>table3 %&gt;% extract( col = year, into = c(&quot;century&quot;,&quot;years&quot;), regex = &quot;([0-9]{2})([0-9]{2})&quot;)</pre>
+<pre class = 'prettyprint lang-r'>table3 %&gt;% tidyr::extract( col = year, into = c(&quot;century&quot;,&quot;years&quot;), regex = &quot;([0-9]{2})([0-9]{2})&quot;)</pre>
 
 <pre >## # A tibble: 6 × 4
 ##   country     century years rate             
@@ -4675,7 +4676,7 @@ table3 %&gt;% separate(rate, into = c(&quot;cases&quot;, &quot;population&quot;)
 
 <p>The <code>regex</code> option shown above uses the same syntax as described earlier in the chapter, in fact, it is possible to split the target variable into several others by expanding the bracket list as shown in the following block of code. The year variable is now split into three variables to depict the <code>century</code>, <code>decade</code> and <code>year</code>.</p>
 
-<pre class = 'prettyprint lang-r'>table3 %&gt;% extract( col = year, into = c(&quot;century&quot;,&quot;decade&quot;,&quot;year&quot; ), regex = &quot;([0-9]{2})([0-9])([0-9])&quot;)</pre>
+<pre class = 'prettyprint lang-r'>table3 %&gt;% tidyr::extract( col = year, into = c(&quot;century&quot;,&quot;decade&quot;,&quot;year&quot; ), regex = &quot;([0-9]{2})([0-9])([0-9])&quot;)</pre>
 
 <pre >## # A tibble: 6 × 5
 ##   country     century decade year  rate             
@@ -4695,9 +4696,9 @@ table3 %&gt;% separate(rate, into = c(&quot;cases&quot;, &quot;population&quot;)
 
 <pre class = 'prettyprint lang-r'>#the reshaped dataset
 tab3 = table3 %&gt;% 
-  extract( col = year, into = c(&quot;century&quot;,&quot;decade&quot;,&quot;year&quot; ), regex = &quot;([0-9]{2})([0-9])([0-9])&quot;)
+  tidyr::extract( col = year, into = c(&quot;century&quot;,&quot;decade&quot;,&quot;year&quot; ), regex = &quot;([0-9]{2})([0-9])([0-9])&quot;)
 #going back to the original dataset - with separator
-tab3 %&gt;% unite(new ,century, decade, year)</pre>
+tab3 %&gt;% tidyr::unite(new ,century, decade, year)</pre>
 
 <pre >## # A tibble: 6 × 3
 ##   country     new    rate             
@@ -4714,7 +4715,7 @@ tab3 %&gt;% unite(new ,century, decade, year)</pre>
 <p>By default, the <code>_</code> separator is used after each component of the composite variable but as always, there are option in place to customize this behavior. In the following block of code the separator is removed giving the original variable before any alteration takes place.</p>
 
 <pre class = 'prettyprint lang-r'>#going back to the original dataset - with no separators
-tab3 %&gt;% unite(new ,century, decade, year, sep = &quot;&quot;)</pre>
+tab3 %&gt;% tidyr::unite(new ,century, decade, year, sep = &quot;&quot;)</pre>
 
 <pre >## # A tibble: 6 × 3
 ##   country     new   rate             
@@ -4734,10 +4735,10 @@ tab3 %&gt;% unite(new ,century, decade, year, sep = &quot;&quot;)</pre>
 
 <p>Experiment with the various option in using the following datasets.</p>
 
-<pre class = 'prettyprint lang-r'>tibble(x = c(&quot;a,b,c&quot;, &quot;d,e,f,g&quot;, &quot;h,i,j&quot;)) %&gt;% 
-  separate(x, c(&quot;one&quot;, &quot;two&quot;, &quot;three&quot;))
-tibble(x = c(&quot;a,b,c&quot;, &quot;d,e&quot;, &quot;f,g,i&quot;)) %&gt;% 
-  separate(x, c(&quot;one&quot;, &quot;two&quot;, &quot;three&quot;))</pre>
+<pre class = 'prettyprint lang-r'>tibble::tibble(x = c(&quot;a,b,c&quot;, &quot;d,e,f,g&quot;, &quot;h,i,j&quot;)) %&gt;% 
+  tidyr::separate(x, c(&quot;one&quot;, &quot;two&quot;, &quot;three&quot;))
+tibble::tibble(x = c(&quot;a,b,c&quot;, &quot;d,e&quot;, &quot;f,g,i&quot;)) %&gt;% 
+  tidyr::separate(x, c(&quot;one&quot;, &quot;two&quot;, &quot;three&quot;))</pre>
 
 <h4>Exercise 2</h4>
 
@@ -4754,8 +4755,8 @@ tibble(x = c(&quot;a,b,c&quot;, &quot;d,e&quot;, &quot;f,g,i&quot;)) %&gt;%
 <pre class = 'prettyprint lang-r'># Typing `?separate()` shows all the options and their meanings.
 # Try experimenting with them to discover more about what they do.
 
-tibble(x = c(&quot;a,b,c&quot;, &quot;d,e,f,g&quot;, &quot;h,i,j&quot;)) %&gt;% 
-  separate(x, c(&quot;one&quot;, &quot;two&quot;, &quot;three&quot;))</pre>
+tibble::tibble(x = c(&quot;a,b,c&quot;, &quot;d,e,f,g&quot;, &quot;h,i,j&quot;)) %&gt;% 
+  tidyr::separate(x, c(&quot;one&quot;, &quot;two&quot;, &quot;three&quot;))</pre>
 
 <pre >## Warning: Expected 3 pieces. Additional pieces discarded in 1 rows [2].</pre>
 
@@ -4766,8 +4767,8 @@ tibble(x = c(&quot;a,b,c&quot;, &quot;d,e,f,g&quot;, &quot;h,i,j&quot;)) %&gt;%
 ## 2 d     e     f    
 ## 3 h     i     j</pre>
 
-<pre class = 'prettyprint lang-r'>tibble(x = c(&quot;a,b,c&quot;, &quot;d,e&quot;, &quot;f,g,i&quot;)) %&gt;% 
-  separate(x, c(&quot;one&quot;, &quot;two&quot;, &quot;three&quot;))</pre>
+<pre class = 'prettyprint lang-r'>tibble::tibble(x = c(&quot;a,b,c&quot;, &quot;d,e&quot;, &quot;f,g,i&quot;)) %&gt;% 
+  tidyr::separate(x, c(&quot;one&quot;, &quot;two&quot;, &quot;three&quot;))</pre>
 
 <pre >## Warning: Expected 3 pieces. Missing pieces filled with `NA` in 1 rows [2].</pre>
 
@@ -4864,7 +4865,7 @@ s8</pre>
 <p>At times it is necessary to determine the length of a character string. A useful function to use in these cases is the <code>str_length()</code> function which helps with that.</p>
 
 <pre class = 'prettyprint lang-r'># finding out how many characters in a char vector
-str_length(c(s8, NA))</pre>
+stringr::str_length(c(s8, NA))</pre>
 
 <pre >## [1]  1  6  2  7 NA</pre>
 
@@ -4872,17 +4873,17 @@ str_length(c(s8, NA))</pre>
 
 </article></slide><slide class=""><hgroup><h2>Combining Strings</h2></hgroup><article  id="combining-strings" class="smaller ">
 
-<p>We already seen one way to combine strings in the previous section but with the <code>stringer</code> package we have an additional, more powerful tool at our disposal.</p>
+<p>We’ve already seen one way to combine strings in the previous section but with the <code>stringr</code> package we have an additional, more powerful tool at our disposal.</p>
 
 <p>Using <code>str_c()</code> can be beneficial in many cases since it allows for additional flexibility in the form of parameters for separators to be used or the option to collapse individual entries into one composite character string.</p>
 
 <pre class = 'prettyprint lang-r'># using custom separator
-str_c(&quot;an&quot;, &quot;str_c vector&quot;, &quot;with&quot;, &quot;space&quot;, &quot;character&quot;, &quot;separating each entry&quot;, sep = &quot; &quot;)</pre>
+stringr::str_c(&quot;an&quot;, &quot;str_c vector&quot;, &quot;with&quot;, &quot;space&quot;, &quot;character&quot;, &quot;separating each entry&quot;, sep = &quot; &quot;)</pre>
 
 <pre >## [1] &quot;an str_c vector with space character separating each entry&quot;</pre>
 
 <pre class = 'prettyprint lang-r'># the colapse option
-str_c(&quot;an&quot;, &quot;str_c vector&quot;, &quot;with&quot;, &quot;space&quot;, &quot;character&quot;, &quot;separating each entry&quot;, collapse = T)</pre>
+stringr::str_c(&quot;an&quot;, &quot;str_c vector&quot;, &quot;with&quot;, &quot;space&quot;, &quot;character&quot;, &quot;separating each entry&quot;, collapse = T)</pre>
 
 <pre >## [1] &quot;anstr_c vectorwithspacecharacterseparating each entry&quot;</pre>
 
@@ -4893,12 +4894,12 @@ str_c(&quot;an&quot;, &quot;str_c vector&quot;, &quot;with&quot;, &quot;space&qu
 <p>In addition, it can also work to recycle shorter vectors to mach the longer ones as in the following example.</p>
 
 <pre class = 'prettyprint lang-r'># vectorized form - translating a shorter vectror to match the longer one
-str_c(&quot;a&quot;, c(&quot;b&quot;, &quot;c&quot;, &quot;d&quot;), &quot;c&quot;, sep = &quot; &quot; )</pre>
+stringr::str_c(&quot;a&quot;, c(&quot;b&quot;, &quot;c&quot;, &quot;d&quot;), &quot;c&quot;, sep = &quot; &quot; )</pre>
 
 <pre >## [1] &quot;a b c&quot; &quot;a c c&quot; &quot;a d c&quot;</pre>
 
 <pre class = 'prettyprint lang-r'># simpler vectorizing 
-str_c(&quot;a&quot;, c(&quot;b&quot;, &quot;c&quot;, &quot;d&quot;))</pre>
+stringr::str_c(&quot;a&quot;, c(&quot;b&quot;, &quot;c&quot;, &quot;d&quot;))</pre>
 
 <pre >## [1] &quot;ab&quot; &quot;ac&quot; &quot;ad&quot;</pre>
 
@@ -4914,17 +4915,17 @@ c(&quot;a&quot;, c(&quot;b&quot;, &quot;c&quot;, &quot;d&quot;))</pre>
 <p>It is also important to note that the function will not fail if the end point is outside of the index limit of the string.</p>
 
 <pre class = 'prettyprint lang-r'>x &lt;- c(&quot;OneValue&quot;, &quot;SecondValue&quot;, &quot;ThirdValue&quot;)
-str_sub(x, 1, 3)</pre>
+stringr::str_sub(x, 1, 3)</pre>
 
 <pre >## [1] &quot;One&quot; &quot;Sec&quot; &quot;Thi&quot;</pre>
 
 <pre class = 'prettyprint lang-r'># negative numbers count backwards from end
-str_sub(x, -4, -1)</pre>
+stringr::str_sub(x, -4, -1)</pre>
 
 <pre >## [1] &quot;alue&quot; &quot;alue&quot; &quot;alue&quot;</pre>
 
 <pre class = 'prettyprint lang-r'># The function will not fail in the example below
-str_sub(&quot;a&quot;, 1,5)</pre>
+stringr::str_sub(&quot;a&quot;, 1,5)</pre>
 
 <pre >## [1] &quot;a&quot;</pre>
 
@@ -4932,7 +4933,7 @@ str_sub(&quot;a&quot;, 1,5)</pre>
 
 <p>An additional use of the of the <code>str_sub</code> function is to assign values to a given range on the target string</p>
 
-<pre class = 'prettyprint lang-r'>str_sub(x, 1, 1) &lt;- str_to_lower(str_sub(x, 1, 1))
+<pre class = 'prettyprint lang-r'>stringr::str_sub(x, 1, 1) &lt;- stringr::str_to_lower(stringr::str_sub(x, 1, 1))
 x</pre>
 
 <pre >## [1] &quot;oneValue&quot;    &quot;secondValue&quot; &quot;thirdValue&quot;</pre>
@@ -4944,12 +4945,12 @@ x</pre>
 <pre class = 'prettyprint lang-r'>#initial string
 x = c(&quot;y&quot;, &quot;i&quot;, &quot;k&quot;)
 #sort function in English
-str_sort(x)</pre>
+stringr::str_sort(x)</pre>
 
 <pre >## [1] &quot;i&quot; &quot;k&quot; &quot;y&quot;</pre>
 
 <pre class = 'prettyprint lang-r'>#sort function in Lithuanian
-str_sort(x,locale = &quot;lt&quot;)</pre>
+stringr::str_sort(x,locale = &quot;lt&quot;)</pre>
 
 <pre >## [1] &quot;i&quot; &quot;y&quot; &quot;k&quot;</pre>
 
@@ -4970,9 +4971,9 @@ str_sort(x,locale = &quot;lt&quot;)</pre>
 <p>The following function extracts the middle character. If the string has an even number of characters the choice is arbitrary. We choose to select \([n/2]\), because that case works even if the string is only of length one. A more general method would allow the user to select either the floor or ceiling for the middle character of an even string.</p>
 
 <pre class = 'prettyprint lang-r'>x &lt;- c(&quot;a&quot;, &quot;abc&quot;, &quot;abcd&quot;, &quot;abcde&quot;, &quot;abcdef&quot;)
-L &lt;- str_length(x)
+L &lt;- stringr::str_length(x)
 m &lt;- ceiling(L / 2)
-str_sub(x, m, m)</pre>
+stringr::str_sub(x, m, m)</pre>
 
 <pre >## [1] &quot;a&quot; &quot;b&quot; &quot;b&quot; &quot;c&quot; &quot;c&quot;</pre>
 
@@ -4999,14 +5000,14 @@ str_sub(x, m, m)</pre>
     x
   } else if (n == 2) {
     # no comma before and when n == 2
-    str_c(x[[1]], &quot;and&quot;, x[[2]], sep = &quot; &quot;)
+    stringr::str_c(x[[1]], &quot;and&quot;, x[[2]], sep = &quot; &quot;)
   } else {
     # commas after all n - 1 elements
-    not_last &lt;- str_c(x[seq_len(n - 1)], delim)
+    not_last &lt;- stringr::str_c(x[seq_len(n - 1)], delim)
     # prepend &quot;and&quot; to the last element
-    last &lt;- str_c(&quot;and&quot;, x[[n]], sep = &quot; &quot;)
+    last &lt;- stringr::str_c(&quot;and&quot;, x[[n]], sep = &quot; &quot;)
     # combine parts with spaces
-    str_c(c(not_last, last), collapse = &quot; &quot;)
+    stringr::str_c(c(not_last, last), collapse = &quot; &quot;)
   }
 }</pre>
 
@@ -5042,7 +5043,7 @@ str_commasep(c(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;))
 <p>Detecting strings is a very important aspect in many Data Analysis applications and <code>str_detect</code> was created with ease of use in mind. It returns a logical vector depending whether there was a match in the corresponding location and based on the supplied pattern, as the example below illustrates.</p>
 
 <pre class = 'prettyprint lang-r'>x &lt;- c(&quot;apple&quot;, &quot;banana&quot;, &quot;pear&quot;)
-str_detect(x, &quot;e&quot;)</pre>
+stringr::str_detect(x, &quot;e&quot;)</pre>
 
 <pre >## [1]  TRUE FALSE  TRUE</pre>
 
@@ -5051,12 +5052,12 @@ str_detect(x, &quot;e&quot;)</pre>
 <p>A very handy way of using it, is by taking advantage of how <code>R</code> translates <code>TRUE</code> (evaluated as <code>1</code>) and <code>FALSE</code> (evaluated as <code>0</code>) responses. In the example below using the <code>sum</code> and <code>mean</code> functions makes counting instances of a pattern being detected much easier.</p>
 
 <pre class = 'prettyprint lang-r'># How many common words start with t?
-sum(str_detect(words, &quot;^t&quot;))</pre>
+sum(stringr::str_detect(words, &quot;^t&quot;))</pre>
 
 <pre >## [1] 65</pre>
 
 <pre class = 'prettyprint lang-r'># What proportion of common words end with a vowel?
-mean(str_detect(words, &quot;[aeiou]$&quot;))</pre>
+mean(stringr::str_detect(words, &quot;[aeiou]$&quot;))</pre>
 
 <pre >## [1] 0.2765306</pre>
 
@@ -5065,12 +5066,12 @@ mean(str_detect(words, &quot;[aeiou]$&quot;))</pre>
 <p>A variation of <code>str_detect</code> is <code>str_count</code> and as the name suggests the function will count the instances of a pattern appearing in the target vector.</p>
 
 <pre class = 'prettyprint lang-r'>x &lt;- c(&quot;apple&quot;, &quot;banana&quot;, &quot;pear&quot;)
-str_count(x, &quot;a&quot;)</pre>
+stringr::str_count(x, &quot;a&quot;)</pre>
 
 <pre >## [1] 1 3 1</pre>
 
 <pre class = 'prettyprint lang-r'># On average, how many vowels per word?
-mean(str_count(words, &quot;[aeiou]&quot;))</pre>
+mean(stringr::str_count(words, &quot;[aeiou]&quot;))</pre>
 
 <pre >## [1] 1.991837</pre>
 
@@ -5093,15 +5094,15 @@ mean(str_count(words, &quot;[aeiou]&quot;))</pre>
 <p>A good way to start using regex in bulk is to see if we can construct a pattern to match that contains all the relevant information. In the example below the pattern contains a set of colours combined into a string to be used as the pattern.</p>
 
 <pre class = 'prettyprint lang-r'>colours &lt;- c(&quot;red&quot;, &quot;orange&quot;, &quot;yellow&quot;, &quot;green&quot;, &quot;blue&quot;, &quot;purple&quot;)
-colour_match &lt;- str_c(colours, collapse = &quot;|&quot;)
+colour_match &lt;- stringr::str_c(colours, collapse = &quot;|&quot;)
 colour_match</pre>
 
 <pre >## [1] &quot;red|orange|yellow|green|blue|purple&quot;</pre>
 
 <p>The next stage is to select the relevant examples from the collection of <code>sentences</code> and then proceed in matching based on the pattern we created.</p>
 
-<pre class = 'prettyprint lang-r'>has_colour &lt;- str_subset(sentences, colour_match)
-matches &lt;- str_extract(has_colour, colour_match)
+<pre class = 'prettyprint lang-r'>has_colour &lt;- stringr::str_subset(sentences, colour_match)
+matches &lt;- stringr::str_extract(has_colour, colour_match)
 head(matches)</pre>
 
 <pre >## [1] &quot;blue&quot; &quot;blue&quot; &quot;red&quot;  &quot;red&quot;  &quot;red&quot;  &quot;blue&quot;</pre>
@@ -5110,11 +5111,11 @@ head(matches)</pre>
 
 <p>To better understand the mechanics behind the matching process it helps to know that <code>str_extract</code> only finds and extracts the first match in each row of a vector. To better illustrate this, the code below selects the phrases from the <code>sentences</code> collection where there are more than one match.</p>
 
-<pre class = 'prettyprint lang-r'>more &lt;- sentences[str_count(sentences, colour_match) &gt; 1]</pre>
+<pre class = 'prettyprint lang-r'>more &lt;- sentences[stringr::str_count(sentences, colour_match) &gt; 1]</pre>
 
 <p>Notice how <code>str_extract</code> works with these source vectors.</p>
 
-<pre class = 'prettyprint lang-r'>str_extract(more, colour_match)</pre>
+<pre class = 'prettyprint lang-r'>stringr::str_extract(more, colour_match)</pre>
 
 <pre >## [1] &quot;blue&quot;   &quot;green&quot;  &quot;orange&quot;</pre>
 
@@ -5123,11 +5124,11 @@ head(matches)</pre>
 <p><code>str_replace</code> and <code>str_replace_all</code> allow you to replace parts of a string that match a pattern with a new replacement string.</p>
 
 <pre class = 'prettyprint lang-r'>x &lt;- c(&quot;apple&quot;, &quot;pear&quot;, &quot;banana&quot;)
-str_replace(x, &quot;[aeiou]&quot;, &quot;-&quot;)</pre>
+stringr::str_replace(x, &quot;[aeiou]&quot;, &quot;-&quot;)</pre>
 
 <pre >## [1] &quot;-pple&quot;  &quot;p-ar&quot;   &quot;b-nana&quot;</pre>
 
-<pre class = 'prettyprint lang-r'>str_replace_all(x, &quot;[aeiou]&quot;, &quot;-&quot;)</pre>
+<pre class = 'prettyprint lang-r'>stringr::str_replace_all(x, &quot;[aeiou]&quot;, &quot;-&quot;)</pre>
 
 <pre >## [1] &quot;-ppl-&quot;  &quot;p--r&quot;   &quot;b-n-n-&quot;</pre>
 
@@ -5136,14 +5137,14 @@ str_replace(x, &quot;[aeiou]&quot;, &quot;-&quot;)</pre>
 <p>And with <code>str_replace_all</code> we can apply the same functionality as above in all the elements of a character vector.</p>
 
 <pre class = 'prettyprint lang-r'>x &lt;- c(&quot;1 house&quot;, &quot;2 cars&quot;, &quot;3 people&quot;)
-str_replace_all(x, c(&quot;1&quot; = &quot;one&quot;, &quot;2&quot; = &quot;two&quot;, &quot;3&quot; = &quot;three&quot;))</pre>
+stringr::str_replace_all(x, c(&quot;1&quot; = &quot;one&quot;, &quot;2&quot; = &quot;two&quot;, &quot;3&quot; = &quot;three&quot;))</pre>
 
 <pre >## [1] &quot;one house&quot;    &quot;two cars&quot;     &quot;three people&quot;</pre>
 
 <p>In addition, one can also use backreferences and recycle elements of the same string as replacements</p>
 
 <pre class = 'prettyprint lang-r'>sentences %&gt;% 
-  str_replace(&quot;([^ ]+) ([^ ]+) ([^ ]+)&quot;, &quot;\\1 \\3 \\2&quot;) %&gt;% 
+  stringr::str_replace(&quot;([^ ]+) ([^ ]+) ([^ ]+)&quot;, &quot;\\1 \\3 \\2&quot;) %&gt;% 
   head(5)</pre>
 
 <pre >## [1] &quot;The canoe birch slid on the smooth planks.&quot;  &quot;Glue sheet the to the dark blue background.&quot;
@@ -5158,7 +5159,7 @@ str_replace_all(x, c(&quot;1&quot; = &quot;one&quot;, &quot;2&quot; = &quot;two&
 <li><p>For each of the following challenges, try solving it by using both a single regular expression, and a combination of multiple str_detect() calls.</p>
 
 <ol>
-<li><p>Find all words that start or end with x.</p></li>
+<li><p>Find all words that start or end with &lsquo;d&rsquo;.</p></li>
 <li><p>Find all words that start with a vowel and end with a consonant.</p></li>
 <li><p>Are there any words that contain at least one of each different vowel?</p></li>
 </ol></li>
@@ -5193,22 +5194,22 @@ str_replace_all(x, c(&quot;1&quot; = &quot;one&quot;, &quot;2&quot; = &quot;two&
 
 <p>For part 1 we have the following:</p>
 
-<p>Words that start or end with x?</p>
+<p>Words that start or end with &lsquo;d&rsquo;?</p>
 
 <pre class = 'prettyprint lang-r'># one regex
-words[str_detect(words, &quot;^x|x$&quot;)]</pre>
+words[stringr::str_detect(words, &quot;^d|d$&quot;)] %&gt;% head(5)</pre>
 
-<pre >## [1] &quot;box&quot; &quot;sex&quot; &quot;six&quot; &quot;tax&quot;</pre>
+<pre >## [1] &quot;add&quot;    &quot;afford&quot; &quot;and&quot;    &quot;around&quot; &quot;attend&quot;</pre>
 
-<pre class = 'prettyprint lang-r'>#&gt; [1] &quot;box&quot; &quot;sex&quot; &quot;six&quot; &quot;tax&quot;
+<pre class = 'prettyprint lang-r'>#&gt; [1] &quot;add&quot; &quot;afford&quot; &quot;and&quot; &quot;around&quot; &quot;attend&quot;
 # split regex into parts
-start_with_x &lt;- str_detect(words, &quot;^x&quot;)
-end_with_x &lt;- str_detect(words, &quot;x$&quot;)
-words[start_with_x | end_with_x]</pre>
+start_with_x &lt;- stringr::str_detect(words, &quot;^d&quot;)
+end_with_x &lt;- stringr::str_detect(words, &quot;d$&quot;)
+words[start_with_x | end_with_x] %&gt;% head(5)</pre>
 
-<pre >## [1] &quot;box&quot; &quot;sex&quot; &quot;six&quot; &quot;tax&quot;</pre>
+<pre >## [1] &quot;add&quot;    &quot;afford&quot; &quot;and&quot;    &quot;around&quot; &quot;attend&quot;</pre>
 
-<pre class = 'prettyprint lang-r'>#&gt; [1] &quot;box&quot; &quot;sex&quot; &quot;six&quot; &quot;tax&quot;</pre>
+<pre class = 'prettyprint lang-r'>#&gt; [1] &quot;add&quot; &quot;afford&quot; &quot;and&quot; &quot;around&quot; &quot;attend&quot;</pre>
 
 </article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
 
@@ -5216,13 +5217,13 @@ words[start_with_x | end_with_x]</pre>
 
 <p>Words starting with vowel and ending with consonant.</p>
 
-<pre class = 'prettyprint lang-r'>str_subset(words, &quot;^[aeiou].*[^aeiou]$&quot;) %&gt;% head()</pre>
+<pre class = 'prettyprint lang-r'>stringr::str_subset(words, &quot;^[aeiou].*[^aeiou]$&quot;) %&gt;% head()</pre>
 
 <pre >## [1] &quot;about&quot;   &quot;accept&quot;  &quot;account&quot; &quot;across&quot;  &quot;act&quot;     &quot;actual&quot;</pre>
 
 <pre class = 'prettyprint lang-r'>#&gt; [1] &quot;about&quot;   &quot;accept&quot;  &quot;account&quot; &quot;across&quot;  &quot;act&quot;     &quot;actual&quot;
-start_with_vowel &lt;- str_detect(words, &quot;^[aeiou]&quot;)
-end_with_consonant &lt;- str_detect(words, &quot;[^aeiou]$&quot;)
+start_with_vowel &lt;- stringr::str_detect(words, &quot;^[aeiou]&quot;)
+end_with_consonant &lt;- stringr::str_detect(words, &quot;[^aeiou]$&quot;)
 words[start_with_vowel &amp; end_with_consonant] %&gt;% head()</pre>
 
 <pre >## [1] &quot;about&quot;   &quot;accept&quot;  &quot;account&quot; &quot;across&quot;  &quot;act&quot;     &quot;actual&quot;</pre>
@@ -5244,8 +5245,8 @@ pattern &lt;-
       length(x) != length(unique(x))
     }
   ) %&gt;%
-  map_chr(~str_c(unlist(.x), collapse = &quot;.*&quot;)) %&gt;%
-  str_c(collapse = &quot;|&quot;)</pre>
+  purrr::map_chr(~stringr::str_c(unlist(.x), collapse = &quot;.*&quot;)) %&gt;%
+  stringr::str_c(collapse = &quot;|&quot;)</pre>
 
 </article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
 
@@ -5253,7 +5254,7 @@ pattern &lt;-
 
 <p>Part 1: Finding the first word in each sentence requires defining what a pattern constitutes a word. For the purposes of this question, I’ll consider a word any contiguous set of letters. Since str_extract() will extract the first match, if it is provided a regular expression for words, it will return the first word.</p>
 
-<pre class = 'prettyprint lang-r'>str_extract(sentences, &quot;[A-ZAa-z]+&quot;) %&gt;% head()</pre>
+<pre class = 'prettyprint lang-r'>stringr::str_extract(sentences, &quot;[A-ZAa-z]+&quot;) %&gt;% head()</pre>
 
 <pre >## [1] &quot;The&quot;   &quot;Glue&quot;  &quot;It&quot;    &quot;These&quot; &quot;Rice&quot;  &quot;The&quot;</pre>
 
@@ -5261,7 +5262,7 @@ pattern &lt;-
 
 <p>However, the third sentence begins with &ldquo;It’s&rdquo;. To catch this, I’ll change the regular expression to require the string to begin with a letter, but allow for a subsequent apostrophe.</p>
 
-<pre class = 'prettyprint lang-r'>str_extract(sentences, &quot;[A-Za-z][A-Za-z&#39;]*&quot;) %&gt;% head()</pre>
+<pre class = 'prettyprint lang-r'>stringr::str_extract(sentences, &quot;[A-Za-z][A-Za-z&#39;]*&quot;) %&gt;% head()</pre>
 
 <pre >## [1] &quot;The&quot;   &quot;Glue&quot;  &quot;It&#39;s&quot;  &quot;These&quot; &quot;Rice&quot;  &quot;The&quot;</pre>
 
@@ -5272,8 +5273,8 @@ pattern &lt;-
 <p>Part 2: This pattern finds all words ending in &lsquo;ing&rsquo;.</p>
 
 <pre class = 'prettyprint lang-r'>pattern &lt;- &quot;\\b[A-Za-z]+ing\\b&quot;
-sentences_with_ing &lt;- str_detect(sentences, pattern)
-unique(unlist(str_extract_all(sentences[sentences_with_ing], pattern))) %&gt;%
+sentences_with_ing &lt;- stringr::str_detect(sentences, pattern)
+unique(unlist(stringr::str_extract_all(sentences[sentences_with_ing], pattern))) %&gt;%
   head()</pre>
 
 <pre >## [1] &quot;spring&quot;  &quot;evening&quot; &quot;morning&quot; &quot;winding&quot; &quot;living&quot;  &quot;king&quot;</pre>
@@ -5284,7 +5285,7 @@ unique(unlist(str_extract_all(sentences[sentences_with_ing], pattern))) %&gt;%
 
 <p>Part 3: Finding all plurals cannot be correctly accomplished with regular expressions alone. Finding plural words would at least require morphological information about words in the language. See WordNet for a resource that would do that. However, identifying words that end in an &ldquo;s&rdquo; and with more than three characters, in order to remove &ldquo;as&rdquo;, &ldquo;is&rdquo;, &ldquo;gas&rdquo;, etc., is a reasonable heuristic.</p>
 
-<pre class = 'prettyprint lang-r'>unique(unlist(str_extract_all(sentences, &quot;\\b[A-Za-z]{3,}s\\b&quot;))) %&gt;%
+<pre class = 'prettyprint lang-r'>unique(unlist(stringr::str_extract_all(sentences, &quot;\\b[A-Za-z]{3,}s\\b&quot;))) %&gt;%
   head()</pre>
 
 <pre >## [1] &quot;planks&quot; &quot;days&quot;   &quot;bowls&quot;  &quot;lemons&quot; &quot;makes&quot;  &quot;hogs&quot;</pre>
@@ -5297,7 +5298,7 @@ unique(unlist(str_extract_all(sentences[sentences_with_ing], pattern))) %&gt;%
 
 <p>Part 1: Replace forward slashes with backslashes.</p>
 
-<pre class = 'prettyprint lang-r'>str_replace_all(&quot;past/present/future&quot;, &quot;/&quot;, &quot;\\\\&quot;)</pre>
+<pre class = 'prettyprint lang-r'>stringr::str_replace_all(&quot;past/present/future&quot;, &quot;/&quot;, &quot;\\\\&quot;)</pre>
 
 <pre >## [1] &quot;past\\present\\future&quot;</pre>
 
@@ -5311,7 +5312,7 @@ unique(unlist(str_extract_all(sentences[sentences_with_ing], pattern))) %&gt;%
                   &quot;P&quot; = &quot;p&quot;, &quot;Q&quot; = &quot;q&quot;, &quot;R&quot; = &quot;r&quot;, &quot;S&quot; = &quot;s&quot;, &quot;T&quot; = &quot;t&quot;, 
                   &quot;U&quot; = &quot;u&quot;, &quot;V&quot; = &quot;v&quot;, &quot;W&quot; = &quot;w&quot;, &quot;X&quot; = &quot;x&quot;, &quot;Y&quot; = &quot;y&quot;, 
                   &quot;Z&quot; = &quot;z&quot;)
-lower_words &lt;- str_replace_all(words, pattern = replacements)
+lower_words &lt;- stringr::str_replace_all(words, pattern = replacements)
 head(lower_words)</pre>
 
 <pre >## [1] &quot;a&quot;        &quot;able&quot;     &quot;about&quot;    &quot;absolute&quot; &quot;accept&quot;   &quot;account&quot;</pre>
@@ -5324,32 +5325,34 @@ head(lower_words)</pre>
 
 <p>First, make a vector of all the words with first and last letters swapped:</p>
 
-<pre class = 'prettyprint lang-r'>swapped &lt;- str_replace_all(words, &quot;^([A-Za-z])(.*)([A-Za-z])$&quot;, &quot;\\3\\2\\1&quot;)</pre>
+<pre class = 'prettyprint lang-r'>swapped &lt;- stringr::str_replace_all(words, &quot;^([A-Za-z])(.*)([A-Za-z])$&quot;, &quot;\\3\\2\\1&quot;)</pre>
 
 <p>Next, find what of &ldquo;swapped&rdquo; is also in the original list using the function intersect():</p>
 
 <pre class = 'prettyprint lang-r'>intersect(swapped, words)</pre>
 
-<pre >##  [1] &quot;a&quot;          &quot;america&quot;    &quot;area&quot;       &quot;dad&quot;        &quot;dead&quot;       &quot;lead&quot;       &quot;read&quot;       &quot;depend&quot;    
-##  [9] &quot;god&quot;        &quot;educate&quot;    &quot;else&quot;       &quot;encourage&quot;  &quot;engine&quot;     &quot;europe&quot;     &quot;evidence&quot;   &quot;example&quot;   
-## [17] &quot;excuse&quot;     &quot;exercise&quot;   &quot;expense&quot;    &quot;experience&quot; &quot;eye&quot;        &quot;dog&quot;        &quot;health&quot;     &quot;high&quot;      
-## [25] &quot;knock&quot;      &quot;deal&quot;       &quot;level&quot;      &quot;local&quot;      &quot;nation&quot;     &quot;on&quot;         &quot;non&quot;        &quot;no&quot;        
-## [33] &quot;rather&quot;     &quot;dear&quot;       &quot;refer&quot;      &quot;remember&quot;   &quot;serious&quot;    &quot;stairs&quot;     &quot;test&quot;       &quot;tonight&quot;   
-## [41] &quot;transport&quot;  &quot;treat&quot;      &quot;trust&quot;      &quot;window&quot;     &quot;yesterday&quot;</pre>
+<pre >##  [1] &quot;a&quot;          &quot;america&quot;    &quot;area&quot;       &quot;dad&quot;        &quot;dead&quot;       &quot;lead&quot;       &quot;read&quot;      
+##  [8] &quot;depend&quot;     &quot;god&quot;        &quot;educate&quot;    &quot;else&quot;       &quot;encourage&quot;  &quot;engine&quot;     &quot;europe&quot;    
+## [15] &quot;evidence&quot;   &quot;example&quot;    &quot;excuse&quot;     &quot;exercise&quot;   &quot;expense&quot;    &quot;experience&quot; &quot;eye&quot;       
+## [22] &quot;dog&quot;        &quot;health&quot;     &quot;high&quot;       &quot;knock&quot;      &quot;deal&quot;       &quot;level&quot;      &quot;local&quot;     
+## [29] &quot;nation&quot;     &quot;on&quot;         &quot;non&quot;        &quot;no&quot;         &quot;rather&quot;     &quot;dear&quot;       &quot;refer&quot;     
+## [36] &quot;remember&quot;   &quot;serious&quot;    &quot;stairs&quot;     &quot;test&quot;       &quot;tonight&quot;    &quot;transport&quot;  &quot;treat&quot;     
+## [43] &quot;trust&quot;      &quot;window&quot;     &quot;yesterday&quot;</pre>
 
 </article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
 
 <p>Alternatively, the regex can be written using the POSIX character class for letter ([[:alpha:]]):</p>
 
-<pre class = 'prettyprint lang-r'>swapped2 &lt;- str_replace_all(words, &quot;^([[:alpha:]])(.*)([[:alpha:]])$&quot;, &quot;\\3\\2\\1&quot;)
+<pre class = 'prettyprint lang-r'>swapped2 &lt;- stringr::str_replace_all(words, &quot;^([[:alpha:]])(.*)([[:alpha:]])$&quot;, &quot;\\3\\2\\1&quot;)
 intersect(swapped2, words)</pre>
 
-<pre >##  [1] &quot;a&quot;          &quot;america&quot;    &quot;area&quot;       &quot;dad&quot;        &quot;dead&quot;       &quot;lead&quot;       &quot;read&quot;       &quot;depend&quot;    
-##  [9] &quot;god&quot;        &quot;educate&quot;    &quot;else&quot;       &quot;encourage&quot;  &quot;engine&quot;     &quot;europe&quot;     &quot;evidence&quot;   &quot;example&quot;   
-## [17] &quot;excuse&quot;     &quot;exercise&quot;   &quot;expense&quot;    &quot;experience&quot; &quot;eye&quot;        &quot;dog&quot;        &quot;health&quot;     &quot;high&quot;      
-## [25] &quot;knock&quot;      &quot;deal&quot;       &quot;level&quot;      &quot;local&quot;      &quot;nation&quot;     &quot;on&quot;         &quot;non&quot;        &quot;no&quot;        
-## [33] &quot;rather&quot;     &quot;dear&quot;       &quot;refer&quot;      &quot;remember&quot;   &quot;serious&quot;    &quot;stairs&quot;     &quot;test&quot;       &quot;tonight&quot;   
-## [41] &quot;transport&quot;  &quot;treat&quot;      &quot;trust&quot;      &quot;window&quot;     &quot;yesterday&quot;</pre>
+<pre >##  [1] &quot;a&quot;          &quot;america&quot;    &quot;area&quot;       &quot;dad&quot;        &quot;dead&quot;       &quot;lead&quot;       &quot;read&quot;      
+##  [8] &quot;depend&quot;     &quot;god&quot;        &quot;educate&quot;    &quot;else&quot;       &quot;encourage&quot;  &quot;engine&quot;     &quot;europe&quot;    
+## [15] &quot;evidence&quot;   &quot;example&quot;    &quot;excuse&quot;     &quot;exercise&quot;   &quot;expense&quot;    &quot;experience&quot; &quot;eye&quot;       
+## [22] &quot;dog&quot;        &quot;health&quot;     &quot;high&quot;       &quot;knock&quot;      &quot;deal&quot;       &quot;level&quot;      &quot;local&quot;     
+## [29] &quot;nation&quot;     &quot;on&quot;         &quot;non&quot;        &quot;no&quot;         &quot;rather&quot;     &quot;dear&quot;       &quot;refer&quot;     
+## [36] &quot;remember&quot;   &quot;serious&quot;    &quot;stairs&quot;     &quot;test&quot;       &quot;tonight&quot;    &quot;transport&quot;  &quot;treat&quot;     
+## [43] &quot;trust&quot;      &quot;window&quot;     &quot;yesterday&quot;</pre>
 
 </article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Further Reading</h2></hgroup><article  id="further-reading" class="smaller ">
 

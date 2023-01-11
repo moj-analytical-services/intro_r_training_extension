@@ -40,7 +40,7 @@ fruit %>% tidyr::replace_na(list(Cost = "Unknown",
                                  Quantity = 0))
 
 
-## people = tribble(~name, ~key, ~value,
+## people = tibble::tribble(~name, ~key, ~value,
 ##                  #------------/------/-----,
 ##                  "Phil Woods", "age",45,
 ##                  "Phil Woods", "height",185,
@@ -48,41 +48,41 @@ fruit %>% tidyr::replace_na(list(Cost = "Unknown",
 ##                  "Jess Cordero", "age",45,
 ##                  "Jess Cordero", "height",156,)
 
-## rcj = tribble(~judge, ~male, ~female,
-##               "yes", NA, 10,
-##               "no", 20, 12)
+## rcj = tibble::tribble(~judge, ~male, ~female,
+##                       "yes", NA, 10,
+##                       "no", 20, 12)
 
-table4a %>% pivot_longer(cols = !country, names_to = "year",values_to = "value")
+table4a %>% tidyr::pivot_longer(cols = !country, names_to = "year",values_to = "value")
 
 #withough changing anything on the dataset
-people = tribble(~name, ~key, ~value,
+people = tibble::tribble(~name, ~key, ~value,
                  #------------/------/-----,
                  "Phil Woods", "age",45,
                  "Phil Woods", "height",185,
                  "Phil Woods", "age",50,
                  "Jess Cordero", "age",45,
                  "Jess Cordero", "height",156,)
-people %>% pivot_wider(names_from = name, values_from = value)
+people %>% tidyr::pivot_wider(names_from = name, values_from = value)
 # solution 1 - adding a new column
-people = tribble(~name, ~key, ~value, ~dkey,
+people = tibble::tribble(~name, ~key, ~value, ~dkey,
                  #------------/------/-----,
                  "Phil Woods", "age",45,1,
                  "Phil Woods", "height",185,1,
                  "Phil Woods", "age",50,0,
                  "Jess Cordero", "age",45,1,
                  "Jess Cordero", "height",156,1)
-people %>% pivot_wider(names_from = name, values_from = value)
+people %>% tidyr::pivot_wider(names_from = name, values_from = value)
 #solution 2  - uniqueness
-people = tribble(~name, ~key, ~value,
+people = tibble::tribble(~name, ~key, ~value,
                  #------------/------/-----,
                  "Phil Woods", "age",45,
                  "Phil Woods", "height",185,
                  # "Phil Woods", "age",50,
                  "Jess Cordero", "age",45,
                  "Jess Cordero", "height",156,)
-people %>% pivot_wider(names_from = name, values_from = value)
+people %>% tidyr::pivot_wider(names_from = name, values_from = value)
 
-rcj = tribble( ~judge, ~male, ~female,
+rcj = tibble::tribble( ~judge, ~male, ~female,
                     "yes", NA, 10, 
                     "no", 20, 12)
 #alternative table to try with no NAs
@@ -90,10 +90,10 @@ rcj = tribble( ~judge, ~male, ~female,
 #                     "yes", 4, 10, 
 #                     "no", 20, 12)
 #use of pivot_longer
-rcj %>% pivot_longer(cols = c(male, female),   names_to = "gender", values_to = "count")
+rcj %>% tidyr::pivot_longer(cols = c(male, female),   names_to = "gender", values_to = "count")
 
 # use of  pivot_wider 
-rcj %>% pivot_wider(names_from = judge, values_from = c(male, female))
+rcj %>% tidyr::pivot_wider(names_from = judge, values_from = c(male, female))
 
 
 
@@ -111,18 +111,18 @@ rcj %>% pivot_wider(names_from = judge, values_from = c(male, female))
 
 
 
-## tibble(x = c("a,b,c", "d,e,f,g", "h,i,j")) %>%
-##   separate(x, c("one", "two", "three"))
-## tibble(x = c("a,b,c", "d,e", "f,g,i")) %>%
-##   separate(x, c("one", "two", "three"))
+## tibble::tibble(x = c("a,b,c", "d,e,f,g", "h,i,j")) %>%
+##   tidyr::separate(x, c("one", "two", "three"))
+## tibble::tibble(x = c("a,b,c", "d,e", "f,g,i")) %>%
+##   tidyr::separate(x, c("one", "two", "three"))
 
 # Typing `?separate()` shows all the options and their meanings.
 # Try experimenting with them to discover more about what they do.
 
-tibble(x = c("a,b,c", "d,e,f,g", "h,i,j")) %>% 
-  separate(x, c("one", "two", "three"))
-tibble(x = c("a,b,c", "d,e", "f,g,i")) %>% 
-  separate(x, c("one", "two", "three"))
+tibble::tibble(x = c("a,b,c", "d,e,f,g", "h,i,j")) %>% 
+  tidyr::separate(x, c("one", "two", "three"))
+tibble::tibble(x = c("a,b,c", "d,e", "f,g,i")) %>% 
+  tidyr::separate(x, c("one", "two", "three"))
 
 # Solution: typing `?separate()` in the command line shows all the information needed here.
 # The `remove` option is there to remove the input columns from the output. 
@@ -132,9 +132,9 @@ tibble(x = c("a,b,c", "d,e", "f,g,i")) %>%
 
 
 x <- c("a", "abc", "abcd", "abcde", "abcdef")
-L <- str_length(x)
+L <- stringr::str_length(x)
 m <- ceiling(L / 2)
-str_sub(x, m, m)
+stringr::str_sub(x, m, m)
 #> [1] "a" "b" "b" "c" "c"
 
 str_commasep <- function(x, delim = ",") {
@@ -145,14 +145,14 @@ str_commasep <- function(x, delim = ",") {
     x
   } else if (n == 2) {
     # no comma before and when n == 2
-    str_c(x[[1]], "and", x[[2]], sep = " ")
+    stringr::str_c(x[[1]], "and", x[[2]], sep = " ")
   } else {
     # commas after all n - 1 elements
-    not_last <- str_c(x[seq_len(n - 1)], delim)
+    not_last <- stringr::str_c(x[seq_len(n - 1)], delim)
     # prepend "and" to the last element
-    last <- str_c("and", x[[n]], sep = " ")
+    last <- stringr::str_c("and", x[[n]], sep = " ")
     # combine parts with spaces
-    str_c(c(not_last, last), collapse = " ")
+    stringr::str_c(c(not_last, last), collapse = " ")
   }
 }
 
@@ -191,22 +191,19 @@ str_commasep <- function(x, delim = ",") {
 
 
 
-
 # one regex
-words[str_detect(words, "^x|x$")]
-#> [1] "box" "sex" "six" "tax"
+words[stringr::str_detect(words, "^d|d$")] %>% head(5)
+#> [1] "add" "afford" "and" "around" "attend"
 # split regex into parts
-start_with_x <- str_detect(words, "^x")
-end_with_x <- str_detect(words, "x$")
-words[start_with_x | end_with_x]
-#> [1] "box" "sex" "six" "tax"
+start_with_x <- stringr::str_detect(words, "^d")
+end_with_x <- stringr::str_detect(words, "d$")
+words[start_with_x | end_with_x] %>% head(5)
+#> [1] "add" "afford" "and" "around" "attend"
 
-
-
-str_subset(words, "^[aeiou].*[^aeiou]$") %>% head()
+stringr::str_subset(words, "^[aeiou].*[^aeiou]$") %>% head()
 #> [1] "about"   "accept"  "account" "across"  "act"     "actual"
-start_with_vowel <- str_detect(words, "^[aeiou]")
-end_with_consonant <- str_detect(words, "[^aeiou]$")
+start_with_vowel <- stringr::str_detect(words, "^[aeiou]")
+end_with_consonant <- stringr::str_detect(words, "[^aeiou]$")
 words[start_with_vowel & end_with_consonant] %>% head()
 #> [1] "about"   "accept"  "account" "across"  "act"     "actual"
 
@@ -221,32 +218,32 @@ pattern <-
       length(x) != length(unique(x))
     }
   ) %>%
-  map_chr(~str_c(unlist(.x), collapse = ".*")) %>%
-  str_c(collapse = "|")
+  purrr::map_chr(~stringr::str_c(unlist(.x), collapse = ".*")) %>%
+  stringr::str_c(collapse = "|")
 
 
-str_extract(sentences, "[A-ZAa-z]+") %>% head()
+stringr::str_extract(sentences, "[A-ZAa-z]+") %>% head()
 #> [1] "The"   "Glue"  "It"    "These" "Rice"  "The"
 
 
-str_extract(sentences, "[A-Za-z][A-Za-z']*") %>% head()
+stringr::str_extract(sentences, "[A-Za-z][A-Za-z']*") %>% head()
 #> [1] "The"   "Glue"  "It's"  "These" "Rice"  "The"
 
 
 pattern <- "\\b[A-Za-z]+ing\\b"
-sentences_with_ing <- str_detect(sentences, pattern)
-unique(unlist(str_extract_all(sentences[sentences_with_ing], pattern))) %>%
+sentences_with_ing <- stringr::str_detect(sentences, pattern)
+unique(unlist(stringr::str_extract_all(sentences[sentences_with_ing], pattern))) %>%
   head()
 #> [1] "spring"  "evening" "morning" "winding" "living"  "king"
 
 
 
-unique(unlist(str_extract_all(sentences, "\\b[A-Za-z]{3,}s\\b"))) %>%
+unique(unlist(stringr::str_extract_all(sentences, "\\b[A-Za-z]{3,}s\\b"))) %>%
   head()
 #> [1] "planks" "days"   "bowls"  "lemons" "makes"  "hogs"
 
 
-str_replace_all("past/present/future", "/", "\\\\")
+stringr::str_replace_all("past/present/future", "/", "\\\\")
 #> [1] "past\\present\\future"
 
 
@@ -256,15 +253,15 @@ replacements <- c("A" = "a", "B" = "b", "C" = "c", "D" = "d", "E" = "e",
                   "P" = "p", "Q" = "q", "R" = "r", "S" = "s", "T" = "t", 
                   "U" = "u", "V" = "v", "W" = "w", "X" = "x", "Y" = "y", 
                   "Z" = "z")
-lower_words <- str_replace_all(words, pattern = replacements)
+lower_words <- stringr::str_replace_all(words, pattern = replacements)
 head(lower_words)
 #> [1] "a"        "able"     "about"    "absolute" "accept"   "account"
 
-swapped <- str_replace_all(words, "^([A-Za-z])(.*)([A-Za-z])$", "\\3\\2\\1")
+swapped <- stringr::str_replace_all(words, "^([A-Za-z])(.*)([A-Za-z])$", "\\3\\2\\1")
 
 intersect(swapped, words)
 
-swapped2 <- str_replace_all(words, "^([[:alpha:]])(.*)([[:alpha:]])$", "\\3\\2\\1")
+swapped2 <- stringr::str_replace_all(words, "^([[:alpha:]])(.*)([[:alpha:]])$", "\\3\\2\\1")
 intersect(swapped2, words)
 
 
