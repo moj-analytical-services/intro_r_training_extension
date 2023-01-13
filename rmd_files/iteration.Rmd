@@ -258,6 +258,8 @@ Modify your solution to the previous exercise to skip to the next loop iteration
 
 ```{r, include=show_solution, purl=purl_solutions}
 # Iteration - solution to exercise 1
+dates <- c("2020-03-01", "2020-06-01", "2020-09-01", "2020-12-01")
+
 for (date in dates) {
   print(paste("The current date is", date))
 }

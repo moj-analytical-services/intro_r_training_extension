@@ -91,7 +91,7 @@ The `replace()` function can also be applied to a whole dataframe, like so:
 
 ```{r, purl=purl_example_code}
 # Replacing NA values with 0 over a whole dataframe
-df <- tibble::data_frame(
+df <- tibble::tibble(
   "x" = c(0, 1, 2, NA, 4),
   "y" = c(18, NA, 45, 15, 2),
 )

@@ -220,7 +220,7 @@ x <- c(7, 23, 5, -14, NA, -1, 11,NA)
 replace(x, is.na(x), 0)
 
 # Replacing NA values with 0 over a whole dataframe
-df <- tibble::data_frame(
+df <- tibble::tibble(
   "x" = c(0, 1, 2, NA, 4),
   "y" = c(18, NA, 45, 15, 2),
 )
@@ -288,42 +288,42 @@ fruit <- tibble::tibble(
 #dim(billboard)
 
 #to see the structure of the data
-billboard %>% arrange(desc(date.entered)) %>% select(1:6) %>% head()
+billboard %>% dplyr::arrange(desc(date.entered)) %>% dplyr::select(1:6) %>% head()
 
 
 
 #starting by mapping a single month 
-billboard %>% pivot_longer(cols = c(wk1,wk2, wk3, wk4), names_to = "month1", values_to = "rank") %>% 
-  select(1:5, "month1", "rank") %>% head()
+billboard %>% tidyr::pivot_longer(cols = c(wk1, wk2, wk3, wk4), names_to = "month1", values_to = "rank") %>% 
+  dplyr::select(1:5, "month1", "rank") %>% head()
 #and to see clearly the contents of the new variable
 # billboard %>% pivot_longer(cols = c(wk1,wk2, wk3, wk4), names_to = "month1", values_to = "rank") %>%
 # .$month1 %>% head()
 
-#mapping all weeks to one varable called "weeks" 
-billboard %>% pivot_longer(cols = starts_with("wk"), names_to = "weeks", values_to = "rank") %>% head()
+#mapping all weeks to one variable called "weeks" 
+billboard %>% tidyr::pivot_longer(cols = starts_with("wk"), names_to = "weeks", values_to = "rank") %>% head()
 
 #dataset
 anscombe
 
 # using ".value" and "everything()" to select common variables
-anscombe %>% pivot_longer(everything(),
+anscombe %>% tidyr::pivot_longer(everything(),
    names_to = c(".value", "set"),
-   names_pattern = "(.)(.)" )
+   names_pattern = "(.)(.)")
 
 fish_encounters %>% head(10)
 
-fish_encounters %>% pivot_wider(names_from = station, values_from = seen) %>% head()
+fish_encounters %>% tidyr::pivot_wider(names_from = station, values_from = seen) %>% head()
 
-fish_encounters %>% pivot_wider(names_from = station, values_from = seen,
+fish_encounters %>% tidyr::pivot_wider(names_from = station, values_from = seen,
   values_fill = list(seen = 0)) %>% head()
 
 #converting into a tibble and rearranging the vars
-warpbreaks %>% as_tibble() %>% select(wool,tension, breaks)
+warpbreaks %>% tibble::as_tibble() %>% dplyr::select(wool, tension, breaks)
 
-warpdata = warpbreaks %>% pivot_wider(names_from = wool, values_from = breaks)
+warpdata = warpbreaks %>% tidyr::pivot_wider(names_from = wool, values_from = breaks)
 
 warpbreaks %>%
-  pivot_wider(
+  tidyr::pivot_wider(
     names_from = wool,
     values_from = breaks,
     values_fn = list(breaks = mean)
@@ -331,19 +331,19 @@ warpbreaks %>%
 
 ## #the table to use
 ## table4a
-## table4a %>% pivot_longer(1999,2000, names_to = "year",values_to = "value")
+## table4a %>% tidyr::pivot_longer(1999, 2000, names_to = "year", values_to = "value")
 
-## people = tribble(~name, ~key, ~value,
+## people = tibble::tribble(~name, ~key, ~value,
 ##                  #------------/------/-----,
-##                  "Phil Woods", "age",45,
-##                  "Phil Woods", "height",185,
-##                  "Phil Woods", "age",50,
-##                  "Jess Cordero", "age",45,
-##                  "Jess Cordero", "height",156,)
+##                  "Phil Woods", "age", 45,
+##                  "Phil Woods", "height", 185,
+##                  "Phil Woods", "age", 50,
+##                  "Jess Cordero", "age", 45,
+##                  "Jess Cordero", "height", 156,)
 
-## rcj = tribble(~judge, ~male, ~female,
-##               "yes", NA, 10,
-##               "no", 20, 12)
+## rcj = tibble::tribble(~judge, ~male, ~female,
+##                       "yes", NA, 10,
+##                       "no", 20, 12)
 
 
 
@@ -356,31 +356,31 @@ warpbreaks %>%
 table3
 
 # separate() automatically detects the separator
-table3 %>% separate(rate, into = c("cases", "population"))
+table3 %>% tidyr::separate(rate, into = c("cases", "population"))
 
 # separate() manually  detects the separator
-table3 %>% separate(rate, into = c("cases", "population"), sep = "/")
+table3 %>% tidyr::separate(rate, into = c("cases", "population"), sep = "/")
 
-# separate() manually detects the separator and convers the columns into the appropriate data type 
-table3 %>% separate(rate, into = c("cases", "population"), sep = "/", convert = TRUE)
+# separate() manually detects the separator and converts the columns into the appropriate data type 
+table3 %>% tidyr::separate(rate, into = c("cases", "population"), sep = "/", convert = TRUE)
 
-table3 %>% extract( col = year, into = c("century","years"), regex = "([0-9]{2})([0-9]{2})")
+table3 %>% tidyr::extract(col = year, into = c("century", "years"), regex = "([0-9]{2})([0-9]{2})")
 
-table3 %>% extract( col = year, into = c("century","decade","year" ), regex = "([0-9]{2})([0-9])([0-9])")
+table3 %>% tidyr::extract(col = year, into = c("century", "decade", "year" ), regex = "([0-9]{2})([0-9])([0-9])")
 
 #the reshaped dataset
 tab3 = table3 %>% 
-  extract( col = year, into = c("century","decade","year" ), regex = "([0-9]{2})([0-9])([0-9])")
+  tidyr::extract(col = year, into = c("century", "decade", "year" ), regex = "([0-9]{2})([0-9])([0-9])")
 #going back to the original dataset - with separator
-tab3 %>% unite(new ,century, decade, year)
+tab3 %>% tidyr::unite(new, century, decade, year)
 
 #going back to the original dataset - with no separators
-tab3 %>% unite(new ,century, decade, year, sep = "")
+tab3 %>% tidyr::unite(new, century, decade, year, sep = "")
 
-## tibble(x = c("a,b,c", "d,e,f,g", "h,i,j")) %>%
-##   separate(x, c("one", "two", "three"))
-## tibble(x = c("a,b,c", "d,e", "f,g,i")) %>%
-##   separate(x, c("one", "two", "three"))
+## tibble::tibble(x = c("a,b,c", "d,e,f,g", "h,i,j")) %>%
+##   tidyr::separate(x, c("one", "two", "three"))
+## tibble::tibble(x = c("a,b,c", "d,e", "f,g,i")) %>%
+##   tidyr::separate(x, c("one", "two", "three"))
 
 
 string1 = "a string using double quotes"
@@ -395,13 +395,11 @@ string3 = "this is a 'string' within a string"
 # notice how the output changes when implementing the following code
 string4 = 'this is a "string" within a string'
 
-
-
 string5 = "escaping a reserved character like \" quotes "
-# to see how the result would apear in text
+# to see how the result would appear in text
 writeLines(string5)
 string6 = "escaping a backslash \\ "
-# to see how the result would apear in text
+# to see how the result would appear in text
 writeLines(string6)
 
 # outputting non-English characters
@@ -412,36 +410,36 @@ s8 = c("a", "vector", "of", "strings")
 s8
 
 # finding out how many characters in a char vector
-str_length(c(s8, NA))
+stringr::str_length(c(s8, NA))
 
 # using custom separator
-str_c("an", "str_c vector", "with", "space", "character", "separating each entry", sep = " ")
-# the colapse option
-str_c("an", "str_c vector", "with", "space", "character", "separating each entry", collapse = T)
+stringr::str_c("an", "str_c vector", "with", "space", "character", "separating each entry", sep = " ")
+# the collapse option
+stringr::str_c("an", "str_c vector", "with", "space", "character", "separating each entry", collapse = T)
 
-# vectorized form - translating a shorter vectror to match the longer one
-str_c("a", c("b", "c", "d"), "c", sep = " " )
+# vectorized form - translating a shorter vector to match the longer one
+stringr::str_c("a", c("b", "c", "d"), "c", sep = " ")
 # simpler vectorizing 
-str_c("a", c("b", "c", "d"))
+stringr::str_c("a", c("b", "c", "d"))
 # c() comparison
 c("a", c("b", "c", "d"))
 
 x <- c("OneValue", "SecondValue", "ThirdValue")
-str_sub(x, 1, 3)
+stringr::str_sub(x, 1, 3)
 # negative numbers count backwards from end
-str_sub(x, -4, -1)
+stringr::str_sub(x, -4, -1)
 # The function will not fail in the example below
-str_sub("a", 1,5)
+stringr::str_sub("a", 1, 5)
 
-str_sub(x, 1, 1) <- str_to_lower(str_sub(x, 1, 1))
+stringr::str_sub(x, 1, 1) <- stringr::str_to_lower(stringr::str_sub(x, 1, 1))
 x
 
 #initial string
 x = c("y", "i", "k")
 #sort function in English
-str_sort(x)
+stringr::str_sort(x)
 #sort function in Lithuanian
-str_sort(x,locale = "lt")
+stringr::str_sort(x,locale = "lt")
 
 
 
@@ -450,45 +448,45 @@ str_sort(x,locale = "lt")
 
 
 x <- c("apple", "banana", "pear")
-str_detect(x, "e")
+stringr::str_detect(x, "e")
 
 # How many common words start with t?
-sum(str_detect(words, "^t"))
+sum(stringr::str_detect(words, "^t"))
 
 # What proportion of common words end with a vowel?
-mean(str_detect(words, "[aeiou]$"))
+mean(stringr::str_detect(words, "[aeiou]$"))
 
 x <- c("apple", "banana", "pear")
-str_count(x, "a")
+stringr::str_count(x, "a")
 
 # On average, how many vowels per word?
-mean(str_count(words, "[aeiou]"))
+mean(stringr::str_count(words, "[aeiou]"))
 
 length(sentences)
 
 head(sentences)
 
 colours <- c("red", "orange", "yellow", "green", "blue", "purple")
-colour_match <- str_c(colours, collapse = "|")
+colour_match <- stringr::str_c(colours, collapse = "|")
 colour_match
 
-has_colour <- str_subset(sentences, colour_match)
-matches <- str_extract(has_colour, colour_match)
+has_colour <- stringr::str_subset(sentences, colour_match)
+matches <- stringr::str_extract(has_colour, colour_match)
 head(matches)
 
-more <- sentences[str_count(sentences, colour_match) > 1]
+more <- sentences[stringr::str_count(sentences, colour_match) > 1]
 
-str_extract(more, colour_match)
+stringr::str_extract(more, colour_match)
 
 x <- c("apple", "pear", "banana")
-str_replace(x, "[aeiou]", "-")
-str_replace_all(x, "[aeiou]", "-")
+stringr::str_replace(x, "[aeiou]", "-")
+stringr::str_replace_all(x, "[aeiou]", "-")
 
 x <- c("1 house", "2 cars", "3 people")
-str_replace_all(x, c("1" = "one", "2" = "two", "3" = "three"))
+stringr::str_replace_all(x, c("1" = "one", "2" = "two", "3" = "three"))
 
 sentences %>% 
-  str_replace("([^ ]+) ([^ ]+) ([^ ]+)", "\\1 \\3 \\2") %>% 
+  stringr::str_replace("([^ ]+) ([^ ]+) ([^ ]+)", "\\1 \\3 \\2") %>% 
   head(5)
 
 

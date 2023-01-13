@@ -558,7 +558,8 @@ files <- files %>%
 files
 ```
 
-    ## [1] "s3://alpha-r-training/intro-r-extension/fruit1.csv" "s3://alpha-r-training/intro-r-extension/fruit2.csv"
+    ## [1] "s3://alpha-r-training/intro-r-extension/fruit1.csv"
+    ## [2] "s3://alpha-r-training/intro-r-extension/fruit2.csv"
     ## [3] "s3://alpha-r-training/intro-r-extension/fruit3.csv"
 
 ------------------------------------------------------------------------
@@ -910,16 +911,11 @@ so:
 
 ``` r
 # Replacing NA values with 0 over a whole dataframe
-df <- tibble::data_frame(
+df <- tibble::tibble(
   "x" = c(0, 1, 2, NA, 4),
   "y" = c(18, NA, 45, 15, 2),
 )
-```
 
-    ## Warning: `data_frame()` was deprecated in tibble 1.1.0.
-    ## Please use `tibble()` instead.
-
-``` r
 df %>% replace(is.na(.), 0)
 ```
 
@@ -1040,18 +1036,18 @@ df
     ## # A tibble: 12 × 3
     ##    year  quarter count
     ##    <chr> <chr>   <int>
-    ##  1 2017  Q1          6
-    ##  2 <NA>  Q2          3
-    ##  3 <NA>  Q3          7
-    ##  4 <NA>  Q4          4
-    ##  5 2018  Q1          2
-    ##  6 <NA>  Q2          9
-    ##  7 <NA>  Q3          5
-    ##  8 <NA>  Q4          8
+    ##  1 2017  Q1          3
+    ##  2 <NA>  Q2          1
+    ##  3 <NA>  Q3          4
+    ##  4 <NA>  Q4          2
+    ##  5 2018  Q1          9
+    ##  6 <NA>  Q2          6
+    ##  7 <NA>  Q3          7
+    ##  8 <NA>  Q4         10
     ##  9 2019  Q1         12
     ## 10 <NA>  Q2         11
-    ## 11 <NA>  Q3         10
-    ## 12 <NA>  Q4          1
+    ## 11 <NA>  Q3          5
+    ## 12 <NA>  Q4          8
 
 ------------------------------------------------------------------------
 
@@ -1066,18 +1062,18 @@ df %>% tidyr::fill(year)
     ## # A tibble: 12 × 3
     ##    year  quarter count
     ##    <chr> <chr>   <int>
-    ##  1 2017  Q1          6
-    ##  2 2017  Q2          3
-    ##  3 2017  Q3          7
-    ##  4 2017  Q4          4
-    ##  5 2018  Q1          2
-    ##  6 2018  Q2          9
-    ##  7 2018  Q3          5
-    ##  8 2018  Q4          8
+    ##  1 2017  Q1          3
+    ##  2 2017  Q2          1
+    ##  3 2017  Q3          4
+    ##  4 2017  Q4          2
+    ##  5 2018  Q1          9
+    ##  6 2018  Q2          6
+    ##  7 2018  Q3          7
+    ##  8 2018  Q4         10
     ##  9 2019  Q1         12
     ## 10 2019  Q2         11
-    ## 11 2019  Q3         10
-    ## 12 2019  Q4          1
+    ## 11 2019  Q3          5
+    ## 12 2019  Q4          8
 
 ## Removing rows with missing values from a dataframe
 
@@ -1235,7 +1231,7 @@ into a single variable.
 #dim(billboard)
 
 #to see the structure of the data
-billboard %>% arrange(desc(date.entered)) %>% select(1:6) %>% head()
+billboard %>% dplyr::arrange(desc(date.entered)) %>% dplyr::select(1:6) %>% head()
 ```
 
     ## # A tibble: 6 × 6
@@ -1255,8 +1251,8 @@ Using `pivot_longer` allows us to map the given columns
 
 ``` r
 #starting by mapping a single month 
-billboard %>% pivot_longer(cols = c(wk1,wk2, wk3, wk4), names_to = "month1", values_to = "rank") %>% 
-  select(1:5, "month1", "rank") %>% head()
+billboard %>% tidyr::pivot_longer(cols = c(wk1, wk2, wk3, wk4), names_to = "month1", values_to = "rank") %>% 
+  dplyr::select(1:5, "month1", "rank") %>% head()
 ```
 
     ## # A tibble: 6 × 7
@@ -1291,8 +1287,8 @@ In that case, the following structure comes into play where regular
 expressions are used to pick all the variables to be mapped.
 
 ``` r
-#mapping all weeks to one varable called "weeks" 
-billboard %>% pivot_longer(cols = starts_with("wk"), names_to = "weeks", values_to = "rank") %>% head()
+#mapping all weeks to one variable called "weeks" 
+billboard %>% tidyr::pivot_longer(cols = starts_with("wk"), names_to = "weeks", values_to = "rank") %>% head()
 ```
 
     ## # A tibble: 6 × 5
@@ -1320,7 +1316,7 @@ In some circumstances pivoting can also be used to construct a more
 robust for ease of use in later stages of the analysis. In these cases
 the dataset contains variables that are similar in their structure with
 the aim being to gather them in to one, cleaner, format. Consider the
-`asncombe` dataset that comes with basic R as shown below:
+`anscombe` dataset that comes with basic R as shown below:
 
 ``` r
 #dataset
@@ -1352,9 +1348,9 @@ variables.
 
 ``` r
 # using ".value" and "everything()" to select common variables
-anscombe %>% pivot_longer(everything(),
+anscombe %>% tidyr::pivot_longer(everything(),
    names_to = c(".value", "set"),
-   names_pattern = "(.)(.)" )
+   names_pattern = "(.)(.)")
 ```
 
     ## # A tibble: 44 × 3
@@ -1429,7 +1425,7 @@ later stages of a processing system where specific input from each
 station can be utilized.
 
 ``` r
-fish_encounters %>% pivot_wider(names_from = station, values_from = seen) %>% head()
+fish_encounters %>% tidyr::pivot_wider(names_from = station, values_from = seen) %>% head()
 ```
 
     ## # A tibble: 6 × 12
@@ -1444,7 +1440,7 @@ fish_encounters %>% pivot_wider(names_from = station, values_from = seen) %>% he
 
 ------------------------------------------------------------------------
 
-The general use is very similar to that presented in \``pivot_longer()`
+The general use is very similar to that presented in `pivot_longer()`
 with `names_from` targeting the column containing the subcategories to
 split from and `values_from` the corresponding values associated with
 each category. Notice that there will be cases where there is no match
@@ -1453,7 +1449,7 @@ and these will initially be filled with `NA`. Simply setting the option
 something more meaningful.
 
 ``` r
-fish_encounters %>% pivot_wider(names_from = station, values_from = seen,
+fish_encounters %>% tidyr::pivot_wider(names_from = station, values_from = seen,
   values_fill = list(seen = 0)) %>% head()
 ```
 
@@ -1475,7 +1471,7 @@ combination of wool (A and B) and tension (L, M, H).
 
 ``` r
 #converting into a tibble and rearranging the vars
-warpbreaks %>% as_tibble() %>% select(wool,tension, breaks)
+warpbreaks %>% tibble::as_tibble() %>% dplyr::select(wool, tension, breaks)
 ```
 
     ## # A tibble: 54 × 3
@@ -1500,7 +1496,7 @@ Uniqueness is not maintained since this is a repeated experiment with
 the same value of breaks for each tension value.
 
 ``` r
-warpdata = warpbreaks %>% pivot_wider(names_from = wool, values_from = breaks)
+warpdata = warpbreaks %>% tidyr::pivot_wider(names_from = wool, values_from = breaks)
 ```
 
     ## Warning: Values from `breaks` are not uniquely identified; output will contain list-cols.
@@ -1523,7 +1519,7 @@ suitable function is defined to describe the list with a single value.
 
 ``` r
 warpbreaks %>%
-  pivot_wider(
+  tidyr::pivot_wider(
     names_from = wool,
     values_from = breaks,
     values_fn = list(breaks = mean)
@@ -1546,7 +1542,7 @@ Why does the following code fail?
 ``` r
 #the table to use
 table4a
-table4a %>% pivot_longer(1999,2000, names_to = "year",values_to = "value")
+table4a %>% tidyr::pivot_longer(1999, 2000, names_to = "year", values_to = "value")
 ```
 
 ### Exercise 2
@@ -1558,13 +1554,13 @@ Hint. Could a new column solve the problem, what other solution could we
 apply?
 
 ``` r
-people = tribble(~name, ~key, ~value,
+people = tibble::tribble(~name, ~key, ~value,
                  #------------/------/-----,
-                 "Phil Woods", "age",45,
-                 "Phil Woods", "height",185,
-                 "Phil Woods", "age",50,
-                 "Jess Cordero", "age",45,
-                 "Jess Cordero", "height",156,)
+                 "Phil Woods", "age", 45,
+                 "Phil Woods", "height", 185,
+                 "Phil Woods", "age", 50,
+                 "Jess Cordero", "age", 45,
+                 "Jess Cordero", "height", 156,)
 ```
 
 ------------------------------------------------------------------------
@@ -1575,9 +1571,9 @@ Consider the following simple tibble, what kind of pivoting would you
 use, `pivot_longer()` or `pivot_wider()`?
 
 ``` r
-rcj = tribble(~judge, ~male, ~female,
-              "yes", NA, 10, 
-              "no", 20, 12)
+rcj = tibble::tribble(~judge, ~male, ~female,
+                      "yes", NA, 10, 
+                      "no", 20, 12)
 ```
 
 ## Solutions
@@ -1598,7 +1594,7 @@ rcj = tribble(~judge, ~male, ~female,
 
 ## Introduction
 
-An Important aspect of every data shaping mechanism is to be able to
+An important aspect of every data shaping mechanism is to be able to
 pick multiple columns or data entries within a variable with a certain
 precision and without having to manually type them each time.
 
@@ -1633,7 +1629,7 @@ example in `table3` the following code splits the `rate` variable into
 
 ``` r
 # separate() automatically detects the separator
-table3 %>% separate(rate, into = c("cases", "population"))
+table3 %>% tidyr::separate(rate, into = c("cases", "population"))
 ```
 
     ## # A tibble: 6 × 4
@@ -1654,7 +1650,7 @@ can specify the separator manually using the `sep` option.
 
 ``` r
 # separate() manually  detects the separator
-table3 %>% separate(rate, into = c("cases", "population"), sep = "/")
+table3 %>% tidyr::separate(rate, into = c("cases", "population"), sep = "/")
 ```
 
     ## # A tibble: 6 × 4
@@ -1675,8 +1671,8 @@ the corresponding characters. As a result the new columns are now of
 `convert` flag as shown below:
 
 ``` r
-# separate() manually detects the separator and convers the columns into the appropriate data type 
-table3 %>% separate(rate, into = c("cases", "population"), sep = "/", convert = TRUE)
+# separate() manually detects the separator and converts the columns into the appropriate data type 
+table3 %>% tidyr::separate(rate, into = c("cases", "population"), sep = "/", convert = TRUE)
 ```
 
     ## # A tibble: 6 × 4
@@ -1697,7 +1693,7 @@ example as above, lets see how to split the `year` variable to `century`
 and `years`.
 
 ``` r
-table3 %>% extract( col = year, into = c("century","years"), regex = "([0-9]{2})([0-9]{2})")
+table3 %>% tidyr::extract(col = year, into = c("century", "years"), regex = "([0-9]{2})([0-9]{2})")
 ```
 
     ## # A tibble: 6 × 4
@@ -1719,7 +1715,7 @@ following block of code. The year variable is now split into three
 variables to depict the `century`, `decade` and `year`.
 
 ``` r
-table3 %>% extract( col = year, into = c("century","decade","year" ), regex = "([0-9]{2})([0-9])([0-9])")
+table3 %>% tidyr::extract(col = year, into = c("century", "decade", "year" ), regex = "([0-9]{2})([0-9])([0-9])")
 ```
 
     ## # A tibble: 6 × 5
@@ -1733,7 +1729,7 @@ table3 %>% extract( col = year, into = c("century","decade","year" ), regex = "(
     ## 6 China       20      0      0     213766/1280428583
 
 In addition, internally the pivot functions make explicit use of
-`seaprate()` and `extract()` whenever a split or a regular expression is
+`separate()` and `extract()` whenever a split or a regular expression is
 need to capture patterns present in name or within the content of a
 variable in the dataset.
 
@@ -1747,9 +1743,9 @@ as shown in the example below.
 ``` r
 #the reshaped dataset
 tab3 = table3 %>% 
-  extract( col = year, into = c("century","decade","year" ), regex = "([0-9]{2})([0-9])([0-9])")
+  tidyr::extract(col = year, into = c("century", "decade", "year" ), regex = "([0-9]{2})([0-9])([0-9])")
 #going back to the original dataset - with separator
-tab3 %>% unite(new ,century, decade, year)
+tab3 %>% tidyr::unite(new, century, decade, year)
 ```
 
     ## # A tibble: 6 × 3
@@ -1771,7 +1767,7 @@ giving the original variable before any alteration takes place.
 
 ``` r
 #going back to the original dataset - with no separators
-tab3 %>% unite(new ,century, decade, year, sep = "")
+tab3 %>% tidyr::unite(new, century, decade, year, sep = "")
 ```
 
     ## # A tibble: 6 × 3
@@ -1793,10 +1789,10 @@ What do the additional arguments `extra` and `fill` do in `separate()`?
 Experiment with the various option in using the following datasets.
 
 ``` r
-tibble(x = c("a,b,c", "d,e,f,g", "h,i,j")) %>% 
-  separate(x, c("one", "two", "three"))
-tibble(x = c("a,b,c", "d,e", "f,g,i")) %>% 
-  separate(x, c("one", "two", "three"))
+tibble::tibble(x = c("a,b,c", "d,e,f,g", "h,i,j")) %>% 
+  tidyr::separate(x, c("one", "two", "three"))
+tibble::tibble(x = c("a,b,c", "d,e", "f,g,i")) %>% 
+  tidyr::separate(x, c("one", "two", "three"))
 ```
 
 #### Exercise 2
@@ -1889,7 +1885,7 @@ can use the `writeLines()` function to simulate that effect.
 
 ``` r
 string5 = "escaping a reserved character like \" quotes "
-# to see how the result would apear in text
+# to see how the result would appear in text
 writeLines(string5)
 ```
 
@@ -1897,7 +1893,7 @@ writeLines(string5)
 
 ``` r
 string6 = "escaping a backslash \\ "
-# to see how the result would apear in text
+# to see how the result would appear in text
 writeLines(string6)
 ```
 
@@ -1940,7 +1936,7 @@ which helps with that.
 
 ``` r
 # finding out how many characters in a char vector
-str_length(c(s8, NA))
+stringr::str_length(c(s8, NA))
 ```
 
     ## [1]  1  6  2  7 NA
@@ -1950,9 +1946,9 @@ options on how to deal with this in the sections to follow.
 
 ## Combining Strings
 
-We already seen one way to combine strings in the previous section but
-with the `stringer` package we have an additional, more powerful tool at
-our disposal.
+We’ve already seen one way to combine strings in the previous section
+but with the `stringr` package we have an additional, more powerful tool
+at our disposal.
 
 Using `str_c()` can be beneficial in many cases since it allows for
 additional flexibility in the form of parameters for separators to be
@@ -1961,14 +1957,14 @@ character string.
 
 ``` r
 # using custom separator
-str_c("an", "str_c vector", "with", "space", "character", "separating each entry", sep = " ")
+stringr::str_c("an", "str_c vector", "with", "space", "character", "separating each entry", sep = " ")
 ```
 
     ## [1] "an str_c vector with space character separating each entry"
 
 ``` r
-# the colapse option
-str_c("an", "str_c vector", "with", "space", "character", "separating each entry", collapse = T)
+# the collapse option
+stringr::str_c("an", "str_c vector", "with", "space", "character", "separating each entry", collapse = T)
 ```
 
     ## [1] "anstr_c vectorwithspacecharacterseparating each entry"
@@ -1983,15 +1979,15 @@ In addition, it can also work to recycle shorter vectors to mach the
 longer ones as in the following example.
 
 ``` r
-# vectorized form - translating a shorter vectror to match the longer one
-str_c("a", c("b", "c", "d"), "c", sep = " " )
+# vectorized form - translating a shorter vector to match the longer one
+stringr::str_c("a", c("b", "c", "d"), "c", sep = " ")
 ```
 
     ## [1] "a b c" "a c c" "a d c"
 
 ``` r
 # simpler vectorizing 
-str_c("a", c("b", "c", "d"))
+stringr::str_c("a", c("b", "c", "d"))
 ```
 
     ## [1] "ab" "ac" "ad"
@@ -2013,21 +2009,21 @@ point is outside of the index limit of the string.
 
 ``` r
 x <- c("OneValue", "SecondValue", "ThirdValue")
-str_sub(x, 1, 3)
+stringr::str_sub(x, 1, 3)
 ```
 
     ## [1] "One" "Sec" "Thi"
 
 ``` r
 # negative numbers count backwards from end
-str_sub(x, -4, -1)
+stringr::str_sub(x, -4, -1)
 ```
 
     ## [1] "alue" "alue" "alue"
 
 ``` r
 # The function will not fail in the example below
-str_sub("a", 1,5)
+stringr::str_sub("a", 1, 5)
 ```
 
     ## [1] "a"
@@ -2038,7 +2034,7 @@ An additional use of the of the `str_sub` function is to assign values
 to a given range on the target string
 
 ``` r
-str_sub(x, 1, 1) <- str_to_lower(str_sub(x, 1, 1))
+stringr::str_sub(x, 1, 1) <- stringr::str_to_lower(stringr::str_sub(x, 1, 1))
 x
 ```
 
@@ -2055,14 +2051,14 @@ Lithuanian in the example below.
 #initial string
 x = c("y", "i", "k")
 #sort function in English
-str_sort(x)
+stringr::str_sort(x)
 ```
 
     ## [1] "i" "k" "y"
 
 ``` r
 #sort function in Lithuanian
-str_sort(x,locale = "lt")
+stringr::str_sort(x,locale = "lt")
 ```
 
     ## [1] "i" "y" "k"
@@ -2121,7 +2117,7 @@ tools supplied by the `stringr` package.
 
 ## Detect Strings
 
-Detecting strings is a very important aspect in many Data Analysis
+Detecting strings is a very important aspect in many Data and Analysis
 applications and `str_detect` was created with ease of use in mind. It
 returns a logical vector depending whether there was a match in the
 corresponding location and based on the supplied pattern, as the example
@@ -2129,28 +2125,28 @@ below illustrates.
 
 ``` r
 x <- c("apple", "banana", "pear")
-str_detect(x, "e")
+stringr::str_detect(x, "e")
 ```
 
     ## [1]  TRUE FALSE  TRUE
 
 ------------------------------------------------------------------------
 
-A very handy way of using it, is by taking advantage of how `R`
-translates `TRUE` (evaluated as `1`) and `FALSE` (evaluated as `0`)
-responses. In the example below using the `sum` and `mean` functions
-makes counting instances of a pattern being detected much easier.
+A very handy way of using it, is by taking advantage of how R translates
+`TRUE` (evaluated as `1`) and `FALSE` (evaluated as `0`) responses. In
+the example below using the `sum` and `mean` functions makes counting
+instances of a pattern being detected much easier.
 
 ``` r
 # How many common words start with t?
-sum(str_detect(words, "^t"))
+sum(stringr::str_detect(words, "^t"))
 ```
 
     ## [1] 65
 
 ``` r
 # What proportion of common words end with a vowel?
-mean(str_detect(words, "[aeiou]$"))
+mean(stringr::str_detect(words, "[aeiou]$"))
 ```
 
     ## [1] 0.2765306
@@ -2163,14 +2159,14 @@ vector.
 
 ``` r
 x <- c("apple", "banana", "pear")
-str_count(x, "a")
+stringr::str_count(x, "a")
 ```
 
     ## [1] 1 3 1
 
 ``` r
 # On average, how many vowels per word?
-mean(str_count(words, "[aeiou]"))
+mean(stringr::str_count(words, "[aeiou]"))
 ```
 
     ## [1] 1.991837
@@ -2207,7 +2203,7 @@ string to be used as the pattern.
 
 ``` r
 colours <- c("red", "orange", "yellow", "green", "blue", "purple")
-colour_match <- str_c(colours, collapse = "|")
+colour_match <- stringr::str_c(colours, collapse = "|")
 colour_match
 ```
 
@@ -2218,8 +2214,8 @@ The next stage is to select the relevant examples from the collection of
 created.
 
 ``` r
-has_colour <- str_subset(sentences, colour_match)
-matches <- str_extract(has_colour, colour_match)
+has_colour <- stringr::str_subset(sentences, colour_match)
+matches <- stringr::str_extract(has_colour, colour_match)
 head(matches)
 ```
 
@@ -2234,13 +2230,13 @@ the phrases from the `sentences` collection where there are more than
 one match.
 
 ``` r
-more <- sentences[str_count(sentences, colour_match) > 1]
+more <- sentences[stringr::str_count(sentences, colour_match) > 1]
 ```
 
 Notice how `str_extract` works with these source vectors.
 
 ``` r
-str_extract(more, colour_match)
+stringr::str_extract(more, colour_match)
 ```
 
     ## [1] "blue"   "green"  "orange"
@@ -2252,13 +2248,13 @@ string that match a pattern with a new replacement string.
 
 ``` r
 x <- c("apple", "pear", "banana")
-str_replace(x, "[aeiou]", "-")
+stringr::str_replace(x, "[aeiou]", "-")
 ```
 
     ## [1] "-pple"  "p-ar"   "b-nana"
 
 ``` r
-str_replace_all(x, "[aeiou]", "-")
+stringr::str_replace_all(x, "[aeiou]", "-")
 ```
 
     ## [1] "-ppl-"  "p--r"   "b-n-n-"
@@ -2270,7 +2266,7 @@ in all the elements of a character vector.
 
 ``` r
 x <- c("1 house", "2 cars", "3 people")
-str_replace_all(x, c("1" = "one", "2" = "two", "3" = "three"))
+stringr::str_replace_all(x, c("1" = "one", "2" = "two", "3" = "three"))
 ```
 
     ## [1] "one house"    "two cars"     "three people"
@@ -2280,7 +2276,7 @@ same string as replacements
 
 ``` r
 sentences %>% 
-  str_replace("([^ ]+) ([^ ]+) ([^ ]+)", "\\1 \\3 \\2") %>% 
+  stringr::str_replace("([^ ]+) ([^ ]+) ([^ ]+)", "\\1 \\3 \\2") %>% 
   head(5)
 ```
 
@@ -2296,7 +2292,7 @@ sentences %>%
     single regular expression, and a combination of multiple
     str_detect() calls.
 
-    1.  Find all words that start or end with x.
+    1.  Find all words that start or end with ‘d’.
 
     2.  Find all words that start with a vowel and end with a consonant.
 
@@ -2335,7 +2331,7 @@ From the Harvard sentences data, extract:
 
 For part 1 we have the following:
 
-Words that start or end with x?
+Words that start or end with ‘d’?
 
 ------------------------------------------------------------------------
 
