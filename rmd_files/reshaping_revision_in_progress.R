@@ -90,16 +90,13 @@ wide_annual_offences_with_totals <- wide_annual_offences %>%
     count_2016_2020 =
       rowSums(dplyr::across(starts_with("count"))))
 
-# transformations possible
-double_it <- function(x) {return(x*2)}
-
-wide_annual_offences_doubled <- annual_offences %>%
+wide_annual_offences_doubled_2 <- annual_offences %>%
   tidyr::pivot_wider(
     names_from = 'year',
     values_from = 'count',
     names_prefix = 'count_',
     values_fill = 0,
-    values_fn = double_it
+    values_fn = ~ .x * 2
   )
 
 ### Now onto 
