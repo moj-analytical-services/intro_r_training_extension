@@ -50,10 +50,11 @@ botor::s3_write(
 
 # Start with long format data
 
-annual_offences <- botor::s3_read(
-  uri = "s3://alpha-r-training/intro-r-extension/annual_offences_fake.csv", 
-  fun = read.csv,
-  colClasses = c("integer", "character", "integer"))
+annual_offences <- 
+  
+  Rs3tools::s3_path_to_full_df(
+    s3_path = "s3://alpha-r-training/intro-r-extension/annual_offences_fake.csv", 
+    colClasses = c("integer", "character", "integer"))
 
 head(annual_offences)
 
@@ -100,3 +101,7 @@ wide_annual_offences_doubled <- annual_offences %>%
     values_fill = 0,
     values_fn = double_it
   )
+
+### Now onto 
+
+
