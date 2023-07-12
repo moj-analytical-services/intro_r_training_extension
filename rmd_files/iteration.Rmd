@@ -140,12 +140,12 @@ Let's say we want to combine segments of a dataset, and we don't know in advance
 
 ```{r, message=F, warning=F, purl=purl_example_code}
 # Get dataframe with all available files/folders from an s3 path
-files <- botor::s3_ls("s3://alpha-r-training/intro-r-extension")
+files <- Rs3tools::list_files_in_buckets("alpha-r-training", prefix="intro-r-extension")
 
 # Get a list of csv file names
 files <- files %>%
-  dplyr::filter(grepl(".csv", uri)) %>%
-  dplyr::pull(uri)
+  dplyr::filter(grepl(".csv", path)) %>%
+  dplyr::pull(path)
 
 files
 ```
@@ -160,7 +160,7 @@ fruit_list <- vector("list", length(files))
 
 # Loop over each file, and add the data to a list
 for (i in seq_along(files)) {
-  fruit_list[[i]] <- botor::s3_read(files[i], readr::read_csv, show_col_types = FALSE)
+  fruit_list[[i]] <- Rs3tools::s3_path_to_full_df(files[i])
 }
 
 # Combine the list of dataframes into a single dataframe
