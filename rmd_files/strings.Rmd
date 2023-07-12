@@ -248,17 +248,6 @@ mean(stringr::str_detect(words, "[aeiou]$"))
 ---
 
 
-A variation of `str_detect` is `str_count` and as the name suggests the function will count the instances of a pattern appearing in the target vector.
-
-```{r, purl=purl_example_code, eval=T}
-x <- c("apple", "banana", "pear")
-stringr::str_count(x, "a")
-
-# On average, how many vowels per word?
-mean(stringr::str_count(words, "[aeiou]"))
-```
-
-
 ## Extract Strings {#extr_str}
 
 To extract strings we use the `str_extract` function that takes the input source vector and the pattern to match as arguments. In this case we will need a more complex set of examples and so the [Harvard Sentences](https://en.wikipedia.org/wiki/Harvard_sentences) collection of sentences is used. Although originally created to test VOIP systems, it can also be used for regex examples as well. 

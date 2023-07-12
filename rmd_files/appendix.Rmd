@@ -80,17 +80,6 @@ throughout this section the pattern for a RegEx will be presented as `\.` wherea
 
 
 
-#### Exercises
-
-
-1. Explain why each of these strings don’t match a \: "\", "\\", "\\\".
-
-2. How would you match the sequence "'\?
-
-3. What patterns will the regular expression \..\..\.. match? How would you represent it as a string?
-
-
-
 ### Anchors
 
 
@@ -116,18 +105,6 @@ x <- c("apple pie", "apple", "apple cake")
 ```
 
 
-
-#### Exercises
-
-1. How would you match the literal string "$^$"?
-
-2. Given the corpus of common words in stringr::words, create regular expressions that find all words that:
-
-      +Start with “y”.
-      +End with “x”
-      +Are exactly three letters long. (Don’t cheat by using str_length()!)
-      +Have seven letters or more.
-Hint: Since this list is long, you might want to use the match argument to str_view() to show only the matching or non-matching words.
 
 ### Character Classes
 
@@ -163,18 +140,6 @@ Alternation is used to pick between patterns, for example `abc|d..f` will pick a
 ```
 
 
-
-#### Exercises
-
-1. Create regular expressions to find all words that:
-    +Start with a vowel.
-    +That only contain consonants. (Hint: thinking about matching “not”-vowels.)
-    +End with` ed`, but not with `eed`.
-    +End with `ing` or` ise`.
-2. Empirically verify the rule “i before e except after c”.
-3. Is “q” always followed by a “u”?
-4. Write a regular expression that matches a word if it’s probably written in British English, not American English.
-5. Create a regular expression that will match telephone numbers as commonly written in your country.
 
 ### Repetition
 
@@ -215,25 +180,6 @@ To also note here that the system will match as many of the characters that it c
 # str_view(x, 'C{2,3}?')
 # str_view(x, 'C[LX]+?')
 ```
-
-#### Exercises
-
-
-1. Describe the equivalents of `?`, `+`,` *` in `{m,n}` form.
-
-2. Describe in words what these regular expressions match: (read carefully to see if I’m using a regular expression or a string that defines a regular expression.)
-
-      + `^.*$`
-      + `"\\{.+\\}"`
-      + `\d{4}-\d{2}-\d{2}`
-      + `"\\\\{4}"`
-3. Create regular expressions to find all words that:
-
-      + Start with three consonants.
-      + Have three or more vowels in a row.
-      + Have two or more vowel-consonant pairs in a row.
-      
-4. Solve the beginner regexp crosswords at [https://regexcrossword.com/challenges/beginner].
 
 
 
