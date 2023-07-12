@@ -51,10 +51,12 @@ botor::s3_write(
 # Start with long format data
 
 annual_offences <- 
-  
   Rs3tools::s3_path_to_full_df(
     s3_path = "s3://alpha-r-training/intro-r-extension/annual_offences_fake.csv", 
     colClasses = c("integer", "character", "integer"))
+
+annual_offences <- tibble::tibble(annual_offences)
+
 
 head(annual_offences)
 
@@ -88,9 +90,9 @@ wide_annual_offences <- annual_offences %>%
 wide_annual_offences_with_totals <- wide_annual_offences %>%
   dplyr::mutate(
     count_2016_2020 =
-      rowSums(dplyr::across(starts_with("count"))))
+      rowSums(dplyr::across(dplyr::starts_with("count"))))
 
-wide_annual_offences_doubled_2 <- annual_offences %>%
+wide_annual_offences_doubled <- annual_offences %>%
   tidyr::pivot_wider(
     names_from = 'year',
     values_from = 'count',
@@ -99,6 +101,83 @@ wide_annual_offences_doubled_2 <- annual_offences %>%
     values_fn = ~ .x * 2
   )
 
-### Now onto 
+### Now onto pivot_longer
+
+# Sometimes you will need to put data in long format for plotting
+# A common situation is when you want to plot using ggplot2
+
+# can we find an example to show why ggplot wants this?
+
+# we use wide_annual_offences from above
+
+long_annual_offences <- wide_annual_offences %>%
+  tidyr::pivot_longer(
+    cols = dplyr::starts_with('count')
+  )
+
+
+# is this the same as what we started with?
+identical(long_annual_offences, annual_offences)
+
+
+# let's compare with original and see what we need to do to get it back to as it was
+# 1. It's assigned a default column name of 'value'
+
+long_annual_offences <- wide_annual_offences %>%
+  tidyr::pivot_longer(
+    cols = dplyr::starts_with('count'),
+    values_to = 'count'
+  )
+
+identical(long_annual_offences, annual_offences)
+# 2. It's called year 'name'
+long_annual_offences <- wide_annual_offences %>%
+  tidyr::pivot_longer(
+    cols = dplyr::starts_with('count'),
+    values_to = 'count',
+    names_to = 'year'
+  )
+
+identical(long_annual_offences, annual_offences)
+# 3. We've got those prefixes to remove
+long_annual_offences <- wide_annual_offences %>%
+  tidyr::pivot_longer(
+    cols = dplyr::starts_with('count'),
+    values_to = 'count',
+    names_to = 'year',
+    names_prefix = 'count_'
+  )
+
+identical(long_annual_offences, annual_offences)
+# 4. We've got zeros
+long_annual_offences <- wide_annual_offences %>%
+  tidyr::pivot_longer(
+    cols = dplyr::starts_with('count'),
+    values_to = 'count',
+    names_to = 'year',
+    names_prefix = 'count_'
+  ) %>%
+  dplyr::filter(count > 0)
+
+identical(long_annual_offences, annual_offences)
+# 5. A couple of other things - reorder columns, sort data type, order rows
+long_annual_offences <- wide_annual_offences %>%
+  tidyr::pivot_longer(
+    cols = dplyr::starts_with('count'),
+    values_to = 'count',
+    names_to = 'year',
+    names_prefix = 'count_'
+  ) %>%
+  dplyr::filter(count > 0) %>%
+  dplyr::transmute(
+    year = as.integer(year),
+    offence_code,
+    count
+  ) %>%
+  dplyr::arrange(year, offence_code)
+
+# Success!
+identical(long_annual_offences, annual_offences)
+
 
 
