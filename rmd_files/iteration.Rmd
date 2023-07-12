@@ -218,7 +218,7 @@ fruit
 We can also use `mutate()` to apply a function to multiple columns in one go by combining it with the `across()` function from dplyr. This example demonstrates how to multiply the values in all numeric columns by 100:
 
 ```{r, purl=purl_example_code}
-fruit_pence <- fruit %>% dplyr::mutate(across(where(is.numeric), ~ .x * 100))
+fruit_pence <- fruit %>% dplyr::mutate(dplyr::across(where(is.numeric), ~ .x * 100))
 fruit_pence
 ```
 
@@ -229,7 +229,7 @@ Here we're using `mutate()` with `across()` to apply a function to all numeric c
 Of course `across()` can also be used to apply a named function to multiple columns of a dataframe. Here's how we can apply the `signif()` function to round values in all numeric columns to 1 significant figure:
 
 ```{r, purl=purl_example_code}
-rounded_fruit <- fruit %>% dplyr::mutate(across(where(is.numeric), signif, 1))
+rounded_fruit <- fruit %>% dplyr::mutate(dplyr::across(where(is.numeric), signif, 1))
 
 rounded_fruit
 ```
