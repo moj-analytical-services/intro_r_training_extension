@@ -47,8 +47,9 @@ The `cols` argument of `pivot_longer()` has been set to `-REGION`, which means t
 
 ```{r, message=F, warning=F, purl=purl_example_code}
 # Read data
-prosecutions_and_convictions <- botor::s3_read(
-  "s3://alpha-r-training/writing-functions-in-r/prosecutions-and-convictions-2018.csv", read.csv)
+prosecutions_and_convictions <- Rs3tools::s3_path_to_full_df(
+  s3_path = "alpha-r-training/writing-functions-in-r/prosecutions-and-convictions-2018.csv"
+)
 
 # Filter for Magistrates Court to extract the prosecutions
 prosecutions <- prosecutions_and_convictions %>%
