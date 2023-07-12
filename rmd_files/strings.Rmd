@@ -3,9 +3,7 @@
 
 ## Introduction
 
-In this part we will introduce strings and how to manipulate them to suit the needs of a particular project. The packages needed (listed above) are mostly the `stringr` and `tidyverse` package where the former contains a great number of functions to manipulate and work with strings and the latter is the base for most of the things we do in R. 
-
-Base R has a a number of functions to manipulate and work with strings but they can be inconsistent at times,  the above package was created in an effort to standardize character vector manipulation and make it easier to follow and replicate.  
+In this part we will introduce some techniques for working with strings in R, mainly making use of the `stringr` package from Tidyverse.
 
 It should also be mentioned that the majority of the content that follows is contained in the book `R for Data Science` by `Hadley Wickam` and `Garrett Grolemund` that can be found in this [link](https://r4ds.had.co.nz/index.html).
 
@@ -54,14 +52,6 @@ writeLines(string6)
 ---
 
 Furthermore, additional control in the form of newlines or tabs is provided by using `\n` and `\t` for example along with a plethora of available special characters that can be found by typing `?"'"` or `?'"'` in you command line. 
-
-Introducing non-English characters in your text strings is also possible using special characters of the form `\u00b5` for example for the Greek letter mu. 
-
-```{r, purl=purl_example_code, eval=T}
-# outputting non-English characters
-string7 = "\u00b5" 
-string7
-```
 
 
 Adding strings into a character vector is very common and is usually done with the use of the `c()` function. 
@@ -138,24 +128,6 @@ An additional use of the of the `str_sub` function is to assign values to a give
 ```{r, purl=purl_example_code, eval=T}
 stringr::str_sub(x, 1, 1) <- stringr::str_to_lower(stringr::str_sub(x, 1, 1))
 x
-```
-
-
-
-
-
-## Customizing text for different language locales
-
-In some cases the string manipulation functions have a `locale` argument where adjustments for certain languages can be made. Notice for example how the sort order changes if the locale changes from English to Lithuanian in the example below.
-
-
-```{r, purl=purl_example_code, eval=T}
-#initial string
-x = c("y", "i", "k")
-#sort function in English
-stringr::str_sort(x)
-#sort function in Lithuanian
-stringr::str_sort(x,locale = "lt")
 ```
 
 
