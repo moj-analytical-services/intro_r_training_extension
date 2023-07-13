@@ -7,7 +7,6 @@
 
 
  * [Bonus examples](https://github.com/moj-analytical-services/intro_r_training_extension#bonus-examples)
- * [Appendix](https://github.com/moj-analytical-services/intro_r_training_extension#appendix)
  * [R for Data Science](https://r4ds.had.co.nz)
  * [Advanced R](https://adv-r.hadley.nz)
  * [Tidyverse website](https://www.tidyverse.org)
