@@ -193,7 +193,7 @@ colours <- c("1.", "ultramarine blue", "2. cadmium red", "cobalt blue", "-")
 stringr::str_detect(colours, "[A-Za-z]")
 ```
 
-Or only strings that contain letters and numbers:
+Or only strings that contain letters or numbers:
 
 ```{r, purl=purl_example_code}
 stringr::str_detect(colours, "[A-Za-z0-9]")
