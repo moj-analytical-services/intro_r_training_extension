@@ -3243,7 +3243,7 @@ slide:not(.current) .plotly.html-widget{
 <p>First, we need to load a few packages:</p>
 
 <pre class = 'prettyprint lang-r'># Load packages
-library(botor) # Used to help R interact with s3 cloud storage
+library(Rs3tools) # Used to help R interact with s3 cloud storage
 library(dplyr) # Used for data manipulation
 library(tidyr) # Used to help reshape and deal with missing data
 library(stringr) # Used for string manipulation
@@ -3374,8 +3374,8 @@ dplyr::if_else(x &gt; 0, 1, 0)</pre>
 <p>When we’re manipulating dataframes, it can be useful to combine <code>if_else()</code> with the <code>mutate()</code> function from dplyr. Let’s take a look at the <code>offenders</code> dataframe, which is also used in the <a href='https://github.com/moj-analytical-services/IntroRTraining' title=''>Introduction to R</a> course:</p>
 
 <pre class = 'prettyprint lang-r'># First read and preview the data
-offenders &lt;- botor::s3_read(
-  &quot;s3://alpha-r-training/intro-r-training/Offenders_Chicago_Police_Dept_Main.csv&quot;, read.csv
+offenders &lt;- Rs3tools::s3_path_to_full_df(
+  &quot;alpha-r-training/intro-r-training/Offenders_Chicago_Police_Dept_Main.csv&quot;
 )
 str(offenders)</pre>
 
@@ -3668,18 +3668,18 @@ for (i in data) {
 <p>Let’s say we want to combine segments of a dataset, and we don’t know in advance how many segments there are or how many rows they have. There is a shared folder prepared in the alpha-r-training s3 bucket, which contains some data for us to read in and combine together. First we need to get a list of files to read in, which we can do using the <code>s3_ls()</code> function from botor:</p>
 
 <pre class = 'prettyprint lang-r'># Get dataframe with all available files/folders from an s3 path
-files &lt;- botor::s3_ls(&quot;s3://alpha-r-training/intro-r-extension&quot;)
+files &lt;- Rs3tools::list_files_in_buckets(&quot;alpha-r-training&quot;, prefix=&quot;intro-r-extension/fruit&quot;)
 
 # Get a list of csv file names
 files &lt;- files %&gt;%
-  dplyr::filter(grepl(&quot;.csv&quot;, uri)) %&gt;%
-  dplyr::pull(uri)
+  dplyr::filter(grepl(&quot;.csv&quot;, path)) %&gt;%
+  dplyr::pull(path)
 
 files</pre>
 
-<pre >## [1] &quot;s3://alpha-r-training/intro-r-extension/fruit1.csv&quot;
-## [2] &quot;s3://alpha-r-training/intro-r-extension/fruit2.csv&quot;
-## [3] &quot;s3://alpha-r-training/intro-r-extension/fruit3.csv&quot;</pre>
+<pre >## alpha-r-training/intro-r-extension/fruit/fruit1.csv
+## alpha-r-training/intro-r-extension/fruit/fruit2.csv
+## alpha-r-training/intro-r-extension/fruit/fruit3.csv</pre>
 
 </article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
 
@@ -3690,25 +3690,23 @@ fruit_list &lt;- vector(&quot;list&quot;, length(files))
 
 # Loop over each file, and add the data to a list
 for (i in seq_along(files)) {
-  fruit_list[[i]] &lt;- botor::s3_read(files[i], readr::read_csv, show_col_types = FALSE)
+  fruit_list[[i]] &lt;- Rs3tools::s3_path_to_full_df(files[i])
 }
 
 # Combine the list of dataframes into a single dataframe
 fruit &lt;- dplyr::bind_rows(fruit_list)
 fruit</pre>
 
-<pre >## # A tibble: 9 × 4
-##   Item      `Cost-Jan` `Cost-Feb` `Cost-Mar`
-##   &lt;chr&gt;          &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;
-## 1 Orange          0.56       0.5        0.57
-## 2 Apple           0.42       0.51       0.49
-## 3 Banana          0.15       0.17       0.21
-## 4 Lemon           0.3        0.32       0.35
-## 5 Pear            0.41       0.39       0.44
-## 6 Melon           1.1        1.15       1.11
-## 7 Pineapple       1.18       1.19       1.24
-## 8 Peach           0.55       0.53       0.58
-## 9 Plum            0.38       0.41       0.41</pre>
+<pre >##        Item Cost.Jan Cost.Feb Cost.Mar
+## 1    Orange     0.56     0.50     0.57
+## 2     Apple     0.42     0.51     0.49
+## 3    Banana     0.15     0.17     0.21
+## 4     Lemon     0.30     0.32     0.35
+## 5      Pear     0.41     0.39     0.44
+## 6     Melon     1.10     1.15     1.11
+## 7 Pineapple     1.18     1.19     1.24
+## 8     Peach     0.55     0.53     0.58
+## 9      Plum     0.38     0.41     0.41</pre>
 
 </article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
 
@@ -3755,38 +3753,34 @@ while (i &lt;= 5) { # The loop will continue until the condition i&lt;=5 is met
 fruit &lt;- fruit %&gt;% dplyr::mutate(Item = toupper(Item))
 fruit</pre>
 
-<pre >## # A tibble: 9 × 4
-##   Item      `Cost-Jan` `Cost-Feb` `Cost-Mar`
-##   &lt;chr&gt;          &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;
-## 1 ORANGE          0.56       0.5        0.57
-## 2 APPLE           0.42       0.51       0.49
-## 3 BANANA          0.15       0.17       0.21
-## 4 LEMON           0.3        0.32       0.35
-## 5 PEAR            0.41       0.39       0.44
-## 6 MELON           1.1        1.15       1.11
-## 7 PINEAPPLE       1.18       1.19       1.24
-## 8 PEACH           0.55       0.53       0.58
-## 9 PLUM            0.38       0.41       0.41</pre>
+<pre >##        Item Cost.Jan Cost.Feb Cost.Mar
+## 1    ORANGE     0.56     0.50     0.57
+## 2     APPLE     0.42     0.51     0.49
+## 3    BANANA     0.15     0.17     0.21
+## 4     LEMON     0.30     0.32     0.35
+## 5      PEAR     0.41     0.39     0.44
+## 6     MELON     1.10     1.15     1.11
+## 7 PINEAPPLE     1.18     1.19     1.24
+## 8     PEACH     0.55     0.53     0.58
+## 9      PLUM     0.38     0.41     0.41</pre>
 
 </article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
 
 <p>We can also use <code>mutate()</code> to apply a function to multiple columns in one go by combining it with the <code>across()</code> function from dplyr. This example demonstrates how to multiply the values in all numeric columns by 100:</p>
 
-<pre class = 'prettyprint lang-r'>fruit_pence &lt;- fruit %&gt;% dplyr::mutate(across(where(is.numeric), ~ .x * 100))
+<pre class = 'prettyprint lang-r'>fruit_pence &lt;- fruit %&gt;% dplyr::mutate(dplyr::across(where(is.numeric), ~ .x * 100))
 fruit_pence</pre>
 
-<pre >## # A tibble: 9 × 4
-##   Item      `Cost-Jan` `Cost-Feb` `Cost-Mar`
-##   &lt;chr&gt;          &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;
-## 1 ORANGE            56         50         57
-## 2 APPLE             42         51         49
-## 3 BANANA            15         17         21
-## 4 LEMON             30         32         35
-## 5 PEAR              41         39         44
-## 6 MELON            110        115        111
-## 7 PINEAPPLE        118        119        124
-## 8 PEACH             55         53         58
-## 9 PLUM              38         41         41</pre>
+<pre >##        Item Cost.Jan Cost.Feb Cost.Mar
+## 1    ORANGE       56       50       57
+## 2     APPLE       42       51       49
+## 3    BANANA       15       17       21
+## 4     LEMON       30       32       35
+## 5      PEAR       41       39       44
+## 6     MELON      110      115      111
+## 7 PINEAPPLE      118      119      124
+## 8     PEACH       55       53       58
+## 9      PLUM       38       41       41</pre>
 
 <p>Here we’re using <code>mutate()</code> with <code>across()</code> to apply a function to all numeric columns. The <code>~ .x * 100</code> part is what’s called a lambda or anonymous function, and this is what tells <code>mutate()</code> and <code>across()</code> to multiply by 100. The lambda function is a function with no name - they’re generally used in combination with another function (in this case <code>across()</code>) to apply a simple operation without needing to define a dedicated function elsewhere in the code.</p>
 
@@ -3794,22 +3788,20 @@ fruit_pence</pre>
 
 <p>Of course <code>across()</code> can also be used to apply a named function to multiple columns of a dataframe. Here’s how we can apply the <code>signif()</code> function to round values in all numeric columns to 1 significant figure:</p>
 
-<pre class = 'prettyprint lang-r'>rounded_fruit &lt;- fruit %&gt;% dplyr::mutate(across(where(is.numeric), signif, 1))
+<pre class = 'prettyprint lang-r'>rounded_fruit &lt;- fruit %&gt;% dplyr::mutate(dplyr::across(where(is.numeric), signif, 1))
 
 rounded_fruit</pre>
 
-<pre >## # A tibble: 9 × 4
-##   Item      `Cost-Jan` `Cost-Feb` `Cost-Mar`
-##   &lt;chr&gt;          &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;
-## 1 ORANGE           0.6        0.5        0.6
-## 2 APPLE            0.4        0.5        0.5
-## 3 BANANA           0.2        0.2        0.2
-## 4 LEMON            0.3        0.3        0.4
-## 5 PEAR             0.4        0.4        0.4
-## 6 MELON            1          1          1  
-## 7 PINEAPPLE        1          1          1  
-## 8 PEACH            0.6        0.5        0.6
-## 9 PLUM             0.4        0.4        0.4</pre>
+<pre >##        Item Cost.Jan Cost.Feb Cost.Mar
+## 1    ORANGE      0.6      0.5      0.6
+## 2     APPLE      0.4      0.5      0.5
+## 3    BANANA      0.2      0.2      0.2
+## 4     LEMON      0.3      0.3      0.4
+## 5      PEAR      0.4      0.4      0.4
+## 6     MELON      1.0      1.0      1.0
+## 7 PINEAPPLE      1.0      1.0      1.0
+## 8     PEACH      0.6      0.5      0.6
+## 9      PLUM      0.4      0.4      0.4</pre>
 
 <p>Note: When the <code>signif()</code> function is passed as an argument to <code>across()</code>, the brackets aren’t included (i.e. <code>signif</code> is passed rather than <code>signif()</code>). This means that any arguments for <code>signif</code> need to be included as extra arguments for <code>across()</code> instead (i.e. putting <code>signif, 1</code> rather than <code>signif(1)</code> when using with <code>across()</code>).</p>
 
@@ -4053,18 +4045,18 @@ df</pre>
 <pre >## # A tibble: 12 × 3
 ##    year  quarter count
 ##    &lt;chr&gt; &lt;chr&gt;   &lt;int&gt;
-##  1 2017  Q1         10
-##  2 &lt;NA&gt;  Q2         12
-##  3 &lt;NA&gt;  Q3          6
-##  4 &lt;NA&gt;  Q4         11
-##  5 2018  Q1          4
-##  6 &lt;NA&gt;  Q2          9
-##  7 &lt;NA&gt;  Q3          2
-##  8 &lt;NA&gt;  Q4          8
-##  9 2019  Q1          3
-## 10 &lt;NA&gt;  Q2          1
-## 11 &lt;NA&gt;  Q3          7
-## 12 &lt;NA&gt;  Q4          5</pre>
+##  1 2017  Q1          7
+##  2 &lt;NA&gt;  Q2          4
+##  3 &lt;NA&gt;  Q3          1
+##  4 &lt;NA&gt;  Q4          8
+##  5 2018  Q1          3
+##  6 &lt;NA&gt;  Q2          5
+##  7 &lt;NA&gt;  Q3         11
+##  8 &lt;NA&gt;  Q4         12
+##  9 2019  Q1         10
+## 10 &lt;NA&gt;  Q2          2
+## 11 &lt;NA&gt;  Q3          9
+## 12 &lt;NA&gt;  Q4          6</pre>
 
 </article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
 
@@ -4076,18 +4068,18 @@ df %&gt;% tidyr::fill(year)</pre>
 <pre >## # A tibble: 12 × 3
 ##    year  quarter count
 ##    &lt;chr&gt; &lt;chr&gt;   &lt;int&gt;
-##  1 2017  Q1         10
-##  2 2017  Q2         12
-##  3 2017  Q3          6
-##  4 2017  Q4         11
-##  5 2018  Q1          4
-##  6 2018  Q2          9
-##  7 2018  Q3          2
-##  8 2018  Q4          8
-##  9 2019  Q1          3
-## 10 2019  Q2          1
-## 11 2019  Q3          7
-## 12 2019  Q4          5</pre>
+##  1 2017  Q1          7
+##  2 2017  Q2          4
+##  3 2017  Q3          1
+##  4 2017  Q4          8
+##  5 2018  Q1          3
+##  6 2018  Q2          5
+##  7 2018  Q3         11
+##  8 2018  Q4         12
+##  9 2019  Q1         10
+## 10 2019  Q2          2
+## 11 2019  Q3          9
+## 12 2019  Q4          6</pre>
 
 </article></slide><slide class=""><hgroup><h2>Removing rows with missing values from a dataframe</h2></hgroup><article  id="removing-rows-with-missing-values-from-a-dataframe" class="smaller ">
 
@@ -4197,1164 +4189,788 @@ fruit %&gt;% tidyr::replace_na(list(Cost = &quot;Unknown&quot;,
 
 </article></slide><slide class=""><hgroup><h2>Introduction</h2></hgroup><article  id="introduction-4" class="smaller ">
 
-<p>The tidyr package can help us to reshape dataframes - this can be really helpful when we need to transform between tables that are easier to read and tables that are easier to analyse. The aim here is to structure the resulting datasets so that they could be manipulated easier in further stages of the processing.</p>
+<p>The exact same data can be represented in different orientations, depending on the purpose.</p>
 
-<p>I should mention at this point that the source for the material presented in this chapter can be found in this <a href='https://tidyr.tidyverse.org/dev/articles/pivot.html#generate-column-name-from-multiple-variables-1' title=''>pivoting vignette</a> as well as in the book by the same author, Hadley Wickham, titled <a href='https://r4ds.had.co.nz/' title=''>R For Data Science</a>.</p>
+<p>A dataframe that is in long format has a single column for each variable. The number of columns is minimised, at the expense of having many rows.</p>
+
+<p>A dataframe that is in wide format spreads a variable across several columns. The number of rows is minimised, at the expense of many columns.</p>
+
+<p>There are advantages and disadvantages of each depending on context, and it is useful to know how to switch between these. It is very easy with the <code>tidyverse</code> functions (package <code>tidyr</code>) <code>pivot_wider()</code> and <code>pivot_longer()</code>.</p>
+
+</article></slide><slide class=""><hgroup><h2>Widening data</h2></hgroup><article  id="widening-data" class="smaller ">
+
+<p>We read in a data table.</p>
+
+<pre class = 'prettyprint lang-r'># read in the fake annual offences data
+annual_offences &lt;- 
+  Rs3tools::s3_path_to_full_df(
+    s3_path = &quot;s3://alpha-r-training/intro-r-extension/annual_offences_fake.csv&quot;, 
+    colClasses = c(&quot;integer&quot;, &quot;character&quot;, &quot;integer&quot;)) %&gt;%
+  tibble::tibble()
+
+head(annual_offences)</pre>
+
+<pre >## # A tibble: 6 × 3
+##    year offence_code count
+##   &lt;int&gt; &lt;chr&gt;        &lt;int&gt;
+## 1  2016 00101          219
+## 2  2016 00304         4730
+## 3  2016 00305           28
+## 4  2016 00399         6405
+## 5  2016 00405            9
+## 6  2016 00406            3</pre>
 
 </article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
 
-<p>In many scenarios, although the data could be complete in the sense of it containing the desired variables, it is not quite in the right format requiring additional manipulation to bring it in line.</p>
+<p>The data represent fake frequencies of offences from 2016 to 2020, represented by real offence codes. If an offence was prosecuted in a year, there is a corresponding line in this data table, with the offence code indicated by the <code>offence_code</code> column, the year indicated by the <code>year</code> column, and the <code>count</code> column representing the number of times the offence was prosecuted. If an offence was not prosecuted in a year, the corresponding combination of <code>year</code> and <code>offence</code> does not exist. The table has been sorted by year and offence code.</p>
 
-<p>This is usually the case when the variables needed are originally created as subcategories within a current variable. The process to extract them results to <strong>lengthening</strong> or <strong>widening</strong> the original dataset and this is commonly referred to as <strong>pivoting</strong>. It should also be mentioned that pivoting (as a collection of tools) was created to replace the existing <code>gather()</code> and <code>spread()</code> functions. This is not to say that the old versions cannot be used anymore, its just that they will no longer receive any updates from the developer given their more advance counterparts.</p>
+<p>The long format may be a good way to store data like these for some purposes, but what if we want to put it into wide format, e.g. to make it easier for a human to read? We use the <code>tidyr</code> function <code>pivot_wider()</code>:</p>
 
-<p>As a general artefact of the reshaping process, the resulting dataset has either an increased number of rows or columns respectively. Interpretation largely deepens on the project at hand where the current stage of the system determines the optimal structure of the data to be supplied.</p>
+<pre class = 'prettyprint lang-r'># basic implementation of pivot_wider()
+wide_annual_offences &lt;- annual_offences %&gt;%
+  tidyr::pivot_wider(
+    names_from = &#39;year&#39;,
+    values_from = &#39;count&#39;
+  )
 
-</article></slide><slide class=""><hgroup><h2>Lengthening the dataset</h2></hgroup><article  id="lengthening-the-dataset" class="smaller ">
-
-<p>Consider the <code>billboard</code> dataset supplied with tidyr (should be in you workspace when you load the package) containing the rank of songs for the year 2000. Inspecting the dataset shows that there are in total 79 columns, one for each week (starting from Oct 1999) and also including a few additional identifiers.</p>
-
-<p>The aim now is to create a single variable to house the different weeks in order to create a different representation of for the data. We start by having a closer look at the data set and then mapping the first month into a single variable.</p>
-
-<pre class = 'prettyprint lang-r'># for more information on the dataset 
-?billboard
-# notice the dimensions of the data
-#dim(billboard)
-
-#to see the structure of the data
-billboard %&gt;% dplyr::arrange(desc(date.entered)) %&gt;% dplyr::select(1:6) %&gt;% head()</pre>
+head(wide_annual_offences)</pre>
 
 <pre >## # A tibble: 6 × 6
-##   artist        track             date.entered   wk1   wk2   wk3
-##   &lt;chr&gt;         &lt;chr&gt;             &lt;date&gt;       &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-## 1 Tuesday       I Know            2000-12-30      98    98    NA
-## 2 De La Soul    All Good?         2000-12-23      96    96   100
-## 3 Clark, Terri  A Little Gasoline 2000-12-16      75    82    88
-## 4 Braxton, Toni Spanish Guitar    2000-12-02      98    98    98
-## 5 Nine Days     If I Am           2000-12-02      68    68    81
-## 6 Vitamin C     The Itch          2000-12-02      86    48    45</pre>
+##   offence_code `2016` `2017` `2018` `2019` `2020`
+##   &lt;chr&gt;         &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt;
+## 1 00101           219    188    177    154    122
+## 2 00304          4730   4953   4954   5613   4485
+## 3 00305            28     20     17     10      6
+## 4 00399          6405   5879   5149   4538   3415
+## 5 00405             9      3      4      4     NA
+## 6 00406             3     NA      1     NA     NA</pre>
 
 </article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
 
-<p>Using <code>pivot_longer</code> allows us to map the given columns <code>(wk1,wk2, wk3, wk4)</code> to the specified variable, in this case, <code>month1</code>.</p>
+<p>What’s happened? We passed <code>count</code> to the argument <code>values_from</code> and <code>year</code> to the argument <code>names_from</code>. This tells the function that we want to make new columns based on <code>year</code>, and populate it with the values from <code>count</code>.</p>
+
+<p>Remember that the data are sorted first by year? If we imagine each year as a stack of data, what we’re effectively doing here is taking the count data for each stack and putting them in their own column.</p>
+
+<p>There are a couple of ways we could get more useful results from this function, though.</p>
+
+<p>First, it’s generally not a good idea to have column names that begin with numbers. Fortunately, <code>pivot_wider()</code> has the useful argument <code>names_prefix</code> to remedy this:</p>
+
+<pre class = 'prettyprint lang-r'># adding a prefix to new columns
+wide_annual_offences &lt;- annual_offences %&gt;%
+  tidyr::pivot_wider(
+    names_from = &#39;year&#39;,
+    values_from = &#39;count&#39;,
+    names_prefix = &#39;count_&#39;
+  )
+head(wide_annual_offences)</pre>
+
+<pre >## # A tibble: 6 × 6
+##   offence_code count_2016 count_2017 count_2018 count_2019 count_2020
+##   &lt;chr&gt;             &lt;int&gt;      &lt;int&gt;      &lt;int&gt;      &lt;int&gt;      &lt;int&gt;
+## 1 00101               219        188        177        154        122
+## 2 00304              4730       4953       4954       5613       4485
+## 3 00305                28         20         17         10          6
+## 4 00399              6405       5879       5149       4538       3415
+## 5 00405                 9          3          4          4         NA
+## 6 00406                 3         NA          1         NA         NA</pre>
+
+</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
+
+<p>When transforming count data like this we may have legitimate good reason to replace our NAs with 0s, which we can do with <code>values_fill()</code>:</p>
+
+<pre class = 'prettyprint lang-r'># filling in NAs with 0
+wide_annual_offences &lt;- annual_offences %&gt;%
+  tidyr::pivot_wider(
+    names_from = &#39;year&#39;,
+    values_from = &#39;count&#39;,
+    names_prefix = &#39;count_&#39;,
+    values_fill = 0
+  )
+head(wide_annual_offences)</pre>
+
+<pre >## # A tibble: 6 × 6
+##   offence_code count_2016 count_2017 count_2018 count_2019 count_2020
+##   &lt;chr&gt;             &lt;int&gt;      &lt;int&gt;      &lt;int&gt;      &lt;int&gt;      &lt;int&gt;
+## 1 00101               219        188        177        154        122
+## 2 00304              4730       4953       4954       5613       4485
+## 3 00305                28         20         17         10          6
+## 4 00399              6405       5879       5149       4538       3415
+## 5 00405                 9          3          4          4          0
+## 6 00406                 3          0          1          0          0</pre>
+
+</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
+
+<p>Once our table is in wide format, and clean, we can easily do transformations like this. Here we use <code>dplyr</code> functions to create a new column that adds up yearly totals across each column that has count data:</p>
 
 <pre class = 'prettyprint lang-r'>#starting by mapping a single month 
-billboard %&gt;% tidyr::pivot_longer(cols = c(wk1, wk2, wk3, wk4), names_to = &quot;month1&quot;, values_to = &quot;rank&quot;) %&gt;% 
-  dplyr::select(1:5, &quot;month1&quot;, &quot;rank&quot;) %&gt;% head()</pre>
+wide_annual_offences_with_totals &lt;- wide_annual_offences %&gt;%
+  dplyr::mutate(
+    count_2016_2020 =
+      rowSums(dplyr::across(dplyr::starts_with(&quot;count&quot;)))
+  )
+head(wide_annual_offences_with_totals)</pre>
 
 <pre >## # A tibble: 6 × 7
-##   artist  track                   date.entered   wk5   wk6 month1  rank
-##   &lt;chr&gt;   &lt;chr&gt;                   &lt;date&gt;       &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;  &lt;dbl&gt;
-## 1 2 Pac   Baby Don&#39;t Cry (Keep... 2000-02-26      87    94 wk1       87
-## 2 2 Pac   Baby Don&#39;t Cry (Keep... 2000-02-26      87    94 wk2       82
-## 3 2 Pac   Baby Don&#39;t Cry (Keep... 2000-02-26      87    94 wk3       72
-## 4 2 Pac   Baby Don&#39;t Cry (Keep... 2000-02-26      87    94 wk4       77
-## 5 2Ge+her The Hardest Part Of ... 2000-09-02      NA    NA wk1       91
-## 6 2Ge+her The Hardest Part Of ... 2000-09-02      NA    NA wk2       87</pre>
-
-<pre class = 'prettyprint lang-r'>#and to see clearly the contents of the new variable
-# billboard %&gt;% pivot_longer(cols = c(wk1,wk2, wk3, wk4), names_to = &quot;month1&quot;, values_to = &quot;rank&quot;) %&gt;%
-# .$month1 %&gt;% head()</pre>
-
-<p>The way the <code>pivot_longer</code> function works is, you specify the columns to be <strong>gathered</strong> followed by defining the resultant new variables to store their names and corresponding values.</p>
+##   offence_code count_2016 count_2017 count_2018 count_2019 count_2020 count_2016_2020
+##   &lt;chr&gt;             &lt;int&gt;      &lt;int&gt;      &lt;int&gt;      &lt;int&gt;      &lt;int&gt;           &lt;dbl&gt;
+## 1 00101               219        188        177        154        122             860
+## 2 00304              4730       4953       4954       5613       4485           24735
+## 3 00305                28         20         17         10          6              81
+## 4 00399              6405       5879       5149       4538       3415           25386
+## 5 00405                 9          3          4          4          0              20
+## 6 00406                 3          0          1          0          0               4</pre>
 
 </article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
 
-<h3>Working with multiple columns</h3>
+<p>The final and most advanced thing we will do with <code>pivot_wider()</code> is to pass it an auxiliary function to transform the values that it places in its new columns.</p>
 
-<p>As it is evident, the problem now is that we have too many columns to pass them individually. What happens if we want all of the weeks to be transferred as subcategories to a new variable called <em>weeks</em>?</p>
-
-<p>In that case, the following structure comes into play where regular expressions are used to pick all the variables to be mapped.</p>
+<p>Here we are passing an anonymous function which itself calls the <code>round()</code> function to round our counts. Setting the <code>digits</code> argument of <code>round()</code> to -1 means that the values get rounded to the nearest 10, rather than the default behaviour of rounding to the nearest whole number.</p>
 
 <pre class = 'prettyprint lang-r'>#mapping all weeks to one variable called &quot;weeks&quot; 
-billboard %&gt;% tidyr::pivot_longer(cols = starts_with(&quot;wk&quot;), names_to = &quot;weeks&quot;, values_to = &quot;rank&quot;) %&gt;% head()</pre>
-
-<pre >## # A tibble: 6 × 5
-##   artist track                   date.entered weeks  rank
-##   &lt;chr&gt;  &lt;chr&gt;                   &lt;date&gt;       &lt;chr&gt; &lt;dbl&gt;
-## 1 2 Pac  Baby Don&#39;t Cry (Keep... 2000-02-26   wk1      87
-## 2 2 Pac  Baby Don&#39;t Cry (Keep... 2000-02-26   wk2      82
-## 3 2 Pac  Baby Don&#39;t Cry (Keep... 2000-02-26   wk3      72
-## 4 2 Pac  Baby Don&#39;t Cry (Keep... 2000-02-26   wk4      77
-## 5 2 Pac  Baby Don&#39;t Cry (Keep... 2000-02-26   wk5      87
-## 6 2 Pac  Baby Don&#39;t Cry (Keep... 2000-02-26   wk6      94</pre>
-
-<p>And so with this neat little trick, we’ve managed to bring the dataset into a better looking structure making further manipulation easier. Of course, this is not all we can do with the data, there are a wide range of tools at our disposal to allow us not only to pick the variables we need but also to split the contents of them into new columns, with more on that in the following sections.</p>
-
-</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
-
-<h3>Working with similar columns</h3>
-
-<p>In some circumstances pivoting can also be used to construct a more robust for ease of use in later stages of the analysis. In these cases the dataset contains variables that are similar in their structure with the aim being to gather them in to one, cleaner, format. Consider the <code>anscombe</code> dataset that comes with basic R as shown below:</p>
-
-<pre class = 'prettyprint lang-r'>#dataset
-anscombe</pre>
-
-<pre >##    x1 x2 x3 x4    y1   y2    y3    y4
-## 1  10 10 10  8  8.04 9.14  7.46  6.58
-## 2   8  8  8  8  6.95 8.14  6.77  5.76
-## 3  13 13 13  8  7.58 8.74 12.74  7.71
-## 4   9  9  9  8  8.81 8.77  7.11  8.84
-## 5  11 11 11  8  8.33 9.26  7.81  8.47
-## 6  14 14 14  8  9.96 8.10  8.84  7.04
-## 7   6  6  6  8  7.24 6.13  6.08  5.25
-## 8   4  4  4 19  4.26 3.10  5.39 12.50
-## 9  12 12 12  8 10.84 9.13  8.15  5.56
-## 10  7  7  7  8  4.82 7.26  6.42  7.91
-## 11  5  5  5  8  5.68 4.74  5.73  6.89</pre>
-
-<p>As it is apparent, the basis for each variable is the same (x1,x2, y1,y2 etc) and so it would make sense to simply create pair <code>x</code> and <code>y</code> and depict their corresponding identifier <code>1,2,3,4</code> in a separate variable.</p>
-
-</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
-
-<p>In such cases, <code>pivot_longer</code> offers an elegant solution to the problem by automatically selecting the common patterns and using them as the new variables.</p>
-
-<pre class = 'prettyprint lang-r'># using &quot;.value&quot; and &quot;everything()&quot; to select common variables
-anscombe %&gt;% tidyr::pivot_longer(everything(),
-   names_to = c(&quot;.value&quot;, &quot;set&quot;),
-   names_pattern = &quot;(.)(.)&quot;)</pre>
-
-<pre >## # A tibble: 44 × 3
-##    set       x     y
-##    &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt;
-##  1 1        10  8.04
-##  2 2        10  9.14
-##  3 3        10  7.46
-##  4 4         8  6.58
-##  5 1         8  6.95
-##  6 2         8  8.14
-##  7 3         8  6.77
-##  8 4         8  5.76
-##  9 1        13  7.58
-## 10 2        13  8.74
-## # … with 34 more rows</pre>
-
-</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
-
-<p>In the example above, the <code>.value</code> identifier enables selection of the common elements between <code>x1,x2,etc</code> and <code>y1,y2,etc</code> and then uses the findings as separate variables.</p>
-
-<p>The <code>everything()</code> argument, as the name would suggest, picks the entire variable set in the dataset.</p>
-
-<p>Notice also the use of the <code>names_pattern = &quot;(.)(.)&quot;</code> option. This is a special kind of regex use where the values within the brackets are used to detect the kind of pattern to be used.</p>
-
-<p>The <code>names_pattern</code> or <code>name_sep()</code> options make explicit use of the <code>extract()</code> and <code>separate()</code> tools respectively (discussed in more detail in the next sections) utilizing regular expressions to detect the variable to pivot. In the former expression, the regex contained in the matching groups depicted within the brackets in the above expression, is what distinguishes one part of the variable from the other.</p>
-
-</article></slide><slide class=""><hgroup><h2>Widening the dataset</h2></hgroup><article  id="widening-the-dataset" class="smaller ">
-
-<p><code>pivot_wider()</code> is the opposite <code>pivot_longer()</code> transforming a dataset to a <strong>wider</strong> format. It is not used as often but has still some value in presenting a dataset in a different light should the situation calls for it.</p>
-
-<p>Consider the <code>fish_encounters</code> dataset, contributed by <strong>Myfanwy Johnston</strong> depicted below. It describes whether fish swimming down a river are detected or not by automatic monitoring stations.</p>
-
-<pre class = 'prettyprint lang-r'>fish_encounters %&gt;% head(10)</pre>
-
-<pre >## # A tibble: 10 × 3
-##    fish  station  seen
-##    &lt;fct&gt; &lt;fct&gt;   &lt;int&gt;
-##  1 4842  Release     1
-##  2 4842  I80_1       1
-##  3 4842  Lisbon      1
-##  4 4842  Rstr        1
-##  5 4842  Base_TD     1
-##  6 4842  BCE         1
-##  7 4842  BCW         1
-##  8 4842  BCE2        1
-##  9 4842  BCW2        1
-## 10 4842  MAE         1</pre>
-
-</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
-
-<p>A simple use of the function can provide a better understanding of what the data contains and also make it more useful for potential use in later stages of a processing system where specific input from each station can be utilized.</p>
-
-<pre class = 'prettyprint lang-r'>fish_encounters %&gt;% tidyr::pivot_wider(names_from = station, values_from = seen) %&gt;% head()</pre>
-
-<pre >## # A tibble: 6 × 12
-##   fish  Release I80_1 Lisbon  Rstr Base_TD   BCE   BCW  BCE2  BCW2   MAE   MAW
-##   &lt;fct&gt;   &lt;int&gt; &lt;int&gt;  &lt;int&gt; &lt;int&gt;   &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;
-## 1 4842        1     1      1     1       1     1     1     1     1     1     1
-## 2 4843        1     1      1     1       1     1     1     1     1     1     1
-## 3 4844        1     1      1     1       1     1     1     1     1     1     1
-## 4 4845        1     1      1     1       1    NA    NA    NA    NA    NA    NA
-## 5 4847        1     1      1    NA      NA    NA    NA    NA    NA    NA    NA
-## 6 4848        1     1      1     1      NA    NA    NA    NA    NA    NA    NA</pre>
-
-</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
-
-<p>The general use is very similar to that presented in <code>pivot_longer()</code> with <code>names_from</code> targeting the column containing the subcategories to split from and <code>values_from</code> the corresponding values associated with each category. Notice that there will be cases where there is no match and these will initially be filled with <code>NA</code>. Simply setting the option <code>values_fill</code> to a value of your choice will replaced the <code>NA</code> values to something more meaningful.</p>
-
-<pre class = 'prettyprint lang-r'>fish_encounters %&gt;% tidyr::pivot_wider(names_from = station, values_from = seen,
-  values_fill = list(seen = 0)) %&gt;% head()</pre>
-
-<pre >## # A tibble: 6 × 12
-##   fish  Release I80_1 Lisbon  Rstr Base_TD   BCE   BCW  BCE2  BCW2   MAE   MAW
-##   &lt;fct&gt;   &lt;int&gt; &lt;int&gt;  &lt;int&gt; &lt;int&gt;   &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;
-## 1 4842        1     1      1     1       1     1     1     1     1     1     1
-## 2 4843        1     1      1     1       1     1     1     1     1     1     1
-## 3 4844        1     1      1     1       1     1     1     1     1     1     1
-## 4 4845        1     1      1     1       1     0     0     0     0     0     0
-## 5 4847        1     1      1     0       0     0     0     0     0     0     0
-## 6 4848        1     1      1     1       0     0     0     0     0     0     0</pre>
-
-</article></slide><slide class=""><hgroup><h2>Aggregating with with <code>pivot_wider</code></h2></hgroup><article  id="aggregating-with-with-pivot_wider" class="smaller ">
-
-<p>Consider the <code>warpbreaks</code> dataset that comes with basic R, it describes the results of a designed experiment with nine replicates for every combination of wool (A and B) and tension (L, M, H).</p>
-
-<pre class = 'prettyprint lang-r'>#converting into a tibble and rearranging the vars
-warpbreaks %&gt;% tibble::as_tibble() %&gt;% dplyr::select(wool, tension, breaks)</pre>
-
-<pre >## # A tibble: 54 × 3
-##    wool  tension breaks
-##    &lt;fct&gt; &lt;fct&gt;    &lt;dbl&gt;
-##  1 A     L           26
-##  2 A     L           30
-##  3 A     L           54
-##  4 A     L           25
-##  5 A     L           70
-##  6 A     L           52
-##  7 A     L           51
-##  8 A     L           26
-##  9 A     L           67
-## 10 A     M           18
-## # … with 44 more rows</pre>
-
-</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
-
-<p>Notice the problem that appears when trying to widen this dataset. Uniqueness is not maintained since this is a repeated experiment with the same value of breaks for each tension value.</p>
-
-<pre class = 'prettyprint lang-r'>warpdata = warpbreaks %&gt;% tidyr::pivot_wider(names_from = wool, values_from = breaks)</pre>
-
-<pre >## Warning: Values from `breaks` are not uniquely identified; output will contain list-cols.
-## * Use `values_fn = list` to suppress this warning.
-## * Use `values_fn = {summary_fun}` to summarise duplicates.
-## * Use the following dplyr code to identify duplicates.
-##   {data} %&gt;%
-##     dplyr::group_by(tension, wool) %&gt;%
-##     dplyr::summarise(n = dplyr::n(), .groups = &quot;drop&quot;) %&gt;%
-##     dplyr::filter(n &gt; 1L)</pre>
-
-</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
-
-<p>The default output here is a list containing all the associated <strong>break</strong> values. One other, and perhaps more informative, approach would be to include a statistic to describe the contents in that list.</p>
-
-<p>For that purpose, <code>pivot_wider()</code> offers the <code>values_fn</code> option where a suitable function is defined to describe the list with a single value.</p>
-
-<pre class = 'prettyprint lang-r'>warpbreaks %&gt;%
+wide_annual_offences_rounded &lt;- annual_offences %&gt;%
   tidyr::pivot_wider(
-    names_from = wool,
-    values_from = breaks,
-    values_fn = list(breaks = mean)
-  )</pre>
+    names_from = &#39;year&#39;,
+    values_from = &#39;count&#39;,
+    names_prefix = &#39;count_&#39;,
+    values_fill = 0,
+    values_fn = ~ round(.x, digits = -1)
+  )
+head(wide_annual_offences_rounded)</pre>
+
+<pre >## # A tibble: 6 × 6
+##   offence_code count_2016 count_2017 count_2018 count_2019 count_2020
+##   &lt;chr&gt;             &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;
+## 1 00101               220        190        180        150        120
+## 2 00304              4730       4950       4950       5610       4480
+## 3 00305                30         20         20         10         10
+## 4 00399              6400       5880       5150       4540       3420
+## 5 00405                10          0          0          0          0
+## 6 00406                 0          0          0          0          0</pre>
+
+</article></slide><slide class=""><hgroup><h2>Lengthening data</h2></hgroup><article  id="lengthening-data" class="smaller ">
+
+<p>Let’s consider our earlier widened table, with original counts, columns with prefixes and NAs replaced with 0s.</p>
+
+<p>What if we want to go from our widened table back to our original one, here?</p>
+
+<pre class = 'prettyprint lang-r'>head(wide_annual_offences, 3)</pre>
+
+<pre >## # A tibble: 3 × 6
+##   offence_code count_2016 count_2017 count_2018 count_2019 count_2020
+##   &lt;chr&gt;             &lt;int&gt;      &lt;int&gt;      &lt;int&gt;      &lt;int&gt;      &lt;int&gt;
+## 1 00101               219        188        177        154        122
+## 2 00304              4730       4953       4954       5613       4485
+## 3 00305                28         20         17         10          6</pre>
+
+<pre class = 'prettyprint lang-r'>head(annual_offences, 3)</pre>
 
 <pre >## # A tibble: 3 × 3
-##   tension     A     B
-##   &lt;fct&gt;   &lt;dbl&gt; &lt;dbl&gt;
-## 1 L        44.6  28.2
-## 2 M        24    28.8
-## 3 H        24.6  18.8</pre>
+##    year offence_code count
+##   &lt;int&gt; &lt;chr&gt;        &lt;int&gt;
+## 1  2016 00101          219
+## 2  2016 00304         4730
+## 3  2016 00305           28</pre>
 
-</article></slide><slide class=""><hgroup><h2>Exercises on Pivoting</h2></hgroup><article  id="exercises-on-pivoting" class="smaller ">
+</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
+
+<p>We use the function <code>pivot_longer()</code> for this. You can pass column names to it like this:</p>
+
+<pre class = 'prettyprint lang-r'>long_annual_offences &lt;- wide_annual_offences %&gt;%
+  tidyr::pivot_longer(
+    cols = c(&#39;count_2016&#39;, &#39;count_2017&#39;, &#39;count_2018&#39;, &#39;count_2019&#39;, &#39;count_2020&#39;)
+  )
+head(long_annual_offences)</pre>
+
+<pre >## # A tibble: 6 × 3
+##   offence_code name       value
+##   &lt;chr&gt;        &lt;chr&gt;      &lt;int&gt;
+## 1 00101        count_2016   219
+## 2 00101        count_2017   188
+## 3 00101        count_2018   177
+## 4 00101        count_2019   154
+## 5 00101        count_2020   122
+## 6 00304        count_2016  4730</pre>
+
+</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
+
+<p>Or, as our column names are conveniently named with a prefix, we can use <code>starts_with()</code> from <code>dplyr</code> again:</p>
+
+<pre class = 'prettyprint lang-r'>long_annual_offences &lt;- wide_annual_offences %&gt;%
+  tidyr::pivot_longer(
+    cols = dplyr::starts_with(&#39;count&#39;)
+  )
+head(long_annual_offences)</pre>
+
+<pre >## # A tibble: 6 × 3
+##   offence_code name       value
+##   &lt;chr&gt;        &lt;chr&gt;      &lt;int&gt;
+## 1 00101        count_2016   219
+## 2 00101        count_2017   188
+## 3 00101        count_2018   177
+## 4 00101        count_2019   154
+## 5 00101        count_2020   122
+## 6 00304        count_2016  4730</pre>
+
+</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
+
+<p>Essentially, these data are the same as what we started with, but, not quite.</p>
+
+<pre class = 'prettyprint lang-r'>head(annual_offences, 3)</pre>
+
+<pre >## # A tibble: 3 × 3
+##    year offence_code count
+##   &lt;int&gt; &lt;chr&gt;        &lt;int&gt;
+## 1  2016 00101          219
+## 2  2016 00304         4730
+## 3  2016 00305           28</pre>
+
+<pre class = 'prettyprint lang-r'>head(long_annual_offences, 3)</pre>
+
+<pre >## # A tibble: 3 × 3
+##   offence_code name       value
+##   &lt;chr&gt;        &lt;chr&gt;      &lt;int&gt;
+## 1 00101        count_2016   219
+## 2 00101        count_2017   188
+## 3 00101        count_2018   177</pre>
+
+<pre class = 'prettyprint lang-r'>identical(long_annual_offences, annual_offences)</pre>
+
+<pre >## [1] FALSE</pre>
+
+</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
+
+<p>There are several differences, which we can correct via arguments to <code>pivot_wider()</code> and some <code>dplyr</code> functions.</p>
+
+<p>First, the default column name <code>value</code> has been assigned to our count, which we correct with the argument <code>values_to</code>, giving it the label we see in the original table:</p>
+
+<pre class = 'prettyprint lang-r'>long_annual_offences &lt;- wide_annual_offences %&gt;%
+  tidyr::pivot_longer(
+    cols = dplyr::starts_with(&#39;count&#39;),
+    values_to = &#39;count&#39;
+  )
+head(long_annual_offences)</pre>
+
+<pre >## # A tibble: 6 × 3
+##   offence_code name       count
+##   &lt;chr&gt;        &lt;chr&gt;      &lt;int&gt;
+## 1 00101        count_2016   219
+## 2 00101        count_2017   188
+## 3 00101        count_2018   177
+## 4 00101        count_2019   154
+## 5 00101        count_2020   122
+## 6 00304        count_2016  4730</pre>
+
+<pre class = 'prettyprint lang-r'>identical(long_annual_offences, annual_offences)</pre>
+
+<pre >## [1] FALSE</pre>
+
+</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
+
+<p>There’s another default name that it’s assigned too — it’s used <code>name</code> when we want <code>year</code> to indicate the years. We correct this with an equivalent argument:</p>
+
+<pre class = 'prettyprint lang-r'>long_annual_offences &lt;- wide_annual_offences %&gt;%
+  tidyr::pivot_longer(
+    cols = dplyr::starts_with(&#39;count&#39;),
+    values_to = &#39;count&#39;,
+    names_to = &#39;year&#39;
+  )
+head(long_annual_offences)</pre>
+
+<pre >## # A tibble: 6 × 3
+##   offence_code year       count
+##   &lt;chr&gt;        &lt;chr&gt;      &lt;int&gt;
+## 1 00101        count_2016   219
+## 2 00101        count_2017   188
+## 3 00101        count_2018   177
+## 4 00101        count_2019   154
+## 5 00101        count_2020   122
+## 6 00304        count_2016  4730</pre>
+
+<pre class = 'prettyprint lang-r'>identical(long_annual_offences, annual_offences)</pre>
+
+<pre >## [1] FALSE</pre>
+
+</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
+
+<p>We also want to remove those prefixes:</p>
+
+<pre class = 'prettyprint lang-r'>long_annual_offences &lt;- wide_annual_offences %&gt;%
+  tidyr::pivot_longer(
+    cols = dplyr::starts_with(&#39;count&#39;),
+    values_to = &#39;count&#39;,
+    names_to = &#39;year&#39;,
+    names_prefix = &#39;count_&#39;
+  )
+head(long_annual_offences)</pre>
+
+<pre >## # A tibble: 6 × 3
+##   offence_code year  count
+##   &lt;chr&gt;        &lt;chr&gt; &lt;int&gt;
+## 1 00101        2016    219
+## 2 00101        2017    188
+## 3 00101        2018    177
+## 4 00101        2019    154
+## 5 00101        2020    122
+## 6 00304        2016   4730</pre>
+
+<pre class = 'prettyprint lang-r'>identical(long_annual_offences, annual_offences)</pre>
+
+<pre >## [1] FALSE</pre>
+
+</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
+
+<p>Still more to do! We have more rows in our new table, and that’s because of those year/offence combinations where there are no incidences. Let’s get <code>dplyr</code> involved, and filter these out:</p>
+
+<pre class = 'prettyprint lang-r'>long_annual_offences &lt;- wide_annual_offences %&gt;%
+  tidyr::pivot_longer(
+    cols = dplyr::starts_with(&#39;count&#39;),
+    values_to = &#39;count&#39;,
+    names_to = &#39;year&#39;,
+    names_prefix = &#39;count_&#39;
+  ) %&gt;%
+  dplyr::filter(count &gt; 0)</pre>
+
+<p>We now have the same number of rows in original table and the one we’re working on:</p>
+
+<pre class = 'prettyprint lang-r'>nrow(long_annual_offences) == nrow(annual_offences)</pre>
+
+<pre >## [1] TRUE</pre>
+
+</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
+
+<p>But we’re still not quite there…</p>
+
+<pre class = 'prettyprint lang-r'>identical(long_annual_offences, annual_offences)</pre>
+
+<pre >## [1] FALSE</pre>
+
+<p>Finally, we use <code>dplyr</code> to: 1) fix data types and reorder columns with <code>transmute()</code>, 2) order rows with <code>arrange()</code>:</p>
+
+<pre class = 'prettyprint lang-r'>long_annual_offences &lt;- wide_annual_offences %&gt;%
+  tidyr::pivot_longer(
+    cols = dplyr::starts_with(&#39;count&#39;),
+    values_to = &#39;count&#39;,
+    names_to = &#39;year&#39;,
+    names_prefix = &#39;count_&#39;
+  ) %&gt;%
+  dplyr::filter(count &gt; 0) %&gt;%
+  dplyr::transmute(
+    year = as.integer(year),
+    offence_code,
+    count
+  ) %&gt;%
+  dplyr::arrange(year, offence_code)</pre>
+
+</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
+
+<p>What do they both look like now?</p>
+
+<pre class = 'prettyprint lang-r'>head(annual_offences, 3)</pre>
+
+<pre >## # A tibble: 3 × 3
+##    year offence_code count
+##   &lt;int&gt; &lt;chr&gt;        &lt;int&gt;
+## 1  2016 00101          219
+## 2  2016 00304         4730
+## 3  2016 00305           28</pre>
+
+<pre class = 'prettyprint lang-r'>head(long_annual_offences, 3)</pre>
+
+<pre >## # A tibble: 3 × 3
+##    year offence_code count
+##   &lt;int&gt; &lt;chr&gt;        &lt;int&gt;
+## 1  2016 00101          219
+## 2  2016 00304         4730
+## 3  2016 00305           28</pre>
+
+<p>Success!</p>
+
+<pre class = 'prettyprint lang-r'>identical(long_annual_offences, annual_offences)</pre>
+
+<pre >## [1] TRUE</pre>
+
+</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
 
 <h3>Exercise 1</h3>
 
-<p>Why does the following code fail?</p>
+<p>You have received summary tables showing quarterly totals of adult reoffenders split by number of previous offences of the offender.</p>
 
-<pre class = 'prettyprint lang-r'>#the table to use
-table4a
-table4a %&gt;% tidyr::pivot_longer(1999, 2000, names_to = &quot;year&quot;, values_to = &quot;value&quot;)</pre>
+<p>Read in the data:</p>
 
-<h3>Exercise 2</h3>
+<pre class = 'prettyprint lang-r'>reoffending_real &lt;- Rs3tools::s3_path_to_full_df(
+    s3_path = &quot;s3://alpha-r-training/intro-r-extension/adult_reoff_by_prev_off_number_2.csv&quot;)</pre>
 
-<p>Consider the following dataset and apply <code>pivot_wider()</code> to <strong>spread</strong> the values in <code>name</code>, do you agree with the results after pivoting?</p>
+<p>This data table is in wide format, but in order to plot the data you need to put it in long format.</p>
 
-<p>Hint. Could a new column solve the problem, what other solution could we apply?</p>
+<ol>
+<li>Put the data in long format</li>
+<li>Remove relevant prefixes</li>
+<li>Pass the labels &lsquo;quarter&rsquo; and &lsquo;count&rsquo; to the appropriate arguments to name the columns in your long format table.</li>
+</ol>
 
-<pre class = 'prettyprint lang-r'>people = tibble::tribble(~name, ~key, ~value,
-                 #------------/------/-----,
-                 &quot;Phil Woods&quot;, &quot;age&quot;, 45,
-                 &quot;Phil Woods&quot;, &quot;height&quot;, 185,
-                 &quot;Phil Woods&quot;, &quot;age&quot;, 50,
-                 &quot;Jess Cordero&quot;, &quot;age&quot;, 45,
-                 &quot;Jess Cordero&quot;, &quot;height&quot;, 156,)</pre>
-
-</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
-
-<h3>Exercise 3</h3>
-
-<p>Consider the following simple tibble, what kind of pivoting would you use, <code>pivot_longer()</code> or <code>pivot_wider()</code>?</p>
-
-<pre class = 'prettyprint lang-r'>rcj = tibble::tribble(~judge, ~male, ~female,
-                      &quot;yes&quot;, NA, 10, 
-                      &quot;no&quot;, 20, 12)</pre>
-
-</article></slide><slide class=""><hgroup><h2>Solutions</h2></hgroup><article  id="solutions" class="smaller ">
-
-<h3>Exercise 1</h3>
-
-<pre class = 'prettyprint lang-r'>table4a %&gt;% tidyr::pivot_longer(cols = !country, names_to = &quot;year&quot;, values_to = &quot;value&quot;)</pre>
-
-<pre >## # A tibble: 6 × 3
-##   country     year   value
-##   &lt;chr&gt;       &lt;chr&gt;  &lt;int&gt;
-## 1 Afghanistan 1999     745
-## 2 Afghanistan 2000    2666
-## 3 Brazil      1999   37737
-## 4 Brazil      2000   80488
-## 5 China       1999  212258
-## 6 China       2000  213766</pre>
-
-</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
-
-<h3>Exercise 2</h3>
-
-<pre class = 'prettyprint lang-r'>#without changing anything on the dataset
-people = tibble::tribble(~name, ~key, ~value,
-                 #------------/------/-----,
-                 &quot;Phil Woods&quot;, &quot;age&quot;, 45,
-                 &quot;Phil Woods&quot;, &quot;height&quot;, 185,
-                 &quot;Phil Woods&quot;, &quot;age&quot;, 50,
-                 &quot;Jess Cordero&quot;, &quot;age&quot;, 45,
-                 &quot;Jess Cordero&quot;, &quot;height&quot;, 156,)
-people %&gt;% tidyr::pivot_wider(names_from = name, values_from = value)</pre>
-
-<pre >## # A tibble: 2 × 3
-##   key    `Phil Woods` `Jess Cordero`
-##   &lt;chr&gt;  &lt;list&gt;       &lt;list&gt;        
-## 1 age    &lt;dbl [2]&gt;    &lt;dbl [1]&gt;     
-## 2 height &lt;dbl [1]&gt;    &lt;dbl [1]&gt;</pre>
-
-<pre class = 'prettyprint lang-r'># solution 1 - adding a new column
-people = tibble::tribble(~name, ~key, ~value, ~dkey,
-                 #------------/------/-----,
-                 &quot;Phil Woods&quot;, &quot;age&quot;, 45, 1,
-                 &quot;Phil Woods&quot;, &quot;height&quot;, 185, 1,
-                 &quot;Phil Woods&quot;, &quot;age&quot;, 50, 0,
-                 &quot;Jess Cordero&quot;, &quot;age&quot;, 45, 1,
-                 &quot;Jess Cordero&quot;, &quot;height&quot;, 156, 1)
-people %&gt;% tidyr::pivot_wider(names_from = name, values_from = value)</pre>
-
-<pre >## # A tibble: 3 × 4
-##   key     dkey `Phil Woods` `Jess Cordero`
-##   &lt;chr&gt;  &lt;dbl&gt;        &lt;dbl&gt;          &lt;dbl&gt;
-## 1 age        1           45             45
-## 2 height     1          185            156
-## 3 age        0           50             NA</pre>
-
-<pre class = 'prettyprint lang-r'>#solution 2  - uniqueness
-people = tibble::tribble(~name, ~key, ~value,
-                 #------------/------/-----,
-                 &quot;Phil Woods&quot;, &quot;age&quot;, 45,
-                 &quot;Phil Woods&quot;, &quot;height&quot;, 185,
-                 # &quot;Phil Woods&quot;, &quot;age&quot;, 50,
-                 &quot;Jess Cordero&quot;, &quot;age&quot;, 45,
-                 &quot;Jess Cordero&quot;, &quot;height&quot;, 156,)
-people %&gt;% tidyr::pivot_wider(names_from = name, values_from = value)</pre>
-
-<pre >## # A tibble: 2 × 3
-##   key    `Phil Woods` `Jess Cordero`
-##   &lt;chr&gt;         &lt;dbl&gt;          &lt;dbl&gt;
-## 1 age              45             45
-## 2 height          185            156</pre>
-
-</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
-
-<h3>Exercise 3</h3>
-
-<pre class = 'prettyprint lang-r'>rcj = tibble::tribble( ~judge, ~male, ~female,
-                    &quot;yes&quot;, NA, 10, 
-                    &quot;no&quot;, 20, 12)
-#alternative table to try with no NAs
-# rcj = tribble( ~judge, ~male, ~female,
-#                     &quot;yes&quot;, 4, 10, 
-#                     &quot;no&quot;, 20, 12)
-#use of pivot_longer
-rcj %&gt;% tidyr::pivot_longer(cols = c(male, female), names_to = &quot;gender&quot;, values_to = &quot;count&quot;)</pre>
-
-<pre >## # A tibble: 4 × 3
-##   judge gender count
-##   &lt;chr&gt; &lt;chr&gt;  &lt;dbl&gt;
-## 1 yes   male      NA
-## 2 yes   female    10
-## 3 no    male      20
-## 4 no    female    12</pre>
-
-</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
-
-<pre class = 'prettyprint lang-r'># use of  pivot_wider 
-rcj %&gt;% tidyr::pivot_wider(names_from = judge, values_from = c(male, female))</pre>
-
-<pre >## # A tibble: 1 × 4
-##   male_yes male_no female_yes female_no
-##      &lt;dbl&gt;   &lt;dbl&gt;      &lt;dbl&gt;     &lt;dbl&gt;
-## 1       NA      20         10        12</pre>
-
-</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Separating and extracting column contents</h2></hgroup><article  id="separating-and-extracting-column-contents" class="smaller ">
-
-</article></slide><slide class=""><hgroup><h2>Introduction</h2></hgroup><article  id="introduction-5" class="smaller ">
-
-<p>An important aspect of every data shaping mechanism is to be able to pick multiple columns or data entries within a variable with a certain precision and without having to manually type them each time.</p>
-
-<p>The functions <code>separate()</code> and <code>extract()</code> were created for this purpose where regex is used to describe the pattern to pick and reshape.</p>
-
-<p>Consider <code>table3</code> for example that comes with the <code>tidyr</code> package. One look at the table illustrates the problem that we are facing where the variable <code>rate</code> could be split into two different ones if somehow we could detect and pull out the values on either side of the separator.</p>
-
-<pre class = 'prettyprint lang-r'>table3</pre>
-
-<pre >## # A tibble: 6 × 3
-##   country      year rate             
-## * &lt;chr&gt;       &lt;int&gt; &lt;chr&gt;            
-## 1 Afghanistan  1999 745/19987071     
-## 2 Afghanistan  2000 2666/20595360    
-## 3 Brazil       1999 37737/172006362  
-## 4 Brazil       2000 80488/174504898  
-## 5 China        1999 212258/1272915272
-## 6 China        2000 213766/1280428583</pre>
-
-</article></slide><slide class=""><hgroup><h2>Separate</h2></hgroup><article  id="separate" class="smaller ">
-
-<p>The <code>separate()</code> function is build to help in cases where values in a column could be split based on a separator in place. On the above example in <code>table3</code> the following code splits the <code>rate</code> variable into <code>cases</code> and <code>population</code> accordingly</p>
-
-<pre class = 'prettyprint lang-r'># separate() automatically detects the separator
-table3 %&gt;% tidyr::separate(rate, into = c(&quot;cases&quot;, &quot;population&quot;))</pre>
-
-<pre >## # A tibble: 6 × 4
-##   country      year cases  population
-##   &lt;chr&gt;       &lt;int&gt; &lt;chr&gt;  &lt;chr&gt;     
-## 1 Afghanistan  1999 745    19987071  
-## 2 Afghanistan  2000 2666   20595360  
-## 3 Brazil       1999 37737  172006362 
-## 4 Brazil       2000 80488  174504898 
-## 5 China        1999 212258 1272915272
-## 6 China        2000 213766 1280428583</pre>
-
-</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
-
-<p>By default, the function will automatically detect any non-alphanumeric character and use that as a separator but its not limited to that. One can specify the separator manually using the <code>sep</code> option.</p>
-
-<pre class = 'prettyprint lang-r'># separate() manually  detects the separator
-table3 %&gt;% tidyr::separate(rate, into = c(&quot;cases&quot;, &quot;population&quot;), sep = &quot;/&quot;)</pre>
-
-<pre >## # A tibble: 6 × 4
-##   country      year cases  population
-##   &lt;chr&gt;       &lt;int&gt; &lt;chr&gt;  &lt;chr&gt;     
-## 1 Afghanistan  1999 745    19987071  
-## 2 Afghanistan  2000 2666   20595360  
-## 3 Brazil       1999 37737  172006362 
-## 4 Brazil       2000 80488  174504898 
-## 5 China        1999 212258 1272915272
-## 6 China        2000 213766 1280428583</pre>
-
-</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
-
-<p>At its heart, <code>separate()</code> uses regular expressions to detect and pull the corresponding characters. As a result the new columns are now of <code>char</code> type, something that can be changed by altering the state of the <code>convert</code> flag as shown below:</p>
-
-<pre class = 'prettyprint lang-r'># separate() manually detects the separator and converts the columns into the appropriate data type 
-table3 %&gt;% tidyr::separate(rate, into = c(&quot;cases&quot;, &quot;population&quot;), sep = &quot;/&quot;, convert = TRUE)</pre>
-
-<pre >## # A tibble: 6 × 4
-##   country      year  cases population
-##   &lt;chr&gt;       &lt;int&gt;  &lt;int&gt;      &lt;int&gt;
-## 1 Afghanistan  1999    745   19987071
-## 2 Afghanistan  2000   2666   20595360
-## 3 Brazil       1999  37737  172006362
-## 4 Brazil       2000  80488  174504898
-## 5 China        1999 212258 1272915272
-## 6 China        2000 213766 1280428583</pre>
-
-</article></slide><slide class=""><hgroup><h2>Extract</h2></hgroup><article  id="extract" class="smaller ">
-
-<p>The <code>extract()</code> function lets you go a step further and allows you to define your own regex to be used for pattern patching. Using the same example as above, lets see how to split the <code>year</code> variable to <code>century</code> and <code>years</code>.</p>
-
-<pre class = 'prettyprint lang-r'>table3 %&gt;% tidyr::extract(col = year, into = c(&quot;century&quot;, &quot;years&quot;), regex = &quot;([0-9]{2})([0-9]{2})&quot;)</pre>
-
-<pre >## # A tibble: 6 × 4
-##   country     century years rate             
-##   &lt;chr&gt;       &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;            
-## 1 Afghanistan 19      99    745/19987071     
-## 2 Afghanistan 20      00    2666/20595360    
-## 3 Brazil      19      99    37737/172006362  
-## 4 Brazil      20      00    80488/174504898  
-## 5 China       19      99    212258/1272915272
-## 6 China       20      00    213766/1280428583</pre>
-
-</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
-
-<p>The <code>regex</code> option shown above uses the same syntax as described earlier in the chapter, in fact, it is possible to split the target variable into several others by expanding the bracket list as shown in the following block of code. The year variable is now split into three variables to depict the <code>century</code>, <code>decade</code> and <code>year</code>.</p>
-
-<pre class = 'prettyprint lang-r'>table3 %&gt;% tidyr::extract(col = year, into = c(&quot;century&quot;, &quot;decade&quot;, &quot;year&quot; ), regex = &quot;([0-9]{2})([0-9])([0-9])&quot;)</pre>
-
-<pre >## # A tibble: 6 × 5
-##   country     century decade year  rate             
-##   &lt;chr&gt;       &lt;chr&gt;   &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;            
-## 1 Afghanistan 19      9      9     745/19987071     
-## 2 Afghanistan 20      0      0     2666/20595360    
-## 3 Brazil      19      9      9     37737/172006362  
-## 4 Brazil      20      0      0     80488/174504898  
-## 5 China       19      9      9     212258/1272915272
-## 6 China       20      0      0     213766/1280428583</pre>
-
-<p>In addition, internally the pivot functions make explicit use of <code>separate()</code> and <code>extract()</code> whenever a split or a regular expression is need to capture patterns present in name or within the content of a variable in the dataset.</p>
-
-</article></slide><slide class=""><hgroup><h2>Unite</h2></hgroup><article  id="unite" class="smaller ">
-
-<p>Of course, extracting and creating new variables would not be complete without a function to revert back to the original target variable. In this case, the <code>unite()</code> function provides the means to do exactly that as shown in the example below.</p>
-
-<pre class = 'prettyprint lang-r'>#the reshaped dataset
-tab3 = table3 %&gt;% 
-  tidyr::extract(col = year, into = c(&quot;century&quot;, &quot;decade&quot;, &quot;year&quot; ), regex = &quot;([0-9]{2})([0-9])([0-9])&quot;)
-#going back to the original dataset - with separator
-tab3 %&gt;% tidyr::unite(new, century, decade, year)</pre>
-
-<pre >## # A tibble: 6 × 3
-##   country     new    rate             
-##   &lt;chr&gt;       &lt;chr&gt;  &lt;chr&gt;            
-## 1 Afghanistan 19_9_9 745/19987071     
-## 2 Afghanistan 20_0_0 2666/20595360    
-## 3 Brazil      19_9_9 37737/172006362  
-## 4 Brazil      20_0_0 80488/174504898  
-## 5 China       19_9_9 212258/1272915272
-## 6 China       20_0_0 213766/1280428583</pre>
-
-</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
-
-<p>By default, the <code>_</code> separator is used after each component of the composite variable but as always, there are option in place to customize this behavior. In the following block of code the separator is removed giving the original variable before any alteration takes place.</p>
-
-<pre class = 'prettyprint lang-r'>#going back to the original dataset - with no separators
-tab3 %&gt;% tidyr::unite(new, century, decade, year, sep = &quot;&quot;)</pre>
-
-<pre >## # A tibble: 6 × 3
-##   country     new   rate             
-##   &lt;chr&gt;       &lt;chr&gt; &lt;chr&gt;            
-## 1 Afghanistan 1999  745/19987071     
-## 2 Afghanistan 2000  2666/20595360    
-## 3 Brazil      1999  37737/172006362  
-## 4 Brazil      2000  80488/174504898  
-## 5 China       1999  212258/1272915272
-## 6 China       2000  213766/1280428583</pre>
-
-</article></slide><slide class=""><hgroup><h2>Exercises on Separating and Extracting</h2></hgroup><article  id="exercises-on-separating-and-extracting" class="smaller ">
-
-<h4>Exercise 1</h4>
-
-<p>What do the additional arguments <code>extra</code> and <code>fill</code> do in <code>separate()</code>?</p>
-
-<p>Experiment with the various option in using the following datasets.</p>
-
-<pre class = 'prettyprint lang-r'>tibble::tibble(x = c(&quot;a,b,c&quot;, &quot;d,e,f,g&quot;, &quot;h,i,j&quot;)) %&gt;% 
-  tidyr::separate(x, c(&quot;one&quot;, &quot;two&quot;, &quot;three&quot;))
-tibble::tibble(x = c(&quot;a,b,c&quot;, &quot;d,e&quot;, &quot;f,g,i&quot;)) %&gt;% 
-  tidyr::separate(x, c(&quot;one&quot;, &quot;two&quot;, &quot;three&quot;))</pre>
-
-<h4>Exercise 2</h4>
-
-<p>Both <code>unite()</code> and <code>separate()</code> have a remove option. What does it do and how can it be utilized?</p>
-
-<h4>Exercise 3</h4>
-
-<p>Compare <code>separate()</code> and <code>extract()</code>, why are there so many options to separate but only one <code>unite()</code>?</p>
-
-</article></slide><slide class=""><hgroup><h2>Solutions</h2></hgroup><article  id="solutions-1" class="smaller ">
-
-<h3>Exercise 1</h3>
-
-<pre class = 'prettyprint lang-r'># Typing `?separate()` shows all the options and their meanings.
-# Try experimenting with them to discover more about what they do.
-
-tibble::tibble(x = c(&quot;a,b,c&quot;, &quot;d,e,f,g&quot;, &quot;h,i,j&quot;)) %&gt;% 
-  tidyr::separate(x, c(&quot;one&quot;, &quot;two&quot;, &quot;three&quot;))</pre>
-
-<pre >## Warning: Expected 3 pieces. Additional pieces discarded in 1 rows [2].</pre>
-
-<pre >## # A tibble: 3 × 3
-##   one   two   three
-##   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;
-## 1 a     b     c    
-## 2 d     e     f    
-## 3 h     i     j</pre>
-
-<pre class = 'prettyprint lang-r'>tibble::tibble(x = c(&quot;a,b,c&quot;, &quot;d,e&quot;, &quot;f,g,i&quot;)) %&gt;% 
-  tidyr::separate(x, c(&quot;one&quot;, &quot;two&quot;, &quot;three&quot;))</pre>
-
-<pre >## Warning: Expected 3 pieces. Missing pieces filled with `NA` in 1 rows [2].</pre>
-
-<pre >## # A tibble: 3 × 3
-##   one   two   three
-##   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;
-## 1 a     b     c    
-## 2 d     e     &lt;NA&gt; 
-## 3 f     g     i</pre>
+<p>Note, these are real data on reoffending, publicly available, derived from the table <a href='https://www.gov.uk/government/statistics/proven-reoffending-statistics-april-to-june-2021' title=''>here</a></p>
 
 </article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
 
 <h3>Exercise 2</h3>
 
-<pre class = 'prettyprint lang-r'># Solution: typing `?separate()` in the command line shows all the information needed here.
-# The `remove` option is there to remove the input columns from the output. </pre>
+<p>Your project manager likes the resulting plot, but wants to be able to see trends in counts over time more easily. Going from the long format table:</p>
 
-<h3>Exercise 3</h3>
+<ol>
+<li>Put the data back into wide format</li>
+<li>Add a prefix of your choice to the new columns you create</li>
+<li>Round the values to the nearest thousand</li>
+</ol>
 
-<pre class = 'prettyprint lang-r'># Solution: one suggestion is that there is only one way to unite the multiple strings but
-# a number of different ways to split them apart. </pre>
+</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
+
+<pre class = 'prettyprint lang-r'># Reshaping - solution to exercise 1
+reoffending_real_long &lt;- reoffending_real %&gt;%
+  tidyr::pivot_longer(
+    cols = dplyr::starts_with(&#39;total&#39;),
+    values_to = &#39;count&#39;,
+    names_to = &#39;quarter&#39;,
+    names_prefix = &#39;total_&#39;
+  )
+
+head(reoffending_real_long)</pre>
+
+<pre >## # A tibble: 6 × 3
+##   prev_conv_n          quarter count
+##   &lt;chr&gt;                &lt;chr&gt;   &lt;int&gt;
+## 1 No previous offences 2010_Q2 42165
+## 2 No previous offences 2010_Q3 42427
+## 3 No previous offences 2010_Q4 41106
+## 4 No previous offences 2011_Q1 40870
+## 5 No previous offences 2011_Q2 39092
+## 6 No previous offences 2011_Q3 39411</pre>
+
+</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
+
+<pre class = 'prettyprint lang-r'># Reshaping - solution to exercise 2
+reoffending_real_wide &lt;- reoffending_real_long %&gt;%
+  tidyr::pivot_wider(
+    names_from = &#39;quarter&#39;,
+    values_from = &#39;count&#39;,
+    names_prefix = &#39;count_&#39;,
+    values_fn = ~ round(.x, -3)
+  )
+
+head(reoffending_real_wide)</pre>
+
+<pre >## # A tibble: 5 × 46
+##   prev_conv_n  count_2010_Q2 count_2010_Q3 count_2010_Q4 count_2011_Q1 count_2011_Q2 count_2011_Q3 count_2011_Q4 count_2012_Q1
+##   &lt;chr&gt;                &lt;dbl&gt;         &lt;dbl&gt;         &lt;dbl&gt;         &lt;dbl&gt;         &lt;dbl&gt;         &lt;dbl&gt;         &lt;dbl&gt;         &lt;dbl&gt;
+## 1 No previous…         42000         42000         41000         41000         39000         39000         38000         37000
+## 2 1 to 2 prev…         27000         28000         26000         26000         25000         26000         25000         25000
+## 3 3 to 6 prev…         25000         25000         24000         25000         24000         25000         23000         24000
+## 4 7 to 10 pre…         13000         14000         13000         13000         13000         13000         13000         13000
+## 5 11 or more …         51000         54000         52000         53000         52000         55000         52000         53000
+## # … with 37 more variables: count_2012_Q2 &lt;dbl&gt;, count_2012_Q3 &lt;dbl&gt;, count_2012_Q4 &lt;dbl&gt;, count_2013_Q1 &lt;dbl&gt;,
+## #   count_2013_Q2 &lt;dbl&gt;, count_2013_Q3 &lt;dbl&gt;, count_2013_Q4 &lt;dbl&gt;, count_2014_Q1 &lt;dbl&gt;, count_2014_Q2 &lt;dbl&gt;,
+## #   count_2014_Q3 &lt;dbl&gt;, count_2014_Q4 &lt;dbl&gt;, count_2015_Q1 &lt;dbl&gt;, count_2015_Q2 &lt;dbl&gt;, count_2015_Q3 &lt;dbl&gt;,
+## #   count_2015_Q4 &lt;dbl&gt;, count_2016_Q1 &lt;dbl&gt;, count_2016_Q2 &lt;dbl&gt;, count_2016_Q3 &lt;dbl&gt;, count_2016_Q4 &lt;dbl&gt;,
+## #   count_2017_Q1 &lt;dbl&gt;, count_2017_Q2 &lt;dbl&gt;, count_2017_Q3 &lt;dbl&gt;, count_2017_Q4 &lt;dbl&gt;, count_2018_Q1 &lt;dbl&gt;,
+## #   count_2018_Q2 &lt;dbl&gt;, count_2018_Q3 &lt;dbl&gt;, count_2018_Q4 &lt;dbl&gt;, count_2019_Q1 &lt;dbl&gt;, count_2019_Q2 &lt;dbl&gt;,
+## #   count_2019_Q3 &lt;dbl&gt;, count_2019_Q4 &lt;dbl&gt;, count_2020_Q1 &lt;dbl&gt;, count_2020_Q2 &lt;dbl&gt;, count_2020_Q3 &lt;dbl&gt;, …</pre>
 
 </article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>String manipulation</h2></hgroup><article  id="string-manipulation" class="smaller ">
 
-</article></slide><slide class=""><hgroup><h2>Introduction</h2></hgroup><article  id="introduction-6" class="smaller ">
+</article></slide><slide class=""><hgroup><h2>Introduction</h2></hgroup><article  id="introduction-5" class="smaller ">
 
-<p>In this part we will introduce strings and how to manipulate them to suit the needs of a particular project. The packages needed (listed above) are mostly the <code>stringr</code> and <code>tidyverse</code> package where the former contains a great number of functions to manipulate and work with strings and the latter is the base for most of the things we do in R.</p>
+<p>In this chapter we’ll look at strings and some techniques to help work with them, mainly making use of the <code>stringr</code> package from Tidyverse.</p>
 
-<p>Base R has a a number of functions to manipulate and work with strings but they can be inconsistent at times, the above package was created in an effort to standardize character vector manipulation and make it easier to follow and replicate.</p>
+<p>There are two ways to create a string in R, by using either single or double quotes. There is no practical difference in behaviour for the two options, but the convention is to use double quotes (<code>&quot;</code>).</p>
 
-<p>It should also be mentioned that the majority of the content that follows is contained in the book <code>R for Data Science</code> by <code>Hadley Wickam</code> and <code>Garrett Grolemund</code> that can be found in this <a href='https://r4ds.had.co.nz/index.html' title=''>link</a>.</p>
+<pre class = 'prettyprint lang-r'># Two options to define a string
+string1 &lt;- &quot;a string using double quotes&quot;
+string2 &lt;- &#39;another string using single quotes&#39;
 
-</article></slide><slide class=""><hgroup><h2>String Basics</h2></hgroup><article  id="string-basics" class="smaller ">
+string1</pre>
 
-<p>There are two ways with which you can create a string in R, at the very basic level, by either using single of double quotes. There is no difference in the behavior but it is recommended to stick with <code>&quot;</code> as it is more widely understood that this is a string and others will be able to follow your code easier.</p>
+<pre >## [1] &quot;a string using double quotes&quot;</pre>
 
-<p>To note here that one of the advantages of having two ways to define a string is that you can combine them when quotes within a string if needed as showcased in the example below.</p>
+<pre class = 'prettyprint lang-r'>string2</pre>
 
-<pre class = 'prettyprint lang-r'>string1 = &quot;a string using double quotes&quot;
-is.character(string1)</pre>
-
-<pre >## [1] TRUE</pre>
-
-<pre class = 'prettyprint lang-r'>string2 = &#39;another string using single quotes&#39;
-is.character(string2)</pre>
-
-<pre >## [1] TRUE</pre>
-
-<pre class = 'prettyprint lang-r'># a string containing quotes
-string3 = &quot;this is a &#39;string&#39; within a string&quot;</pre>
+<pre >## [1] &quot;another string using single quotes&quot;</pre>
 
 </article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
 
-<p>Notice the difference in <code>string4</code>. This happens because the compiler cannot place two double quotes within the same string and so we need to <code>escape</code> it. To achieve that a <code>\</code> is used before the corresponding character. This can be used not only for <code>&quot;</code> but for any other reserved character as well.</p>
+<p>There is an advantage to having two ways to define a string, which is that the two types of quotation marks can be combined for cases when the string itself needs to contain a quotation mark. Here are some examples of how to define a string in R:</p>
 
-<pre class = 'prettyprint lang-r'># notice how the output changes when implementing the following code
-string4 = &#39;this is a &quot;string&quot; within a string&#39;</pre>
+<pre class = 'prettyprint lang-r'># Some strings containing quotation marks
+string3 &lt;- &quot;here is a &#39;quote&#39; within a string&quot;
+string4 &lt;- &#39;here is a &quot;quote&quot; within a string&#39;
 
-<p>If you need to <code>escape</code> a backslash then use a double backslash as in <code>\\</code> and to see what the output would look like when used in text you can use the <code>writeLines()</code> function to simulate that effect.</p>
+string3</pre>
 
-<pre class = 'prettyprint lang-r'>string5 = &quot;escaping a reserved character like \&quot; quotes &quot;
-# to see how the result would appear in text
-writeLines(string5)</pre>
+<pre >## [1] &quot;here is a &#39;quote&#39; within a string&quot;</pre>
 
-<pre >## escaping a reserved character like &quot; quotes</pre>
+<pre class = 'prettyprint lang-r'>string4</pre>
 
-<pre class = 'prettyprint lang-r'>string6 = &quot;escaping a backslash \\ &quot;
-# to see how the result would appear in text
-writeLines(string6)</pre>
+<pre >## [1] &quot;here is a \&quot;quote\&quot; within a string&quot;</pre>
 
-<pre >## escaping a backslash \</pre>
+<p>Notice the difference in how <code>string4</code> is displayed - R has added escape characters (<code>\</code>) before the double quote marks. These escape characters change the behaviour of the following character. In this case it stops the following double quote mark from defining the end of the string, and instead allows it to be a part of the string.</p>
 
 </article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
 
-<p>Furthermore, additional control in the form of newlines or tabs is provided by using <code>\n</code> and <code>\t</code> for example along with a plethora of available special characters that can be found by typing <code>?&quot;&#39;&quot;</code> or <code>?&#39;&quot;&#39;</code> in you command line.</p>
+<p>Often it’s necessary to work with a set of strings in a character vector, and in the following sections we’ll look at how various <code>stringr</code> functions can help us work with character vectors. A new character vector can be constructed using the <code>c()</code> function that we’ve met before:</p>
 
-<p>Introducing non-English characters in your text strings is also possible using special characters of the form <code>\u00b5</code> for example for the Greek letter mu.</p>
-
-<pre class = 'prettyprint lang-r'># outputting non-English characters
-string7 = &quot;\u00b5&quot; 
-string7</pre>
-
-<pre >## [1] &quot;µ&quot;</pre>
-
-<p>Adding strings into a character vector is very common and is usually done with the use of the <code>c()</code> function.</p>
-
-<pre class = 'prettyprint lang-r'>s8 = c(&quot;a&quot;, &quot;vector&quot;, &quot;of&quot;, &quot;strings&quot;)
-s8</pre>
+<pre class = 'prettyprint lang-r'># Example of a character vector
+string_vector &lt;- c(&quot;a&quot;, &quot;vector&quot;, &quot;of&quot;, &quot;strings&quot;)
+string_vector</pre>
 
 <pre >## [1] &quot;a&quot;       &quot;vector&quot;  &quot;of&quot;      &quot;strings&quot;</pre>
 
 </article></slide><slide class=""><hgroup><h2>String Length</h2></hgroup><article  id="string-length" class="smaller ">
 
-<p>At times it is necessary to determine the length of a character string. A useful function to use in these cases is the <code>str_length()</code> function which helps with that.</p>
+<p>The first <code>stringr</code> function we’ll look at is <code>str_length()</code>, which simply returns the length of each string in a character vector:</p>
 
-<pre class = 'prettyprint lang-r'># finding out how many characters in a char vector
-stringr::str_length(c(s8, NA))</pre>
+<pre class = 'prettyprint lang-r'># Find out how many characters are in each string
+stringr::str_length(string_vector)</pre>
 
-<pre >## [1]  1  6  2  7 NA</pre>
-
-<p>Notice that an <code>NA</code> character is translated as is and we will see other options on how to deal with this in the sections to follow.</p>
+<pre >## [1] 1 6 2 7</pre>
 
 </article></slide><slide class=""><hgroup><h2>Combining Strings</h2></hgroup><article  id="combining-strings" class="smaller ">
 
-<p>We’ve already seen one way to combine strings in the previous section but with the <code>stringr</code> package we have an additional, more powerful tool at our disposal.</p>
+<p>The <code>str_c()</code> function is used to combine multiple strings together, where each string is included as a separate argument, like so:</p>
 
-<p>Using <code>str_c()</code> can be beneficial in many cases since it allows for additional flexibility in the form of parameters for separators to be used or the option to collapse individual entries into one composite character string.</p>
+<pre class = 'prettyprint lang-r'># Combining several strings into one
+stringr::str_c(&quot;some&quot;, &quot;strings&quot;, &quot;to&quot;, &quot;combine&quot;)</pre>
 
-<pre class = 'prettyprint lang-r'># using custom separator
-stringr::str_c(&quot;an&quot;, &quot;str_c vector&quot;, &quot;with&quot;, &quot;space&quot;, &quot;character&quot;, &quot;separating each entry&quot;, sep = &quot; &quot;)</pre>
+<pre >## [1] &quot;somestringstocombine&quot;</pre>
 
-<pre >## [1] &quot;an str_c vector with space character separating each entry&quot;</pre>
+<p>There are two optional arguments, <code>sep</code> and <code>collapse</code> that can be used to modify the behaviour of <code>str_c()</code>. The <code>sep</code> argument allows us to define a separator to put between the strings when they’re combined:</p>
 
-<pre class = 'prettyprint lang-r'># the collapse option
-stringr::str_c(&quot;an&quot;, &quot;str_c vector&quot;, &quot;with&quot;, &quot;space&quot;, &quot;character&quot;, &quot;separating each entry&quot;, collapse = T)</pre>
+<pre class = 'prettyprint lang-r'># Using custom separator
+stringr::str_c(&quot;some&quot;, &quot;space&quot;, &quot;separated&quot;, &quot;strings&quot;, sep = &quot; &quot;)</pre>
 
-<pre >## [1] &quot;anstr_c vectorwithspacecharacterseparating each entry&quot;</pre>
+<pre >## [1] &quot;some space separated strings&quot;</pre>
 
 </article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
 
-<p>What is more important however is that <code>str_c</code> is vectorised and in this way can help in cases where an action has to be applied to each element of an input vector instead of individual character strings.</p>
+<p>The <code>str_c()</code> is especially useful because it is vectorised, and when applying it to character vectors the <code>collapse</code> argument can be used to combine a vector of strings into a single string:</p>
 
-<p>In addition, it can also work to recycle shorter vectors to mach the longer ones as in the following example.</p>
+<pre class = 'prettyprint lang-r'># Collapsing a character vector into a single string
+vector_to_collapse &lt;- c(&quot;some&quot;, &quot;strings&quot;, &quot;to&quot;, &quot;combine&quot;)
+stringr::str_c(vector_to_collapse, collapse=&quot;&quot;)</pre>
 
-<pre class = 'prettyprint lang-r'># vectorized form - translating a shorter vector to match the longer one
-stringr::str_c(&quot;a&quot;, c(&quot;b&quot;, &quot;c&quot;, &quot;d&quot;), &quot;c&quot;, sep = &quot; &quot;)</pre>
+<pre >## [1] &quot;somestringstocombine&quot;</pre>
 
-<pre >## [1] &quot;a b c&quot; &quot;a c c&quot; &quot;a d c&quot;</pre>
+<p>The value of <code>collapse</code> will determine how the collapsed strings are separated.</p>
 
-<pre class = 'prettyprint lang-r'># simpler vectorizing 
-stringr::str_c(&quot;a&quot;, c(&quot;b&quot;, &quot;c&quot;, &quot;d&quot;))</pre>
+</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
 
-<pre >## [1] &quot;ab&quot; &quot;ac&quot; &quot;ad&quot;</pre>
+<p>You can input multiple character vectors to <code>str_c()</code> and it will combine them together. You can either output another character vector:</p>
 
-<pre class = 'prettyprint lang-r'># c() comparison
+<pre class = 'prettyprint lang-r'># Combining two character vectors
+string_vector1 &lt;- c(&quot;A&quot;, &quot;B&quot;, &quot;C&quot;, &quot;D&quot;)
+string_vector2 &lt;- c(&quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;)
+stringr::str_c(string_vector1, string_vector2, sep=&quot; - &quot;)</pre>
+
+<pre >## [1] &quot;A - 1&quot; &quot;B - 2&quot; &quot;C - 3&quot; &quot;D - 4&quot;</pre>
+
+<p>Or collapse the vectors into a single string:</p>
+
+<pre class = 'prettyprint lang-r'># Combining and collapsing two character vectors
+string_vector1 &lt;- c(&quot;A&quot;, &quot;B&quot;, &quot;C&quot;, &quot;D&quot;)
+string_vector2 &lt;- c(&quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;)
+stringr::str_c(string_vector1, string_vector2, sep=&quot; - &quot;, collapse=&quot; &quot;)</pre>
+
+<pre >## [1] &quot;A - 1 B - 2 C - 3 D - 4&quot;</pre>
+
+</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
+
+<p>It can also combine a single string with a vector of strings, like so:</p>
+
+<pre class = 'prettyprint lang-r'># The single string will be &#39;recycled&#39; to match the length of the vector
+stringr::str_c(&quot;a&quot;, c(&quot;b&quot;, &quot;c&quot;, &quot;d&quot;), sep = &quot; &quot;)</pre>
+
+<pre >## [1] &quot;a b&quot; &quot;a c&quot; &quot;a d&quot;</pre>
+
+<pre class = 'prettyprint lang-r'># Compare with what happens when we combine these strings with c() 
 c(&quot;a&quot;, c(&quot;b&quot;, &quot;c&quot;, &quot;d&quot;))</pre>
 
 <pre >## [1] &quot;a&quot; &quot;b&quot; &quot;c&quot; &quot;d&quot;</pre>
 
-</article></slide><slide class=""><hgroup><h2>Substituting strings</h2></hgroup><article  id="substituting-strings" class="smaller ">
+<p>It’s worth noting what happens if you pass vectors of different lengths to <code>str_c()</code>:</p>
 
-<p>Extracting parts of a string can be done using the <code>str_sub</code> function and by specifying the <code>start</code> and <code>end</code> limits of the string to retain.</p>
+<pre class = 'prettyprint lang-r'># Combining vectors of different lengths
+string_vector1 &lt;- c(&quot;A&quot;, &quot;B&quot;, &quot;C&quot;)
+string_vector2 &lt;- c(&quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;, &quot;5&quot;)
+stringr::str_c(string_vector1, string_vector2, sep=&quot; - &quot;)</pre>
 
-<p>It is also important to note that the function will not fail if the end point is outside of the index limit of the string.</p>
+<pre >## Warning in stri_c(..., sep = sep, collapse = collapse, ignore_null = TRUE): longer object length is not a multiple of shorter
+## object length</pre>
 
-<pre class = 'prettyprint lang-r'>x &lt;- c(&quot;OneValue&quot;, &quot;SecondValue&quot;, &quot;ThirdValue&quot;)
-stringr::str_sub(x, 1, 3)</pre>
+<pre >## [1] &quot;A - 1&quot; &quot;B - 2&quot; &quot;C - 3&quot; &quot;A - 4&quot; &quot;B - 5&quot;</pre>
 
-<pre >## [1] &quot;One&quot; &quot;Sec&quot; &quot;Thi&quot;</pre>
+<p>The code produces a warning but otherwise runs. In the output, you can see that the elements of the shorter vector have been repeated when combined with the additional elements of the longer vector.</p>
 
-<pre class = 'prettyprint lang-r'># negative numbers count backwards from end
-stringr::str_sub(x, -4, -1)</pre>
+</article></slide><slide class=""><hgroup><h2>Extracing and replacing substrings</h2></hgroup><article  id="extracing-and-replacing-substrings" class="smaller ">
 
-<pre >## [1] &quot;alue&quot; &quot;alue&quot; &quot;alue&quot;</pre>
+<p>Selecting part of a string can be done using the <code>str_sub()</code> function. The <code>start</code> and <code>end</code> arguments are used to define the position of the substring you want to extract.</p>
 
-<pre class = 'prettyprint lang-r'># The function will not fail in the example below
-stringr::str_sub(&quot;a&quot;, 1, 5)</pre>
+<pre class = 'prettyprint lang-r'># Extracting substrings based on the position within the string
+x &lt;- c(&quot;First value&quot;, &quot;Second value&quot;, &quot;Third value&quot;)
+stringr::str_sub(x, start=1, end=3)</pre>
 
-<pre >## [1] &quot;a&quot;</pre>
+<pre >## [1] &quot;Fir&quot; &quot;Sec&quot; &quot;Thi&quot;</pre>
+
+<pre class = 'prettyprint lang-r'># Negative values for the start and end count backwards from the end of the string
+stringr::str_sub(x, start=-5, end=-1)</pre>
+
+<pre >## [1] &quot;value&quot; &quot;value&quot; &quot;value&quot;</pre>
 
 </article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
 
-<p>An additional use of the of the <code>str_sub</code> function is to assign values to a given range on the target string</p>
+<p>You can also use <code>str_sub()</code> to help replace substrings:</p>
 
-<pre class = 'prettyprint lang-r'>stringr::str_sub(x, 1, 1) &lt;- stringr::str_to_lower(stringr::str_sub(x, 1, 1))
+<pre class = 'prettyprint lang-r'># Replacing a substring based on the position within the string
+stringr::str_sub(x, start=-5, end=-1) &lt;- &quot;item&quot;
 x</pre>
 
-<pre >## [1] &quot;oneValue&quot;    &quot;secondValue&quot; &quot;thirdValue&quot;</pre>
+<pre >## [1] &quot;First item&quot;  &quot;Second item&quot; &quot;Third item&quot;</pre>
 
-</article></slide><slide class=""><hgroup><h2>Customizing text for different language locales</h2></hgroup><article  id="customizing-text-for-different-language-locales" class="smaller ">
+</article></slide><slide class=""><hgroup><h2>Detecting a matched pattern</h2></hgroup><article  id="detecting-a-matched-pattern" class="smaller ">
 
-<p>In some cases the string manipulation functions have a <code>locale</code> argument where adjustments for certain languages can be made. Notice for example how the sort order changes if the locale changes from English to Lithuanian in the example below.</p>
+<p>The <code>str_detect()</code> function can be used to check if part of a string matches a particular pattern. For example, let’s say we wanted to check if any strings in a character vector contain &ldquo;blue&rdquo;:</p>
 
-<pre class = 'prettyprint lang-r'>#initial string
-x = c(&quot;y&quot;, &quot;i&quot;, &quot;k&quot;)
-#sort function in English
-stringr::str_sort(x)</pre>
+<pre class = 'prettyprint lang-r'># Detecting the presence of the word &#39;blue&#39; in a character vector
+colours &lt;- c(&quot;scarlet red&quot;, &quot;ultramarine blue&quot;, &quot;cadmium red&quot;, &quot;cobalt blue&quot;, &quot;cerulean blue&quot;)
+stringr::str_detect(colours, &quot;blue&quot;)</pre>
 
-<pre >## [1] &quot;i&quot; &quot;k&quot; &quot;y&quot;</pre>
+<pre >## [1] FALSE  TRUE FALSE  TRUE  TRUE</pre>
 
-<pre class = 'prettyprint lang-r'>#sort function in Lithuanian
-stringr::str_sort(x,locale = &quot;lt&quot;)</pre>
+<p>Because booleans (<code>TRUE</code> or <code>FALSE</code>) can be represented as numbers (1 or 0), you can apply some functions typically used for numbers to boolean vectors:</p>
 
-<pre >## [1] &quot;i&quot; &quot;y&quot; &quot;k&quot;</pre>
+<pre class = 'prettyprint lang-r'># Count how many strings contain &#39;blue&#39;
+sum(stringr::str_detect(colours, &quot;blue&quot;))</pre>
 
-</article></slide><slide class=""><hgroup><h2>Exercises</h2></hgroup><article  id="exercises" class="smaller ">
-
-<h3>Exercise 1</h3>
-
-<p>Use str_length() and str_sub() to extract the middle character from a string. What will you do if the string has an even number of characters?</p>
-
-<h3>Exercise 2 (optional)</h3>
-
-<p>Write a function that turns (e.g.) a vector <code>c(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;)</code> into the string <code>&quot;a, b, and c&quot;</code>. Think carefully about what it should do if given a vector of length 0, 1, or 2.</p>
-
-</article></slide><slide class=""><hgroup><h2>Exercise Solutions</h2></hgroup><article  id="exercise-solutions" class="smaller ">
-
-<h3>Exercise 1</h3>
-
-<p>The following function extracts the middle character. If the string has an even number of characters the choice is arbitrary. We choose to select \([n/2]\), because that case works even if the string is only of length one. A more general method would allow the user to select either the floor or ceiling for the middle character of an even string.</p>
-
-<pre class = 'prettyprint lang-r'>x &lt;- c(&quot;a&quot;, &quot;abc&quot;, &quot;abcd&quot;, &quot;abcde&quot;, &quot;abcdef&quot;)
-L &lt;- stringr::str_length(x)
-m &lt;- ceiling(L / 2)
-stringr::str_sub(x, m, m)</pre>
-
-<pre >## [1] &quot;a&quot; &quot;b&quot; &quot;b&quot; &quot;c&quot; &quot;c&quot;</pre>
-
-<pre class = 'prettyprint lang-r'>#&gt; [1] &quot;a&quot; &quot;b&quot; &quot;b&quot; &quot;c&quot; &quot;c&quot;</pre>
+<pre >## [1] 3</pre>
 
 </article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
 
-<h3>Exercise 2 (optional)</h3>
+<p>There can be unintended consequences for pattern matching, let’s say we wanted to find strings containing the colour &ldquo;red&rdquo; in another character vector:</p>
 
-<p>The function needs to have 4 cases</p>
+<pre class = 'prettyprint lang-r'># Detecting the presence of the word &#39;red&#39; in a character vector, with an unintended consequence
+colours &lt;- c(&quot;scarlet red&quot;, &quot;ultramarine blue&quot;, &quot;cadmium red&quot;, &quot;cobalt blue&quot;, &quot;weathered&quot;)
+stringr::str_detect(colours, &quot;red&quot;)</pre>
 
-<ol>
-<li><code>n==0</code> for an empty vector</li>
-<li><code>n==1</code> for just one character string</li>
-<li><code>n==2</code> for the vector containing 2 character strings</li>
-<li><code>n &gt; 2</code> for 2 or more</li>
-</ol>
+<pre >## [1]  TRUE FALSE  TRUE FALSE  TRUE</pre>
 
-<pre class = 'prettyprint lang-r'>str_commasep &lt;- function(x, delim = &quot;,&quot;) {
-  n &lt;- length(x)
-  if (n == 0) {
-    &quot;&quot;
-  } else if (n == 1) {
-    x
-  } else if (n == 2) {
-    # no comma before and when n == 2
-    stringr::str_c(x[[1]], &quot;and&quot;, x[[2]], sep = &quot; &quot;)
-  } else {
-    # commas after all n - 1 elements
-    not_last &lt;- stringr::str_c(x[seq_len(n - 1)], delim)
-    # prepend &quot;and&quot; to the last element
-    last &lt;- stringr::str_c(&quot;and&quot;, x[[n]], sep = &quot; &quot;)
-    # combine parts with spaces
-    stringr::str_c(c(not_last, last), collapse = &quot; &quot;)
-  }
-}</pre>
+<p>There are options to help deal with cases like this that we’ll visit later on.</p>
 
 </article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
 
-<pre class = 'prettyprint lang-r'># And if all goes well the output would be the following:
-str_commasep(&quot;&quot;)
-#&gt; [1] &quot;&quot;
-str_commasep(&quot;a&quot;)
-#&gt; [1] &quot;a&quot;
-str_commasep(c(&quot;a&quot;, &quot;b&quot;))
-#&gt; [1] &quot;a and b&quot;
-str_commasep(c(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;))
-#&gt; [1] &quot;a, b, and c&quot;
-str_commasep(c(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;))
-#&gt; [1] &quot;a, b, c, and d&quot;</pre>
+<h3>Regular expressions</h3>
 
-</article></slide><slide class=""><hgroup><h2>Additional Functions</h2></hgroup><article  id="additional-functions" class="smaller ">
+<p>Regular expressions (regex) are extremely helpful for pattern matching. Since regex could be an entire course by itself, here we only introduce a few basics to get started. See the <a href='#further-reading' title=''>further reading</a> section if you’re interested in learning more about regex.</p>
 
-<p>The <code>stringr</code> package comes with additional function wrappers that make the most common string operations somewhat easier. For example the following matching behavior can be conducted using the premade functions:</p>
+<p>There’s a common syntax for defining the patterns to match that can be used across multiple programming languages. Here are a few patterns to get started with:</p>
 
 <ul>
-<li>Determine which strings match a pattern.</li>
-<li>Find the positions of matches.</li>
-<li>Extract the content of matches.</li>
-<li>Replace matches with new values.</li>
+<li><code>[A-Za-z]</code> — All uppercase and lowercase letters</li>
+<li><code>[0-9]</code> — All numbers</li>
+<li><code>[A-Za-z0-9]</code> — All letters and all numbers</li>
+<li><code>\\s</code> — A single space</li>
+<li><code>^a</code> — Begins with &lsquo;a&rsquo;</li>
+<li><code>a$</code> — Ends with &lsquo;a&rsquo;</li>
+<li><code>[^a]</code> — Anything other than &lsquo;a&rsquo;</li>
+<li><code>\\b</code> — A word boundary (e.g. a space, punctuation mark or the start/end of a string)</li>
 </ul>
 
-<p>The list is actually a lot longer so here we will briefly discuss how the most popular string matching operations can be performed using the tools supplied by the <code>stringr</code> package.</p>
-
-</article></slide><slide class=""><hgroup><h2>Detect Strings</h2></hgroup><article  id="detect-strings" class="smaller ">
-
-<p>Detecting strings is a very important aspect in many Data and Analysis applications and <code>str_detect</code> was created with ease of use in mind. It returns a logical vector depending whether there was a match in the corresponding location and based on the supplied pattern, as the example below illustrates.</p>
-
-<pre class = 'prettyprint lang-r'>x &lt;- c(&quot;apple&quot;, &quot;banana&quot;, &quot;pear&quot;)
-stringr::str_detect(x, &quot;e&quot;)</pre>
-
-<pre >## [1]  TRUE FALSE  TRUE</pre>
+<p>R also contains some pre-built regex classes that you might also encounter, for example <code>[:alpha:]</code> to match any letters and <code>[:digit:]</code> to match any numbers.</p>
 
 </article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
 
-<p>A very handy way of using it, is by taking advantage of how R translates <code>TRUE</code> (evaluated as <code>1</code>) and <code>FALSE</code> (evaluated as <code>0</code>) responses. In the example below using the <code>sum</code> and <code>mean</code> functions makes counting instances of a pattern being detected much easier.</p>
+<p>We can use regex to help extract a more general pattern, such as only strings that contain letters:</p>
 
-<pre class = 'prettyprint lang-r'># How many common words start with t?
-sum(stringr::str_detect(words, &quot;^t&quot;))</pre>
+<pre class = 'prettyprint lang-r'># Detect strings containing any letters using regex
+colours &lt;- c(&quot;1.&quot;, &quot;ultramarine blue&quot;, &quot;2. cadmium red&quot;, &quot;cobalt blue&quot;, &quot;-&quot;)
+stringr::str_detect(colours, &quot;[A-Za-z]&quot;)</pre>
 
-<pre >## [1] 65</pre>
+<pre >## [1] FALSE  TRUE  TRUE  TRUE FALSE</pre>
 
-<pre class = 'prettyprint lang-r'># What proportion of common words end with a vowel?
-mean(stringr::str_detect(words, &quot;[aeiou]$&quot;))</pre>
+<p>Or only strings that contain letters or numbers:</p>
 
-<pre >## [1] 0.2765306</pre>
+<pre class = 'prettyprint lang-r'>stringr::str_detect(colours, &quot;[A-Za-z0-9]&quot;)</pre>
 
-</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
+<pre >## [1]  TRUE  TRUE  TRUE  TRUE FALSE</pre>
 
-<p>A variation of <code>str_detect</code> is <code>str_count</code> and as the name suggests the function will count the instances of a pattern appearing in the target vector.</p>
+<p>Or only strings that contain something other than letters, numbers, and spaces:</p>
 
-<pre class = 'prettyprint lang-r'>x &lt;- c(&quot;apple&quot;, &quot;banana&quot;, &quot;pear&quot;)
-stringr::str_count(x, &quot;a&quot;)</pre>
+<pre class = 'prettyprint lang-r'>stringr::str_detect(colours, &quot;[^[A-Za-z0-9\\s]]&quot;)</pre>
 
-<pre >## [1] 1 3 1</pre>
-
-<pre class = 'prettyprint lang-r'># On average, how many vowels per word?
-mean(stringr::str_count(words, &quot;[aeiou]&quot;))</pre>
-
-<pre >## [1] 1.991837</pre>
-
-</article></slide><slide class=""><hgroup><h2>Extract Strings</h2></hgroup><article  id="extr_str" class="smaller ">
-
-<p>To extract strings we use the <code>str_extract</code> function that takes the input source vector and the pattern to match as arguments. In this case we will need a more complex set of examples and so the <a href='https://en.wikipedia.org/wiki/Harvard_sentences' title=''>Harvard Sentences</a> collection of sentences is used. Although originally created to test VOIP systems, it can also be used for regex examples as well.</p>
-
-<pre class = 'prettyprint lang-r'>length(sentences)</pre>
-
-<pre >## [1] 720</pre>
-
-<pre class = 'prettyprint lang-r'>head(sentences)</pre>
-
-<pre >## [1] &quot;The birch canoe slid on the smooth planks.&quot;  &quot;Glue the sheet to the dark blue background.&quot;
-## [3] &quot;It&#39;s easy to tell the depth of a well.&quot;      &quot;These days a chicken leg is a rare dish.&quot;   
-## [5] &quot;Rice is often served in round bowls.&quot;        &quot;The juice of lemons makes fine punch.&quot;</pre>
+<pre >## [1]  TRUE FALSE  TRUE FALSE  TRUE</pre>
 
 </article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
 
-<p>A good way to start using regex in bulk is to see if we can construct a pattern to match that contains all the relevant information. In the example below the pattern contains a set of colours combined into a string to be used as the pattern.</p>
+<p>We can revisit the example from earlier, where we wanted to identify strings containing the colour &ldquo;red&rdquo;:</p>
 
-<pre class = 'prettyprint lang-r'>colours &lt;- c(&quot;red&quot;, &quot;orange&quot;, &quot;yellow&quot;, &quot;green&quot;, &quot;blue&quot;, &quot;purple&quot;)
-colour_match &lt;- stringr::str_c(colours, collapse = &quot;|&quot;)
-colour_match</pre>
+<pre class = 'prettyprint lang-r'># Detecting the presence of the word &#39;red&#39; in a character vector, with help from regex
+colours &lt;- c(&quot;scarlet red&quot;, &quot;ultramarine blue&quot;, &quot;cadmium red&quot;, &quot;cobalt blue&quot;, &quot;weathered&quot;)
+stringr::str_detect(colours, &quot;\\bred\\b&quot;)</pre>
 
-<pre >## [1] &quot;red|orange|yellow|green|blue|purple&quot;</pre>
+<pre >## [1]  TRUE FALSE  TRUE FALSE FALSE</pre>
 
-<p>The next stage is to select the relevant examples from the collection of <code>sentences</code> and then proceed in matching based on the pattern we created.</p>
+<p>The word boundary regex allows us to exclude words like &ldquo;weathered&rdquo; when looking for the word &ldquo;red&rdquo;.</p>
 
-<pre class = 'prettyprint lang-r'>has_colour &lt;- stringr::str_subset(sentences, colour_match)
-matches &lt;- stringr::str_extract(has_colour, colour_match)
-head(matches)</pre>
+</article></slide><slide class=""><hgroup><h2>Extracting a matched pattern</h2></hgroup><article  id="extracting-a-matched-pattern" class="smaller ">
 
-<pre >## [1] &quot;blue&quot; &quot;blue&quot; &quot;red&quot;  &quot;red&quot;  &quot;red&quot;  &quot;blue&quot;</pre>
+<p>We can use the <code>str_extract()</code> function to extract strings that match a particular pattern:</p>
 
-</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
+<pre class = 'prettyprint lang-r'># Extracting substrings based on a matched pattern
+colours &lt;- c(&quot;scarlet red&quot;, &quot;ultramarine blue&quot;, &quot;cadmium red&quot;, &quot;cobalt blue&quot;, &quot;cerulean blue&quot;)
+stringr::str_extract(colours, &quot;blue&quot;)</pre>
 
-<p>To better understand the mechanics behind the matching process it helps to know that <code>str_extract</code> only finds and extracts the first match in each row of a vector. To better illustrate this, the code below selects the phrases from the <code>sentences</code> collection where there are more than one match.</p>
+<pre >## [1] NA     &quot;blue&quot; NA     &quot;blue&quot; &quot;blue&quot;</pre>
 
-<pre class = 'prettyprint lang-r'>more &lt;- sentences[stringr::str_count(sentences, colour_match) &gt; 1]</pre>
+</article></slide><slide class=""><hgroup><h2>Replacing a matched pattern</h2></hgroup><article  id="replacing-a-matched-pattern" class="smaller ">
 
-<p>Notice how <code>str_extract</code> works with these source vectors.</p>
+<p>You can use the <code>str_replace()</code> and <code>str_replace_all()</code> functions to find and replace parts of a string. <code>str_replace()</code> replaces the first instance of the pattern, whereas <code>str_replace_all()</code> replaces all instances of the pattern. Here’s an alternative version of an example we saw earlier, using a different approach to replace &ldquo;value&rdquo; with &ldquo;item&rdquo;:</p>
 
-<pre class = 'prettyprint lang-r'>stringr::str_extract(more, colour_match)</pre>
+<pre class = 'prettyprint lang-r'>x &lt;- c(&quot;First value&quot;, &quot;Second value&quot;, &quot;Third value&quot;)
+# Replace &#39;value&#39; with &#39;item&#39;
+stringr::str_replace(x, &quot;value&quot;, &quot;item&quot;)</pre>
 
-<pre >## [1] &quot;blue&quot;   &quot;green&quot;  &quot;orange&quot;</pre>
-
-</article></slide><slide class=""><hgroup><h2>Replace Strings</h2></hgroup><article  id="replace-strings" class="smaller ">
-
-<p><code>str_replace</code> and <code>str_replace_all</code> allow you to replace parts of a string that match a pattern with a new replacement string.</p>
-
-<pre class = 'prettyprint lang-r'>x &lt;- c(&quot;apple&quot;, &quot;pear&quot;, &quot;banana&quot;)
-stringr::str_replace(x, &quot;[aeiou]&quot;, &quot;-&quot;)</pre>
-
-<pre >## [1] &quot;-pple&quot;  &quot;p-ar&quot;   &quot;b-nana&quot;</pre>
-
-<pre class = 'prettyprint lang-r'>stringr::str_replace_all(x, &quot;[aeiou]&quot;, &quot;-&quot;)</pre>
-
-<pre >## [1] &quot;-ppl-&quot;  &quot;p--r&quot;   &quot;b-n-n-&quot;</pre>
+<pre >## [1] &quot;First item&quot;  &quot;Second item&quot; &quot;Third item&quot;</pre>
 
 </article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
 
-<p>And with <code>str_replace_all</code> we can apply the same functionality as above in all the elements of a character vector.</p>
+<p>Regular expressions are also useful for string replacement. Here’s a example that replaces characters that aren’t letters or numbers with an underscore:</p>
 
-<pre class = 'prettyprint lang-r'>x &lt;- c(&quot;1 house&quot;, &quot;2 cars&quot;, &quot;3 people&quot;)
-stringr::str_replace_all(x, c(&quot;1&quot; = &quot;one&quot;, &quot;2&quot; = &quot;two&quot;, &quot;3&quot; = &quot;three&quot;))</pre>
+<pre class = 'prettyprint lang-r'>colours &lt;- c(&quot;scarlet...red&quot;, &quot;ultramarine.blue&quot;, &quot;cadmium_red&quot;, &quot;cobalt blue&quot;, &quot;cerulean-blue&quot;)
 
-<pre >## [1] &quot;one house&quot;    &quot;two cars&quot;     &quot;three people&quot;</pre>
+# Replace the first character that isn&#39;t a letter or number with an underscore
+stringr::str_replace(colours, &quot;[^[A-Za-z0-9]]&quot;, &quot;_&quot;)</pre>
 
-<p>In addition, one can also use backreferences and recycle elements of the same string as replacements</p>
+<pre >## [1] &quot;scarlet_..red&quot;    &quot;ultramarine_blue&quot; &quot;cadmium_red&quot;      &quot;cobalt_blue&quot;      &quot;cerulean_blue&quot;</pre>
 
-<pre class = 'prettyprint lang-r'>sentences %&gt;% 
-  stringr::str_replace(&quot;([^ ]+) ([^ ]+) ([^ ]+)&quot;, &quot;\\1 \\3 \\2&quot;) %&gt;% 
-  head(5)</pre>
+<pre class = 'prettyprint lang-r'># Replace all characters that aren&#39;t a letter or number with an underscore
+stringr::str_replace_all(colours, &quot;[^[A-Za-z0-9]]&quot;, &quot;_&quot;)</pre>
 
-<pre >## [1] &quot;The canoe birch slid on the smooth planks.&quot;  &quot;Glue sheet the to the dark blue background.&quot;
-## [3] &quot;It&#39;s to easy tell the depth of a well.&quot;      &quot;These a days chicken leg is a rare dish.&quot;   
-## [5] &quot;Rice often is served in round bowls.&quot;</pre>
+<pre >## [1] &quot;scarlet___red&quot;    &quot;ultramarine_blue&quot; &quot;cadmium_red&quot;      &quot;cobalt_blue&quot;      &quot;cerulean_blue&quot;</pre>
 
-</article></slide><slide class=""><hgroup><h2>Exercises</h2></hgroup><article  id="exercises-1" class="smaller ">
-
-<h3>Exercise 1: Detecting strings</h3>
-
-<ol>
-<li><p>For each of the following challenges, try solving it by using both a single regular expression, and a combination of multiple str_detect() calls.</p>
-
-<ol>
-<li><p>Find all words that start or end with &lsquo;d&rsquo;.</p></li>
-<li><p>Find all words that start with a vowel and end with a consonant.</p></li>
-<li><p>Are there any words that contain at least one of each different vowel?</p></li>
-</ol></li>
-<li><p>What word has the highest number of vowels? What word has the highest proportion of vowels? (Hint: what is the denominator?)</p></li>
-</ol>
+<p>In the first example only the first match in each string has been replaced with an underscore, whereas in the second example all matches have been replaced.</p>
 
 </article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
-
-<h3>Exercise 2: Extracting strings</h3>
-
-<p>From the Harvard sentences data, extract:</p>
-
-<pre >1. The first word from each sentence.
-
-2. All words ending in &#39;ing&#39;.
-
-3. All plurals.</pre>
-
-</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
-
-<h3>Exercise 3: Replacing Strings</h3>
-
-<ol>
-<li><p>Replace all forward slashes in a string with backslashes.</p></li>
-<li><p>Implement a simple version of str_to_lower() using replace_all().</p></li>
-<li><p>Switch the first and last letters in words. Which of those strings are still words?</p></li>
-</ol>
-
-</article></slide><slide class=""><hgroup><h2>Solutions</h2></hgroup><article  id="solutions-2" class="smaller ">
 
 <h3>Exercise 1</h3>
 
-<p>For part 1 we have the following:</p>
+<p>Remove all spaces from the following string:</p>
 
-<p>Words that start or end with &lsquo;d&rsquo;?</p>
+<pre class = 'prettyprint lang-r'>string &lt;- &quot;The quick brown fox jumps over the lazy dog.&quot;</pre>
 
-<pre class = 'prettyprint lang-r'># one regex
-words[stringr::str_detect(words, &quot;^d|d$&quot;)] %&gt;% head(5)</pre>
-
-<pre >## [1] &quot;add&quot;    &quot;afford&quot; &quot;and&quot;    &quot;around&quot; &quot;attend&quot;</pre>
-
-<pre class = 'prettyprint lang-r'>#&gt; [1] &quot;add&quot; &quot;afford&quot; &quot;and&quot; &quot;around&quot; &quot;attend&quot;
-# split regex into parts
-start_with_x &lt;- stringr::str_detect(words, &quot;^d&quot;)
-end_with_x &lt;- stringr::str_detect(words, &quot;d$&quot;)
-words[start_with_x | end_with_x] %&gt;% head(5)</pre>
-
-<pre >## [1] &quot;add&quot;    &quot;afford&quot; &quot;and&quot;    &quot;around&quot; &quot;attend&quot;</pre>
-
-<pre class = 'prettyprint lang-r'>#&gt; [1] &quot;add&quot; &quot;afford&quot; &quot;and&quot; &quot;around&quot; &quot;attend&quot;</pre>
+<p><strong>Hint:</strong> You can remove a matched pattern by replacing it with an empty string (<code>&quot;&quot;</code>).</p>
 
 </article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
 
-<p>For part 2 we have the following:</p>
+<pre class = 'prettyprint lang-r'># Strings - solution to exercise 1
+string &lt;- stringr::str_replace_all(string, &quot; &quot;, &quot;&quot;)
+string</pre>
 
-<p>Words starting with vowel and ending with consonant.</p>
-
-<pre class = 'prettyprint lang-r'>stringr::str_subset(words, &quot;^[aeiou].*[^aeiou]$&quot;) %&gt;% head()</pre>
-
-<pre >## [1] &quot;about&quot;   &quot;accept&quot;  &quot;account&quot; &quot;across&quot;  &quot;act&quot;     &quot;actual&quot;</pre>
-
-<pre class = 'prettyprint lang-r'>#&gt; [1] &quot;about&quot;  &quot;accept&quot;  &quot;account&quot; &quot;across&quot;  &quot;act&quot;  &quot;actual&quot;
-start_with_vowel &lt;- stringr::str_detect(words, &quot;^[aeiou]&quot;)
-end_with_consonant &lt;- stringr::str_detect(words, &quot;[^aeiou]$&quot;)
-words[start_with_vowel &amp; end_with_consonant] %&gt;% head()</pre>
-
-<pre >## [1] &quot;about&quot;   &quot;accept&quot;  &quot;account&quot; &quot;across&quot;  &quot;act&quot;     &quot;actual&quot;</pre>
-
-<pre class = 'prettyprint lang-r'>#&gt; [1] &quot;about&quot;  &quot;accept&quot;  &quot;account&quot; &quot;across&quot;  &quot;act&quot;  &quot;actual&quot;</pre>
-
-</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
-
-<p>For part 3, the following:</p>
-
-<p>There is not a simple regular expression to match words that that contain at least one of each vowel. The regular expression would need to consider all possible orders in which the vowels could occur.</p>
-
-<pre class = 'prettyprint lang-r'>library(purrr)
-
-pattern &lt;-
-  cross(rerun(5, c(&quot;a&quot;, &quot;e&quot;, &quot;i&quot;, &quot;o&quot;, &quot;u&quot;)),
-    .filter = function(...) {
-      x &lt;- as.character(unlist(list(...)))
-      length(x) != length(unique(x))
-    }
-  ) %&gt;%
-  purrr::map_chr(~stringr::str_c(unlist(.x), collapse = &quot;.*&quot;)) %&gt;%
-  stringr::str_c(collapse = &quot;|&quot;)</pre>
-
-</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
-
-<h3>Exercise 2</h3>
-
-<p>Part 1: Finding the first word in each sentence requires defining what a pattern constitutes a word. For the purposes of this question, I’ll consider a word any contiguous set of letters. Since str_extract() will extract the first match, if it is provided a regular expression for words, it will return the first word.</p>
-
-<pre class = 'prettyprint lang-r'>stringr::str_extract(sentences, &quot;[A-ZAa-z]+&quot;) %&gt;% head()</pre>
-
-<pre >## [1] &quot;The&quot;   &quot;Glue&quot;  &quot;It&quot;    &quot;These&quot; &quot;Rice&quot;  &quot;The&quot;</pre>
-
-<pre class = 'prettyprint lang-r'>#&gt; [1] &quot;The&quot;   &quot;Glue&quot;  &quot;It&quot;    &quot;These&quot; &quot;Rice&quot;  &quot;The&quot;</pre>
-
-<p>However, the third sentence begins with &ldquo;It’s&rdquo;. To catch this, I’ll change the regular expression to require the string to begin with a letter, but allow for a subsequent apostrophe.</p>
-
-<pre class = 'prettyprint lang-r'>stringr::str_extract(sentences, &quot;[A-Za-z][A-Za-z&#39;]*&quot;) %&gt;% head()</pre>
-
-<pre >## [1] &quot;The&quot;   &quot;Glue&quot;  &quot;It&#39;s&quot;  &quot;These&quot; &quot;Rice&quot;  &quot;The&quot;</pre>
-
-<pre class = 'prettyprint lang-r'>#&gt; [1] &quot;The&quot;   &quot;Glue&quot;  &quot;It&#39;s&quot;  &quot;These&quot; &quot;Rice&quot;  &quot;The&quot;</pre>
-
-</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
-
-<p>Part 2: This pattern finds all words ending in &lsquo;ing&rsquo;.</p>
-
-<pre class = 'prettyprint lang-r'>pattern &lt;- &quot;\\b[A-Za-z]+ing\\b&quot;
-sentences_with_ing &lt;- stringr::str_detect(sentences, pattern)
-unique(unlist(stringr::str_extract_all(sentences[sentences_with_ing], pattern))) %&gt;%
-  head()</pre>
-
-<pre >## [1] &quot;spring&quot;  &quot;evening&quot; &quot;morning&quot; &quot;winding&quot; &quot;living&quot;  &quot;king&quot;</pre>
-
-<pre class = 'prettyprint lang-r'>#&gt; [1] &quot;spring&quot;  &quot;evening&quot; &quot;morning&quot; &quot;winding&quot; &quot;living&quot;  &quot;king&quot;</pre>
-
-</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
-
-<p>Part 3: Finding all plurals cannot be correctly accomplished with regular expressions alone. Finding plural words would at least require morphological information about words in the language. See WordNet for a resource that would do that. However, identifying words that end in an &ldquo;s&rdquo; and with more than three characters, in order to remove &ldquo;as&rdquo;, &ldquo;is&rdquo;, &ldquo;gas&rdquo;, etc., is a reasonable heuristic.</p>
-
-<pre class = 'prettyprint lang-r'>unique(unlist(stringr::str_extract_all(sentences, &quot;\\b[A-Za-z]{3,}s\\b&quot;))) %&gt;%
-  head()</pre>
-
-<pre >## [1] &quot;planks&quot; &quot;days&quot;   &quot;bowls&quot;  &quot;lemons&quot; &quot;makes&quot;  &quot;hogs&quot;</pre>
-
-<pre class = 'prettyprint lang-r'>#&gt; [1] &quot;planks&quot; &quot;days&quot;   &quot;bowls&quot;  &quot;lemons&quot; &quot;makes&quot;  &quot;hogs&quot;</pre>
-
-</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
-
-<h3>Exercise 3</h3>
-
-<p>Part 1: Replace forward slashes with backslashes.</p>
-
-<pre class = 'prettyprint lang-r'>stringr::str_replace_all(&quot;past/present/future&quot;, &quot;/&quot;, &quot;\\\\&quot;)</pre>
-
-<pre >## [1] &quot;past\\present\\future&quot;</pre>
-
-<pre class = 'prettyprint lang-r'>#&gt; [1] &quot;past\\present\\future&quot;</pre>
-
-<p>Part 2: Implement a simple version of str_to_lower() using replace_all().</p>
-
-<pre class = 'prettyprint lang-r'>replacements &lt;- c(&quot;A&quot; = &quot;a&quot;, &quot;B&quot; = &quot;b&quot;, &quot;C&quot; = &quot;c&quot;, &quot;D&quot; = &quot;d&quot;, &quot;E&quot; = &quot;e&quot;,
-                  &quot;F&quot; = &quot;f&quot;, &quot;G&quot; = &quot;g&quot;, &quot;H&quot; = &quot;h&quot;, &quot;I&quot; = &quot;i&quot;, &quot;J&quot; = &quot;j&quot;, 
-                  &quot;K&quot; = &quot;k&quot;, &quot;L&quot; = &quot;l&quot;, &quot;M&quot; = &quot;m&quot;, &quot;N&quot; = &quot;n&quot;, &quot;O&quot; = &quot;o&quot;, 
-                  &quot;P&quot; = &quot;p&quot;, &quot;Q&quot; = &quot;q&quot;, &quot;R&quot; = &quot;r&quot;, &quot;S&quot; = &quot;s&quot;, &quot;T&quot; = &quot;t&quot;, 
-                  &quot;U&quot; = &quot;u&quot;, &quot;V&quot; = &quot;v&quot;, &quot;W&quot; = &quot;w&quot;, &quot;X&quot; = &quot;x&quot;, &quot;Y&quot; = &quot;y&quot;, 
-                  &quot;Z&quot; = &quot;z&quot;)
-lower_words &lt;- stringr::str_replace_all(words, pattern = replacements)
-head(lower_words)</pre>
-
-<pre >## [1] &quot;a&quot;        &quot;able&quot;     &quot;about&quot;    &quot;absolute&quot; &quot;accept&quot;   &quot;account&quot;</pre>
-
-<pre class = 'prettyprint lang-r'>#&gt; [1] &quot;a&quot;        &quot;able&quot;     &quot;about&quot;    &quot;absolute&quot; &quot;accept&quot;   &quot;account&quot;</pre>
-
-</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
-
-<p>Part 3: Switch the first and last letters in words. Which of those strings are still words?</p>
-
-<p>First, make a vector of all the words with first and last letters swapped:</p>
-
-<pre class = 'prettyprint lang-r'>swapped &lt;- stringr::str_replace_all(words, &quot;^([A-Za-z])(.*)([A-Za-z])$&quot;, &quot;\\3\\2\\1&quot;)</pre>
-
-<p>Next, find what of &ldquo;swapped&rdquo; is also in the original list using the function intersect():</p>
-
-<pre class = 'prettyprint lang-r'>intersect(swapped, words)</pre>
-
-<pre >##  [1] &quot;a&quot;          &quot;america&quot;    &quot;area&quot;       &quot;dad&quot;        &quot;dead&quot;       &quot;lead&quot;       &quot;read&quot;      
-##  [8] &quot;depend&quot;     &quot;god&quot;        &quot;educate&quot;    &quot;else&quot;       &quot;encourage&quot;  &quot;engine&quot;     &quot;europe&quot;    
-## [15] &quot;evidence&quot;   &quot;example&quot;    &quot;excuse&quot;     &quot;exercise&quot;   &quot;expense&quot;    &quot;experience&quot; &quot;eye&quot;       
-## [22] &quot;dog&quot;        &quot;health&quot;     &quot;high&quot;       &quot;knock&quot;      &quot;deal&quot;       &quot;level&quot;      &quot;local&quot;     
-## [29] &quot;nation&quot;     &quot;on&quot;         &quot;non&quot;        &quot;no&quot;         &quot;rather&quot;     &quot;dear&quot;       &quot;refer&quot;     
-## [36] &quot;remember&quot;   &quot;serious&quot;    &quot;stairs&quot;     &quot;test&quot;       &quot;tonight&quot;    &quot;transport&quot;  &quot;treat&quot;     
-## [43] &quot;trust&quot;      &quot;window&quot;     &quot;yesterday&quot;</pre>
-
-</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
-
-<p>Alternatively, the regex can be written using the POSIX character class for letter ([[:alpha:]]):</p>
-
-<pre class = 'prettyprint lang-r'>swapped2 &lt;- stringr::str_replace_all(words, &quot;^([[:alpha:]])(.*)([[:alpha:]])$&quot;, &quot;\\3\\2\\1&quot;)
-intersect(swapped2, words)</pre>
-
-<pre >##  [1] &quot;a&quot;          &quot;america&quot;    &quot;area&quot;       &quot;dad&quot;        &quot;dead&quot;       &quot;lead&quot;       &quot;read&quot;      
-##  [8] &quot;depend&quot;     &quot;god&quot;        &quot;educate&quot;    &quot;else&quot;       &quot;encourage&quot;  &quot;engine&quot;     &quot;europe&quot;    
-## [15] &quot;evidence&quot;   &quot;example&quot;    &quot;excuse&quot;     &quot;exercise&quot;   &quot;expense&quot;    &quot;experience&quot; &quot;eye&quot;       
-## [22] &quot;dog&quot;        &quot;health&quot;     &quot;high&quot;       &quot;knock&quot;      &quot;deal&quot;       &quot;level&quot;      &quot;local&quot;     
-## [29] &quot;nation&quot;     &quot;on&quot;         &quot;non&quot;        &quot;no&quot;         &quot;rather&quot;     &quot;dear&quot;       &quot;refer&quot;     
-## [36] &quot;remember&quot;   &quot;serious&quot;    &quot;stairs&quot;     &quot;test&quot;       &quot;tonight&quot;    &quot;transport&quot;  &quot;treat&quot;     
-## [43] &quot;trust&quot;      &quot;window&quot;     &quot;yesterday&quot;</pre>
+<pre >## [1] &quot;Thequickbrownfoxjumpsoverthelazydog.&quot;</pre>
 
 </article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Further Reading</h2></hgroup><article  id="further-reading" class="smaller ">
 
@@ -5364,7 +4980,6 @@ intersect(swapped2, words)</pre>
 
 <ul>
 <li><a href='https://github.com/moj-analytical-services/intro_r_training_extension#bonus-examples' title=''>Bonus examples</a></li>
-<li><a href='https://github.com/moj-analytical-services/intro_r_training_extension#appendix' title=''>Appendix</a></li>
 <li><a href='https://r4ds.had.co.nz' title=''>R for Data Science</a></li>
 <li><a href='https://adv-r.hadley.nz' title=''>Advanced R</a></li>
 <li><a href='https://www.tidyverse.org' title=''>Tidyverse website</a></li>

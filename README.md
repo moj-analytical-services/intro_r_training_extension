@@ -98,7 +98,7 @@ First, we need to load a few packages:
 
 ``` r
 # Load packages
-library(botor) # Used to help R interact with s3 cloud storage
+library(Rs3tools) # Used to help R interact with s3 cloud storage
 library(dplyr) # Used for data manipulation
 library(tidyr) # Used to help reshape and deal with missing data
 library(stringr) # Used for string manipulation
@@ -222,8 +222,8 @@ R](https://github.com/moj-analytical-services/IntroRTraining) course:
 
 ``` r
 # First read and preview the data
-offenders <- botor::s3_read(
-  "s3://alpha-r-training/intro-r-training/Offenders_Chicago_Police_Dept_Main.csv", read.csv
+offenders <- Rs3tools::s3_path_to_full_df(
+  "alpha-r-training/intro-r-training/Offenders_Chicago_Police_Dept_Main.csv"
 )
 str(offenders)
 ```
@@ -548,19 +548,19 @@ function from botor:
 
 ``` r
 # Get dataframe with all available files/folders from an s3 path
-files <- botor::s3_ls("s3://alpha-r-training/intro-r-extension")
+files <- Rs3tools::list_files_in_buckets("alpha-r-training", prefix="intro-r-extension/fruit")
 
 # Get a list of csv file names
 files <- files %>%
-  dplyr::filter(grepl(".csv", uri)) %>%
-  dplyr::pull(uri)
+  dplyr::filter(grepl(".csv", path)) %>%
+  dplyr::pull(path)
 
 files
 ```
 
-    ## [1] "s3://alpha-r-training/intro-r-extension/fruit1.csv"
-    ## [2] "s3://alpha-r-training/intro-r-extension/fruit2.csv"
-    ## [3] "s3://alpha-r-training/intro-r-extension/fruit3.csv"
+    ## alpha-r-training/intro-r-extension/fruit/fruit1.csv
+    ## alpha-r-training/intro-r-extension/fruit/fruit2.csv
+    ## alpha-r-training/intro-r-extension/fruit/fruit3.csv
 
 ------------------------------------------------------------------------
 
@@ -574,7 +574,7 @@ fruit_list <- vector("list", length(files))
 
 # Loop over each file, and add the data to a list
 for (i in seq_along(files)) {
-  fruit_list[[i]] <- botor::s3_read(files[i], readr::read_csv, show_col_types = FALSE)
+  fruit_list[[i]] <- Rs3tools::s3_path_to_full_df(files[i])
 }
 
 # Combine the list of dataframes into a single dataframe
@@ -582,18 +582,16 @@ fruit <- dplyr::bind_rows(fruit_list)
 fruit
 ```
 
-    ## # A tibble: 9 × 4
-    ##   Item      `Cost-Jan` `Cost-Feb` `Cost-Mar`
-    ##   <chr>          <dbl>      <dbl>      <dbl>
-    ## 1 Orange          0.56       0.5        0.57
-    ## 2 Apple           0.42       0.51       0.49
-    ## 3 Banana          0.15       0.17       0.21
-    ## 4 Lemon           0.3        0.32       0.35
-    ## 5 Pear            0.41       0.39       0.44
-    ## 6 Melon           1.1        1.15       1.11
-    ## 7 Pineapple       1.18       1.19       1.24
-    ## 8 Peach           0.55       0.53       0.58
-    ## 9 Plum            0.38       0.41       0.41
+    ##        Item Cost.Jan Cost.Feb Cost.Mar
+    ## 1    Orange     0.56     0.50     0.57
+    ## 2     Apple     0.42     0.51     0.49
+    ## 3    Banana     0.15     0.17     0.21
+    ## 4     Lemon     0.30     0.32     0.35
+    ## 5      Pear     0.41     0.39     0.44
+    ## 6     Melon     1.10     1.15     1.11
+    ## 7 Pineapple     1.18     1.19     1.24
+    ## 8     Peach     0.55     0.53     0.58
+    ## 9      Plum     0.38     0.41     0.41
 
 ------------------------------------------------------------------------
 
@@ -679,18 +677,16 @@ fruit <- fruit %>% dplyr::mutate(Item = toupper(Item))
 fruit
 ```
 
-    ## # A tibble: 9 × 4
-    ##   Item      `Cost-Jan` `Cost-Feb` `Cost-Mar`
-    ##   <chr>          <dbl>      <dbl>      <dbl>
-    ## 1 ORANGE          0.56       0.5        0.57
-    ## 2 APPLE           0.42       0.51       0.49
-    ## 3 BANANA          0.15       0.17       0.21
-    ## 4 LEMON           0.3        0.32       0.35
-    ## 5 PEAR            0.41       0.39       0.44
-    ## 6 MELON           1.1        1.15       1.11
-    ## 7 PINEAPPLE       1.18       1.19       1.24
-    ## 8 PEACH           0.55       0.53       0.58
-    ## 9 PLUM            0.38       0.41       0.41
+    ##        Item Cost.Jan Cost.Feb Cost.Mar
+    ## 1    ORANGE     0.56     0.50     0.57
+    ## 2     APPLE     0.42     0.51     0.49
+    ## 3    BANANA     0.15     0.17     0.21
+    ## 4     LEMON     0.30     0.32     0.35
+    ## 5      PEAR     0.41     0.39     0.44
+    ## 6     MELON     1.10     1.15     1.11
+    ## 7 PINEAPPLE     1.18     1.19     1.24
+    ## 8     PEACH     0.55     0.53     0.58
+    ## 9      PLUM     0.38     0.41     0.41
 
 ------------------------------------------------------------------------
 
@@ -700,22 +696,20 @@ example demonstrates how to multiply the values in all numeric columns
 by 100:
 
 ``` r
-fruit_pence <- fruit %>% dplyr::mutate(across(where(is.numeric), ~ .x * 100))
+fruit_pence <- fruit %>% dplyr::mutate(dplyr::across(where(is.numeric), ~ .x * 100))
 fruit_pence
 ```
 
-    ## # A tibble: 9 × 4
-    ##   Item      `Cost-Jan` `Cost-Feb` `Cost-Mar`
-    ##   <chr>          <dbl>      <dbl>      <dbl>
-    ## 1 ORANGE            56         50         57
-    ## 2 APPLE             42         51         49
-    ## 3 BANANA            15         17         21
-    ## 4 LEMON             30         32         35
-    ## 5 PEAR              41         39         44
-    ## 6 MELON            110        115        111
-    ## 7 PINEAPPLE        118        119        124
-    ## 8 PEACH             55         53         58
-    ## 9 PLUM              38         41         41
+    ##        Item Cost.Jan Cost.Feb Cost.Mar
+    ## 1    ORANGE       56       50       57
+    ## 2     APPLE       42       51       49
+    ## 3    BANANA       15       17       21
+    ## 4     LEMON       30       32       35
+    ## 5      PEAR       41       39       44
+    ## 6     MELON      110      115      111
+    ## 7 PINEAPPLE      118      119      124
+    ## 8     PEACH       55       53       58
+    ## 9      PLUM       38       41       41
 
 Here we’re using `mutate()` with `across()` to apply a function to all
 numeric columns. The `~ .x * 100` part is what’s called a lambda or
@@ -732,23 +726,21 @@ multiple columns of a dataframe. Here’s how we can apply the `signif()`
 function to round values in all numeric columns to 1 significant figure:
 
 ``` r
-rounded_fruit <- fruit %>% dplyr::mutate(across(where(is.numeric), signif, 1))
+rounded_fruit <- fruit %>% dplyr::mutate(dplyr::across(where(is.numeric), signif, 1))
 
 rounded_fruit
 ```
 
-    ## # A tibble: 9 × 4
-    ##   Item      `Cost-Jan` `Cost-Feb` `Cost-Mar`
-    ##   <chr>          <dbl>      <dbl>      <dbl>
-    ## 1 ORANGE           0.6        0.5        0.6
-    ## 2 APPLE            0.4        0.5        0.5
-    ## 3 BANANA           0.2        0.2        0.2
-    ## 4 LEMON            0.3        0.3        0.4
-    ## 5 PEAR             0.4        0.4        0.4
-    ## 6 MELON            1          1          1  
-    ## 7 PINEAPPLE        1          1          1  
-    ## 8 PEACH            0.6        0.5        0.6
-    ## 9 PLUM             0.4        0.4        0.4
+    ##        Item Cost.Jan Cost.Feb Cost.Mar
+    ## 1    ORANGE      0.6      0.5      0.6
+    ## 2     APPLE      0.4      0.5      0.5
+    ## 3    BANANA      0.2      0.2      0.2
+    ## 4     LEMON      0.3      0.3      0.4
+    ## 5      PEAR      0.4      0.4      0.4
+    ## 6     MELON      1.0      1.0      1.0
+    ## 7 PINEAPPLE      1.0      1.0      1.0
+    ## 8     PEACH      0.6      0.5      0.6
+    ## 9      PLUM      0.4      0.4      0.4
 
 Note: When the `signif()` function is passed as an argument to
 `across()`, the brackets aren’t included (i.e. `signif` is passed rather
@@ -1036,18 +1028,18 @@ df
     ## # A tibble: 12 × 3
     ##    year  quarter count
     ##    <chr> <chr>   <int>
-    ##  1 2017  Q1          3
-    ##  2 <NA>  Q2          1
-    ##  3 <NA>  Q3          4
-    ##  4 <NA>  Q4          2
-    ##  5 2018  Q1          9
-    ##  6 <NA>  Q2          6
-    ##  7 <NA>  Q3          7
+    ##  1 2017  Q1          4
+    ##  2 <NA>  Q2         12
+    ##  3 <NA>  Q3          5
+    ##  4 <NA>  Q4          7
+    ##  5 2018  Q1          1
+    ##  6 <NA>  Q2          9
+    ##  7 <NA>  Q3         11
     ##  8 <NA>  Q4         10
-    ##  9 2019  Q1         12
-    ## 10 <NA>  Q2         11
-    ## 11 <NA>  Q3          5
-    ## 12 <NA>  Q4          8
+    ##  9 2019  Q1          8
+    ## 10 <NA>  Q2          3
+    ## 11 <NA>  Q3          2
+    ## 12 <NA>  Q4          6
 
 ------------------------------------------------------------------------
 
@@ -1062,18 +1054,18 @@ df %>% tidyr::fill(year)
     ## # A tibble: 12 × 3
     ##    year  quarter count
     ##    <chr> <chr>   <int>
-    ##  1 2017  Q1          3
-    ##  2 2017  Q2          1
-    ##  3 2017  Q3          4
-    ##  4 2017  Q4          2
-    ##  5 2018  Q1          9
-    ##  6 2018  Q2          6
-    ##  7 2018  Q3          7
+    ##  1 2017  Q1          4
+    ##  2 2017  Q2         12
+    ##  3 2017  Q3          5
+    ##  4 2017  Q4          7
+    ##  5 2018  Q1          1
+    ##  6 2018  Q2          9
+    ##  7 2018  Q3         11
     ##  8 2018  Q4         10
-    ##  9 2019  Q1         12
-    ## 10 2019  Q2         11
-    ## 11 2019  Q3          5
-    ## 12 2019  Q4          8
+    ##  9 2019  Q1          8
+    ## 10 2019  Q2          3
+    ## 11 2019  Q3          2
+    ## 12 2019  Q4          6
 
 ## Removing rows with missing values from a dataframe
 
@@ -1177,1227 +1169,953 @@ with one argument for each column where NA values need replacing.
 
 ## Introduction
 
-The tidyr package can help us to reshape dataframes - this can be really
-helpful when we need to transform between tables that are easier to read
-and tables that are easier to analyse. The aim here is to structure the
-resulting datasets so that they could be manipulated easier in further
-stages of the processing.
+The exact same data can be represented in different orientations,
+depending on the purpose.
 
-I should mention at this point that the source for the material
-presented in this chapter can be found in this [pivoting
-vignette](https://tidyr.tidyverse.org/dev/articles/pivot.html#generate-column-name-from-multiple-variables-1)
-as well as in the book by the same author, Hadley Wickham, titled [R For
-Data Science](https://r4ds.had.co.nz/).
+A dataframe that is in long format has a single column for each
+variable. The number of columns is minimised, at the expense of having
+many rows.
+
+A dataframe that is in wide format spreads a variable across several
+columns. The number of rows is minimised, at the expense of many
+columns.
+
+There are advantages and disadvantages of each depending on context, and
+it is useful to know how to switch between these. It is very easy with
+the `tidyverse` functions (package `tidyr`) `pivot_wider()` and
+`pivot_longer()`.
+
+## Widening data
+
+We read in a data table.
+
+``` r
+# read in the fake annual offences data
+annual_offences <- 
+  Rs3tools::s3_path_to_full_df(
+    s3_path = "s3://alpha-r-training/intro-r-extension/annual_offences_fake.csv", 
+    colClasses = c("integer", "character", "integer")) %>%
+  tibble::tibble()
+
+head(annual_offences)
+```
+
+    ## # A tibble: 6 × 3
+    ##    year offence_code count
+    ##   <int> <chr>        <int>
+    ## 1  2016 00101          219
+    ## 2  2016 00304         4730
+    ## 3  2016 00305           28
+    ## 4  2016 00399         6405
+    ## 5  2016 00405            9
+    ## 6  2016 00406            3
 
 ------------------------------------------------------------------------
 
-In many scenarios, although the data could be complete in the sense of
-it containing the desired variables, it is not quite in the right format
-requiring additional manipulation to bring it in line.
+The data represent fake frequencies of offences from 2016 to 2020,
+represented by real offence codes. If an offence was prosecuted in a
+year, there is a corresponding line in this data table, with the offence
+code indicated by the `offence_code` column, the year indicated by the
+`year` column, and the `count` column representing the number of times
+the offence was prosecuted. If an offence was not prosecuted in a year,
+the corresponding combination of `year` and `offence` does not exist.
+The table has been sorted by year and offence code.
 
-This is usually the case when the variables needed are originally
-created as subcategories within a current variable. The process to
-extract them results to **lengthening** or **widening** the original
-dataset and this is commonly referred to as **pivoting**. It should also
-be mentioned that pivoting (as a collection of tools) was created to
-replace the existing `gather()` and `spread()` functions. This is not to
-say that the old versions cannot be used anymore, its just that they
-will no longer receive any updates from the developer given their more
-advance counterparts.
-
-As a general artefact of the reshaping process, the resulting dataset
-has either an increased number of rows or columns respectively.
-Interpretation largely deepens on the project at hand where the current
-stage of the system determines the optimal structure of the data to be
-supplied.
-
-## Lengthening the dataset
-
-Consider the `billboard` dataset supplied with tidyr (should be in you
-workspace when you load the package) containing the rank of songs for
-the year 2000. Inspecting the dataset shows that there are in total 79
-columns, one for each week (starting from Oct 1999) and also including a
-few additional identifiers.
-
-The aim now is to create a single variable to house the different weeks
-in order to create a different representation of for the data. We start
-by having a closer look at the data set and then mapping the first month
-into a single variable.
+The long format may be a good way to store data like these for some
+purposes, but what if we want to put it into wide format, e.g. to make
+it easier for a human to read? We use the `tidyr` function
+`pivot_wider()`:
 
 ``` r
-# for more information on the dataset 
-?billboard
-# notice the dimensions of the data
-#dim(billboard)
+# basic implementation of pivot_wider()
+wide_annual_offences <- annual_offences %>%
+  tidyr::pivot_wider(
+    names_from = 'year',
+    values_from = 'count'
+  )
 
-#to see the structure of the data
-billboard %>% dplyr::arrange(desc(date.entered)) %>% dplyr::select(1:6) %>% head()
+head(wide_annual_offences)
 ```
 
     ## # A tibble: 6 × 6
-    ##   artist        track             date.entered   wk1   wk2   wk3
-    ##   <chr>         <chr>             <date>       <dbl> <dbl> <dbl>
-    ## 1 Tuesday       I Know            2000-12-30      98    98    NA
-    ## 2 De La Soul    All Good?         2000-12-23      96    96   100
-    ## 3 Clark, Terri  A Little Gasoline 2000-12-16      75    82    88
-    ## 4 Braxton, Toni Spanish Guitar    2000-12-02      98    98    98
-    ## 5 Nine Days     If I Am           2000-12-02      68    68    81
-    ## 6 Vitamin C     The Itch          2000-12-02      86    48    45
+    ##   offence_code `2016` `2017` `2018` `2019` `2020`
+    ##   <chr>         <int>  <int>  <int>  <int>  <int>
+    ## 1 00101           219    188    177    154    122
+    ## 2 00304          4730   4953   4954   5613   4485
+    ## 3 00305            28     20     17     10      6
+    ## 4 00399          6405   5879   5149   4538   3415
+    ## 5 00405             9      3      4      4     NA
+    ## 6 00406             3     NA      1     NA     NA
 
 ------------------------------------------------------------------------
 
-Using `pivot_longer` allows us to map the given columns
-`(wk1,wk2, wk3, wk4)` to the specified variable, in this case, `month1`.
+What’s happened? We passed `count` to the argument `values_from` and
+`year` to the argument `names_from`. This tells the function that we
+want to make new columns based on `year`, and populate it with the
+values from `count`.
+
+Remember that the data are sorted first by year? If we imagine each year
+as a stack of data, what we’re effectively doing here is taking the
+count data for each stack and putting them in their own column.
+
+There are a couple of ways we could get more useful results from this
+function, though.
+
+First, it’s generally not a good idea to have column names that begin
+with numbers. Fortunately, `pivot_wider()` has the useful argument
+`names_prefix` to remedy this:
+
+``` r
+# adding a prefix to new columns
+wide_annual_offences <- annual_offences %>%
+  tidyr::pivot_wider(
+    names_from = 'year',
+    values_from = 'count',
+    names_prefix = 'count_'
+  )
+head(wide_annual_offences)
+```
+
+    ## # A tibble: 6 × 6
+    ##   offence_code count_2016 count_2017 count_2018 count_2019 count_2020
+    ##   <chr>             <int>      <int>      <int>      <int>      <int>
+    ## 1 00101               219        188        177        154        122
+    ## 2 00304              4730       4953       4954       5613       4485
+    ## 3 00305                28         20         17         10          6
+    ## 4 00399              6405       5879       5149       4538       3415
+    ## 5 00405                 9          3          4          4         NA
+    ## 6 00406                 3         NA          1         NA         NA
+
+------------------------------------------------------------------------
+
+When transforming count data like this we may have legitimate good
+reason to replace our NAs with 0s, which we can do with `values_fill()`:
+
+``` r
+# filling in NAs with 0
+wide_annual_offences <- annual_offences %>%
+  tidyr::pivot_wider(
+    names_from = 'year',
+    values_from = 'count',
+    names_prefix = 'count_',
+    values_fill = 0
+  )
+head(wide_annual_offences)
+```
+
+    ## # A tibble: 6 × 6
+    ##   offence_code count_2016 count_2017 count_2018 count_2019 count_2020
+    ##   <chr>             <int>      <int>      <int>      <int>      <int>
+    ## 1 00101               219        188        177        154        122
+    ## 2 00304              4730       4953       4954       5613       4485
+    ## 3 00305                28         20         17         10          6
+    ## 4 00399              6405       5879       5149       4538       3415
+    ## 5 00405                 9          3          4          4          0
+    ## 6 00406                 3          0          1          0          0
+
+------------------------------------------------------------------------
+
+Once our table is in wide format, and clean, we can easily do
+transformations like this. Here we use `dplyr` functions to create a new
+column that adds up yearly totals across each column that has count
+data:
 
 ``` r
 #starting by mapping a single month 
-billboard %>% tidyr::pivot_longer(cols = c(wk1, wk2, wk3, wk4), names_to = "month1", values_to = "rank") %>% 
-  dplyr::select(1:5, "month1", "rank") %>% head()
+wide_annual_offences_with_totals <- wide_annual_offences %>%
+  dplyr::mutate(
+    count_2016_2020 =
+      rowSums(dplyr::across(dplyr::starts_with("count")))
+  )
+head(wide_annual_offences_with_totals)
 ```
 
     ## # A tibble: 6 × 7
-    ##   artist  track                   date.entered   wk5   wk6 month1  rank
-    ##   <chr>   <chr>                   <date>       <dbl> <dbl> <chr>  <dbl>
-    ## 1 2 Pac   Baby Don't Cry (Keep... 2000-02-26      87    94 wk1       87
-    ## 2 2 Pac   Baby Don't Cry (Keep... 2000-02-26      87    94 wk2       82
-    ## 3 2 Pac   Baby Don't Cry (Keep... 2000-02-26      87    94 wk3       72
-    ## 4 2 Pac   Baby Don't Cry (Keep... 2000-02-26      87    94 wk4       77
-    ## 5 2Ge+her The Hardest Part Of ... 2000-09-02      NA    NA wk1       91
-    ## 6 2Ge+her The Hardest Part Of ... 2000-09-02      NA    NA wk2       87
-
-``` r
-#and to see clearly the contents of the new variable
-# billboard %>% pivot_longer(cols = c(wk1,wk2, wk3, wk4), names_to = "month1", values_to = "rank") %>%
-# .$month1 %>% head()
-```
-
-The way the `pivot_longer` function works is, you specify the columns to
-be **gathered** followed by defining the resultant new variables to
-store their names and corresponding values.
+    ##   offence_code count_2016 count_2017 count_2018 count_2019 count_2020 count_2016_2020
+    ##   <chr>             <int>      <int>      <int>      <int>      <int>           <dbl>
+    ## 1 00101               219        188        177        154        122             860
+    ## 2 00304              4730       4953       4954       5613       4485           24735
+    ## 3 00305                28         20         17         10          6              81
+    ## 4 00399              6405       5879       5149       4538       3415           25386
+    ## 5 00405                 9          3          4          4          0              20
+    ## 6 00406                 3          0          1          0          0               4
 
 ------------------------------------------------------------------------
 
-### Working with multiple columns
+The final and most advanced thing we will do with `pivot_wider()` is to
+pass it an auxiliary function to transform the values that it places in
+its new columns.
 
-As it is evident, the problem now is that we have too many columns to
-pass them individually. What happens if we want all of the weeks to be
-transferred as subcategories to a new variable called *weeks*?
-
-In that case, the following structure comes into play where regular
-expressions are used to pick all the variables to be mapped.
+Here we are passing an anonymous function which itself calls the
+`round()` function to round our counts. Setting the `digits` argument of
+`round()` to -1 means that the values get rounded to the nearest 10,
+rather than the default behaviour of rounding to the nearest whole
+number.
 
 ``` r
 #mapping all weeks to one variable called "weeks" 
-billboard %>% tidyr::pivot_longer(cols = starts_with("wk"), names_to = "weeks", values_to = "rank") %>% head()
-```
-
-    ## # A tibble: 6 × 5
-    ##   artist track                   date.entered weeks  rank
-    ##   <chr>  <chr>                   <date>       <chr> <dbl>
-    ## 1 2 Pac  Baby Don't Cry (Keep... 2000-02-26   wk1      87
-    ## 2 2 Pac  Baby Don't Cry (Keep... 2000-02-26   wk2      82
-    ## 3 2 Pac  Baby Don't Cry (Keep... 2000-02-26   wk3      72
-    ## 4 2 Pac  Baby Don't Cry (Keep... 2000-02-26   wk4      77
-    ## 5 2 Pac  Baby Don't Cry (Keep... 2000-02-26   wk5      87
-    ## 6 2 Pac  Baby Don't Cry (Keep... 2000-02-26   wk6      94
-
-And so with this neat little trick, we’ve managed to bring the dataset
-into a better looking structure making further manipulation easier. Of
-course, this is not all we can do with the data, there are a wide range
-of tools at our disposal to allow us not only to pick the variables we
-need but also to split the contents of them into new columns, with more
-on that in the following sections.
-
-------------------------------------------------------------------------
-
-### Working with similar columns
-
-In some circumstances pivoting can also be used to construct a more
-robust for ease of use in later stages of the analysis. In these cases
-the dataset contains variables that are similar in their structure with
-the aim being to gather them in to one, cleaner, format. Consider the
-`anscombe` dataset that comes with basic R as shown below:
-
-``` r
-#dataset
-anscombe
-```
-
-    ##    x1 x2 x3 x4    y1   y2    y3    y4
-    ## 1  10 10 10  8  8.04 9.14  7.46  6.58
-    ## 2   8  8  8  8  6.95 8.14  6.77  5.76
-    ## 3  13 13 13  8  7.58 8.74 12.74  7.71
-    ## 4   9  9  9  8  8.81 8.77  7.11  8.84
-    ## 5  11 11 11  8  8.33 9.26  7.81  8.47
-    ## 6  14 14 14  8  9.96 8.10  8.84  7.04
-    ## 7   6  6  6  8  7.24 6.13  6.08  5.25
-    ## 8   4  4  4 19  4.26 3.10  5.39 12.50
-    ## 9  12 12 12  8 10.84 9.13  8.15  5.56
-    ## 10  7  7  7  8  4.82 7.26  6.42  7.91
-    ## 11  5  5  5  8  5.68 4.74  5.73  6.89
-
-As it is apparent, the basis for each variable is the same (x1,x2, y1,y2
-etc) and so it would make sense to simply create pair `x` and `y` and
-depict their corresponding identifier `1,2,3,4` in a separate variable.
-
-------------------------------------------------------------------------
-
-In such cases, `pivot_longer` offers an elegant solution to the problem
-by automatically selecting the common patterns and using them as the new
-variables.
-
-``` r
-# using ".value" and "everything()" to select common variables
-anscombe %>% tidyr::pivot_longer(everything(),
-   names_to = c(".value", "set"),
-   names_pattern = "(.)(.)")
-```
-
-    ## # A tibble: 44 × 3
-    ##    set       x     y
-    ##    <chr> <dbl> <dbl>
-    ##  1 1        10  8.04
-    ##  2 2        10  9.14
-    ##  3 3        10  7.46
-    ##  4 4         8  6.58
-    ##  5 1         8  6.95
-    ##  6 2         8  8.14
-    ##  7 3         8  6.77
-    ##  8 4         8  5.76
-    ##  9 1        13  7.58
-    ## 10 2        13  8.74
-    ## # … with 34 more rows
-
-------------------------------------------------------------------------
-
-In the example above, the `.value` identifier enables selection of the
-common elements between `x1,x2,etc` and `y1,y2,etc` and then uses the
-findings as separate variables.
-
-The `everything()` argument, as the name would suggest, picks the entire
-variable set in the dataset.
-
-Notice also the use of the `names_pattern = "(.)(.)"` option. This is a
-special kind of regex use where the values within the brackets are used
-to detect the kind of pattern to be used.
-
-The `names_pattern` or `name_sep()` options make explicit use of the
-`extract()` and `separate()` tools respectively (discussed in more
-detail in the next sections) utilizing regular expressions to detect the
-variable to pivot. In the former expression, the regex contained in the
-matching groups depicted within the brackets in the above expression, is
-what distinguishes one part of the variable from the other.
-
-## Widening the dataset
-
-`pivot_wider()` is the opposite `pivot_longer()` transforming a dataset
-to a **wider** format. It is not used as often but has still some value
-in presenting a dataset in a different light should the situation calls
-for it.
-
-Consider the `fish_encounters` dataset, contributed by **Myfanwy
-Johnston** depicted below. It describes whether fish swimming down a
-river are detected or not by automatic monitoring stations.
-
-``` r
-fish_encounters %>% head(10)
-```
-
-    ## # A tibble: 10 × 3
-    ##    fish  station  seen
-    ##    <fct> <fct>   <int>
-    ##  1 4842  Release     1
-    ##  2 4842  I80_1       1
-    ##  3 4842  Lisbon      1
-    ##  4 4842  Rstr        1
-    ##  5 4842  Base_TD     1
-    ##  6 4842  BCE         1
-    ##  7 4842  BCW         1
-    ##  8 4842  BCE2        1
-    ##  9 4842  BCW2        1
-    ## 10 4842  MAE         1
-
-------------------------------------------------------------------------
-
-A simple use of the function can provide a better understanding of what
-the data contains and also make it more useful for potential use in
-later stages of a processing system where specific input from each
-station can be utilized.
-
-``` r
-fish_encounters %>% tidyr::pivot_wider(names_from = station, values_from = seen) %>% head()
-```
-
-    ## # A tibble: 6 × 12
-    ##   fish  Release I80_1 Lisbon  Rstr Base_TD   BCE   BCW  BCE2  BCW2   MAE   MAW
-    ##   <fct>   <int> <int>  <int> <int>   <int> <int> <int> <int> <int> <int> <int>
-    ## 1 4842        1     1      1     1       1     1     1     1     1     1     1
-    ## 2 4843        1     1      1     1       1     1     1     1     1     1     1
-    ## 3 4844        1     1      1     1       1     1     1     1     1     1     1
-    ## 4 4845        1     1      1     1       1    NA    NA    NA    NA    NA    NA
-    ## 5 4847        1     1      1    NA      NA    NA    NA    NA    NA    NA    NA
-    ## 6 4848        1     1      1     1      NA    NA    NA    NA    NA    NA    NA
-
-------------------------------------------------------------------------
-
-The general use is very similar to that presented in `pivot_longer()`
-with `names_from` targeting the column containing the subcategories to
-split from and `values_from` the corresponding values associated with
-each category. Notice that there will be cases where there is no match
-and these will initially be filled with `NA`. Simply setting the option
-`values_fill` to a value of your choice will replaced the `NA` values to
-something more meaningful.
-
-``` r
-fish_encounters %>% tidyr::pivot_wider(names_from = station, values_from = seen,
-  values_fill = list(seen = 0)) %>% head()
-```
-
-    ## # A tibble: 6 × 12
-    ##   fish  Release I80_1 Lisbon  Rstr Base_TD   BCE   BCW  BCE2  BCW2   MAE   MAW
-    ##   <fct>   <int> <int>  <int> <int>   <int> <int> <int> <int> <int> <int> <int>
-    ## 1 4842        1     1      1     1       1     1     1     1     1     1     1
-    ## 2 4843        1     1      1     1       1     1     1     1     1     1     1
-    ## 3 4844        1     1      1     1       1     1     1     1     1     1     1
-    ## 4 4845        1     1      1     1       1     0     0     0     0     0     0
-    ## 5 4847        1     1      1     0       0     0     0     0     0     0     0
-    ## 6 4848        1     1      1     1       0     0     0     0     0     0     0
-
-## Aggregating with with `pivot_wider`
-
-Consider the `warpbreaks` dataset that comes with basic R, it describes
-the results of a designed experiment with nine replicates for every
-combination of wool (A and B) and tension (L, M, H).
-
-``` r
-#converting into a tibble and rearranging the vars
-warpbreaks %>% tibble::as_tibble() %>% dplyr::select(wool, tension, breaks)
-```
-
-    ## # A tibble: 54 × 3
-    ##    wool  tension breaks
-    ##    <fct> <fct>    <dbl>
-    ##  1 A     L           26
-    ##  2 A     L           30
-    ##  3 A     L           54
-    ##  4 A     L           25
-    ##  5 A     L           70
-    ##  6 A     L           52
-    ##  7 A     L           51
-    ##  8 A     L           26
-    ##  9 A     L           67
-    ## 10 A     M           18
-    ## # … with 44 more rows
-
-------------------------------------------------------------------------
-
-Notice the problem that appears when trying to widen this dataset.
-Uniqueness is not maintained since this is a repeated experiment with
-the same value of breaks for each tension value.
-
-``` r
-warpdata = warpbreaks %>% tidyr::pivot_wider(names_from = wool, values_from = breaks)
-```
-
-    ## Warning: Values from `breaks` are not uniquely identified; output will contain list-cols.
-    ## * Use `values_fn = list` to suppress this warning.
-    ## * Use `values_fn = {summary_fun}` to summarise duplicates.
-    ## * Use the following dplyr code to identify duplicates.
-    ##   {data} %>%
-    ##     dplyr::group_by(tension, wool) %>%
-    ##     dplyr::summarise(n = dplyr::n(), .groups = "drop") %>%
-    ##     dplyr::filter(n > 1L)
-
-------------------------------------------------------------------------
-
-The default output here is a list containing all the associated
-**break** values. One other, and perhaps more informative, approach
-would be to include a statistic to describe the contents in that list.
-
-For that purpose, `pivot_wider()` offers the `values_fn` option where a
-suitable function is defined to describe the list with a single value.
-
-``` r
-warpbreaks %>%
+wide_annual_offences_rounded <- annual_offences %>%
   tidyr::pivot_wider(
-    names_from = wool,
-    values_from = breaks,
-    values_fn = list(breaks = mean)
+    names_from = 'year',
+    values_from = 'count',
+    names_prefix = 'count_',
+    values_fill = 0,
+    values_fn = ~ round(.x, digits = -1)
   )
+head(wide_annual_offences_rounded)
+```
+
+    ## # A tibble: 6 × 6
+    ##   offence_code count_2016 count_2017 count_2018 count_2019 count_2020
+    ##   <chr>             <dbl>      <dbl>      <dbl>      <dbl>      <dbl>
+    ## 1 00101               220        190        180        150        120
+    ## 2 00304              4730       4950       4950       5610       4480
+    ## 3 00305                30         20         20         10         10
+    ## 4 00399              6400       5880       5150       4540       3420
+    ## 5 00405                10          0          0          0          0
+    ## 6 00406                 0          0          0          0          0
+
+## Lengthening data
+
+Let’s consider our earlier widened table, with original counts, columns
+with prefixes and NAs replaced with 0s.
+
+What if we want to go from our widened table back to our original one,
+here?
+
+``` r
+head(wide_annual_offences, 3)
+```
+
+    ## # A tibble: 3 × 6
+    ##   offence_code count_2016 count_2017 count_2018 count_2019 count_2020
+    ##   <chr>             <int>      <int>      <int>      <int>      <int>
+    ## 1 00101               219        188        177        154        122
+    ## 2 00304              4730       4953       4954       5613       4485
+    ## 3 00305                28         20         17         10          6
+
+``` r
+head(annual_offences, 3)
 ```
 
     ## # A tibble: 3 × 3
-    ##   tension     A     B
-    ##   <fct>   <dbl> <dbl>
-    ## 1 L        44.6  28.2
-    ## 2 M        24    28.8
-    ## 3 H        24.6  18.8
-
-## Exercises on Pivoting
-
-### Exercise 1
-
-Why does the following code fail?
-
-``` r
-#the table to use
-table4a
-table4a %>% tidyr::pivot_longer(1999, 2000, names_to = "year", values_to = "value")
-```
-
-### Exercise 2
-
-Consider the following dataset and apply `pivot_wider()` to **spread**
-the values in `name`, do you agree with the results after pivoting?
-
-Hint. Could a new column solve the problem, what other solution could we
-apply?
-
-``` r
-people = tibble::tribble(~name, ~key, ~value,
-                 #------------/------/-----,
-                 "Phil Woods", "age", 45,
-                 "Phil Woods", "height", 185,
-                 "Phil Woods", "age", 50,
-                 "Jess Cordero", "age", 45,
-                 "Jess Cordero", "height", 156,)
-```
+    ##    year offence_code count
+    ##   <int> <chr>        <int>
+    ## 1  2016 00101          219
+    ## 2  2016 00304         4730
+    ## 3  2016 00305           28
 
 ------------------------------------------------------------------------
 
-### Exercise 3
-
-Consider the following simple tibble, what kind of pivoting would you
-use, `pivot_longer()` or `pivot_wider()`?
+We use the function `pivot_longer()` for this. You can pass column names
+to it like this:
 
 ``` r
-rcj = tibble::tribble(~judge, ~male, ~female,
-                      "yes", NA, 10, 
-                      "no", 20, 12)
-```
-
-## Solutions
-
-### Exercise 1
-
-------------------------------------------------------------------------
-
-### Exercise 2
-
-------------------------------------------------------------------------
-
-### Exercise 3
-
-------------------------------------------------------------------------
-
-# Separating and extracting column contents
-
-## Introduction
-
-An important aspect of every data shaping mechanism is to be able to
-pick multiple columns or data entries within a variable with a certain
-precision and without having to manually type them each time.
-
-The functions `separate()` and `extract()` were created for this purpose
-where regex is used to describe the pattern to pick and reshape.
-
-Consider `table3` for example that comes with the `tidyr` package. One
-look at the table illustrates the problem that we are facing where the
-variable `rate` could be split into two different ones if somehow we
-could detect and pull out the values on either side of the separator.
-
-``` r
-table3
+long_annual_offences <- wide_annual_offences %>%
+  tidyr::pivot_longer(
+    cols = c('count_2016', 'count_2017', 'count_2018', 'count_2019', 'count_2020')
+  )
+head(long_annual_offences)
 ```
 
     ## # A tibble: 6 × 3
-    ##   country      year rate             
-    ## * <chr>       <int> <chr>            
-    ## 1 Afghanistan  1999 745/19987071     
-    ## 2 Afghanistan  2000 2666/20595360    
-    ## 3 Brazil       1999 37737/172006362  
-    ## 4 Brazil       2000 80488/174504898  
-    ## 5 China        1999 212258/1272915272
-    ## 6 China        2000 213766/1280428583
-
-## Separate
-
-The `separate()` function is build to help in cases where values in a
-column could be split based on a separator in place. On the above
-example in `table3` the following code splits the `rate` variable into
-`cases` and `population` accordingly
-
-``` r
-# separate() automatically detects the separator
-table3 %>% tidyr::separate(rate, into = c("cases", "population"))
-```
-
-    ## # A tibble: 6 × 4
-    ##   country      year cases  population
-    ##   <chr>       <int> <chr>  <chr>     
-    ## 1 Afghanistan  1999 745    19987071  
-    ## 2 Afghanistan  2000 2666   20595360  
-    ## 3 Brazil       1999 37737  172006362 
-    ## 4 Brazil       2000 80488  174504898 
-    ## 5 China        1999 212258 1272915272
-    ## 6 China        2000 213766 1280428583
+    ##   offence_code name       value
+    ##   <chr>        <chr>      <int>
+    ## 1 00101        count_2016   219
+    ## 2 00101        count_2017   188
+    ## 3 00101        count_2018   177
+    ## 4 00101        count_2019   154
+    ## 5 00101        count_2020   122
+    ## 6 00304        count_2016  4730
 
 ------------------------------------------------------------------------
 
-By default, the function will automatically detect any non-alphanumeric
-character and use that as a separator but its not limited to that. One
-can specify the separator manually using the `sep` option.
+Or, as our column names are conveniently named with a prefix, we can use
+`starts_with()` from `dplyr` again:
 
 ``` r
-# separate() manually  detects the separator
-table3 %>% tidyr::separate(rate, into = c("cases", "population"), sep = "/")
-```
-
-    ## # A tibble: 6 × 4
-    ##   country      year cases  population
-    ##   <chr>       <int> <chr>  <chr>     
-    ## 1 Afghanistan  1999 745    19987071  
-    ## 2 Afghanistan  2000 2666   20595360  
-    ## 3 Brazil       1999 37737  172006362 
-    ## 4 Brazil       2000 80488  174504898 
-    ## 5 China        1999 212258 1272915272
-    ## 6 China        2000 213766 1280428583
-
-------------------------------------------------------------------------
-
-At its heart, `separate()` uses regular expressions to detect and pull
-the corresponding characters. As a result the new columns are now of
-`char` type, something that can be changed by altering the state of the
-`convert` flag as shown below:
-
-``` r
-# separate() manually detects the separator and converts the columns into the appropriate data type 
-table3 %>% tidyr::separate(rate, into = c("cases", "population"), sep = "/", convert = TRUE)
-```
-
-    ## # A tibble: 6 × 4
-    ##   country      year  cases population
-    ##   <chr>       <int>  <int>      <int>
-    ## 1 Afghanistan  1999    745   19987071
-    ## 2 Afghanistan  2000   2666   20595360
-    ## 3 Brazil       1999  37737  172006362
-    ## 4 Brazil       2000  80488  174504898
-    ## 5 China        1999 212258 1272915272
-    ## 6 China        2000 213766 1280428583
-
-## Extract
-
-The `extract()` function lets you go a step further and allows you to
-define your own regex to be used for pattern patching. Using the same
-example as above, lets see how to split the `year` variable to `century`
-and `years`.
-
-``` r
-table3 %>% tidyr::extract(col = year, into = c("century", "years"), regex = "([0-9]{2})([0-9]{2})")
-```
-
-    ## # A tibble: 6 × 4
-    ##   country     century years rate             
-    ##   <chr>       <chr>   <chr> <chr>            
-    ## 1 Afghanistan 19      99    745/19987071     
-    ## 2 Afghanistan 20      00    2666/20595360    
-    ## 3 Brazil      19      99    37737/172006362  
-    ## 4 Brazil      20      00    80488/174504898  
-    ## 5 China       19      99    212258/1272915272
-    ## 6 China       20      00    213766/1280428583
-
-------------------------------------------------------------------------
-
-The `regex` option shown above uses the same syntax as described earlier
-in the chapter, in fact, it is possible to split the target variable
-into several others by expanding the bracket list as shown in the
-following block of code. The year variable is now split into three
-variables to depict the `century`, `decade` and `year`.
-
-``` r
-table3 %>% tidyr::extract(col = year, into = c("century", "decade", "year" ), regex = "([0-9]{2})([0-9])([0-9])")
-```
-
-    ## # A tibble: 6 × 5
-    ##   country     century decade year  rate             
-    ##   <chr>       <chr>   <chr>  <chr> <chr>            
-    ## 1 Afghanistan 19      9      9     745/19987071     
-    ## 2 Afghanistan 20      0      0     2666/20595360    
-    ## 3 Brazil      19      9      9     37737/172006362  
-    ## 4 Brazil      20      0      0     80488/174504898  
-    ## 5 China       19      9      9     212258/1272915272
-    ## 6 China       20      0      0     213766/1280428583
-
-In addition, internally the pivot functions make explicit use of
-`separate()` and `extract()` whenever a split or a regular expression is
-need to capture patterns present in name or within the content of a
-variable in the dataset.
-
-## Unite
-
-Of course, extracting and creating new variables would not be complete
-without a function to revert back to the original target variable. In
-this case, the `unite()` function provides the means to do exactly that
-as shown in the example below.
-
-``` r
-#the reshaped dataset
-tab3 = table3 %>% 
-  tidyr::extract(col = year, into = c("century", "decade", "year" ), regex = "([0-9]{2})([0-9])([0-9])")
-#going back to the original dataset - with separator
-tab3 %>% tidyr::unite(new, century, decade, year)
+long_annual_offences <- wide_annual_offences %>%
+  tidyr::pivot_longer(
+    cols = dplyr::starts_with('count')
+  )
+head(long_annual_offences)
 ```
 
     ## # A tibble: 6 × 3
-    ##   country     new    rate             
-    ##   <chr>       <chr>  <chr>            
-    ## 1 Afghanistan 19_9_9 745/19987071     
-    ## 2 Afghanistan 20_0_0 2666/20595360    
-    ## 3 Brazil      19_9_9 37737/172006362  
-    ## 4 Brazil      20_0_0 80488/174504898  
-    ## 5 China       19_9_9 212258/1272915272
-    ## 6 China       20_0_0 213766/1280428583
+    ##   offence_code name       value
+    ##   <chr>        <chr>      <int>
+    ## 1 00101        count_2016   219
+    ## 2 00101        count_2017   188
+    ## 3 00101        count_2018   177
+    ## 4 00101        count_2019   154
+    ## 5 00101        count_2020   122
+    ## 6 00304        count_2016  4730
 
 ------------------------------------------------------------------------
 
-By default, the `_` separator is used after each component of the
-composite variable but as always, there are option in place to customize
-this behavior. In the following block of code the separator is removed
-giving the original variable before any alteration takes place.
+Essentially, these data are the same as what we started with, but, not
+quite.
 
 ``` r
-#going back to the original dataset - with no separators
-tab3 %>% tidyr::unite(new, century, decade, year, sep = "")
+head(annual_offences, 3)
+```
+
+    ## # A tibble: 3 × 3
+    ##    year offence_code count
+    ##   <int> <chr>        <int>
+    ## 1  2016 00101          219
+    ## 2  2016 00304         4730
+    ## 3  2016 00305           28
+
+``` r
+head(long_annual_offences, 3)
+```
+
+    ## # A tibble: 3 × 3
+    ##   offence_code name       value
+    ##   <chr>        <chr>      <int>
+    ## 1 00101        count_2016   219
+    ## 2 00101        count_2017   188
+    ## 3 00101        count_2018   177
+
+``` r
+identical(long_annual_offences, annual_offences)
+```
+
+    ## [1] FALSE
+
+------------------------------------------------------------------------
+
+There are several differences, which we can correct via arguments to
+`pivot_wider()` and some `dplyr` functions.
+
+First, the default column name `value` has been assigned to our count,
+which we correct with the argument `values_to`, giving it the label we
+see in the original table:
+
+``` r
+long_annual_offences <- wide_annual_offences %>%
+  tidyr::pivot_longer(
+    cols = dplyr::starts_with('count'),
+    values_to = 'count'
+  )
+head(long_annual_offences)
 ```
 
     ## # A tibble: 6 × 3
-    ##   country     new   rate             
-    ##   <chr>       <chr> <chr>            
-    ## 1 Afghanistan 1999  745/19987071     
-    ## 2 Afghanistan 2000  2666/20595360    
-    ## 3 Brazil      1999  37737/172006362  
-    ## 4 Brazil      2000  80488/174504898  
-    ## 5 China       1999  212258/1272915272
-    ## 6 China       2000  213766/1280428583
-
-## Exercises on Separating and Extracting
-
-#### Exercise 1
-
-What do the additional arguments `extra` and `fill` do in `separate()`?
-
-Experiment with the various option in using the following datasets.
+    ##   offence_code name       count
+    ##   <chr>        <chr>      <int>
+    ## 1 00101        count_2016   219
+    ## 2 00101        count_2017   188
+    ## 3 00101        count_2018   177
+    ## 4 00101        count_2019   154
+    ## 5 00101        count_2020   122
+    ## 6 00304        count_2016  4730
 
 ``` r
-tibble::tibble(x = c("a,b,c", "d,e,f,g", "h,i,j")) %>% 
-  tidyr::separate(x, c("one", "two", "three"))
-tibble::tibble(x = c("a,b,c", "d,e", "f,g,i")) %>% 
-  tidyr::separate(x, c("one", "two", "three"))
+identical(long_annual_offences, annual_offences)
 ```
 
-#### Exercise 2
+    ## [1] FALSE
 
-Both `unite()` and `separate()` have a remove option. What does it do
-and how can it be utilized?
+------------------------------------------------------------------------
 
-#### Exercise 3
+There’s another default name that it’s assigned too — it’s used `name`
+when we want `year` to indicate the years. We correct this with an
+equivalent argument:
 
-Compare `separate()` and `extract()`, why are there so many options to
-separate but only one `unite()`?
+``` r
+long_annual_offences <- wide_annual_offences %>%
+  tidyr::pivot_longer(
+    cols = dplyr::starts_with('count'),
+    values_to = 'count',
+    names_to = 'year'
+  )
+head(long_annual_offences)
+```
 
-## Solutions
+    ## # A tibble: 6 × 3
+    ##   offence_code year       count
+    ##   <chr>        <chr>      <int>
+    ## 1 00101        count_2016   219
+    ## 2 00101        count_2017   188
+    ## 3 00101        count_2018   177
+    ## 4 00101        count_2019   154
+    ## 5 00101        count_2020   122
+    ## 6 00304        count_2016  4730
+
+``` r
+identical(long_annual_offences, annual_offences)
+```
+
+    ## [1] FALSE
+
+------------------------------------------------------------------------
+
+We also want to remove those prefixes:
+
+``` r
+long_annual_offences <- wide_annual_offences %>%
+  tidyr::pivot_longer(
+    cols = dplyr::starts_with('count'),
+    values_to = 'count',
+    names_to = 'year',
+    names_prefix = 'count_'
+  )
+head(long_annual_offences)
+```
+
+    ## # A tibble: 6 × 3
+    ##   offence_code year  count
+    ##   <chr>        <chr> <int>
+    ## 1 00101        2016    219
+    ## 2 00101        2017    188
+    ## 3 00101        2018    177
+    ## 4 00101        2019    154
+    ## 5 00101        2020    122
+    ## 6 00304        2016   4730
+
+``` r
+identical(long_annual_offences, annual_offences)
+```
+
+    ## [1] FALSE
+
+------------------------------------------------------------------------
+
+Still more to do! We have more rows in our new table, and that’s because
+of those year/offence combinations where there are no incidences. Let’s
+get `dplyr` involved, and filter these out:
+
+``` r
+long_annual_offences <- wide_annual_offences %>%
+  tidyr::pivot_longer(
+    cols = dplyr::starts_with('count'),
+    values_to = 'count',
+    names_to = 'year',
+    names_prefix = 'count_'
+  ) %>%
+  dplyr::filter(count > 0)
+```
+
+We now have the same number of rows in original table and the one we’re
+working on:
+
+``` r
+nrow(long_annual_offences) == nrow(annual_offences)
+```
+
+    ## [1] TRUE
+
+------------------------------------------------------------------------
+
+But we’re still not quite there…
+
+``` r
+identical(long_annual_offences, annual_offences)
+```
+
+    ## [1] FALSE
+
+Finally, we use `dplyr` to: 1) fix data types and reorder columns with
+`transmute()`, 2) order rows with `arrange()`:
+
+``` r
+long_annual_offences <- wide_annual_offences %>%
+  tidyr::pivot_longer(
+    cols = dplyr::starts_with('count'),
+    values_to = 'count',
+    names_to = 'year',
+    names_prefix = 'count_'
+  ) %>%
+  dplyr::filter(count > 0) %>%
+  dplyr::transmute(
+    year = as.integer(year),
+    offence_code,
+    count
+  ) %>%
+  dplyr::arrange(year, offence_code)
+```
+
+------------------------------------------------------------------------
+
+What do they both look like now?
+
+``` r
+head(annual_offences, 3)
+```
+
+    ## # A tibble: 3 × 3
+    ##    year offence_code count
+    ##   <int> <chr>        <int>
+    ## 1  2016 00101          219
+    ## 2  2016 00304         4730
+    ## 3  2016 00305           28
+
+``` r
+head(long_annual_offences, 3)
+```
+
+    ## # A tibble: 3 × 3
+    ##    year offence_code count
+    ##   <int> <chr>        <int>
+    ## 1  2016 00101          219
+    ## 2  2016 00304         4730
+    ## 3  2016 00305           28
+
+Success!
+
+``` r
+identical(long_annual_offences, annual_offences)
+```
+
+    ## [1] TRUE
+
+------------------------------------------------------------------------
 
 ### Exercise 1
+
+You have received summary tables showing quarterly totals of adult
+reoffenders split by number of previous offences of the offender.
+
+Read in the data:
+
+``` r
+reoffending_real <- Rs3tools::s3_path_to_full_df(
+    s3_path = "s3://alpha-r-training/intro-r-extension/adult_reoff_by_prev_off_number_2.csv")
+```
+
+This data table is in wide format, but in order to plot the data you
+need to put it in long format.
+
+1)  Put the data in long format
+2)  Remove relevant prefixes
+3)  Pass the labels ‘quarter’ and ‘count’ to the appropriate arguments
+    to name the columns in your long format table.
+
+Note, these are real data on reoffending, publicly available, derived
+from the table
+[here](https://www.gov.uk/government/statistics/proven-reoffending-statistics-april-to-june-2021)
 
 ------------------------------------------------------------------------
 
 ### Exercise 2
 
-### Exercise 3
+Your project manager likes the resulting plot, but wants to be able to
+see trends in counts over time more easily. Going from the long format
+table:
+
+1)  Put the data back into wide format
+2)  Add a prefix of your choice to the new columns you create
+3)  Round the values to the nearest thousand
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
 
 # String manipulation
 
 ## Introduction
 
-In this part we will introduce strings and how to manipulate them to
-suit the needs of a particular project. The packages needed (listed
-above) are mostly the `stringr` and `tidyverse` package where the former
-contains a great number of functions to manipulate and work with strings
-and the latter is the base for most of the things we do in R.
+In this chapter we’ll look at strings and some techniques to help work
+with them, mainly making use of the `stringr` package from Tidyverse.
 
-Base R has a a number of functions to manipulate and work with strings
-but they can be inconsistent at times, the above package was created in
-an effort to standardize character vector manipulation and make it
-easier to follow and replicate.
-
-It should also be mentioned that the majority of the content that
-follows is contained in the book `R for Data Science` by `Hadley Wickam`
-and `Garrett Grolemund` that can be found in this
-[link](https://r4ds.had.co.nz/index.html).
-
-## String Basics
-
-There are two ways with which you can create a string in R, at the very
-basic level, by either using single of double quotes. There is no
-difference in the behavior but it is recommended to stick with `"` as it
-is more widely understood that this is a string and others will be able
-to follow your code easier.
-
-To note here that one of the advantages of having two ways to define a
-string is that you can combine them when quotes within a string if
-needed as showcased in the example below.
+There are two ways to create a string in R, by using either single or
+double quotes. There is no practical difference in behaviour for the two
+options, but the convention is to use double quotes (`"`).
 
 ``` r
-string1 = "a string using double quotes"
-is.character(string1)
+# Two options to define a string
+string1 <- "a string using double quotes"
+string2 <- 'another string using single quotes'
+
+string1
 ```
 
-    ## [1] TRUE
+    ## [1] "a string using double quotes"
 
 ``` r
-string2 = 'another string using single quotes'
-is.character(string2)
+string2
 ```
 
-    ## [1] TRUE
-
-``` r
-# a string containing quotes
-string3 = "this is a 'string' within a string"
-```
+    ## [1] "another string using single quotes"
 
 ------------------------------------------------------------------------
 
-Notice the difference in `string4`. This happens because the compiler
-cannot place two double quotes within the same string and so we need to
-`escape` it. To achieve that a `\` is used before the corresponding
-character. This can be used not only for `"` but for any other reserved
-character as well.
+There is an advantage to having two ways to define a string, which is
+that the two types of quotation marks can be combined for cases when the
+string itself needs to contain a quotation mark. Here are some examples
+of how to define a string in R:
 
 ``` r
-# notice how the output changes when implementing the following code
-string4 = 'this is a "string" within a string'
+# Some strings containing quotation marks
+string3 <- "here is a 'quote' within a string"
+string4 <- 'here is a "quote" within a string'
+
+string3
 ```
 
-If you need to `escape` a backslash then use a double backslash as in
-`\\` and to see what the output would look like when used in text you
-can use the `writeLines()` function to simulate that effect.
+    ## [1] "here is a 'quote' within a string"
 
 ``` r
-string5 = "escaping a reserved character like \" quotes "
-# to see how the result would appear in text
-writeLines(string5)
+string4
 ```
 
-    ## escaping a reserved character like " quotes
+    ## [1] "here is a \"quote\" within a string"
 
-``` r
-string6 = "escaping a backslash \\ "
-# to see how the result would appear in text
-writeLines(string6)
-```
-
-    ## escaping a backslash \
+Notice the difference in how `string4` is displayed - R has added escape
+characters (`\`) before the double quote marks. These escape characters
+change the behaviour of the following character. In this case it stops
+the following double quote mark from defining the end of the string, and
+instead allows it to be a part of the string.
 
 ------------------------------------------------------------------------
 
-Furthermore, additional control in the form of newlines or tabs is
-provided by using `\n` and `\t` for example along with a plethora of
-available special characters that can be found by typing `?"'"` or
-`?'"'` in you command line.
-
-Introducing non-English characters in your text strings is also possible
-using special characters of the form `\u00b5` for example for the Greek
-letter mu.
+Often it’s necessary to work with a set of strings in a character
+vector, and in the following sections we’ll look at how various
+`stringr` functions can help us work with character vectors. A new
+character vector can be constructed using the `c()` function that we’ve
+met before:
 
 ``` r
-# outputting non-English characters
-string7 = "\u00b5" 
-string7
-```
-
-    ## [1] "µ"
-
-Adding strings into a character vector is very common and is usually
-done with the use of the `c()` function.
-
-``` r
-s8 = c("a", "vector", "of", "strings")
-s8
+# Example of a character vector
+string_vector <- c("a", "vector", "of", "strings")
+string_vector
 ```
 
     ## [1] "a"       "vector"  "of"      "strings"
 
 ## String Length
 
-At times it is necessary to determine the length of a character string.
-A useful function to use in these cases is the `str_length()` function
-which helps with that.
+The first `stringr` function we’ll look at is `str_length()`, which
+simply returns the length of each string in a character vector:
 
 ``` r
-# finding out how many characters in a char vector
-stringr::str_length(c(s8, NA))
+# Find out how many characters are in each string
+stringr::str_length(string_vector)
 ```
 
-    ## [1]  1  6  2  7 NA
-
-Notice that an `NA` character is translated as is and we will see other
-options on how to deal with this in the sections to follow.
+    ## [1] 1 6 2 7
 
 ## Combining Strings
 
-We’ve already seen one way to combine strings in the previous section
-but with the `stringr` package we have an additional, more powerful tool
-at our disposal.
-
-Using `str_c()` can be beneficial in many cases since it allows for
-additional flexibility in the form of parameters for separators to be
-used or the option to collapse individual entries into one composite
-character string.
+The `str_c()` function is used to combine multiple strings together,
+where each string is included as a separate argument, like so:
 
 ``` r
-# using custom separator
-stringr::str_c("an", "str_c vector", "with", "space", "character", "separating each entry", sep = " ")
+# Combining several strings into one
+stringr::str_c("some", "strings", "to", "combine")
 ```
 
-    ## [1] "an str_c vector with space character separating each entry"
+    ## [1] "somestringstocombine"
+
+There are two optional arguments, `sep` and `collapse` that can be used
+to modify the behaviour of `str_c()`. The `sep` argument allows us to
+define a separator to put between the strings when they’re combined:
 
 ``` r
-# the collapse option
-stringr::str_c("an", "str_c vector", "with", "space", "character", "separating each entry", collapse = T)
+# Using custom separator
+stringr::str_c("some", "space", "separated", "strings", sep = " ")
 ```
 
-    ## [1] "anstr_c vectorwithspacecharacterseparating each entry"
+    ## [1] "some space separated strings"
 
 ------------------------------------------------------------------------
 
-What is more important however is that `str_c` is vectorised and in this
-way can help in cases where an action has to be applied to each element
-of an input vector instead of individual character strings.
-
-In addition, it can also work to recycle shorter vectors to mach the
-longer ones as in the following example.
+The `str_c()` is especially useful because it is vectorised, and when
+applying it to character vectors the `collapse` argument can be used to
+combine a vector of strings into a single string:
 
 ``` r
-# vectorized form - translating a shorter vector to match the longer one
-stringr::str_c("a", c("b", "c", "d"), "c", sep = " ")
+# Collapsing a character vector into a single string
+vector_to_collapse <- c("some", "strings", "to", "combine")
+stringr::str_c(vector_to_collapse, collapse="")
 ```
 
-    ## [1] "a b c" "a c c" "a d c"
+    ## [1] "somestringstocombine"
+
+The value of `collapse` will determine how the collapsed strings are
+separated.
+
+------------------------------------------------------------------------
+
+You can input multiple character vectors to `str_c()` and it will
+combine them together. You can either output another character vector:
 
 ``` r
-# simpler vectorizing 
-stringr::str_c("a", c("b", "c", "d"))
+# Combining two character vectors
+string_vector1 <- c("A", "B", "C", "D")
+string_vector2 <- c("1", "2", "3", "4")
+stringr::str_c(string_vector1, string_vector2, sep=" - ")
 ```
 
-    ## [1] "ab" "ac" "ad"
+    ## [1] "A - 1" "B - 2" "C - 3" "D - 4"
+
+Or collapse the vectors into a single string:
 
 ``` r
-# c() comparison
+# Combining and collapsing two character vectors
+string_vector1 <- c("A", "B", "C", "D")
+string_vector2 <- c("1", "2", "3", "4")
+stringr::str_c(string_vector1, string_vector2, sep=" - ", collapse=" ")
+```
+
+    ## [1] "A - 1 B - 2 C - 3 D - 4"
+
+------------------------------------------------------------------------
+
+It can also combine a single string with a vector of strings, like so:
+
+``` r
+# The single string will be 'recycled' to match the length of the vector
+stringr::str_c("a", c("b", "c", "d"), sep = " ")
+```
+
+    ## [1] "a b" "a c" "a d"
+
+``` r
+# Compare with what happens when we combine these strings with c() 
 c("a", c("b", "c", "d"))
 ```
 
     ## [1] "a" "b" "c" "d"
 
-## Substituting strings
-
-Extracting parts of a string can be done using the `str_sub` function
-and by specifying the `start` and `end` limits of the string to retain.
-
-It is also important to note that the function will not fail if the end
-point is outside of the index limit of the string.
+It’s worth noting what happens if you pass vectors of different lengths
+to `str_c()`:
 
 ``` r
-x <- c("OneValue", "SecondValue", "ThirdValue")
-stringr::str_sub(x, 1, 3)
+# Combining vectors of different lengths
+string_vector1 <- c("A", "B", "C")
+string_vector2 <- c("1", "2", "3", "4", "5")
+stringr::str_c(string_vector1, string_vector2, sep=" - ")
 ```
 
-    ## [1] "One" "Sec" "Thi"
+    ## Warning in stri_c(..., sep = sep, collapse = collapse, ignore_null = TRUE): longer object length is not a multiple of shorter
+    ## object length
+
+    ## [1] "A - 1" "B - 2" "C - 3" "A - 4" "B - 5"
+
+The code produces a warning but otherwise runs. In the output, you can
+see that the elements of the shorter vector have been repeated when
+combined with the additional elements of the longer vector.
+
+## Extracing and replacing substrings
+
+Selecting part of a string can be done using the `str_sub()` function.
+The `start` and `end` arguments are used to define the position of the
+substring you want to extract.
 
 ``` r
-# negative numbers count backwards from end
-stringr::str_sub(x, -4, -1)
+# Extracting substrings based on the position within the string
+x <- c("First value", "Second value", "Third value")
+stringr::str_sub(x, start=1, end=3)
 ```
 
-    ## [1] "alue" "alue" "alue"
+    ## [1] "Fir" "Sec" "Thi"
 
 ``` r
-# The function will not fail in the example below
-stringr::str_sub("a", 1, 5)
+# Negative values for the start and end count backwards from the end of the string
+stringr::str_sub(x, start=-5, end=-1)
 ```
 
-    ## [1] "a"
+    ## [1] "value" "value" "value"
 
 ------------------------------------------------------------------------
 
-An additional use of the of the `str_sub` function is to assign values
-to a given range on the target string
+You can also use `str_sub()` to help replace substrings:
 
 ``` r
-stringr::str_sub(x, 1, 1) <- stringr::str_to_lower(stringr::str_sub(x, 1, 1))
+# Replacing a substring based on the position within the string
+stringr::str_sub(x, start=-5, end=-1) <- "item"
 x
 ```
 
-    ## [1] "oneValue"    "secondValue" "thirdValue"
+    ## [1] "First item"  "Second item" "Third item"
 
-## Customizing text for different language locales
+## Detecting a matched pattern
 
-In some cases the string manipulation functions have a `locale` argument
-where adjustments for certain languages can be made. Notice for example
-how the sort order changes if the locale changes from English to
-Lithuanian in the example below.
-
-``` r
-#initial string
-x = c("y", "i", "k")
-#sort function in English
-stringr::str_sort(x)
-```
-
-    ## [1] "i" "k" "y"
+The `str_detect()` function can be used to check if part of a string
+matches a particular pattern. For example, let’s say we wanted to check
+if any strings in a character vector contain “blue”:
 
 ``` r
-#sort function in Lithuanian
-stringr::str_sort(x,locale = "lt")
+# Detecting the presence of the word 'blue' in a character vector
+colours <- c("scarlet red", "ultramarine blue", "cadmium red", "cobalt blue", "cerulean blue")
+stringr::str_detect(colours, "blue")
 ```
 
-    ## [1] "i" "y" "k"
+    ## [1] FALSE  TRUE FALSE  TRUE  TRUE
 
-## Exercises
+Because booleans (`TRUE` or `FALSE`) can be represented as numbers (1 or
+0), you can apply some functions typically used for numbers to boolean
+vectors:
+
+``` r
+# Count how many strings contain 'blue'
+sum(stringr::str_detect(colours, "blue"))
+```
+
+    ## [1] 3
+
+------------------------------------------------------------------------
+
+There can be unintended consequences for pattern matching, let’s say we
+wanted to find strings containing the colour “red” in another character
+vector:
+
+``` r
+# Detecting the presence of the word 'red' in a character vector, with an unintended consequence
+colours <- c("scarlet red", "ultramarine blue", "cadmium red", "cobalt blue", "weathered")
+stringr::str_detect(colours, "red")
+```
+
+    ## [1]  TRUE FALSE  TRUE FALSE  TRUE
+
+There are options to help deal with cases like this that we’ll visit
+later on.
+
+------------------------------------------------------------------------
+
+### Regular expressions
+
+Regular expressions (regex) are extremely helpful for pattern matching.
+Since regex could be an entire course by itself, here we only introduce
+a few basics to get started. See the [further reading](#further-reading)
+section if you’re interested in learning more about regex.
+
+There’s a common syntax for defining the patterns to match that can be
+used across multiple programming languages. Here are a few patterns to
+get started with:
+
+-   `[A-Za-z]` — All uppercase and lowercase letters
+-   `[0-9]` — All numbers
+-   `[A-Za-z0-9]` — All letters and all numbers
+-   `\\s` — A single space
+-   `^a` — Begins with ‘a’
+-   `a$` — Ends with ‘a’
+-   `[^a]` — Anything other than ‘a’
+-   `\\b` — A word boundary (e.g. a space, punctuation mark or the
+    start/end of a string)
+
+R also contains some pre-built regex classes that you might also
+encounter, for example `[:alpha:]` to match any letters and `[:digit:]`
+to match any numbers.
+
+------------------------------------------------------------------------
+
+We can use regex to help extract a more general pattern, such as only
+strings that contain letters:
+
+``` r
+# Detect strings containing any letters using regex
+colours <- c("1.", "ultramarine blue", "2. cadmium red", "cobalt blue", "-")
+stringr::str_detect(colours, "[A-Za-z]")
+```
+
+    ## [1] FALSE  TRUE  TRUE  TRUE FALSE
+
+Or only strings that contain letters or numbers:
+
+``` r
+stringr::str_detect(colours, "[A-Za-z0-9]")
+```
+
+    ## [1]  TRUE  TRUE  TRUE  TRUE FALSE
+
+Or only strings that contain something other than letters, numbers, and
+spaces:
+
+``` r
+stringr::str_detect(colours, "[^[A-Za-z0-9\\s]]")
+```
+
+    ## [1]  TRUE FALSE  TRUE FALSE  TRUE
+
+------------------------------------------------------------------------
+
+We can revisit the example from earlier, where we wanted to identify
+strings containing the colour “red”:
+
+``` r
+# Detecting the presence of the word 'red' in a character vector, with help from regex
+colours <- c("scarlet red", "ultramarine blue", "cadmium red", "cobalt blue", "weathered")
+stringr::str_detect(colours, "\\bred\\b")
+```
+
+    ## [1]  TRUE FALSE  TRUE FALSE FALSE
+
+The word boundary regex allows us to exclude words like “weathered” when
+looking for the word “red”.
+
+## Extracting a matched pattern
+
+We can use the `str_extract()` function to extract strings that match a
+particular pattern:
+
+``` r
+# Extracting substrings based on a matched pattern
+colours <- c("scarlet red", "ultramarine blue", "cadmium red", "cobalt blue", "cerulean blue")
+stringr::str_extract(colours, "blue")
+```
+
+    ## [1] NA     "blue" NA     "blue" "blue"
+
+## Replacing a matched pattern
+
+You can use the `str_replace()` and `str_replace_all()` functions to
+find and replace parts of a string. `str_replace()` replaces the first
+instance of the pattern, whereas `str_replace_all()` replaces all
+instances of the pattern. Here’s an alternative version of an example we
+saw earlier, using a different approach to replace “value” with “item”:
+
+``` r
+x <- c("First value", "Second value", "Third value")
+# Replace 'value' with 'item'
+stringr::str_replace(x, "value", "item")
+```
+
+    ## [1] "First item"  "Second item" "Third item"
+
+------------------------------------------------------------------------
+
+Regular expressions are also useful for string replacement. Here’s a
+example that replaces characters that aren’t letters or numbers with an
+underscore:
+
+``` r
+colours <- c("scarlet...red", "ultramarine.blue", "cadmium_red", "cobalt blue", "cerulean-blue")
+
+# Replace the first character that isn't a letter or number with an underscore
+stringr::str_replace(colours, "[^[A-Za-z0-9]]", "_")
+```
+
+    ## [1] "scarlet_..red"    "ultramarine_blue" "cadmium_red"      "cobalt_blue"      "cerulean_blue"
+
+``` r
+# Replace all characters that aren't a letter or number with an underscore
+stringr::str_replace_all(colours, "[^[A-Za-z0-9]]", "_")
+```
+
+    ## [1] "scarlet___red"    "ultramarine_blue" "cadmium_red"      "cobalt_blue"      "cerulean_blue"
+
+In the first example only the first match in each string has been
+replaced with an underscore, whereas in the second example all matches
+have been replaced.
+
+------------------------------------------------------------------------
 
 ### Exercise 1
 
-Use str_length() and str_sub() to extract the middle character from a
-string. What will you do if the string has an even number of characters?
-
-### Exercise 2 (optional)
-
-Write a function that turns (e.g.) a vector `c("a", "b", "c")` into the
-string `"a, b, and c"`. Think carefully about what it should do if given
-a vector of length 0, 1, or 2.
-
-## Exercise Solutions
-
-### Exercise 1
-
-The following function extracts the middle character. If the string has
-an even number of characters the choice is arbitrary. We choose to
-select \[*n*/2\], because that case works even if the string is only of
-length one. A more general method would allow the user to select either
-the floor or ceiling for the middle character of an even string.
-
-------------------------------------------------------------------------
-
-### Exercise 2 (optional)
-
-The function needs to have 4 cases
-
-1.  `n==0` for an empty vector
-2.  `n==1` for just one character string
-3.  `n==2` for the vector containing 2 character strings
-4.  `n > 2` for 2 or more
-
-------------------------------------------------------------------------
-
-## Additional Functions
-
-The `stringr` package comes with additional function wrappers that make
-the most common string operations somewhat easier. For example the
-following matching behavior can be conducted using the premade
-functions:
-
--   Determine which strings match a pattern.
--   Find the positions of matches.
--   Extract the content of matches.
--   Replace matches with new values.
-
-The list is actually a lot longer so here we will briefly discuss how
-the most popular string matching operations can be performed using the
-tools supplied by the `stringr` package.
-
-## Detect Strings
-
-Detecting strings is a very important aspect in many Data and Analysis
-applications and `str_detect` was created with ease of use in mind. It
-returns a logical vector depending whether there was a match in the
-corresponding location and based on the supplied pattern, as the example
-below illustrates.
+Remove all spaces from the following string:
 
 ``` r
-x <- c("apple", "banana", "pear")
-stringr::str_detect(x, "e")
+string <- "The quick brown fox jumps over the lazy dog."
 ```
 
-    ## [1]  TRUE FALSE  TRUE
+**Hint:** You can remove a matched pattern by replacing it with an empty
+string (`""`).
 
 ------------------------------------------------------------------------
-
-A very handy way of using it, is by taking advantage of how R translates
-`TRUE` (evaluated as `1`) and `FALSE` (evaluated as `0`) responses. In
-the example below using the `sum` and `mean` functions makes counting
-instances of a pattern being detected much easier.
-
-``` r
-# How many common words start with t?
-sum(stringr::str_detect(words, "^t"))
-```
-
-    ## [1] 65
-
-``` r
-# What proportion of common words end with a vowel?
-mean(stringr::str_detect(words, "[aeiou]$"))
-```
-
-    ## [1] 0.2765306
-
-------------------------------------------------------------------------
-
-A variation of `str_detect` is `str_count` and as the name suggests the
-function will count the instances of a pattern appearing in the target
-vector.
-
-``` r
-x <- c("apple", "banana", "pear")
-stringr::str_count(x, "a")
-```
-
-    ## [1] 1 3 1
-
-``` r
-# On average, how many vowels per word?
-mean(stringr::str_count(words, "[aeiou]"))
-```
-
-    ## [1] 1.991837
-
-## Extract Strings
-
-To extract strings we use the `str_extract` function that takes the
-input source vector and the pattern to match as arguments. In this case
-we will need a more complex set of examples and so the [Harvard
-Sentences](https://en.wikipedia.org/wiki/Harvard_sentences) collection
-of sentences is used. Although originally created to test VOIP systems,
-it can also be used for regex examples as well.
-
-``` r
-length(sentences)
-```
-
-    ## [1] 720
-
-``` r
-head(sentences)
-```
-
-    ## [1] "The birch canoe slid on the smooth planks."  "Glue the sheet to the dark blue background."
-    ## [3] "It's easy to tell the depth of a well."      "These days a chicken leg is a rare dish."   
-    ## [5] "Rice is often served in round bowls."        "The juice of lemons makes fine punch."
-
-------------------------------------------------------------------------
-
-A good way to start using regex in bulk is to see if we can construct a
-pattern to match that contains all the relevant information. In the
-example below the pattern contains a set of colours combined into a
-string to be used as the pattern.
-
-``` r
-colours <- c("red", "orange", "yellow", "green", "blue", "purple")
-colour_match <- stringr::str_c(colours, collapse = "|")
-colour_match
-```
-
-    ## [1] "red|orange|yellow|green|blue|purple"
-
-The next stage is to select the relevant examples from the collection of
-`sentences` and then proceed in matching based on the pattern we
-created.
-
-``` r
-has_colour <- stringr::str_subset(sentences, colour_match)
-matches <- stringr::str_extract(has_colour, colour_match)
-head(matches)
-```
-
-    ## [1] "blue" "blue" "red"  "red"  "red"  "blue"
-
-------------------------------------------------------------------------
-
-To better understand the mechanics behind the matching process it helps
-to know that `str_extract` only finds and extracts the first match in
-each row of a vector. To better illustrate this, the code below selects
-the phrases from the `sentences` collection where there are more than
-one match.
-
-``` r
-more <- sentences[stringr::str_count(sentences, colour_match) > 1]
-```
-
-Notice how `str_extract` works with these source vectors.
-
-``` r
-stringr::str_extract(more, colour_match)
-```
-
-    ## [1] "blue"   "green"  "orange"
-
-## Replace Strings
-
-`str_replace` and `str_replace_all` allow you to replace parts of a
-string that match a pattern with a new replacement string.
-
-``` r
-x <- c("apple", "pear", "banana")
-stringr::str_replace(x, "[aeiou]", "-")
-```
-
-    ## [1] "-pple"  "p-ar"   "b-nana"
-
-``` r
-stringr::str_replace_all(x, "[aeiou]", "-")
-```
-
-    ## [1] "-ppl-"  "p--r"   "b-n-n-"
-
-------------------------------------------------------------------------
-
-And with `str_replace_all` we can apply the same functionality as above
-in all the elements of a character vector.
-
-``` r
-x <- c("1 house", "2 cars", "3 people")
-stringr::str_replace_all(x, c("1" = "one", "2" = "two", "3" = "three"))
-```
-
-    ## [1] "one house"    "two cars"     "three people"
-
-In addition, one can also use backreferences and recycle elements of the
-same string as replacements
-
-``` r
-sentences %>% 
-  stringr::str_replace("([^ ]+) ([^ ]+) ([^ ]+)", "\\1 \\3 \\2") %>% 
-  head(5)
-```
-
-    ## [1] "The canoe birch slid on the smooth planks."  "Glue sheet the to the dark blue background."
-    ## [3] "It's to easy tell the depth of a well."      "These a days chicken leg is a rare dish."   
-    ## [5] "Rice often is served in round bowls."
-
-## Exercises
-
-### Exercise 1: Detecting strings
-
-1.  For each of the following challenges, try solving it by using both a
-    single regular expression, and a combination of multiple
-    str_detect() calls.
-
-    1.  Find all words that start or end with ‘d’.
-
-    2.  Find all words that start with a vowel and end with a consonant.
-
-    3.  Are there any words that contain at least one of each different
-        vowel?
-
-2.  What word has the highest number of vowels? What word has the
-    highest proportion of vowels? (Hint: what is the denominator?)
-
-------------------------------------------------------------------------
-
-### Exercise 2: Extracting strings
-
-From the Harvard sentences data, extract:
-
-    1. The first word from each sentence.
-
-    2. All words ending in 'ing'.
-
-    3. All plurals.
-
-------------------------------------------------------------------------
-
-### Exercise 3: Replacing Strings
-
-1.  Replace all forward slashes in a string with backslashes.
-
-2.  Implement a simple version of str_to_lower() using replace_all().
-
-3.  Switch the first and last letters in words. Which of those strings
-    are still words?
-
-## Solutions
-
-### Exercise 1
-
-For part 1 we have the following:
-
-Words that start or end with ‘d’?
-
-------------------------------------------------------------------------
-
-For part 2 we have the following:
-
-Words starting with vowel and ending with consonant.
-
-------------------------------------------------------------------------
-
-For part 3, the following:
-
-There is not a simple regular expression to match words that that
-contain at least one of each vowel. The regular expression would need to
-consider all possible orders in which the vowels could occur.
-
-------------------------------------------------------------------------
-
-### Exercise 2
-
-Part 1: Finding the first word in each sentence requires defining what a
-pattern constitutes a word. For the purposes of this question, I’ll
-consider a word any contiguous set of letters. Since str_extract() will
-extract the first match, if it is provided a regular expression for
-words, it will return the first word.
-
-However, the third sentence begins with “It’s”. To catch this, I’ll
-change the regular expression to require the string to begin with a
-letter, but allow for a subsequent apostrophe.
-
-------------------------------------------------------------------------
-
-Part 2: This pattern finds all words ending in ‘ing’.
-
-------------------------------------------------------------------------
-
-Part 3: Finding all plurals cannot be correctly accomplished with
-regular expressions alone. Finding plural words would at least require
-morphological information about words in the language. See WordNet for a
-resource that would do that. However, identifying words that end in an
-“s” and with more than three characters, in order to remove “as”, “is”,
-“gas”, etc., is a reasonable heuristic.
-
-------------------------------------------------------------------------
-
-### Exercise 3
-
-Part 1: Replace forward slashes with backslashes.
-
-Part 2: Implement a simple version of str_to_lower() using
-replace_all().
-
-------------------------------------------------------------------------
-
-Part 3: Switch the first and last letters in words. Which of those
-strings are still words?
-
-First, make a vector of all the words with first and last letters
-swapped:
-
-Next, find what of “swapped” is also in the original list using the
-function intersect():
-
-------------------------------------------------------------------------
-
-Alternatively, the regex can be written using the POSIX character class
-for letter (\[\[:alpha:\]\]):
 
 # Further Reading
 
@@ -2407,7 +2125,6 @@ for letter (\[\[:alpha:\]\]):
 
 -   [Bonus
     examples](https://github.com/moj-analytical-services/intro_r_training_extension#bonus-examples)
--   [Appendix](https://github.com/moj-analytical-services/intro_r_training_extension#appendix)
 -   [R for Data Science](https://r4ds.had.co.nz)
 -   [Advanced R](https://adv-r.hadley.nz)
 -   [Tidyverse website](https://www.tidyverse.org)
@@ -2561,8 +2278,9 @@ go into a new column called `offender_count`.
 
 ``` r
 # Read data
-prosecutions_and_convictions <- botor::s3_read(
-  "s3://alpha-r-training/writing-functions-in-r/prosecutions-and-convictions-2018.csv", read.csv)
+prosecutions_and_convictions <- Rs3tools::s3_path_to_full_df(
+  s3_path = "alpha-r-training/writing-functions-in-r/prosecutions-and-convictions-2018.csv"
+)
 
 # Filter for Magistrates Court to extract the prosecutions
 prosecutions <- prosecutions_and_convictions %>%
@@ -2772,254 +2490,14 @@ to be edited.
 |   %in%   | The subject appears in a list |
 | is.na()  | The subject is NA             |
 
-## Regular Expressions
+## Regex patterns
 
-Matching patterns with regular expressions is a large topic and one that
-could be a course of its own. Here we include a flavor of what can be
-achieved.
-
-### Normal Pattern Matching
-
-Simple pattern matching can be achieved by using the `str_view` function
-and specifying the `string` and `pattern` arguments as shown below:
-
-``` r
-x <- c("apple", "banana", "pear")
-# str_view(x, "an")
-```
-
-The complexity of the match can be adjusted and wildcards can be used as
-well in the form of `.` as in
-
-``` r
-# str_view(x, ".a.")
-```
-
-An important thing to remember here is that you are looking for given
-pattern in a string or a vector of strings. Specifying the pattern to
-look for can be sometimes tricky and therefore is recommended to take a
-look at the accompanied information sheet for the `stringr` package
-located
-[here](https://evoldyn.gitlab.io/evomics-2018/ref-sheets/R_strings.pdf).
-
-The most common functions for regular expressions as well as ways to
-structure your pattern can be found in the above link.
-
-### Escaping characters
-
-We saw previously that the wildcard is represented by `.`, what happens
-if your pattern needs to include the dot `.`?
-
-For cases such as these there is a need to “escape” a character using
-the backlash `\`. So for example the dot (`.`) as stated previously
-would be normally used as `\.` in a regular expression. However, a
-problem arises since strings are used to represent regular expressions,
-they also use the backlash to represent an escaped character. The
-solution is to use the double backlash as in `\\.` to signify that we
-want to “escape” the dot (`.`) in a regular expression pattern.
-
-``` r
-# To create the regular expression, we need \\
-dot <- "\\."
-# But the expression itself only contains one:
-writeLines(dot)
-# And this tells R to look for an explicit .
-# str_view(c("abc", "a.c", "bef"), "a\\.c")
-```
-
-If there is a need to match the `\` character itself then you will need
-to use the double version `\\` for regular expressions and since this is
-a string you will need to add one more `\` followed by the actual
-character. So four backlash characters will need to be used!
-
-``` r
-#to see this in a string
-x <- "a\\b"
-writeLines(x)
-```
-
-    ## a\b
-
-``` r
-# to view the result in a RegEx
-# str_view(x, "\\\\")
-```
-
-throughout this section the pattern for a RegEx will be presented as
-`\.` whereas the actual string as `\\.`.
-
-#### Exercises
-
-1.  Explain why each of these strings don’t match a : “",”\\“,”\\".
-
-2.  How would you match the sequence “’?
-
-3.  What patterns will the regular expression ...... match? How would
-    you represent it as a string?
-
-### Anchors
-
-It is sometimes useful to match a pattern starting from the beginning or
-the end of a string. In these cases an anchor is used to notify the
-engine that we are using a point of origin.
-
-More specifically, the start of the string is denoted by `^` and the end
-by `$`
-
-``` r
-x <- c("apple", "banana", "pear")
-# str_view(x, "^a")
-# str_view(x, "a$")
-```
-
-You can also use both in one pattern and this is useful when the entire
-string is to be matched
-
-``` r
-# this will output all possible matches
-x <- c("apple pie", "apple", "apple cake")
-# str_view(x, "apple")
-# notice the difference in the result here
-# str_view(x, "^apple$")
-```
-
-#### Exercises
-
-1.  How would you match the literal string “$^$”?
-
-2.  Given the corpus of common words in stringr::words, create regular
-    expressions that find all words that:
-
-    +Start with “y”. +End with “x” +Are exactly three letters long.
-    (Don’t cheat by using str_length()!) +Have seven letters or more.
-    Hint: Since this list is long, you might want to use the match
-    argument to str_view() to show only the matching or non-matching
-    words.
-
-### Character Classes
-
-Similar to the wildcard you saw previously, there are other reserved
-patters that serve a similar purpose for example:
-
--   `\d`: matches any digit.
--   `\s`: matches any whitespace (e.g. space, tab, newline).
--   `[abc]`: matches a, b, or c.
--   `[^abc]`: matches anything except a, b, or c.
-
-A reminder here that if you want to use the above to pattern then you
-will need to escape them as we learned earlier. So the `\d` string would
-be used as `\\d` in a pattern.
-
-In addition, there is an alternative to the backlash way of escaping a
-character that involves creating a class for a single character as in
-`[.]` for example. In many cases this is considered more intuitive that
-using the backlash.
-
-A character class containing a single character is a nice alternative to
-backslash escapes when you want to include a single meta-character in a
-regex. Many people find this more readable.
-
-``` r
-# Look for a literal character that normally has special meaning in a regex
-# str_view(c("abc", "a.c", "a*c", "a c"), "a[.]c")
-# str_view(c("abc", "a.c", "a*c", "a c"), ".[*]c")
-# str_view(c("abc", "a.c", "a*c", "a c"), "a[ ]")
-```
-
-However, some characters will have a certain meaning even inside
-brackets and so the backslash for escaping them is still necessary,
-these are `] \ ^ -`.
-
-Alternation is used to pick between patterns, for example `abc|d..f`
-will pick a pattern with either `c` or `d` in the definition. Note how
-the `|` is used, it will only pick between the immediate characters and
-not between the entire patterns on either side. If it gets to a point
-where it becomes confusing remember to use parenthesis to clear things
-up.
-
-``` r
-# str_view(c("grey", "gray"), "gr(e|a)y")
-```
-
-#### Exercises
-
-1.  Create regular expressions to find all words that: +Start with a
-    vowel. +That only contain consonants. (Hint: thinking about matching
-    “not”-vowels.) +End with`ed`, but not with `eed`. +End with `ing`
-    or`ise`.
-2.  Empirically verify the rule “i before e except after c”.
-3.  Is “q” always followed by a “u”?
-4.  Write a regular expression that matches a word if it’s probably
-    written in British English, not American English.
-5.  Create a regular expression that will match telephone numbers as
-    commonly written in your country.
-
-### Repetition
-
-It is sometimes necessary for a certain pattern to appear multiple time
-within a string, in such cases these repetitions can be coded with
-regular expressions to automate the search process.
-
-for example:
-
--   `?`: 0 or 1
--   `+`: 1 or more
--   `*`: 0 or more
-
-``` r
-x <- "1888 is the longest year in Roman numerals: MDCCCLXXXVIII"
-# str_view(x, "CC?")
-# str_view(x, "CC+")
-# str_view(x, 'C[LX]+')
-```
-
-Another key aspect of the above code is that the number or precedence
-here dictates that the character just before the operator will be
-affected. This means that parenthesis will need to be used as in
-`bana(na)+` to capture more than one character.
-
-It is also possible to specify the number of repetitions explicitly by
-using:
-
--   `{n}`: exactly n
--   `{n,}`: n or more
--   `{,m}`: at most m
--   `{n,m}`: between n and m
-
-``` r
-# str_view(x, "C{2}")
-# str_view(x, "C{2,}")
-# str_view(x, "C{2,3}")
-```
-
-To also note here that the system will match as many of the characters
-that it can find. To switch this behavior off and use what is called
-“lazy” matching (instead of “greedy” as specified earlier) the `?`
-operator can be used as follows:
-
-``` r
-# str_view(x, 'C{2,3}?')
-# str_view(x, 'C[LX]+?')
-```
-
-#### Exercises
-
-1.  Describe the equivalents of `?`, `+`,`*` in `{m,n}` form.
-
-2.  Describe in words what these regular expressions match: (read
-    carefully to see if I’m using a regular expression or a string that
-    defines a regular expression.)
-
-    -   `^.*$`
-    -   `"\\{.+\\}"`
-    -   `\d{4}-\d{2}-\d{2}`
-    -   `"\\\\{4}"`
-
-3.  Create regular expressions to find all words that:
-
-    -   Start with three consonants.
-    -   Have three or more vowels in a row.
-    -   Have two or more vowel-consonant pairs in a row.
-
-4.  Solve the beginner regexp crosswords at
-    \[<https://regexcrossword.com/challenges/beginner>\].
+`[A-Za-z]` or `[:alpha:]` \| All uppercase and lowercase letters  
+`[0-9]` or `[:digit:]` \| All numbers  
+`[A-Za-z0-9]` or `[:alnum:]` \| All letters and all numbers  
+`\\s` or `[:space:]` \| A single space  
+`^a` \| Begins with ‘a’  
+`a$` \| Ends with ‘a’  
+`[^a]` \| Anything other than ‘a’  
+`\\b` \| A word boundary (e.g. a space, punctuation mark or the
+start/end of a string)
