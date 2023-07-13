@@ -4045,18 +4045,18 @@ df</pre>
 <pre >## # A tibble: 12 × 3
 ##    year  quarter count
 ##    &lt;chr&gt; &lt;chr&gt;   &lt;int&gt;
-##  1 2017  Q1          7
-##  2 &lt;NA&gt;  Q2          4
-##  3 &lt;NA&gt;  Q3          1
-##  4 &lt;NA&gt;  Q4          8
-##  5 2018  Q1          3
-##  6 &lt;NA&gt;  Q2          5
-##  7 &lt;NA&gt;  Q3         11
-##  8 &lt;NA&gt;  Q4         12
-##  9 2019  Q1         10
+##  1 2017  Q1          5
+##  2 &lt;NA&gt;  Q2         11
+##  3 &lt;NA&gt;  Q3         12
+##  4 &lt;NA&gt;  Q4          1
+##  5 2018  Q1         10
+##  6 &lt;NA&gt;  Q2          7
+##  7 &lt;NA&gt;  Q3          6
+##  8 &lt;NA&gt;  Q4          8
+##  9 2019  Q1          9
 ## 10 &lt;NA&gt;  Q2          2
-## 11 &lt;NA&gt;  Q3          9
-## 12 &lt;NA&gt;  Q4          6</pre>
+## 11 &lt;NA&gt;  Q3          4
+## 12 &lt;NA&gt;  Q4          3</pre>
 
 </article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
 
@@ -4068,18 +4068,18 @@ df %&gt;% tidyr::fill(year)</pre>
 <pre >## # A tibble: 12 × 3
 ##    year  quarter count
 ##    &lt;chr&gt; &lt;chr&gt;   &lt;int&gt;
-##  1 2017  Q1          7
-##  2 2017  Q2          4
-##  3 2017  Q3          1
-##  4 2017  Q4          8
-##  5 2018  Q1          3
-##  6 2018  Q2          5
-##  7 2018  Q3         11
-##  8 2018  Q4         12
-##  9 2019  Q1         10
+##  1 2017  Q1          5
+##  2 2017  Q2         11
+##  3 2017  Q3         12
+##  4 2017  Q4          1
+##  5 2018  Q1         10
+##  6 2018  Q2          7
+##  7 2018  Q3          6
+##  8 2018  Q4          8
+##  9 2019  Q1          9
 ## 10 2019  Q2          2
-## 11 2019  Q3          9
-## 12 2019  Q4          6</pre>
+## 11 2019  Q3          4
+## 12 2019  Q4          3</pre>
 
 </article></slide><slide class=""><hgroup><h2>Removing rows with missing values from a dataframe</h2></hgroup><article  id="removing-rows-with-missing-values-from-a-dataframe" class="smaller ">
 
@@ -4788,10 +4788,14 @@ stringr::str_c(&quot;a&quot;, c(&quot;b&quot;, &quot;c&quot;, &quot;d&quot;), se
 
 <pre >## [1] &quot;a b&quot; &quot;a c&quot; &quot;a d&quot;</pre>
 
-<pre class = 'prettyprint lang-r'># Compare with what happens when we combine these strings with c() 
+<p>Compare this with what happens when we combine these strings with <code>c()</code> :</p>
+
+<pre class = 'prettyprint lang-r'># Combining strings into a single vector with c() 
 c(&quot;a&quot;, c(&quot;b&quot;, &quot;c&quot;, &quot;d&quot;))</pre>
 
 <pre >## [1] &quot;a&quot; &quot;b&quot; &quot;c&quot; &quot;d&quot;</pre>
+
+</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
 
 <p>It’s worth noting what happens if you pass vectors of different lengths to <code>str_c()</code>:</p>
 

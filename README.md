@@ -1029,17 +1029,17 @@ df
     ##    year  quarter count
     ##    <chr> <chr>   <int>
     ##  1 2017  Q1          4
-    ##  2 <NA>  Q2         12
-    ##  3 <NA>  Q3          5
-    ##  4 <NA>  Q4          7
-    ##  5 2018  Q1          1
-    ##  6 <NA>  Q2          9
+    ##  2 <NA>  Q2         10
+    ##  3 <NA>  Q3          2
+    ##  4 <NA>  Q4         12
+    ##  5 2018  Q1          9
+    ##  6 <NA>  Q2          3
     ##  7 <NA>  Q3         11
-    ##  8 <NA>  Q4         10
+    ##  8 <NA>  Q4          6
     ##  9 2019  Q1          8
-    ## 10 <NA>  Q2          3
-    ## 11 <NA>  Q3          2
-    ## 12 <NA>  Q4          6
+    ## 10 <NA>  Q2          7
+    ## 11 <NA>  Q3          1
+    ## 12 <NA>  Q4          5
 
 ------------------------------------------------------------------------
 
@@ -1055,17 +1055,17 @@ df %>% tidyr::fill(year)
     ##    year  quarter count
     ##    <chr> <chr>   <int>
     ##  1 2017  Q1          4
-    ##  2 2017  Q2         12
-    ##  3 2017  Q3          5
-    ##  4 2017  Q4          7
-    ##  5 2018  Q1          1
-    ##  6 2018  Q2          9
+    ##  2 2017  Q2         10
+    ##  3 2017  Q3          2
+    ##  4 2017  Q4         12
+    ##  5 2018  Q1          9
+    ##  6 2018  Q2          3
     ##  7 2018  Q3         11
-    ##  8 2018  Q4         10
+    ##  8 2018  Q4          6
     ##  9 2019  Q1          8
-    ## 10 2019  Q2          3
-    ## 11 2019  Q3          2
-    ## 12 2019  Q4          6
+    ## 10 2019  Q2          7
+    ## 11 2019  Q3          1
+    ## 12 2019  Q4          5
 
 ## Removing rows with missing values from a dataframe
 
@@ -1873,12 +1873,17 @@ stringr::str_c("a", c("b", "c", "d"), sep = " ")
 
     ## [1] "a b" "a c" "a d"
 
+Compare this with what happens when we combine these strings with `c()`
+:
+
 ``` r
-# Compare with what happens when we combine these strings with c() 
+# Combining strings into a single vector with c() 
 c("a", c("b", "c", "d"))
 ```
 
     ## [1] "a" "b" "c" "d"
+
+------------------------------------------------------------------------
 
 It’s worth noting what happens if you pass vectors of different lengths
 to `str_c()`:

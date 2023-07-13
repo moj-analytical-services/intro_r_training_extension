@@ -470,7 +470,7 @@ stringr::str_c(string_vector1, string_vector2, sep=" - ", collapse=" ")
 # The single string will be 'recycled' to match the length of the vector
 stringr::str_c("a", c("b", "c", "d"), sep = " ")
 
-# Compare with what happens when we combine these strings with c() 
+# Combining strings into a single vector with c() 
 c("a", c("b", "c", "d"))
 
 # Combining vectors of different lengths
