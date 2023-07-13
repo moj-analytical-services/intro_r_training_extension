@@ -236,6 +236,10 @@ reoffending_real <-
 
 # pivot_wider
 
+# You have received summary tables showing quarterly totals of adult reoffenders
+# split by number of previous offences of the individual. In order to plot these
+# data you need to put them in long format.
+
 # Put these data in long format
 # remove prefixes
 # pass the labels 'quarter' and 'count' to the appropriate arguments
@@ -252,7 +256,10 @@ reoffending_real_long <- reoffending_real %>%
 
 # pivot_wider
 
-# Now, put that table back into wide format
+# Your project manager likes the resulting plot, but wants to be able to seee
+# trends in counts over time more easily.
+# Going from the long format table
+# Put the data back into wide format
 # Add a prefix of your choice to the new columns you create
 # round to the nearest thousand
 
