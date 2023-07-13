@@ -1,6 +1,6 @@
 
 # Load packages
-library(botor) # Used to help R interact with s3 cloud storage
+library(Rs3tools) # Used to help R interact with s3 cloud storage
 library(dplyr) # Used for data manipulation
 library(tidyr) # Used to help reshape and deal with missing data
 library(stringr) # Used for string manipulation
@@ -45,8 +45,8 @@ x <- c(0, 74, 0, 8, 23, 15, 3, 0, -1, 9)
 dplyr::if_else(x > 0, 1, 0)
 
 # First read and preview the data
-offenders <- botor::s3_read(
-  "s3://alpha-r-training/intro-r-training/Offenders_Chicago_Police_Dept_Main.csv", read.csv
+offenders <- Rs3tools::s3_path_to_full_df(
+  "alpha-r-training/intro-r-training/Offenders_Chicago_Police_Dept_Main.csv"
 )
 str(offenders)
 
@@ -139,12 +139,12 @@ for (i in data) {
 }
 
 # Get dataframe with all available files/folders from an s3 path
-files <- botor::s3_ls("s3://alpha-r-training/intro-r-extension")
+files <- Rs3tools::list_files_in_buckets("alpha-r-training", prefix="intro-r-extension/fruit")
 
 # Get a list of csv file names
 files <- files %>%
-  dplyr::filter(grepl(".csv", uri)) %>%
-  dplyr::pull(uri)
+  dplyr::filter(grepl(".csv", path)) %>%
+  dplyr::pull(path)
 
 files
 
@@ -153,7 +153,7 @@ fruit_list <- vector("list", length(files))
 
 # Loop over each file, and add the data to a list
 for (i in seq_along(files)) {
-  fruit_list[[i]] <- botor::s3_read(files[i], readr::read_csv, show_col_types = FALSE)
+  fruit_list[[i]] <- Rs3tools::s3_path_to_full_df(files[i])
 }
 
 # Combine the list of dataframes into a single dataframe
@@ -173,10 +173,10 @@ while (i <= 5) { # The loop will continue until the condition i<=5 is met
 fruit <- fruit %>% dplyr::mutate(Item = toupper(Item))
 fruit
 
-fruit_pence <- fruit %>% dplyr::mutate(across(where(is.numeric), ~ .x * 100))
+fruit_pence <- fruit %>% dplyr::mutate(dplyr::across(where(is.numeric), ~ .x * 100))
 fruit_pence
 
-rounded_fruit <- fruit %>% dplyr::mutate(across(where(is.numeric), signif, 1))
+rounded_fruit <- fruit %>% dplyr::mutate(dplyr::across(where(is.numeric), signif, 1))
 
 rounded_fruit
 
@@ -282,212 +282,252 @@ fruit <- tibble::tibble(
 )
 
 
-# for more information on the dataset 
-?billboard
-# notice the dimensions of the data
-#dim(billboard)
+# read in the fake annual offences data
+annual_offences <- 
+  Rs3tools::s3_path_to_full_df(
+    s3_path = "s3://alpha-r-training/intro-r-extension/annual_offences_fake.csv", 
+    colClasses = c("integer", "character", "integer")) %>%
+  tibble::tibble()
 
-#to see the structure of the data
-billboard %>% dplyr::arrange(desc(date.entered)) %>% dplyr::select(1:6) %>% head()
+head(annual_offences)
 
 
-
-#starting by mapping a single month 
-billboard %>% tidyr::pivot_longer(cols = c(wk1, wk2, wk3, wk4), names_to = "month1", values_to = "rank") %>% 
-  dplyr::select(1:5, "month1", "rank") %>% head()
-#and to see clearly the contents of the new variable
-# billboard %>% pivot_longer(cols = c(wk1,wk2, wk3, wk4), names_to = "month1", values_to = "rank") %>%
-# .$month1 %>% head()
-
-#mapping all weeks to one variable called "weeks" 
-billboard %>% tidyr::pivot_longer(cols = starts_with("wk"), names_to = "weeks", values_to = "rank") %>% head()
-
-#dataset
-anscombe
-
-# using ".value" and "everything()" to select common variables
-anscombe %>% tidyr::pivot_longer(everything(),
-   names_to = c(".value", "set"),
-   names_pattern = "(.)(.)")
-
-fish_encounters %>% head(10)
-
-fish_encounters %>% tidyr::pivot_wider(names_from = station, values_from = seen) %>% head()
-
-fish_encounters %>% tidyr::pivot_wider(names_from = station, values_from = seen,
-  values_fill = list(seen = 0)) %>% head()
-
-#converting into a tibble and rearranging the vars
-warpbreaks %>% tibble::as_tibble() %>% dplyr::select(wool, tension, breaks)
-
-warpdata = warpbreaks %>% tidyr::pivot_wider(names_from = wool, values_from = breaks)
-
-warpbreaks %>%
+# basic implementation of pivot_wider()
+wide_annual_offences <- annual_offences %>%
   tidyr::pivot_wider(
-    names_from = wool,
-    values_from = breaks,
-    values_fn = list(breaks = mean)
+    names_from = 'year',
+    values_from = 'count'
   )
 
-## #the table to use
-## table4a
-## table4a %>% tidyr::pivot_longer(1999, 2000, names_to = "year", values_to = "value")
+head(wide_annual_offences)
 
-## people = tibble::tribble(~name, ~key, ~value,
-##                  #------------/------/-----,
-##                  "Phil Woods", "age", 45,
-##                  "Phil Woods", "height", 185,
-##                  "Phil Woods", "age", 50,
-##                  "Jess Cordero", "age", 45,
-##                  "Jess Cordero", "height", 156,)
+# adding a prefix to new columns
+wide_annual_offences <- annual_offences %>%
+  tidyr::pivot_wider(
+    names_from = 'year',
+    values_from = 'count',
+    names_prefix = 'count_'
+  )
+head(wide_annual_offences)
 
-## rcj = tibble::tribble(~judge, ~male, ~female,
-##                       "yes", NA, 10,
-##                       "no", 20, 12)
+# filling in NAs with 0
+wide_annual_offences <- annual_offences %>%
+  tidyr::pivot_wider(
+    names_from = 'year',
+    values_from = 'count',
+    names_prefix = 'count_',
+    values_fill = 0
+  )
+head(wide_annual_offences)
+
+#starting by mapping a single month 
+wide_annual_offences_with_totals <- wide_annual_offences %>%
+  dplyr::mutate(
+    count_2016_2020 =
+      rowSums(dplyr::across(dplyr::starts_with("count")))
+  )
+head(wide_annual_offences_with_totals)
+
+#mapping all weeks to one variable called "weeks" 
+wide_annual_offences_rounded <- annual_offences %>%
+  tidyr::pivot_wider(
+    names_from = 'year',
+    values_from = 'count',
+    names_prefix = 'count_',
+    values_fill = 0,
+    values_fn = ~ round(.x, digits = -1)
+  )
+head(wide_annual_offences_rounded)
+
+head(wide_annual_offences, 3)
+head(annual_offences, 3)
+
+long_annual_offences <- wide_annual_offences %>%
+  tidyr::pivot_longer(
+    cols = c('count_2016', 'count_2017', 'count_2018', 'count_2019', 'count_2020')
+  )
+head(long_annual_offences)
+
+long_annual_offences <- wide_annual_offences %>%
+  tidyr::pivot_longer(
+    cols = dplyr::starts_with('count')
+  )
+head(long_annual_offences)
+
+head(annual_offences, 3)
+head(long_annual_offences, 3)
+
+identical(long_annual_offences, annual_offences)
+
+long_annual_offences <- wide_annual_offences %>%
+  tidyr::pivot_longer(
+    cols = dplyr::starts_with('count'),
+    values_to = 'count'
+  )
+head(long_annual_offences)
+
+identical(long_annual_offences, annual_offences)
+
+long_annual_offences <- wide_annual_offences %>%
+  tidyr::pivot_longer(
+    cols = dplyr::starts_with('count'),
+    values_to = 'count',
+    names_to = 'year'
+  )
+head(long_annual_offences)
+
+identical(long_annual_offences, annual_offences)
+
+long_annual_offences <- wide_annual_offences %>%
+  tidyr::pivot_longer(
+    cols = dplyr::starts_with('count'),
+    values_to = 'count',
+    names_to = 'year',
+    names_prefix = 'count_'
+  )
+head(long_annual_offences)
+
+identical(long_annual_offences, annual_offences)
+
+long_annual_offences <- wide_annual_offences %>%
+  tidyr::pivot_longer(
+    cols = dplyr::starts_with('count'),
+    values_to = 'count',
+    names_to = 'year',
+    names_prefix = 'count_'
+  ) %>%
+  dplyr::filter(count > 0)
+
+nrow(long_annual_offences) == nrow(annual_offences)
+
+identical(long_annual_offences, annual_offences)
+
+long_annual_offences <- wide_annual_offences %>%
+  tidyr::pivot_longer(
+    cols = dplyr::starts_with('count'),
+    values_to = 'count',
+    names_to = 'year',
+    names_prefix = 'count_'
+  ) %>%
+  dplyr::filter(count > 0) %>%
+  dplyr::transmute(
+    year = as.integer(year),
+    offence_code,
+    count
+  ) %>%
+  dplyr::arrange(year, offence_code)
+
+head(annual_offences, 3)
+head(long_annual_offences, 3)
+
+identical(long_annual_offences, annual_offences)
+
+reoffending_real <- Rs3tools::s3_path_to_full_df(
+    s3_path = "s3://alpha-r-training/intro-r-extension/adult_reoff_by_prev_off_number_2.csv")
 
 
+# Two options to define a string
+string1 <- "a string using double quotes"
+string2 <- 'another string using single quotes'
 
+string1
+string2
 
+# Some strings containing quotation marks
+string3 <- "here is a 'quote' within a string"
+string4 <- 'here is a "quote" within a string'
 
+string3
+string4
 
+# Example of a character vector
+string_vector <- c("a", "vector", "of", "strings")
+string_vector
 
+# Find out how many characters are in each string
+stringr::str_length(string_vector)
 
+# Combining several strings into one
+stringr::str_c("some", "strings", "to", "combine")
 
-table3
+# Using custom separator
+stringr::str_c("some", "space", "separated", "strings", sep = " ")
 
-# separate() automatically detects the separator
-table3 %>% tidyr::separate(rate, into = c("cases", "population"))
+# Collapsing a character vector into a single string
+vector_to_collapse <- c("some", "strings", "to", "combine")
+stringr::str_c(vector_to_collapse, collapse="")
 
-# separate() manually  detects the separator
-table3 %>% tidyr::separate(rate, into = c("cases", "population"), sep = "/")
+# Combining two character vectors
+string_vector1 <- c("A", "B", "C", "D")
+string_vector2 <- c("1", "2", "3", "4")
+stringr::str_c(string_vector1, string_vector2, sep=" - ")
 
-# separate() manually detects the separator and converts the columns into the appropriate data type 
-table3 %>% tidyr::separate(rate, into = c("cases", "population"), sep = "/", convert = TRUE)
+# Combining and collapsing two character vectors
+string_vector1 <- c("A", "B", "C", "D")
+string_vector2 <- c("1", "2", "3", "4")
+stringr::str_c(string_vector1, string_vector2, sep=" - ", collapse=" ")
 
-table3 %>% tidyr::extract(col = year, into = c("century", "years"), regex = "([0-9]{2})([0-9]{2})")
+# The single string will be 'recycled' to match the length of the vector
+stringr::str_c("a", c("b", "c", "d"), sep = " ")
 
-table3 %>% tidyr::extract(col = year, into = c("century", "decade", "year" ), regex = "([0-9]{2})([0-9])([0-9])")
-
-#the reshaped dataset
-tab3 = table3 %>% 
-  tidyr::extract(col = year, into = c("century", "decade", "year" ), regex = "([0-9]{2})([0-9])([0-9])")
-#going back to the original dataset - with separator
-tab3 %>% tidyr::unite(new, century, decade, year)
-
-#going back to the original dataset - with no separators
-tab3 %>% tidyr::unite(new, century, decade, year, sep = "")
-
-## tibble::tibble(x = c("a,b,c", "d,e,f,g", "h,i,j")) %>%
-##   tidyr::separate(x, c("one", "two", "three"))
-## tibble::tibble(x = c("a,b,c", "d,e", "f,g,i")) %>%
-##   tidyr::separate(x, c("one", "two", "three"))
-
-
-string1 = "a string using double quotes"
-is.character(string1)
-
-string2 = 'another string using single quotes'
-is.character(string2)
-
-# a string containing quotes
-string3 = "this is a 'string' within a string"
-
-# notice how the output changes when implementing the following code
-string4 = 'this is a "string" within a string'
-
-string5 = "escaping a reserved character like \" quotes "
-# to see how the result would appear in text
-writeLines(string5)
-string6 = "escaping a backslash \\ "
-# to see how the result would appear in text
-writeLines(string6)
-
-# outputting non-English characters
-string7 = "\u00b5" 
-string7
-
-s8 = c("a", "vector", "of", "strings")
-s8
-
-# finding out how many characters in a char vector
-stringr::str_length(c(s8, NA))
-
-# using custom separator
-stringr::str_c("an", "str_c vector", "with", "space", "character", "separating each entry", sep = " ")
-# the collapse option
-stringr::str_c("an", "str_c vector", "with", "space", "character", "separating each entry", collapse = T)
-
-# vectorized form - translating a shorter vector to match the longer one
-stringr::str_c("a", c("b", "c", "d"), "c", sep = " ")
-# simpler vectorizing 
-stringr::str_c("a", c("b", "c", "d"))
-# c() comparison
+# Combining strings into a single vector with c() 
 c("a", c("b", "c", "d"))
 
-x <- c("OneValue", "SecondValue", "ThirdValue")
-stringr::str_sub(x, 1, 3)
-# negative numbers count backwards from end
-stringr::str_sub(x, -4, -1)
-# The function will not fail in the example below
-stringr::str_sub("a", 1, 5)
+# Combining vectors of different lengths
+string_vector1 <- c("A", "B", "C")
+string_vector2 <- c("1", "2", "3", "4", "5")
+stringr::str_c(string_vector1, string_vector2, sep=" - ")
 
-stringr::str_sub(x, 1, 1) <- stringr::str_to_lower(stringr::str_sub(x, 1, 1))
+# Extracting substrings based on the position within the string
+x <- c("First value", "Second value", "Third value")
+stringr::str_sub(x, start=1, end=3)
+
+# Negative values for the start and end count backwards from the end of the string
+stringr::str_sub(x, start=-5, end=-1)
+
+# Replacing a substring based on the position within the string
+stringr::str_sub(x, start=-5, end=-1) <- "item"
 x
 
-#initial string
-x = c("y", "i", "k")
-#sort function in English
-stringr::str_sort(x)
-#sort function in Lithuanian
-stringr::str_sort(x,locale = "lt")
+# Detecting the presence of the word 'blue' in a character vector
+colours <- c("scarlet red", "ultramarine blue", "cadmium red", "cobalt blue", "cerulean blue")
+stringr::str_detect(colours, "blue")
 
+# Count how many strings contain 'blue'
+sum(stringr::str_detect(colours, "blue"))
 
+# Detecting the presence of the word 'red' in a character vector, with an unintended consequence
+colours <- c("scarlet red", "ultramarine blue", "cadmium red", "cobalt blue", "weathered")
+stringr::str_detect(colours, "red")
 
+# Detect strings containing any letters using regex
+colours <- c("1.", "ultramarine blue", "2. cadmium red", "cobalt blue", "-")
+stringr::str_detect(colours, "[A-Za-z]")
 
+stringr::str_detect(colours, "[A-Za-z0-9]")
 
+stringr::str_detect(colours, "[^[A-Za-z0-9\\s]]")
 
+# Detecting the presence of the word 'red' in a character vector, with help from regex
+colours <- c("scarlet red", "ultramarine blue", "cadmium red", "cobalt blue", "weathered")
+stringr::str_detect(colours, "\\bred\\b")
 
-x <- c("apple", "banana", "pear")
-stringr::str_detect(x, "e")
+# Extracting substrings based on a matched pattern
+colours <- c("scarlet red", "ultramarine blue", "cadmium red", "cobalt blue", "cerulean blue")
+stringr::str_extract(colours, "blue")
 
-# How many common words start with t?
-sum(stringr::str_detect(words, "^t"))
+x <- c("First value", "Second value", "Third value")
+# Replace 'value' with 'item'
+stringr::str_replace(x, "value", "item")
 
-# What proportion of common words end with a vowel?
-mean(stringr::str_detect(words, "[aeiou]$"))
+colours <- c("scarlet...red", "ultramarine.blue", "cadmium_red", "cobalt blue", "cerulean-blue")
 
-x <- c("apple", "banana", "pear")
-stringr::str_count(x, "a")
+# Replace the first character that isn't a letter or number with an underscore
+stringr::str_replace(colours, "[^[A-Za-z0-9]]", "_")
+# Replace all characters that aren't a letter or number with an underscore
+stringr::str_replace_all(colours, "[^[A-Za-z0-9]]", "_")
 
-# On average, how many vowels per word?
-mean(stringr::str_count(words, "[aeiou]"))
-
-length(sentences)
-
-head(sentences)
-
-colours <- c("red", "orange", "yellow", "green", "blue", "purple")
-colour_match <- stringr::str_c(colours, collapse = "|")
-colour_match
-
-has_colour <- stringr::str_subset(sentences, colour_match)
-matches <- stringr::str_extract(has_colour, colour_match)
-head(matches)
-
-more <- sentences[stringr::str_count(sentences, colour_match) > 1]
-
-stringr::str_extract(more, colour_match)
-
-x <- c("apple", "pear", "banana")
-stringr::str_replace(x, "[aeiou]", "-")
-stringr::str_replace_all(x, "[aeiou]", "-")
-
-x <- c("1 house", "2 cars", "3 people")
-stringr::str_replace_all(x, c("1" = "one", "2" = "two", "3" = "three"))
-
-sentences %>% 
-  stringr::str_replace("([^ ]+) ([^ ]+) ([^ ]+)", "\\1 \\3 \\2") %>% 
-  head(5)
+string <- "The quick brown fox jumps over the lazy dog."
 
 
 
@@ -509,8 +549,9 @@ offenders_summary <- offenders_summary %>%
 offenders_summary
 
 # Read data
-prosecutions_and_convictions <- botor::s3_read(
-  "s3://alpha-r-training/writing-functions-in-r/prosecutions-and-convictions-2018.csv", read.csv)
+prosecutions_and_convictions <- Rs3tools::s3_path_to_full_df(
+  s3_path = "alpha-r-training/writing-functions-in-r/prosecutions-and-convictions-2018.csv"
+)
 
 # Filter for Magistrates Court to extract the prosecutions
 prosecutions <- prosecutions_and_convictions %>%
@@ -557,51 +598,3 @@ totals
 time_series <- dplyr::left_join(time_series, totals, by=c("Offence.Type", "Offence.Group"))
 
 time_series
-
-
-x <- c("apple", "banana", "pear")
-# str_view(x, "an")
-
-# str_view(x, ".a.")
-
-# To create the regular expression, we need \\
-dot <- "\\."
-# But the expression itself only contains one:
-writeLines(dot)
-# And this tells R to look for an explicit .
-# str_view(c("abc", "a.c", "bef"), "a\\.c")
-
-#to see this in a string
-x <- "a\\b"
-writeLines(x)
-# to view the result in a RegEx
-# str_view(x, "\\\\")
-
-x <- c("apple", "banana", "pear")
-# str_view(x, "^a")
-# str_view(x, "a$")
-
-# this will output all possible matches
-x <- c("apple pie", "apple", "apple cake")
-# str_view(x, "apple")
-# notice the difference in the result here
-# str_view(x, "^apple$")
-
-# Look for a literal character that normally has special meaning in a regex
-# str_view(c("abc", "a.c", "a*c", "a c"), "a[.]c")
-# str_view(c("abc", "a.c", "a*c", "a c"), ".[*]c")
-# str_view(c("abc", "a.c", "a*c", "a c"), "a[ ]")
-
-# str_view(c("grey", "gray"), "gr(e|a)y")
-
-x <- "1888 is the longest year in Roman numerals: MDCCCLXXXVIII"
-# str_view(x, "CC?")
-# str_view(x, "CC+")
-# str_view(x, 'C[LX]+')
-
-# str_view(x, "C{2}")
-# str_view(x, "C{2,}")
-# str_view(x, "C{2,3}")
-
-# str_view(x, 'C{2,3}?')
-# str_view(x, 'C[LX]+?')
