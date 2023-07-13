@@ -107,10 +107,16 @@ It can also combine a single string with a vector of strings, like so:
 ```{r, purl=purl_example_code}
 # The single string will be 'recycled' to match the length of the vector
 stringr::str_c("a", c("b", "c", "d"), sep = " ")
+```
 
-# Compare with what happens when we combine these strings with c() 
+Compare this with what happens when we combine these strings with `c()` :
+
+```{r, purl=purl_example_code}
+# Combining strings into a single vector with c() 
 c("a", c("b", "c", "d"))
 ```
+
+---
 
 It's worth noting what happens if you pass vectors of different lengths to `str_c()`:
 
