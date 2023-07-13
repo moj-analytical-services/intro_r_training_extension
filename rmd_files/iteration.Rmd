@@ -140,12 +140,12 @@ Let's say we want to combine segments of a dataset, and we don't know in advance
 
 ```{r, message=F, warning=F, purl=purl_example_code}
 # Get dataframe with all available files/folders from an s3 path
-files <- botor::s3_ls("s3://alpha-r-training/intro-r-extension")
+files <- Rs3tools::list_files_in_buckets("alpha-r-training", prefix="intro-r-extension/fruit")
 
 # Get a list of csv file names
 files <- files %>%
-  dplyr::filter(grepl(".csv", uri)) %>%
-  dplyr::pull(uri)
+  dplyr::filter(grepl(".csv", path)) %>%
+  dplyr::pull(path)
 
 files
 ```
@@ -160,7 +160,7 @@ fruit_list <- vector("list", length(files))
 
 # Loop over each file, and add the data to a list
 for (i in seq_along(files)) {
-  fruit_list[[i]] <- botor::s3_read(files[i], readr::read_csv, show_col_types = FALSE)
+  fruit_list[[i]] <- Rs3tools::s3_path_to_full_df(files[i])
 }
 
 # Combine the list of dataframes into a single dataframe
@@ -218,7 +218,7 @@ fruit
 We can also use `mutate()` to apply a function to multiple columns in one go by combining it with the `across()` function from dplyr. This example demonstrates how to multiply the values in all numeric columns by 100:
 
 ```{r, purl=purl_example_code}
-fruit_pence <- fruit %>% dplyr::mutate(across(where(is.numeric), ~ .x * 100))
+fruit_pence <- fruit %>% dplyr::mutate(dplyr::across(where(is.numeric), ~ .x * 100))
 fruit_pence
 ```
 
@@ -229,7 +229,7 @@ Here we're using `mutate()` with `across()` to apply a function to all numeric c
 Of course `across()` can also be used to apply a named function to multiple columns of a dataframe. Here's how we can apply the `signif()` function to round values in all numeric columns to 1 significant figure:
 
 ```{r, purl=purl_example_code}
-rounded_fruit <- fruit %>% dplyr::mutate(across(where(is.numeric), signif, 1))
+rounded_fruit <- fruit %>% dplyr::mutate(dplyr::across(where(is.numeric), signif, 1))
 
 rounded_fruit
 ```
