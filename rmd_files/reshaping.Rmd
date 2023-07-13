@@ -6,9 +6,9 @@
 
 The exact same data can be represented in different orientations, depending on the purpose.
 
-A dataframe that is in long format is one in which each row represents a single observation, and variables are organized into separate rows. The number of columns is minimised, at the expense of having many rows.
+A dataframe that is in long format has a single column for each variable. The number of columns is minimised, at the expense of having many rows.
 
-A dataframe that is in wide format is one in which each row represents a single observation, and each variable has its own column. The number of rows is minimised, at the expense of many columns.
+A dataframe that is in wide format spreads a variable across several columns. The number of rows is minimised, at the expense of many columns.
 
 There are advantages and disadvantages of each depending on context, and it is useful to know how to switch between these. It is very easy with the `tidyverse` functions (package `tidyr`) `pivot_wider()` and `pivot_longer()`.
 
@@ -101,7 +101,7 @@ head(wide_annual_offences_with_totals)
 
 The final and most advanced thing we will do with `pivot_wider()` is to pass it an auxiliary function to transform the values that it places in its new columns.
 
-Here we are passing an anonymous function which itself calls the `round()` function to round our counts. Setting the `digits` argument of `round()` to -1 means that the values get rounded to the nearest 10, rather thatn the default behaviour of rounding to the nearest whole number.
+Here we are passing an anonymous function which itself calls the `round()` function to round our counts. Setting the `digits` argument of `round()` to -1 means that the values get rounded to the nearest 10, rather than the default behaviour of rounding to the nearest whole number.
 
 ```{r, purl=purl_example_code, eval=T}
 #mapping all weeks to one variable called "weeks" 
