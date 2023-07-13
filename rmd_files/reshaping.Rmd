@@ -4,11 +4,11 @@
 
 ## Introduction
 
-The exact same data can be represented in different formatsorientations, depending on the purpose.
+The exact same data can be represented in different orientations, depending on the purpose.
 
-A dataframe that is in long format is one in which each row represents a single observation, and variables are organized into separate columns. The number of columns is minimized, at the expense of having many rows.
+A dataframe that is in long format is one in which each row represents a single observation, and variables are organized into separate rows. The number of columns is minimised, at the expense of having many rows.
 
-A dataframe that is in wide format is one on which each row represents a single observation, and each variable has its own column. The number of rows is minimised, at the expense of many columns.
+A dataframe that is in wide format is one in which each row represents a single observation, and each variable has its own column. The number of rows is minimised, at the expense of many columns.
 
 There are advantages and disadvantages of each depending on context, and it is useful to know how to switch between these. It is very easy with the `tidyverse` functions (package `tidyr`) `pivot_wider()` and `pivot_longer()`.
 
@@ -21,7 +21,7 @@ There are advantages and disadvantages of each depending on context, and it is u
 We read in a data table.
 
 
-```{r, purl=purl_example_code ,eval=T}
+```{r, purl=purl_example_code}
 # read in the fake annual offences data
 annual_offences <- 
   Rs3tools::s3_path_to_full_df(
@@ -40,7 +40,7 @@ The data represent fake frequencies of offences from 2016 to 2020, represented b
 The long format may be a good way to store data like these for some purposes, but what if we want to put it into wide format, e.g. to make it easier for a human to read? We use the `tidyr` function `pivot_wider()`:
 
 
-```{r, purl=purl_example_code ,eval=T}
+```{r, purl=purl_example_code}
 # basic implementation of pivot_wider()
 wide_annual_offences <- annual_offences %>%
   tidyr::pivot_wider(
@@ -57,9 +57,9 @@ Remember that the data are sorted first by year? If we imagine each year as a st
 
 There are a couple of ways we could get more useful results from this function, though.
 
-First, it's generally not a good idea to have column names, that begin with numbers. Fortunately, `pivot_wider()` has the useful argument `names_prefix` to remedy this.
+First, it's generally not a good idea to have column names that begin with numbers. Fortunately, `pivot_wider()` has the useful argument `names_prefix` to remedy this.
 
-```{r, purl=purl_example_code ,eval=T}
+```{r, purl=purl_example_code}
 # adding a prefix to new columns
 wide_annual_offences <- annual_offences %>%
   tidyr::pivot_wider(
@@ -72,7 +72,7 @@ head(wide_annual_offences)
 
 When transforming count data like this we may have legitimate good reason to replace our NAs with 0s, which we can do with `values_fill()`:
 
-```{r, purl=purl_example_code ,eval=T}
+```{r, purl=purl_example_code}
 
 # filling in NAs with 0
 wide_annual_offences <- annual_offences %>%
@@ -87,7 +87,7 @@ head(wide_annual_offences)
 
 Once our table is in wide format, and clean, we can easily do transformations like this. Here we use `dplyr` functions to create a new column that adds up yearly totals across each column that has count data.
 
-```{r, purl=purl_example_code ,eval=T}
+```{r, purl=purl_example_code}
 
 #starting by mapping a single month 
 wide_annual_offences_with_totals <- wide_annual_offences %>%
@@ -99,7 +99,7 @@ wide_annual_offences_with_totals <- wide_annual_offences %>%
 
 The final and most advanced thing we will do with `pivot_wider()` is to pass it an auxiliary function to transform the values that it places in its new columns.
 
-Here we are passing an anonymous function which itself calls the `round()` function to round our counts. The `digits` argument tells `round()` to round one place before the decimal.
+Here we are passing an anonymous function which itself calls the `round()` function to round our counts. Setting the `digits` argument of `round()` to -1 means that the values get rounded to the nearest 10, rather thatn the default behaviour of rounding to the nearest whole number.
 
 ```{r, purl=purl_example_code, eval=T}
 #mapping all weeks to one variable called "weeks" 
@@ -145,21 +145,23 @@ long_annual_offences <- wide_annual_offences %>%
   tidyr::pivot_longer(
     cols = dplyr::starts_with('count')
   )
+head(long_annual_offences)
 ```
 
 
 Essentially, these data are the same as what we started with, but, not quite.
+
+
+```{r, purl=purl_example_code, eval=T}
+head(annual_offences)
+head(long_annual_offences)
+```
 
 ```{r, purl=purl_example_code, eval=T}
 identical(long_annual_offences, annual_offences)
 ```
 
 There are several difference, which we can correct via arguments to `pivot_wider()` and some `dplyr` functions.
-
-```{r, purl=purl_example_code, eval=T}
-head(annual_offences)
-head(long_annual_offences)
-```
 
 First, the default column name `value` has been assigned to our count, which we correct with the argument `values_to`, giving it the label we see in the original table.
 
@@ -185,6 +187,7 @@ long_annual_offences <- wide_annual_offences %>%
     values_to = 'count',
     names_to = 'year'
   )
+head(long_annual_offences)
 ```
 
 
@@ -202,13 +205,14 @@ long_annual_offences <- wide_annual_offences %>%
     names_to = 'year',
     names_prefix = 'count_'
   )
+head(long_annual_offences)
 ```
 
 ```{r, purl=purl_example_code, eval=T}
 identical(long_annual_offences, annual_offences)
 ```
 
-Still more to do! We have more rows in our new table, and that's because of those year/offence combinations were there are no incidences. Let's get `dplyr` involved, and filter these out
+Still more to do! We have more rows in our new table, and that's because of those year/offence combinations where there are no incidences. Let's get `dplyr` involved, and filter these out
 
 ```{r, purl=purl_example_code, eval=T}
 long_annual_offences <- wide_annual_offences %>%
@@ -219,17 +223,21 @@ long_annual_offences <- wide_annual_offences %>%
     names_prefix = 'count_'
   ) %>%
   dplyr::filter(count > 0)
-
+head(long_annual_offences)
+```
+We now have the same number of rows in original table and the one we're working on
+```{r, purl=purl_example_code, eval=T}
 nrow(long_annual_offences) == nrow(annual_offences)
 ```
 
+But we're still not quite there...
 ```{r, purl=purl_example_code, eval=T}
 identical(long_annual_offences, annual_offences)
 ```
 
-Finally, we use dplyr to:
-- fix data types and reorder columns (with `transmute`)
-- order rows
+Finally, we use `dplyr` to:
+- fix data types and reorder columns (with `transmute()`)
+- order rows (with `arrange()`)
 
 ```{r, purl=purl_example_code, eval=T}
 long_annual_offences <- wide_annual_offences %>%
@@ -268,12 +276,12 @@ You have received summary tables showing quarterly totals of adult reoffenders s
 
 Read in the data:
 
-Note, these are real data on reoffending, publicly available, derived from the table [here](https://www.gov.uk/government/statistics/proven-reoffending-statistics-april-to-june-2021)
-
 ```{r, purl=purl_example_code, eval=T}
 reoffending_real <- 
   Rs3tools::s3_path_to_full_df(
     s3_path = "s3://alpha-r-training/intro-r-extension/adult_reoff_by_prev_off_number_2.csv")
+
+head(reoffending_real)
 ```
 
 This data table is in wide format, but in order to plot the data you need to put it in long format.
@@ -291,12 +299,10 @@ Your project manager likes the resulting plot, but wants to be able to see trend
 - Round the values to the nearest thousand
 
 
-## Solutions
-
-
-### Exercise 1
+---
 
 ```{r, include=show_solution, purl=purl_solutions}
+# Reshaping - solution to exercise 1
 reoffending_real_long <- reoffending_real %>%
   tidyr::pivot_longer(
     cols = dplyr::starts_with('total'),
@@ -308,9 +314,9 @@ reoffending_real_long <- reoffending_real %>%
 
 ---
 
-### Exercise 2
 
 ```{r, include=show_solution, purl=purl_solutions, warning = FALSE, message = FALSE}
+# Reshaping - solution to exercise 2
 reoffending_real_wide <- reoffending_real_long %>%
   tidyr::pivot_wider(
     names_from = 'quarter',
@@ -319,3 +325,5 @@ reoffending_real_wide <- reoffending_real_long %>%
     values_fn = ~ round(.x, -3)
   )
 ```
+
+Note, these are real data on reoffending, publicly available, derived from the table [here](https://www.gov.uk/government/statistics/proven-reoffending-statistics-april-to-june-2021)
