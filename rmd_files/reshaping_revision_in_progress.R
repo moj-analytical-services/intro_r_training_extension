@@ -1,6 +1,10 @@
 # Script to generate fake offence code distributions
 library('magrittr')
 
+
+##### DATA PREP - ONE TIME
+
+
 # get offence codes
 codes <- Rdbtools::read_sql("
   SELECT 
@@ -47,6 +51,47 @@ botor::s3_write(
   row.names = FALSE
 )
 
+reoffending_real <- 
+  Rs3tools::s3_path_to_full_df(
+    s3_path = "s3://alpha-r-training/intro-r-extension/adult_reoff_by_prev_off_number.csv") 
+
+quarters <- colnames(reoffending_real)[-1]
+
+new_quarters <- data.frame(quarters) %>%
+  dplyr::mutate(year = substr(quarters, 9, 12),
+                quarter = dplyr::case_when(
+                  grepl("Jan_Mar", quarters) ~ "Q1",
+                  grepl("Apr_Jun", quarters) ~ "Q2",
+                  grepl("Jul_Sep", quarters) ~ "Q3",
+                  grepl("Oct_Dec", quarters) ~ "Q4"
+                ),
+                colname = paste0("total_", year, "_", quarter)) %>%
+  dplyr::pull(colname)
+
+new_colnames <- c("prev_conv_n", new_quarters)
+
+colnames(reoffending_real) <- new_colnames
+
+botor::s3_write(
+  x = reoffending_real,
+  fun = write.csv,
+  uri = "s3://alpha-r-training/intro-r-extension/adult_reoff_by_prev_off_number_2.csv",
+  row.names = FALSE
+)
+
+
+
+
+##############################################################################
+
+
+
+
+
+##### pivot_wider
+
+
+
 
 # Start with long format data
 
@@ -92,16 +137,16 @@ wide_annual_offences_with_totals <- wide_annual_offences %>%
     count_2016_2020 =
       rowSums(dplyr::across(dplyr::starts_with("count"))))
 
-wide_annual_offences_doubled <- annual_offences %>%
+wide_annual_offences_rounded <- annual_offences %>%
   tidyr::pivot_wider(
     names_from = 'year',
     values_from = 'count',
     names_prefix = 'count_',
     values_fill = 0,
-    values_fn = ~ .x * 2
+    values_fn = ~ round(.x, -1)
   )
 
-### Now onto pivot_longer
+### pivot_longer
 
 # Sometimes you will need to put data in long format for plotting
 # A common situation is when you want to plot using ggplot2
@@ -181,3 +226,40 @@ identical(long_annual_offences, annual_offences)
 
 
 
+
+#### Exercises
+
+reoffending_real <- 
+  Rs3tools::s3_path_to_full_df(
+    s3_path = "s3://alpha-r-training/intro-r-extension/adult_reoff_by_prev_off_number_2.csv") 
+
+
+# pivot_wider
+
+# Put these data in long format
+# remove prefixes
+# pass the labels 'quarter' and 'count' to the appropriate arguments
+
+reoffending_real_long <- reoffending_real %>%
+  tidyr::pivot_longer(
+    cols = dplyr::starts_with('total'),
+    values_to = 'count',
+    names_to = 'quarter',
+    names_prefix = 'total_'
+  )
+
+
+
+# pivot_wider
+
+# Now, put that table back into wide format
+# Add a prefix of your choice to the new columns you create
+# round to the nearest thousand
+
+reoffending_real_wide <- reoffending_real_long %>%
+  tidyr::pivot_wider(
+    names_from = 'quarter',
+    values_from = 'count',
+    names_prefix = 'count_',
+    values_fn = ~ round(.x, -3)
+  )
