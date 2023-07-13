@@ -154,6 +154,8 @@ Because booleans (`TRUE` or `FALSE`) can be represented as numbers (1 or 0), you
 sum(stringr::str_detect(colours, "blue"))
 ```
 
+---
+
 There can be unintended consequences for pattern matching, let's say we wanted to find strings containing the colour "red" in another character vector:
 
 ```{r, purl=purl_example_code}
