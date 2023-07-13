@@ -13,13 +13,9 @@ A dataframe that is in wide format is one in which each row represents a single 
 There are advantages and disadvantages of each depending on context, and it is useful to know how to switch between these. It is very easy with the `tidyverse` functions (package `tidyr`) `pivot_wider()` and `pivot_longer()`.
 
 
----
-
-
 ## Widening data
 
 We read in a data table.
-
 
 ```{r, purl=purl_example_code}
 # read in the fake annual offences data
@@ -39,7 +35,6 @@ The data represent fake frequencies of offences from 2016 to 2020, represented b
 
 The long format may be a good way to store data like these for some purposes, but what if we want to put it into wide format, e.g. to make it easier for a human to read? We use the `tidyr` function `pivot_wider()`:
 
-
 ```{r, purl=purl_example_code}
 # basic implementation of pivot_wider()
 wide_annual_offences <- annual_offences %>%
@@ -51,13 +46,15 @@ wide_annual_offences <- annual_offences %>%
 head(wide_annual_offences)
 ```
 
+---
+
 What's happened? We passed `count` to the argument `values_from` and `year` to the argument `names_from`. This tells the function that we want to make new columns based on `year`, and populate it with the values from `count`.
 
 Remember that the data are sorted first by year? If we imagine each year as a stack of data, what we're effectively doing here is taking the count data for each stack and putting them in their own column.
 
 There are a couple of ways we could get more useful results from this function, though.
 
-First, it's generally not a good idea to have column names that begin with numbers. Fortunately, `pivot_wider()` has the useful argument `names_prefix` to remedy this.
+First, it's generally not a good idea to have column names that begin with numbers. Fortunately, `pivot_wider()` has the useful argument `names_prefix` to remedy this:
 
 ```{r, purl=purl_example_code}
 # adding a prefix to new columns
@@ -70,10 +67,11 @@ wide_annual_offences <- annual_offences %>%
 head(wide_annual_offences)
 ```
 
+---
+
 When transforming count data like this we may have legitimate good reason to replace our NAs with 0s, which we can do with `values_fill()`:
 
 ```{r, purl=purl_example_code}
-
 # filling in NAs with 0
 wide_annual_offences <- annual_offences %>%
   tidyr::pivot_wider(
@@ -85,17 +83,21 @@ wide_annual_offences <- annual_offences %>%
 head(wide_annual_offences)
 ```
 
-Once our table is in wide format, and clean, we can easily do transformations like this. Here we use `dplyr` functions to create a new column that adds up yearly totals across each column that has count data.
+---
+
+Once our table is in wide format, and clean, we can easily do transformations like this. Here we use `dplyr` functions to create a new column that adds up yearly totals across each column that has count data:
 
 ```{r, purl=purl_example_code}
-
 #starting by mapping a single month 
 wide_annual_offences_with_totals <- wide_annual_offences %>%
   dplyr::mutate(
     count_2016_2020 =
-      rowSums(dplyr::across(dplyr::starts_with("count"))))
+      rowSums(dplyr::across(dplyr::starts_with("count")))
+  )
+head(wide_annual_offences_with_totals)
 ```
 
+---
 
 The final and most advanced thing we will do with `pivot_wider()` is to pass it an auxiliary function to transform the values that it places in its new columns.
 
@@ -114,19 +116,19 @@ wide_annual_offences_rounded <- annual_offences %>%
 head(wide_annual_offences_rounded)
 ```
 
----
 
-## Widening data
+## Lengthening data
 
 Let's consider our earlier widened table, with original counts, columns with prefixes and NAs replaced with 0s.
 
 What if we want to go from our widened table back to our original one, here?
 
-
 ```{r, purl=purl_example_code, eval=T}
-head(wide_annual_offences)
-head(annual_offences)
+head(wide_annual_offences, 3)
+head(annual_offences, 3)
 ```
+
+---
 
 We use the function `pivot_longer()` for this. You can pass column names to it like this:
 
@@ -138,6 +140,8 @@ long_annual_offences <- wide_annual_offences %>%
 head(long_annual_offences)
 ```
 
+---
+
 Or, as our column names are conveniently named with a prefix, we can use `starts_with()` from `dplyr` again:
 
 ```{r, purl=purl_example_code, eval=T}
@@ -148,22 +152,24 @@ long_annual_offences <- wide_annual_offences %>%
 head(long_annual_offences)
 ```
 
+---
 
 Essentially, these data are the same as what we started with, but, not quite.
 
-
 ```{r, purl=purl_example_code, eval=T}
-head(annual_offences)
-head(long_annual_offences)
+head(annual_offences, 3)
+head(long_annual_offences, 3)
 ```
 
 ```{r, purl=purl_example_code, eval=T}
 identical(long_annual_offences, annual_offences)
 ```
 
-There are several difference, which we can correct via arguments to `pivot_wider()` and some `dplyr` functions.
+---
 
-First, the default column name `value` has been assigned to our count, which we correct with the argument `values_to`, giving it the label we see in the original table.
+There are several differences, which we can correct via arguments to `pivot_wider()` and some `dplyr` functions.
+
+First, the default column name `value` has been assigned to our count, which we correct with the argument `values_to`, giving it the label we see in the original table:
 
 ```{r, purl=purl_example_code, eval=T}
 long_annual_offences <- wide_annual_offences %>%
@@ -178,7 +184,9 @@ head(long_annual_offences)
 identical(long_annual_offences, annual_offences)
 ```
 
-There's another default name that it's assigned too - it's used `name` when we want `year` to indicate the years. We correct this with an equivalent argument
+---
+
+There's another default name that it's assigned too --- it's used `name` when we want `year` to indicate the years. We correct this with an equivalent argument:
 
 ```{r, purl=purl_example_code, eval=T}
 long_annual_offences <- wide_annual_offences %>%
@@ -190,12 +198,13 @@ long_annual_offences <- wide_annual_offences %>%
 head(long_annual_offences)
 ```
 
-
 ```{r, purl=purl_example_code, eval=T}
 identical(long_annual_offences, annual_offences)
 ```
 
-We also want to remove those prefixes
+---
+
+We also want to remove those prefixes:
 
 ```{r, purl=purl_example_code, eval=T}
 long_annual_offences <- wide_annual_offences %>%
@@ -212,7 +221,9 @@ head(long_annual_offences)
 identical(long_annual_offences, annual_offences)
 ```
 
-Still more to do! We have more rows in our new table, and that's because of those year/offence combinations where there are no incidences. Let's get `dplyr` involved, and filter these out
+---
+
+Still more to do! We have more rows in our new table, and that's because of those year/offence combinations where there are no incidences. Let's get `dplyr` involved, and filter these out:
 
 ```{r, purl=purl_example_code, eval=T}
 long_annual_offences <- wide_annual_offences %>%
@@ -223,21 +234,21 @@ long_annual_offences <- wide_annual_offences %>%
     names_prefix = 'count_'
   ) %>%
   dplyr::filter(count > 0)
-head(long_annual_offences)
 ```
-We now have the same number of rows in original table and the one we're working on
+
+We now have the same number of rows in original table and the one we're working on:
 ```{r, purl=purl_example_code, eval=T}
 nrow(long_annual_offences) == nrow(annual_offences)
 ```
+
+---
 
 But we're still not quite there...
 ```{r, purl=purl_example_code, eval=T}
 identical(long_annual_offences, annual_offences)
 ```
 
-Finally, we use `dplyr` to:
-- fix data types and reorder columns (with `transmute()`)
-- order rows (with `arrange()`)
+Finally, we use `dplyr` to: 1) fix data types and reorder columns with `transmute()`, 2) order rows with `arrange()`:
 
 ```{r, purl=purl_example_code, eval=T}
 long_annual_offences <- wide_annual_offences %>%
@@ -256,19 +267,22 @@ long_annual_offences <- wide_annual_offences %>%
   dplyr::arrange(year, offence_code)
 ```
 
+---
+
 What do they both look like now?
 
 ```{r, purl=purl_example_code, eval=T}
-head(annual_offences)
-head(long_annual_offences)
+head(annual_offences, 3)
+head(long_annual_offences, 3)
 ```
+
 Success!
 
 ```{r, purl=purl_example_code, eval=T}
 identical(long_annual_offences, annual_offences)
 ```
 
-## Pivoting Exercises
+---
 
 ### Exercise 1
 
@@ -277,27 +291,27 @@ You have received summary tables showing quarterly totals of adult reoffenders s
 Read in the data:
 
 ```{r, purl=purl_example_code, eval=T}
-reoffending_real <- 
-  Rs3tools::s3_path_to_full_df(
+reoffending_real <- Rs3tools::s3_path_to_full_df(
     s3_path = "s3://alpha-r-training/intro-r-extension/adult_reoff_by_prev_off_number_2.csv")
-
-head(reoffending_real)
 ```
 
 This data table is in wide format, but in order to plot the data you need to put it in long format.
-- Put the data in long format
-- Remove relevant prefixes
-- Pass the labels 'quarter' and 'count' to the appropriate arguments to name the columns in your long format table.
 
+ a) Put the data in long format
+ b) Remove relevant prefixes
+ c) Pass the labels 'quarter' and 'count' to the appropriate arguments to name the columns in your long format table.
 
+Note, these are real data on reoffending, publicly available, derived from the table [here](https://www.gov.uk/government/statistics/proven-reoffending-statistics-april-to-june-2021)
+
+---
 
 ### Exercise 2
 
 Your project manager likes the resulting plot, but wants to be able to see trends in counts over time more easily. Going from the long format table:
-- Put the data back into wide format
-- Add a prefix of your choice to the new columns you create
-- Round the values to the nearest thousand
 
+ a) Put the data back into wide format
+ b) Add a prefix of your choice to the new columns you create
+ c) Round the values to the nearest thousand
 
 ---
 
@@ -310,10 +324,11 @@ reoffending_real_long <- reoffending_real %>%
     names_to = 'quarter',
     names_prefix = 'total_'
   )
+
+head(reoffending_real_long)
 ```
 
 ---
-
 
 ```{r, include=show_solution, purl=purl_solutions, warning = FALSE, message = FALSE}
 # Reshaping - solution to exercise 2
@@ -324,6 +339,6 @@ reoffending_real_wide <- reoffending_real_long %>%
     names_prefix = 'count_',
     values_fn = ~ round(.x, -3)
   )
-```
 
-Note, these are real data on reoffending, publicly available, derived from the table [here](https://www.gov.uk/government/statistics/proven-reoffending-statistics-april-to-june-2021)
+head(reoffending_real_wide)
+```
