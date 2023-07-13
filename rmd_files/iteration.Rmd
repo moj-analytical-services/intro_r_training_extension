@@ -140,7 +140,7 @@ Let's say we want to combine segments of a dataset, and we don't know in advance
 
 ```{r, message=F, warning=F, purl=purl_example_code}
 # Get dataframe with all available files/folders from an s3 path
-files <- Rs3tools::list_files_in_buckets("alpha-r-training", prefix="intro-r-extension")
+files <- Rs3tools::list_files_in_buckets("alpha-r-training", prefix="intro-r-extension/fruit")
 
 # Get a list of csv file names
 files <- files %>%
