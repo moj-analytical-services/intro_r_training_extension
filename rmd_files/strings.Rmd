@@ -33,7 +33,7 @@ Notice the difference in how `string4` is displayed - R has added escape charact
 
 ---
 
-Often it is necessary to work with a set of strings in a character vector, and in the following sections we'll look at how various `stringr` functions can help us work with character vectors. A new character vector can be constructed using the `c()` function that we've met before:
+Often it's necessary to work with a set of strings in a character vector, and in the following sections we'll look at how various `stringr` functions can help us work with character vectors. A new character vector can be constructed using the `c()` function that we've met before:
 
 ```{r, purl=purl_example_code}
 string_vector <- c("a", "vector", "of", "strings")
@@ -65,6 +65,8 @@ There are two optional arguments, `sep` and `collapse` that can be used to modif
 # Using custom separator
 stringr::str_c("some", "space", "separated", "strings", sep = " ")
 ```
+
+---
 
 The `str_c()` is especially useful because it is vectorised, and when applying it to character vectors the `collapse` argument can be used to combine a vector of strings into a single string:
 
@@ -103,6 +105,8 @@ stringr::str_c("a", c("b", "c", "d"), sep = " ")
 # Compare with what happens when we combine these strings with c() 
 c("a", c("b", "c", "d"))
 ```
+
+---
 
 It's worth noting what happens if you pass vectors of different lengths to `str_c()`:
 
@@ -210,7 +214,6 @@ stringr::str_detect(colours, "\\bred\\b")
 
 The word boundary regex allows us to exclude words like "weathered" when looking for the word "red".
 
----
 
 ## Extracting a matched pattern
 
@@ -245,6 +248,7 @@ stringr::str_replace(colours, "[^[A-Za-z0-9]]", "_")
 stringr::str_replace_all(colours, "[^[A-Za-z0-9]]", "_")
 ```
 
+---
 
 ### Exercise 1
 
@@ -263,6 +267,4 @@ string <- "The quick brown fox jumps over the lazy dog."
 string <- stringr::str_replace_all(string, " ", "")
 string
 ```
-
----
 
