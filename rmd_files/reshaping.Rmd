@@ -98,7 +98,7 @@ wide_annual_offences_with_totals <- wide_annual_offences %>%
 
 The final and most advanced thing we will do with `pivot_wider()` is to pass it an auxiliary function to transform the values that it places in its new columns.
 
-Here we are passing an anonymous function which itself calls the `round()` function to round our counts. Setting the `digits` argument of `round()` to -1 means that the values get rounded to the nearest 10, rather thatn the default behaviour of rounding to the nearest whole number.
+Here we are passing an anonymous function which itself calls the `round()` function to round our counts. Setting the `digits` argument of `round()` to -1 means that the values get rounded to the nearest 10, rather than the default behaviour of rounding to the nearest whole number.
 
 ```{r, purl=purl_example_code, eval=T}
 #mapping all weeks to one variable called "weeks" 
