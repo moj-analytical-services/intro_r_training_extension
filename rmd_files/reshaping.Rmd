@@ -27,6 +27,10 @@ annual_offences <-
 
 head(annual_offences)
 
+n_rows <- dim(annual_offences)[1]
+n_cols <- dim(annual_offences)[2]
+print(paste("The table is", n_rows, "rows by", n_cols, "cols, making", n_rows * n_cols, "cells", sep = " "))
+             
 ```
 
 ---
@@ -44,13 +48,18 @@ wide_annual_offences <- annual_offences %>%
   )
 
 head(wide_annual_offences)
+
+n_rows <- dim(wide_annual_offences)[1]
+n_cols <- dim(wide_annual_offences)[2]
+print(paste("The table is", n_rows, "rows by", n_cols, "cols, making", n_rows * n_cols, "cells", sep = " "))
+
 ```
 
 ---
 
 What's happened? We passed `count` to the argument `values_from` and `year` to the argument `names_from`. This tells the function that we want to make new columns based on `year`, and populate it with the values from `count`.
 
-Remember that the data are sorted first by year? If we imagine each year as a stack of data, what we're effectively doing here is taking the count data for each stack and putting them in their own column.
+Remember that the data are sorted first by year, and then by offences? If we imagine each year as a stack of data, what we're effectively doing here is taking the count data for each stack and putting them in their own column.
 
 There are a couple of ways we could get more useful results from this function, though.
 
@@ -154,7 +163,7 @@ head(long_annual_offences)
 
 ---
 
-Essentially, these data are the same as what we started with, but, not quite.
+Essentially, these data are the same as what we started with, but there are some differences we need to iron out in order to get back where we started.
 
 ```{r, purl=purl_example_code, eval=T}
 head(annual_offences, 3)
@@ -223,7 +232,25 @@ identical(long_annual_offences, annual_offences)
 
 ---
 
-Still more to do! We have more rows in our new table, and that's because of those year/offence combinations where there are no incidences. Let's get `dplyr` involved, and filter these out:
+Still more to do! We have more rows in our new table, and that's because of those year/offence combinations where there are no incidences.
+
+
+```{r, purl=purl_example_code, eval=T}
+n_rows <- dim(annual_offences)[1]
+n_cols <- dim(annual_offences)[2]
+print(paste("The original table is", n_rows, "rows by", n_cols, "cols, making", n_rows * n_cols, "cells", sep = " "))
+
+n_rows <- dim(long_annual_offences)[1]
+n_cols <- dim(long_annual_offences)[2]
+print(paste("Our working table is", n_rows, "rows by", n_cols, "cols, making", n_rows * n_cols, "cells", sep = " "))
+
+```
+
+
+
+
+
+Let's get `dplyr` involved, and filter these out:
 
 ```{r, purl=purl_example_code, eval=T}
 long_annual_offences <- wide_annual_offences %>%
@@ -282,20 +309,24 @@ Success!
 identical(long_annual_offences, annual_offences)
 ```
 
+There are many additional arguments that can be passed to `pivot_wider()` and `pivot_longer()`, which are explained in the function help files, e.g. `?pivot_wider`. We've just covered some of the more basic ones to show how we can easily go between between wide and long format data. Now you can have a go yourself in the exercises below!
+
+
 ---
 
 ### Exercise 1
 
-You have received summary tables showing quarterly totals of adult reoffenders split by number of previous offences of the offender. 
+You have received summary tables showing quarterly totals of adult reoffenders in England and Wales, beginning in 2010 quarter two. The data are split by number of previous offences of the offender prior to their current offence.
 
 Read in the data:
 
 ```{r, purl=purl_example_code, eval=T}
 reoffending_real <- Rs3tools::s3_path_to_full_df(
     s3_path = "s3://alpha-r-training/intro-r-extension/adult_reoff_by_prev_off_number_2.csv")
+head(reoffending_real)
 ```
 
-This data table is in wide format, but in order to plot the data you need to put it in long format.
+This data table is in wide format, but if you were to plot the data with `ggplot2`, you would need to put it in long format.
 
  a) Put the data in long format
  b) Remove relevant prefixes
