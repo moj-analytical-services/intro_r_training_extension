@@ -26,16 +26,19 @@ annual_offences <-
   tibble::tibble()
 
 head(annual_offences)
-
-n_rows <- dim(annual_offences)[1]
-n_cols <- dim(annual_offences)[2]
-print(paste("The table is", n_rows, "rows by", n_cols, "cols, making", n_rows * n_cols, "cells", sep = " "))
-             
 ```
 
 ---
 
+```{r, purl=purl_example_code}
+n_rows <- dim(annual_offences)[1]
+n_cols <- dim(annual_offences)[2]
+print(paste("The table is", n_rows, "rows by", n_cols, "cols, making", n_rows * n_cols, "cells", sep = " "))
+```
+
 The data represent fake frequencies of offences from 2016 to 2020, represented by real offence codes. If an offence was prosecuted in a year, there is a corresponding line in this data table, with the offence code indicated by the `offence_code` column, the year indicated by the `year` column, and the `count` column representing the number of times the offence was prosecuted. If an offence was not prosecuted in a year, the corresponding combination of `year` and `offence` does not exist. The table has been sorted by year and offence code.
+
+---
 
 The long format may be a good way to store data like these for some purposes, but what if we want to put it into wide format, e.g. to make it easier for a human to read? We use the `tidyr` function `pivot_wider()`:
 
@@ -48,18 +51,21 @@ wide_annual_offences <- annual_offences %>%
   )
 
 head(wide_annual_offences)
-
-n_rows <- dim(wide_annual_offences)[1]
-n_cols <- dim(wide_annual_offences)[2]
-print(paste("The table is", n_rows, "rows by", n_cols, "cols, making", n_rows * n_cols, "cells", sep = " "))
-
 ```
 
 ---
 
+```{r, purl=purl_example_code}
+n_rows <- dim(wide_annual_offences)[1]
+n_cols <- dim(wide_annual_offences)[2]
+print(paste("The table is", n_rows, "rows by", n_cols, "cols, making", n_rows * n_cols, "cells", sep = " "))
+```
+
 What's happened? We passed `count` to the argument `values_from` and `year` to the argument `names_from`. This tells the function that we want to make new columns based on `year`, and populate it with the values from `count`.
 
-Remember that the data are sorted first by year, and then by offences? If we imagine each year as a stack of data, what we're effectively doing here is taking the count data for each stack and putting them in their own column.
+Remember that the data are sorted first by year, and then by offence? If we imagine each year as a stack of data, what we're effectively doing here is taking the count data for each stack and putting them in their own column.
+
+---
 
 There are a couple of ways we could get more useful results from this function, though.
 
@@ -112,7 +118,7 @@ The final and most advanced thing we will do with `pivot_wider()` is to pass it 
 
 Here we are passing an anonymous function which itself calls the `round()` function to round our counts. Setting the `digits` argument of `round()` to -1 means that the values get rounded to the nearest 10, rather than the default behaviour of rounding to the nearest whole number.
 
-```{r, purl=purl_example_code, eval=T}
+```{r, purl=purl_example_code}
 #mapping all weeks to one variable called "weeks" 
 wide_annual_offences_rounded <- annual_offences %>%
   tidyr::pivot_wider(
@@ -132,7 +138,7 @@ Let's consider our earlier widened table, with original counts, columns with pre
 
 What if we want to go from our widened table back to our original one, here?
 
-```{r, purl=purl_example_code, eval=T}
+```{r, purl=purl_example_code}
 head(wide_annual_offences, 3)
 head(annual_offences, 3)
 ```
@@ -141,7 +147,7 @@ head(annual_offences, 3)
 
 We use the function `pivot_longer()` for this. You can pass column names to it like this:
 
-```{r, purl=purl_example_code, eval=T}
+```{r, purl=purl_example_code}
 long_annual_offences <- wide_annual_offences %>%
   tidyr::pivot_longer(
     cols = c('count_2016', 'count_2017', 'count_2018', 'count_2019', 'count_2020')
@@ -153,7 +159,7 @@ head(long_annual_offences)
 
 Or, as our column names are conveniently named with a prefix, we can use `starts_with()` from `dplyr` again:
 
-```{r, purl=purl_example_code, eval=T}
+```{r, purl=purl_example_code}
 long_annual_offences <- wide_annual_offences %>%
   tidyr::pivot_longer(
     cols = dplyr::starts_with('count')
@@ -165,12 +171,12 @@ head(long_annual_offences)
 
 Essentially, these data are the same as what we started with, but there are some differences we need to iron out in order to get back where we started.
 
-```{r, purl=purl_example_code, eval=T}
+```{r, purl=purl_example_code}
 head(annual_offences, 3)
 head(long_annual_offences, 3)
 ```
 
-```{r, purl=purl_example_code, eval=T}
+```{r, purl=purl_example_code}
 identical(long_annual_offences, annual_offences)
 ```
 
@@ -180,7 +186,7 @@ There are several differences, which we can correct via arguments to `pivot_wide
 
 First, the default column name `value` has been assigned to our count, which we correct with the argument `values_to`, giving it the label we see in the original table:
 
-```{r, purl=purl_example_code, eval=T}
+```{r, purl=purl_example_code}
 long_annual_offences <- wide_annual_offences %>%
   tidyr::pivot_longer(
     cols = dplyr::starts_with('count'),
@@ -189,7 +195,7 @@ long_annual_offences <- wide_annual_offences %>%
 head(long_annual_offences)
 ```
 
-```{r, purl=purl_example_code, eval=T}
+```{r, purl=purl_example_code}
 identical(long_annual_offences, annual_offences)
 ```
 
@@ -197,7 +203,7 @@ identical(long_annual_offences, annual_offences)
 
 There's another default name that it's assigned too --- it's used `name` when we want `year` to indicate the years. We correct this with an equivalent argument:
 
-```{r, purl=purl_example_code, eval=T}
+```{r, purl=purl_example_code}
 long_annual_offences <- wide_annual_offences %>%
   tidyr::pivot_longer(
     cols = dplyr::starts_with('count'),
@@ -207,7 +213,7 @@ long_annual_offences <- wide_annual_offences %>%
 head(long_annual_offences)
 ```
 
-```{r, purl=purl_example_code, eval=T}
+```{r, purl=purl_example_code}
 identical(long_annual_offences, annual_offences)
 ```
 
@@ -215,7 +221,7 @@ identical(long_annual_offences, annual_offences)
 
 We also want to remove those prefixes:
 
-```{r, purl=purl_example_code, eval=T}
+```{r, purl=purl_example_code}
 long_annual_offences <- wide_annual_offences %>%
   tidyr::pivot_longer(
     cols = dplyr::starts_with('count'),
@@ -226,7 +232,7 @@ long_annual_offences <- wide_annual_offences %>%
 head(long_annual_offences)
 ```
 
-```{r, purl=purl_example_code, eval=T}
+```{r, purl=purl_example_code}
 identical(long_annual_offences, annual_offences)
 ```
 
@@ -234,8 +240,7 @@ identical(long_annual_offences, annual_offences)
 
 Still more to do! We have more rows in our new table, and that's because of those year/offence combinations where there are no incidences.
 
-
-```{r, purl=purl_example_code, eval=T}
+```{r, purl=purl_example_code}
 n_rows <- dim(annual_offences)[1]
 n_cols <- dim(annual_offences)[2]
 print(paste("The original table is", n_rows, "rows by", n_cols, "cols, making", n_rows * n_cols, "cells", sep = " "))
@@ -246,13 +251,11 @@ print(paste("Our working table is", n_rows, "rows by", n_cols, "cols, making", n
 
 ```
 
-
-
-
+---
 
 Let's get `dplyr` involved, and filter these out:
 
-```{r, purl=purl_example_code, eval=T}
+```{r, purl=purl_example_code}
 long_annual_offences <- wide_annual_offences %>%
   tidyr::pivot_longer(
     cols = dplyr::starts_with('count'),
@@ -264,20 +267,20 @@ long_annual_offences <- wide_annual_offences %>%
 ```
 
 We now have the same number of rows in original table and the one we're working on:
-```{r, purl=purl_example_code, eval=T}
+```{r, purl=purl_example_code}
 nrow(long_annual_offences) == nrow(annual_offences)
 ```
 
 ---
 
 But we're still not quite there...
-```{r, purl=purl_example_code, eval=T}
+```{r, purl=purl_example_code}
 identical(long_annual_offences, annual_offences)
 ```
 
 Finally, we use `dplyr` to: 1) fix data types and reorder columns with `transmute()`, 2) order rows with `arrange()`:
 
-```{r, purl=purl_example_code, eval=T}
+```{r, purl=purl_example_code}
 long_annual_offences <- wide_annual_offences %>%
   tidyr::pivot_longer(
     cols = dplyr::starts_with('count'),
@@ -298,14 +301,16 @@ long_annual_offences <- wide_annual_offences %>%
 
 What do they both look like now?
 
-```{r, purl=purl_example_code, eval=T}
+```{r, purl=purl_example_code}
 head(annual_offences, 3)
 head(long_annual_offences, 3)
 ```
 
+---
+
 Success!
 
-```{r, purl=purl_example_code, eval=T}
+```{r, purl=purl_example_code}
 identical(long_annual_offences, annual_offences)
 ```
 
@@ -320,10 +325,9 @@ You have received summary tables showing quarterly totals of adult reoffenders i
 
 Read in the data:
 
-```{r, purl=purl_example_code, eval=T}
+```{r, purl=purl_example_code}
 reoffending_real <- Rs3tools::s3_path_to_full_df(
     s3_path = "s3://alpha-r-training/intro-r-extension/adult_reoff_by_prev_off_number_2.csv")
-head(reoffending_real)
 ```
 
 This data table is in wide format, but if you were to plot the data with `ggplot2`, you would need to put it in long format.
@@ -332,7 +336,15 @@ This data table is in wide format, but if you were to plot the data with `ggplot
  b) Remove relevant prefixes
  c) Pass the labels 'quarter' and 'count' to the appropriate arguments to name the columns in your long format table.
 
-Note, these are real data on reoffending, publicly available, derived from the table [here](https://www.gov.uk/government/statistics/proven-reoffending-statistics-april-to-june-2021)
+---
+
+Note, these are real data on reoffending, publicly available, derived from the table [here](https://www.gov.uk/government/statistics/proven-reoffending-statistics-april-to-june-2021).
+
+Here's a preview of the data table:
+
+```{r, purl=purl_example_code}
+head(reoffending_real)
+```
 
 ---
 
