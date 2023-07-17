@@ -130,7 +130,7 @@ stringr::str_c(string_vector1, string_vector2, sep=" - ")
 The code produces a warning but otherwise runs. In the output, you can see that the elements of the shorter vector have been repeated when combined with the additional elements of the longer vector.
 
 
-## Extracing and replacing substrings
+## Extracting and replacing substrings
 
 Selecting part of a string can be done using the `str_sub()` function. The `start` and `end` arguments are used to define the position of the substring you want to extract.
 

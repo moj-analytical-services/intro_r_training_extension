@@ -291,6 +291,9 @@ annual_offences <-
 
 head(annual_offences)
 
+n_rows <- dim(annual_offences)[1]
+n_cols <- dim(annual_offences)[2]
+print(paste("The table is", n_rows, "rows by", n_cols, "cols, making", n_rows * n_cols, "cells", sep = " "))
 
 # basic implementation of pivot_wider()
 wide_annual_offences <- annual_offences %>%
@@ -300,6 +303,10 @@ wide_annual_offences <- annual_offences %>%
   )
 
 head(wide_annual_offences)
+
+n_rows <- dim(wide_annual_offences)[1]
+n_cols <- dim(wide_annual_offences)[2]
+print(paste("The table is", n_rows, "rows by", n_cols, "cols, making", n_rows * n_cols, "cells", sep = " "))
 
 # adding a prefix to new columns
 wide_annual_offences <- annual_offences %>%
@@ -389,6 +396,15 @@ head(long_annual_offences)
 
 identical(long_annual_offences, annual_offences)
 
+n_rows <- dim(annual_offences)[1]
+n_cols <- dim(annual_offences)[2]
+print(paste("The original table is", n_rows, "rows by", n_cols, "cols, making", n_rows * n_cols, "cells", sep = " "))
+
+n_rows <- dim(long_annual_offences)[1]
+n_cols <- dim(long_annual_offences)[2]
+print(paste("Our working table is", n_rows, "rows by", n_cols, "cols, making", n_rows * n_cols, "cells", sep = " "))
+
+
 long_annual_offences <- wide_annual_offences %>%
   tidyr::pivot_longer(
     cols = dplyr::starts_with('count'),
@@ -424,6 +440,8 @@ identical(long_annual_offences, annual_offences)
 
 reoffending_real <- Rs3tools::s3_path_to_full_df(
     s3_path = "s3://alpha-r-training/intro-r-extension/adult_reoff_by_prev_off_number_2.csv")
+
+head(reoffending_real)
 
 
 # Two options to define a string

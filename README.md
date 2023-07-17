@@ -1028,18 +1028,18 @@ df
     ## # A tibble: 12 × 3
     ##    year  quarter count
     ##    <chr> <chr>   <int>
-    ##  1 2017  Q1          4
-    ##  2 <NA>  Q2         10
+    ##  1 2017  Q1          1
+    ##  2 <NA>  Q2          9
     ##  3 <NA>  Q3          2
-    ##  4 <NA>  Q4         12
-    ##  5 2018  Q1          9
-    ##  6 <NA>  Q2          3
-    ##  7 <NA>  Q3         11
-    ##  8 <NA>  Q4          6
-    ##  9 2019  Q1          8
-    ## 10 <NA>  Q2          7
-    ## 11 <NA>  Q3          1
-    ## 12 <NA>  Q4          5
+    ##  4 <NA>  Q4          4
+    ##  5 2018  Q1         10
+    ##  6 <NA>  Q2          6
+    ##  7 <NA>  Q3          8
+    ##  8 <NA>  Q4         12
+    ##  9 2019  Q1          7
+    ## 10 <NA>  Q2          5
+    ## 11 <NA>  Q3          3
+    ## 12 <NA>  Q4         11
 
 ------------------------------------------------------------------------
 
@@ -1054,18 +1054,18 @@ df %>% tidyr::fill(year)
     ## # A tibble: 12 × 3
     ##    year  quarter count
     ##    <chr> <chr>   <int>
-    ##  1 2017  Q1          4
-    ##  2 2017  Q2         10
+    ##  1 2017  Q1          1
+    ##  2 2017  Q2          9
     ##  3 2017  Q3          2
-    ##  4 2017  Q4         12
-    ##  5 2018  Q1          9
-    ##  6 2018  Q2          3
-    ##  7 2018  Q3         11
-    ##  8 2018  Q4          6
-    ##  9 2019  Q1          8
-    ## 10 2019  Q2          7
-    ## 11 2019  Q3          1
-    ## 12 2019  Q4          5
+    ##  4 2017  Q4          4
+    ##  5 2018  Q1         10
+    ##  6 2018  Q2          6
+    ##  7 2018  Q3          8
+    ##  8 2018  Q4         12
+    ##  9 2019  Q1          7
+    ## 10 2019  Q2          5
+    ## 11 2019  Q3          3
+    ## 12 2019  Q4         11
 
 ## Removing rows with missing values from a dataframe
 
@@ -1212,6 +1212,14 @@ head(annual_offences)
 
 ------------------------------------------------------------------------
 
+``` r
+n_rows <- dim(annual_offences)[1]
+n_cols <- dim(annual_offences)[2]
+print(paste("The table is", n_rows, "rows by", n_cols, "cols, making", n_rows * n_cols, "cells", sep = " "))
+```
+
+    ## [1] "The table is 3563 rows by 3 cols, making 10689 cells"
+
 The data represent fake frequencies of offences from 2016 to 2020,
 represented by real offence codes. If an offence was prosecuted in a
 year, there is a corresponding line in this data table, with the offence
@@ -1220,6 +1228,8 @@ code indicated by the `offence_code` column, the year indicated by the
 the offence was prosecuted. If an offence was not prosecuted in a year,
 the corresponding combination of `year` and `offence` does not exist.
 The table has been sorted by year and offence code.
+
+------------------------------------------------------------------------
 
 The long format may be a good way to store data like these for some
 purposes, but what if we want to put it into wide format, e.g. to make
@@ -1249,14 +1259,25 @@ head(wide_annual_offences)
 
 ------------------------------------------------------------------------
 
+``` r
+n_rows <- dim(wide_annual_offences)[1]
+n_cols <- dim(wide_annual_offences)[2]
+print(paste("The table is", n_rows, "rows by", n_cols, "cols, making", n_rows * n_cols, "cells", sep = " "))
+```
+
+    ## [1] "The table is 978 rows by 6 cols, making 5868 cells"
+
 What’s happened? We passed `count` to the argument `values_from` and
 `year` to the argument `names_from`. This tells the function that we
 want to make new columns based on `year`, and populate it with the
 values from `count`.
 
-Remember that the data are sorted first by year? If we imagine each year
-as a stack of data, what we’re effectively doing here is taking the
-count data for each stack and putting them in their own column.
+Remember that the data are sorted first by year, and then by offence? If
+we imagine each year as a stack of data, what we’re effectively doing
+here is taking the count data for each stack and putting them in their
+own column.
+
+------------------------------------------------------------------------
 
 There are a couple of ways we could get more useful results from this
 function, though.
@@ -1453,8 +1474,9 @@ head(long_annual_offences)
 
 ------------------------------------------------------------------------
 
-Essentially, these data are the same as what we started with, but, not
-quite.
+Essentially, these data are the same as what we started with, but there
+are some differences we need to iron out in order to get back where we
+started.
 
 ``` r
 head(annual_offences, 3)
@@ -1584,8 +1606,27 @@ identical(long_annual_offences, annual_offences)
 ------------------------------------------------------------------------
 
 Still more to do! We have more rows in our new table, and that’s because
-of those year/offence combinations where there are no incidences. Let’s
-get `dplyr` involved, and filter these out:
+of those year/offence combinations where there are no incidences.
+
+``` r
+n_rows <- dim(annual_offences)[1]
+n_cols <- dim(annual_offences)[2]
+print(paste("The original table is", n_rows, "rows by", n_cols, "cols, making", n_rows * n_cols, "cells", sep = " "))
+```
+
+    ## [1] "The original table is 3563 rows by 3 cols, making 10689 cells"
+
+``` r
+n_rows <- dim(long_annual_offences)[1]
+n_cols <- dim(long_annual_offences)[2]
+print(paste("Our working table is", n_rows, "rows by", n_cols, "cols, making", n_rows * n_cols, "cells", sep = " "))
+```
+
+    ## [1] "Our working table is 4890 rows by 3 cols, making 14670 cells"
+
+------------------------------------------------------------------------
+
+Let’s get `dplyr` involved, and filter these out:
 
 ``` r
 long_annual_offences <- wide_annual_offences %>%
@@ -1663,6 +1704,8 @@ head(long_annual_offences, 3)
     ## 2  2016 00304         4730
     ## 3  2016 00305           28
 
+------------------------------------------------------------------------
+
 Success!
 
 ``` r
@@ -1671,12 +1714,20 @@ identical(long_annual_offences, annual_offences)
 
     ## [1] TRUE
 
+There are many additional arguments that can be passed to
+`pivot_wider()` and `pivot_longer()`, which are explained in the
+function help files, e.g. `?pivot_wider`. We’ve just covered some of the
+more basic ones to show how we can easily go between between wide and
+long format data. Now you can have a go yourself in the exercises below!
+
 ------------------------------------------------------------------------
 
 ### Exercise 1
 
 You have received summary tables showing quarterly totals of adult
-reoffenders split by number of previous offences of the offender.
+reoffenders in England and Wales, beginning in 2010 quarter two. The
+data are split by number of previous offences of the offender prior to
+their current offence.
 
 Read in the data:
 
@@ -1685,17 +1736,68 @@ reoffending_real <- Rs3tools::s3_path_to_full_df(
     s3_path = "s3://alpha-r-training/intro-r-extension/adult_reoff_by_prev_off_number_2.csv")
 ```
 
-This data table is in wide format, but in order to plot the data you
-need to put it in long format.
+This data table is in wide format, but if you were to plot the data with
+`ggplot2`, you would need to put it in long format.
 
 1)  Put the data in long format
 2)  Remove relevant prefixes
 3)  Pass the labels ‘quarter’ and ‘count’ to the appropriate arguments
     to name the columns in your long format table.
 
+------------------------------------------------------------------------
+
 Note, these are real data on reoffending, publicly available, derived
 from the table
-[here](https://www.gov.uk/government/statistics/proven-reoffending-statistics-april-to-june-2021)
+[here](https://www.gov.uk/government/statistics/proven-reoffending-statistics-april-to-june-2021).
+
+Here’s a preview of the data table:
+
+``` r
+head(reoffending_real)
+```
+
+    ##                    prev_conv_n total_2010_Q2 total_2010_Q3 total_2010_Q4 total_2011_Q1 total_2011_Q2
+    ## 1         No previous offences         42165         42427         41106         40870         39092
+    ## 2     1 to 2 previous offences         26905         27522         26239         26455         25318
+    ## 3     3 to 6 previous offences         24549         25467         24309         24864         24264
+    ## 4    7 to 10 previous offences         13217         13985         13230         13443         13198
+    ## 5 11 or more previous offences         51428         53846         52304         52659         52213
+    ##   total_2011_Q3 total_2011_Q4 total_2012_Q1 total_2012_Q2 total_2012_Q3 total_2012_Q4 total_2013_Q1
+    ## 1         39411         37792         36869         34897         35939         34615         33332
+    ## 2         25696         24729         24527         22546         23663         22255         21621
+    ## 3         24586         23181         23817         21886         22625         21319         21230
+    ## 4         13472         12770         13387         12269         12563         11859         11813
+    ## 5         54824         51638         53484         50015         51921         49219         48893
+    ##   total_2013_Q2 total_2013_Q3 total_2013_Q4 total_2014_Q1 total_2014_Q2 total_2014_Q3 total_2014_Q4
+    ## 1         32526         32955         33405         33268         31098         31313         30775
+    ## 2         21157         21776         21151         21265         19631         20082         19357
+    ## 3         20683         21248         20598         20778         19459         19785         18704
+    ## 4         11753         12094         11633         11744         11062         11204         10731
+    ## 5         49361         50603         49040         49920         47523         48618         46296
+    ##   total_2015_Q1 total_2015_Q2 total_2015_Q3 total_2015_Q4 total_2016_Q1 total_2016_Q2 total_2016_Q3
+    ## 1         30587         29624         29254         28663         27813         26888         25753
+    ## 2         19732         18582         18661         18108         17741         16802         16022
+    ## 3         18981         18425         18394         17966         17514         17006         16161
+    ## 4         11105         10838         10580         10357         10262          9962          9546
+    ## 5         46641         45963         45455         45593         45249         44399         42993
+    ##   total_2016_Q4 total_2017_Q1 total_2017_Q2 total_2017_Q3 total_2017_Q4 total_2018_Q1 total_2018_Q2
+    ## 1         24828         25662         23376         22952         23332         23436         21982
+    ## 2         15170         15678         14319         14005         13689         13796         13519
+    ## 3         15470         16004         15123         14499         13986         14359         13846
+    ## 4          9069          9453          8903          8677          8222          8392          8300
+    ## 5         41271         43572         41272         41006         39503         40151         38786
+    ##   total_2018_Q3 total_2018_Q4 total_2019_Q1 total_2019_Q2 total_2019_Q3 total_2019_Q4 total_2020_Q1
+    ## 1         21524         21433         22358         21407         21423         21049         20309
+    ## 2         12868         12680         13370         12685         12644         11886         12057
+    ## 3         13474         13145         13635         12932         12937         12366         12229
+    ## 4          7925          7901          8107          7764          7733          7542          7170
+    ## 5         38290         37297         37433         36497         36135         34274         33492
+    ##   total_2020_Q2 total_2020_Q3 total_2020_Q4 total_2021_Q1 total_2021_Q2
+    ## 1          8067         18382         19566         17481         17700
+    ## 2          4992         11783         12637         11599         11323
+    ## 3          5363         12258         13129         12279         12257
+    ## 4          3209          7301          7865          7217          7245
+    ## 5         18066         32028         33953         31702         31657
 
 ------------------------------------------------------------------------
 
@@ -1895,8 +1997,8 @@ string_vector2 <- c("1", "2", "3", "4", "5")
 stringr::str_c(string_vector1, string_vector2, sep=" - ")
 ```
 
-    ## Warning in stri_c(..., sep = sep, collapse = collapse, ignore_null = TRUE): longer object length is not a multiple of shorter
-    ## object length
+    ## Warning in stri_c(..., sep = sep, collapse = collapse, ignore_null = TRUE): longer object length is not a
+    ## multiple of shorter object length
 
     ## [1] "A - 1" "B - 2" "C - 3" "A - 4" "B - 5"
 
@@ -1904,7 +2006,7 @@ The code produces a warning but otherwise runs. In the output, you can
 see that the elements of the shorter vector have been repeated when
 combined with the additional elements of the longer vector.
 
-## Extracing and replacing substrings
+## Extracting and replacing substrings
 
 Selecting part of a string can be done using the `str_sub()` function.
 The `start` and `end` arguments are used to define the position of the
