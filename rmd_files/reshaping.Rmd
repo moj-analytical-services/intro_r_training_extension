@@ -36,7 +36,7 @@ n_cols <- dim(annual_offences)[2]
 print(paste("The table is", n_rows, "rows by", n_cols, "cols, making", n_rows * n_cols, "cells", sep = " "))
 ```
 
-The data represent fake frequencies of offences from 2016 to 2020, represented by real offence codes. If an offence was prosecuted in a year, there is a corresponding line in this data table, with the offence code indicated by the `offence_code` column, the year indicated by the `year` column, and the `count` column representing the number of times the offence was prosecuted. If an offence was not prosecuted in a year, the corresponding combination of `year` and `offence` does not exist. The table has been sorted by year and offence code.
+The data represent fake frequencies of offences from 2016 to 2020, represented by real Home Office offence codes. If an offence was prosecuted in a year, there is a corresponding line in this data table, with the offence code indicated by the `offence_code` column, the year indicated by the `year` column, and the `count` column representing the number of times the offence was prosecuted. If an offence was not prosecuted in a year, the corresponding combination of `year` and `offence` does not exist. The table has been sorted by year and offence code.
 
 ---
 
@@ -63,7 +63,7 @@ print(paste("The table is", n_rows, "rows by", n_cols, "cols, making", n_rows * 
 
 What's happened? We passed `count` to the argument `values_from` and `year` to the argument `names_from`. This tells the function that we want to make new columns based on `year`, and populate it with the values from `count`.
 
-Remember that the data are sorted first by year, and then by offence? If we imagine each year as a stack of data, what we're effectively doing here is taking the count data for each stack and putting them in their own column.
+Remember that the data are sorted first by year, and then by offence? If we imagine each year as a stack of data, and the table containing one stack for each year, then what we're effectively doing here is taking the count data for each stack and putting them in their own column. We end up with a table that has one row per offence code, and one column for each year. There are fewer cells in total, although the same data are represented in both tables.
 
 ---
 
@@ -158,7 +158,7 @@ head(long_annual_offences)
 
 ---
 
-Or, as our column names are conveniently named with a prefix, we can use `starts_with()` from `dplyr` again:
+Or, as our column names are conveniently named with a prefix, we can use `starts_with()` from `dplyr`:
 
 ```{r, purl=purl_example_code}
 # identifying columns using `starts_with()`
@@ -171,21 +171,22 @@ head(long_annual_offences)
 
 ---
 
-Essentially, these data are the same as what we started with, but there are some differences we need to iron out in order to get back where we started.
+Essentially, these data are the same as what we started with, but there are some differences.
+```{r, purl=purl_example_code}
+# checking if the original table and working table are identical
+identical(long_annual_offences, annual_offences)
+```
 
 ```{r, purl=purl_example_code}
 head(annual_offences, 3)
 head(long_annual_offences, 3)
 ```
 
-```{r, purl=purl_example_code}
-# checking if the original table and working table are identical
-identical(long_annual_offences, annual_offences)
-```
+In fact, there are *six* differences between these tables. Have a look yourself, and put suggestions in the chat as to what these might be. Then we'll cover how to correct these differences and make our  working table identical to our working table.
 
 ---
 
-There are several differences, which we can correct via arguments to `pivot_wider()` and some `dplyr` functions.
+Thankfully we can iron out these differences through a combination of amending our call to `pivot_wider()` and passing the result to some `dplyr` functions.
 
 First, the default column name `value` has been assigned to our count, which we correct with the argument `values_to`, giving it the label we see in the original table:
 
@@ -329,7 +330,7 @@ There are many additional arguments that can be passed to `pivot_wider()` and `p
 
 ### Exercise 1
 
-You have received summary tables showing quarterly totals of adult reoffenders in England and Wales, beginning in 2010 quarter two. The data are split by number of previous offences of the offender prior to their current offence.
+You have received summary tables showing quarterly totals of adult reoffenders in England and Wales, beginning in the second quarter of 2010. The data are split by number of previous offences of the offender prior to their current offence.
 
 Read in the data:
 
@@ -338,15 +339,22 @@ reoffending_real <- Rs3tools::s3_path_to_full_df(
     s3_path = "s3://alpha-r-training/intro-r-extension/adult_reoff_by_prev_off_number_2.csv")
 ```
 
-This data table is in wide format, but if you were to plot the data with `ggplot2`, you would need to put it in long format.
+  a) Examine this data table. Would you describe it as being in wide or long format?
+  b) Is it more 'machine readable' or 'human readable'?
+  c) What, if anything, would you need to do to the data before passing it to be read for plotting by functions from a package like `ggplot2`?
 
- a) Put the data in long format
- b) Remove relevant prefixes
- c) Pass the labels 'quarter' and 'count' to the appropriate arguments to name the columns in your long format table.
+Note, these are real data on reoffending, publicly available, derived from the table [here](https://www.gov.uk/government/statistics/proven-reoffending-statistics-april-to-june-2021).
 
 ---
 
-Note, these are real data on reoffending, publicly available, derived from the table [here](https://www.gov.uk/government/statistics/proven-reoffending-statistics-april-to-june-2021).
+### Exercise 2 
+
+  a) Put the data into long format using the appropriate function.
+  b) Remove relevant prefixes.
+  c) Pass the labels 'quarter' and 'count' to the appropriate arguments to name the columns in your long format table.
+
+---
+
 
 Here's a preview of the data table:
 
@@ -356,18 +364,18 @@ head(reoffending_real)
 
 ---
 
-### Exercise 2
+### Exercise 3
 
 Your project manager likes the resulting plot, but wants to be able to see trends in counts over time more easily. Going from the long format table:
 
- a) Put the data back into wide format
- b) Add a prefix of your choice to the new columns you create
- c) Round the values to the nearest thousand
+ a) Put the data back into wide format.
+ b) Add a prefix of your choice to the new columns you create.
+ c) Round the values to the nearest thousand.
 
 ---
 
 ```{r, include=show_solution, purl=purl_solutions}
-# Reshaping - solution to exercise 1
+# Reshaping - solution to exercise 2
 reoffending_real_long <- reoffending_real %>%
   tidyr::pivot_longer(
     cols = dplyr::starts_with('total'),
@@ -382,7 +390,7 @@ head(reoffending_real_long)
 ---
 
 ```{r, include=show_solution, purl=purl_solutions, warning = FALSE, message = FALSE}
-# Reshaping - solution to exercise 2
+# Reshaping - solution to exercise 3
 reoffending_real_wide <- reoffending_real_long %>%
   tidyr::pivot_wider(
     names_from = 'quarter',
