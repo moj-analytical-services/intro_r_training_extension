@@ -87,7 +87,7 @@ head(wide_annual_offences)
 When transforming count data like this we may have legitimate good reason to replace our NAs with 0s, which we can do with `values_fill()`:
 
 ```{r, purl=purl_example_code}
-# filling in NAs with 0
+# replacing NAs with 0s
 wide_annual_offences <- annual_offences %>%
   tidyr::pivot_wider(
     names_from = 'year',
@@ -103,12 +103,12 @@ head(wide_annual_offences)
 Once our table is in wide format, and clean, we can easily do transformations like this. Here we use `dplyr` functions to create a new column that adds up yearly totals across each column that has count data:
 
 ```{r, purl=purl_example_code}
-#starting by mapping a single month 
+# Creating a new column from the ones we've created
 wide_annual_offences_with_totals <- wide_annual_offences %>%
   dplyr::mutate(
     count_2016_2020 =
-      rowSums(dplyr::across(dplyr::starts_with("count")))
-  )
+      rowSums(dplyr::across(c('count_2016', 'count_2017','count_2018','count_2019','count_2020')))
+    )
 head(wide_annual_offences_with_totals)
 ```
 
@@ -119,7 +119,7 @@ The final and most advanced thing we will do with `pivot_wider()` is to pass it 
 Here we are passing an anonymous function which itself calls the `round()` function to round our counts. Setting the `digits` argument of `round()` to -1 means that the values get rounded to the nearest 10, rather than the default behaviour of rounding to the nearest whole number.
 
 ```{r, purl=purl_example_code}
-#mapping all weeks to one variable called "weeks" 
+# passing an auxiliary function to `pivot_wider()`
 wide_annual_offences_rounded <- annual_offences %>%
   tidyr::pivot_wider(
     names_from = 'year',
@@ -148,6 +148,7 @@ head(annual_offences, 3)
 We use the function `pivot_longer()` for this. You can pass column names to it like this:
 
 ```{r, purl=purl_example_code}
+# basic transformation of a table into long format
 long_annual_offences <- wide_annual_offences %>%
   tidyr::pivot_longer(
     cols = c('count_2016', 'count_2017', 'count_2018', 'count_2019', 'count_2020')
@@ -160,6 +161,7 @@ head(long_annual_offences)
 Or, as our column names are conveniently named with a prefix, we can use `starts_with()` from `dplyr` again:
 
 ```{r, purl=purl_example_code}
+# identifying columns using `starts_with()`
 long_annual_offences <- wide_annual_offences %>%
   tidyr::pivot_longer(
     cols = dplyr::starts_with('count')
@@ -177,6 +179,7 @@ head(long_annual_offences, 3)
 ```
 
 ```{r, purl=purl_example_code}
+# checking if the original table and working table are identical
 identical(long_annual_offences, annual_offences)
 ```
 
@@ -187,6 +190,7 @@ There are several differences, which we can correct via arguments to `pivot_wide
 First, the default column name `value` has been assigned to our count, which we correct with the argument `values_to`, giving it the label we see in the original table:
 
 ```{r, purl=purl_example_code}
+# specifying a name for the `values` column
 long_annual_offences <- wide_annual_offences %>%
   tidyr::pivot_longer(
     cols = dplyr::starts_with('count'),
@@ -204,6 +208,7 @@ identical(long_annual_offences, annual_offences)
 There's another default name that it's assigned too --- it's used `name` when we want `year` to indicate the years. We correct this with an equivalent argument:
 
 ```{r, purl=purl_example_code}
+# specifying a name for the `names` column
 long_annual_offences <- wide_annual_offences %>%
   tidyr::pivot_longer(
     cols = dplyr::starts_with('count'),
@@ -222,6 +227,7 @@ identical(long_annual_offences, annual_offences)
 We also want to remove those prefixes:
 
 ```{r, purl=purl_example_code}
+# providing substring prefix to remove from column names before using them in our combined `names` column
 long_annual_offences <- wide_annual_offences %>%
   tidyr::pivot_longer(
     cols = dplyr::starts_with('count'),
@@ -238,7 +244,7 @@ identical(long_annual_offences, annual_offences)
 
 ---
 
-Still more to do! We have more rows in our new table, and that's because of those year/offence combinations where there are no incidences.
+Still more to do! We have the right number of columns in our new table, but we have more rows than we should. That's because of those year/offence combinations where there are no incidences.
 
 ```{r, purl=purl_example_code}
 n_rows <- dim(annual_offences)[1]
@@ -256,6 +262,7 @@ print(paste("Our working table is", n_rows, "rows by", n_cols, "cols, making", n
 Let's get `dplyr` involved, and filter these out:
 
 ```{r, purl=purl_example_code}
+# Filtering out rows with no offences
 long_annual_offences <- wide_annual_offences %>%
   tidyr::pivot_longer(
     cols = dplyr::starts_with('count'),
@@ -281,6 +288,7 @@ identical(long_annual_offences, annual_offences)
 Finally, we use `dplyr` to: 1) fix data types and reorder columns with `transmute()`, 2) order rows with `arrange()`:
 
 ```{r, purl=purl_example_code}
+# Use `dplyr` functions to do some final tidying
 long_annual_offences <- wide_annual_offences %>%
   tidyr::pivot_longer(
     cols = dplyr::starts_with('count'),
