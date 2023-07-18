@@ -330,7 +330,7 @@ There are many additional arguments that can be passed to `pivot_wider()` and `p
 
 ### Exercise 1
 
-You have received summary tables showing quarterly totals of adult reoffenders in England and Wales, beginning in the second quarter of 2010. The data are split by number of previous offences of the offender prior to their current offence.
+You have received a summary table showing quarterly totals of adult reoffenders in England and Wales, beginning in the second quarter of 2010. The data are split by number of previous offences of the offender prior to their current offence.
 
 Read in the data:
 
