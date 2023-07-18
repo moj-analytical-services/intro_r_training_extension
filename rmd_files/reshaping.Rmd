@@ -182,7 +182,7 @@ head(annual_offences, 3)
 head(long_annual_offences, 3)
 ```
 
-In fact, there are *six* differences between these tables. Have a look yourself, and put suggestions in the chat as to what these might be. Then we'll cover how to correct these differences and make our  working table identical to our working table.
+In fact, there are *six* differences between these tables. Have a look yourself, and put suggestions in the chat as to what these might be. Then we'll cover how to correct these differences and make ourworking table identical to the original table.
 
 ---
 
@@ -349,18 +349,15 @@ Note, these are real data on reoffending, publicly available, derived from the t
 
 ### Exercise 2 
 
-  a) Put the data into long format using the appropriate function.
-  b) Remove relevant prefixes.
-  c) Pass the labels 'quarter' and 'count' to the appropriate arguments to name the columns in your long format table.
-
----
-
-
 Here's a preview of the data table:
 
 ```{r, purl=purl_example_code}
 head(reoffending_real)
 ```
+
+  a) Put the data into long format using the appropriate function.
+  b) Remove relevant prefixes.
+  c) Pass the labels 'quarter' and 'count' to the appropriate arguments to name the columns in your long format table.
 
 ---
 
