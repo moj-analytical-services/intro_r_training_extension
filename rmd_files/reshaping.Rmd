@@ -182,11 +182,13 @@ head(annual_offences, 3)
 head(long_annual_offences, 3)
 ```
 
-In fact, there are *six* differences between these tables. Have a look yourself, and put suggestions in the chat as to what these might be. Then we'll cover how to correct these differences and make ourworking table identical to the original table.
-
 ---
 
+In fact, there are *six* differences between these tables. Have a look yourself, and put suggestions in the chat as to what these might be. Then we'll cover how to correct these differences and make our working table identical to the original table.
+
 Thankfully we can iron out these differences through a combination of amending our call to `pivot_wider()` and passing the result to some `dplyr` functions.
+
+---
 
 First, the default column name `value` has been assigned to our count, which we correct with the argument `values_to`, giving it the label we see in the original table:
 
@@ -347,13 +349,15 @@ Note, these are real data on reoffending, publicly available, derived from the t
 
 ---
 
-### Exercise 2 
-
 Here's a preview of the data table:
 
 ```{r, purl=purl_example_code}
 head(reoffending_real)
 ```
+
+---
+
+### Exercise 2 
 
   a) Put the data into long format using the appropriate function.
   b) Remove relevant prefixes.
