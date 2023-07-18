@@ -4045,18 +4045,18 @@ df</pre>
 <pre >## # A tibble: 12 × 3
 ##    year  quarter count
 ##    &lt;chr&gt; &lt;chr&gt;   &lt;int&gt;
-##  1 2017  Q1         12
-##  2 &lt;NA&gt;  Q2          9
-##  3 &lt;NA&gt;  Q3          7
-##  4 &lt;NA&gt;  Q4          6
-##  5 2018  Q1         11
+##  1 2017  Q1         10
+##  2 &lt;NA&gt;  Q2         11
+##  3 &lt;NA&gt;  Q3          8
+##  4 &lt;NA&gt;  Q4         12
+##  5 2018  Q1          6
 ##  6 &lt;NA&gt;  Q2          4
-##  7 &lt;NA&gt;  Q3          1
-##  8 &lt;NA&gt;  Q4         10
-##  9 2019  Q1          3
-## 10 &lt;NA&gt;  Q2          2
-## 11 &lt;NA&gt;  Q3          8
-## 12 &lt;NA&gt;  Q4          5</pre>
+##  7 &lt;NA&gt;  Q3          7
+##  8 &lt;NA&gt;  Q4          3
+##  9 2019  Q1          2
+## 10 &lt;NA&gt;  Q2          5
+## 11 &lt;NA&gt;  Q3          1
+## 12 &lt;NA&gt;  Q4          9</pre>
 
 </article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
 
@@ -4068,18 +4068,18 @@ df %&gt;% tidyr::fill(year)</pre>
 <pre >## # A tibble: 12 × 3
 ##    year  quarter count
 ##    &lt;chr&gt; &lt;chr&gt;   &lt;int&gt;
-##  1 2017  Q1         12
-##  2 2017  Q2          9
-##  3 2017  Q3          7
-##  4 2017  Q4          6
-##  5 2018  Q1         11
+##  1 2017  Q1         10
+##  2 2017  Q2         11
+##  3 2017  Q3          8
+##  4 2017  Q4         12
+##  5 2018  Q1          6
 ##  6 2018  Q2          4
-##  7 2018  Q3          1
-##  8 2018  Q4         10
-##  9 2019  Q1          3
-## 10 2019  Q2          2
-## 11 2019  Q3          8
-## 12 2019  Q4          5</pre>
+##  7 2018  Q3          7
+##  8 2018  Q4          3
+##  9 2019  Q1          2
+## 10 2019  Q2          5
+## 11 2019  Q3          1
+## 12 2019  Q4          9</pre>
 
 </article></slide><slide class=""><hgroup><h2>Removing rows with missing values from a dataframe</h2></hgroup><article  id="removing-rows-with-missing-values-from-a-dataframe" class="smaller ">
 
@@ -4228,7 +4228,7 @@ print(paste(&quot;The table is&quot;, n_rows, &quot;rows by&quot;, n_cols, &quot
 
 <pre >## [1] &quot;The table is 3563 rows by 3 cols, making 10689 cells&quot;</pre>
 
-<p>The data represent fake frequencies of offences from 2016 to 2020, represented by real offence codes. If an offence was prosecuted in a year, there is a corresponding line in this data table, with the offence code indicated by the <code>offence_code</code> column, the year indicated by the <code>year</code> column, and the <code>count</code> column representing the number of times the offence was prosecuted. If an offence was not prosecuted in a year, the corresponding combination of <code>year</code> and <code>offence</code> does not exist. The table has been sorted by year and offence code.</p>
+<p>The data represent fake frequencies of offences from 2016 to 2020, represented by real Home Office offence codes. If an offence was prosecuted in a year, there is a corresponding line in this data table, with the offence code indicated by the <code>offence_code</code> column, the year indicated by the <code>year</code> column, and the <code>count</code> column representing the number of times the offence was prosecuted. If an offence was not prosecuted in a year, the corresponding combination of <code>year</code> and <code>offence</code> does not exist. The table has been sorted by year and offence code.</p>
 
 </article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
 
@@ -4263,7 +4263,7 @@ print(paste(&quot;The table is&quot;, n_rows, &quot;rows by&quot;, n_cols, &quot
 
 <p>What’s happened? We passed <code>count</code> to the argument <code>values_from</code> and <code>year</code> to the argument <code>names_from</code>. This tells the function that we want to make new columns based on <code>year</code>, and populate it with the values from <code>count</code>.</p>
 
-<p>Remember that the data are sorted first by year, and then by offence? If we imagine each year as a stack of data, what we’re effectively doing here is taking the count data for each stack and putting them in their own column.</p>
+<p>Remember that the data are sorted first by year, and then by offence? If we imagine each year as a stack of data, and the table containing one stack for each year, then what we’re effectively doing here is taking the count data for each stack and putting them in their own column. We end up with a table that has one row per offence code, and one column for each year. There are fewer cells in total, although the same data are represented in both tables.</p>
 
 </article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
 
@@ -4294,7 +4294,7 @@ head(wide_annual_offences)</pre>
 
 <p>When transforming count data like this we may have legitimate good reason to replace our NAs with 0s, which we can do with <code>values_fill()</code>:</p>
 
-<pre class = 'prettyprint lang-r'># filling in NAs with 0
+<pre class = 'prettyprint lang-r'># replacing NAs with 0s
 wide_annual_offences &lt;- annual_offences %&gt;%
   tidyr::pivot_wider(
     names_from = &#39;year&#39;,
@@ -4318,12 +4318,12 @@ head(wide_annual_offences)</pre>
 
 <p>Once our table is in wide format, and clean, we can easily do transformations like this. Here we use <code>dplyr</code> functions to create a new column that adds up yearly totals across each column that has count data:</p>
 
-<pre class = 'prettyprint lang-r'>#starting by mapping a single month 
+<pre class = 'prettyprint lang-r'># Creating a new column from the ones we&#39;ve created
 wide_annual_offences_with_totals &lt;- wide_annual_offences %&gt;%
   dplyr::mutate(
     count_2016_2020 =
-      rowSums(dplyr::across(dplyr::starts_with(&quot;count&quot;)))
-  )
+      rowSums(dplyr::across(c(&#39;count_2016&#39;, &#39;count_2017&#39;,&#39;count_2018&#39;,&#39;count_2019&#39;,&#39;count_2020&#39;)))
+    )
 head(wide_annual_offences_with_totals)</pre>
 
 <pre >## # A tibble: 6 × 7
@@ -4342,7 +4342,7 @@ head(wide_annual_offences_with_totals)</pre>
 
 <p>Here we are passing an anonymous function which itself calls the <code>round()</code> function to round our counts. Setting the <code>digits</code> argument of <code>round()</code> to -1 means that the values get rounded to the nearest 10, rather than the default behaviour of rounding to the nearest whole number.</p>
 
-<pre class = 'prettyprint lang-r'>#mapping all weeks to one variable called &quot;weeks&quot; 
+<pre class = 'prettyprint lang-r'># passing an auxiliary function to `pivot_wider()`
 wide_annual_offences_rounded &lt;- annual_offences %&gt;%
   tidyr::pivot_wider(
     names_from = &#39;year&#39;,
@@ -4391,7 +4391,8 @@ head(wide_annual_offences_rounded)</pre>
 
 <p>We use the function <code>pivot_longer()</code> for this. You can pass column names to it like this:</p>
 
-<pre class = 'prettyprint lang-r'>long_annual_offences &lt;- wide_annual_offences %&gt;%
+<pre class = 'prettyprint lang-r'># basic transformation of a table into long format
+long_annual_offences &lt;- wide_annual_offences %&gt;%
   tidyr::pivot_longer(
     cols = c(&#39;count_2016&#39;, &#39;count_2017&#39;, &#39;count_2018&#39;, &#39;count_2019&#39;, &#39;count_2020&#39;)
   )
@@ -4409,9 +4410,10 @@ head(long_annual_offences)</pre>
 
 </article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
 
-<p>Or, as our column names are conveniently named with a prefix, we can use <code>starts_with()</code> from <code>dplyr</code> again:</p>
+<p>Or, as our column names are conveniently named with a prefix, we can use <code>starts_with()</code> from <code>dplyr</code>:</p>
 
-<pre class = 'prettyprint lang-r'>long_annual_offences &lt;- wide_annual_offences %&gt;%
+<pre class = 'prettyprint lang-r'># identifying columns using `starts_with()`
+long_annual_offences &lt;- wide_annual_offences %&gt;%
   tidyr::pivot_longer(
     cols = dplyr::starts_with(&#39;count&#39;)
   )
@@ -4429,7 +4431,12 @@ head(long_annual_offences)</pre>
 
 </article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
 
-<p>Essentially, these data are the same as what we started with, but there are some differences we need to iron out in order to get back where we started.</p>
+<p>Essentially, these data are the same as what we started with, but there are some differences.</p>
+
+<pre class = 'prettyprint lang-r'># checking if the original table and working table are identical
+identical(long_annual_offences, annual_offences)</pre>
+
+<pre >## [1] FALSE</pre>
 
 <pre class = 'prettyprint lang-r'>head(annual_offences, 3)</pre>
 
@@ -4449,17 +4456,18 @@ head(long_annual_offences)</pre>
 ## 2 00101        count_2017   188
 ## 3 00101        count_2018   177</pre>
 
-<pre class = 'prettyprint lang-r'>identical(long_annual_offences, annual_offences)</pre>
+</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
 
-<pre >## [1] FALSE</pre>
+<p>In fact, there are <em>six</em> differences between these tables. Have a look yourself, and put suggestions in the chat as to what these might be. Then we’ll cover how to correct these differences and make our working table identical to the original table.</p>
+
+<p>Thankfully we can iron out these differences through a combination of amending our call to <code>pivot_wider()</code> and passing the result to some <code>dplyr</code> functions.</p>
 
 </article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
 
-<p>There are several differences, which we can correct via arguments to <code>pivot_wider()</code> and some <code>dplyr</code> functions.</p>
-
 <p>First, the default column name <code>value</code> has been assigned to our count, which we correct with the argument <code>values_to</code>, giving it the label we see in the original table:</p>
 
-<pre class = 'prettyprint lang-r'>long_annual_offences &lt;- wide_annual_offences %&gt;%
+<pre class = 'prettyprint lang-r'># specifying a name for the `values` column
+long_annual_offences &lt;- wide_annual_offences %&gt;%
   tidyr::pivot_longer(
     cols = dplyr::starts_with(&#39;count&#39;),
     values_to = &#39;count&#39;
@@ -4484,7 +4492,8 @@ head(long_annual_offences)</pre>
 
 <p>There’s another default name that it’s assigned too — it’s used <code>name</code> when we want <code>year</code> to indicate the years. We correct this with an equivalent argument:</p>
 
-<pre class = 'prettyprint lang-r'>long_annual_offences &lt;- wide_annual_offences %&gt;%
+<pre class = 'prettyprint lang-r'># specifying a name for the `names` column
+long_annual_offences &lt;- wide_annual_offences %&gt;%
   tidyr::pivot_longer(
     cols = dplyr::starts_with(&#39;count&#39;),
     values_to = &#39;count&#39;,
@@ -4510,7 +4519,8 @@ head(long_annual_offences)</pre>
 
 <p>We also want to remove those prefixes:</p>
 
-<pre class = 'prettyprint lang-r'>long_annual_offences &lt;- wide_annual_offences %&gt;%
+<pre class = 'prettyprint lang-r'># providing substring prefix to remove from column names before using them in our combined `names` column
+long_annual_offences &lt;- wide_annual_offences %&gt;%
   tidyr::pivot_longer(
     cols = dplyr::starts_with(&#39;count&#39;),
     values_to = &#39;count&#39;,
@@ -4535,7 +4545,7 @@ head(long_annual_offences)</pre>
 
 </article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
 
-<p>Still more to do! We have more rows in our new table, and that’s because of those year/offence combinations where there are no incidences.</p>
+<p>Still more to do! We have the right number of columns in our new table, but we have more rows than we should. That’s because of those year/offence combinations where there are no incidences.</p>
 
 <pre class = 'prettyprint lang-r'>n_rows &lt;- dim(annual_offences)[1]
 n_cols &lt;- dim(annual_offences)[2]
@@ -4553,7 +4563,8 @@ print(paste(&quot;Our working table is&quot;, n_rows, &quot;rows by&quot;, n_col
 
 <p>Let’s get <code>dplyr</code> involved, and filter these out:</p>
 
-<pre class = 'prettyprint lang-r'>long_annual_offences &lt;- wide_annual_offences %&gt;%
+<pre class = 'prettyprint lang-r'># Filtering out rows with no offences
+long_annual_offences &lt;- wide_annual_offences %&gt;%
   tidyr::pivot_longer(
     cols = dplyr::starts_with(&#39;count&#39;),
     values_to = &#39;count&#39;,
@@ -4578,7 +4589,8 @@ print(paste(&quot;Our working table is&quot;, n_rows, &quot;rows by&quot;, n_col
 
 <p>Finally, we use <code>dplyr</code> to: 1) fix data types and reorder columns with <code>transmute()</code>, 2) order rows with <code>arrange()</code>:</p>
 
-<pre class = 'prettyprint lang-r'>long_annual_offences &lt;- wide_annual_offences %&gt;%
+<pre class = 'prettyprint lang-r'># Use `dplyr` functions to do some final tidying
+long_annual_offences &lt;- wide_annual_offences %&gt;%
   tidyr::pivot_longer(
     cols = dplyr::starts_with(&#39;count&#39;),
     values_to = &#39;count&#39;,
@@ -4629,24 +4641,22 @@ print(paste(&quot;Our working table is&quot;, n_rows, &quot;rows by&quot;, n_col
 
 <h3>Exercise 1</h3>
 
-<p>You have received summary tables showing quarterly totals of adult reoffenders in England and Wales, beginning in 2010 quarter two. The data are split by number of previous offences of the offender prior to their current offence.</p>
+<p>You have received a summary table showing quarterly totals of adult reoffenders in England and Wales, beginning in the second quarter of 2010. The data are split by number of previous offences of the offender prior to their current offence.</p>
 
 <p>Read in the data:</p>
 
 <pre class = 'prettyprint lang-r'>reoffending_real &lt;- Rs3tools::s3_path_to_full_df(
     s3_path = &quot;s3://alpha-r-training/intro-r-extension/adult_reoff_by_prev_off_number_2.csv&quot;)</pre>
 
-<p>This data table is in wide format, but if you were to plot the data with <code>ggplot2</code>, you would need to put it in long format.</p>
-
 <ol>
-<li>Put the data in long format</li>
-<li>Remove relevant prefixes</li>
-<li>Pass the labels &lsquo;quarter&rsquo; and &lsquo;count&rsquo; to the appropriate arguments to name the columns in your long format table.</li>
+<li>Examine this data table. Would you describe it as being in wide or long format?</li>
+<li>Is it more &lsquo;machine readable&rsquo; or &lsquo;human readable&rsquo;?</li>
+<li>What, if anything, would you need to do to the data before passing it to be read for plotting by functions from a package like <code>ggplot2</code>?</li>
 </ol>
 
-</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
-
 <p>Note, these are real data on reoffending, publicly available, derived from the table <a href='https://www.gov.uk/government/statistics/proven-reoffending-statistics-april-to-june-2021' title=''>here</a>.</p>
+
+</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
 
 <p>Here’s a preview of the data table:</p>
 
@@ -4699,17 +4709,27 @@ print(paste(&quot;Our working table is&quot;, n_rows, &quot;rows by&quot;, n_col
 
 <h3>Exercise 2</h3>
 
-<p>Your project manager likes the resulting plot, but wants to be able to see trends in counts over time more easily. Going from the long format table:</p>
-
 <ol>
-<li>Put the data back into wide format</li>
-<li>Add a prefix of your choice to the new columns you create</li>
-<li>Round the values to the nearest thousand</li>
+<li>Put the data into long format using the appropriate function.</li>
+<li>Remove relevant prefixes.</li>
+<li>Pass the labels &lsquo;quarter&rsquo; and &lsquo;count&rsquo; to the appropriate arguments to name the columns in your long format table.</li>
 </ol>
 
 </article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
 
-<pre class = 'prettyprint lang-r'># Reshaping - solution to exercise 1
+<h3>Exercise 3</h3>
+
+<p>Your project manager likes the resulting plot, but wants to be able to see trends in counts over time more easily. Going from the long format table:</p>
+
+<ol>
+<li>Put the data back into wide format.</li>
+<li>Add a prefix of your choice to the new columns you create.</li>
+<li>Round the values to the nearest thousand.</li>
+</ol>
+
+</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
+
+<pre class = 'prettyprint lang-r'># Reshaping - solution to exercise 2
 reoffending_real_long &lt;- reoffending_real %&gt;%
   tidyr::pivot_longer(
     cols = dplyr::starts_with(&#39;total&#39;),
@@ -4732,7 +4752,7 @@ head(reoffending_real_long)</pre>
 
 </article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
 
-<pre class = 'prettyprint lang-r'># Reshaping - solution to exercise 2
+<pre class = 'prettyprint lang-r'># Reshaping - solution to exercise 3
 reoffending_real_wide &lt;- reoffending_real_long %&gt;%
   tidyr::pivot_wider(
     names_from = &#39;quarter&#39;,

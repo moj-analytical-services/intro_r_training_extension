@@ -1028,18 +1028,18 @@ df
     ## # A tibble: 12 × 3
     ##    year  quarter count
     ##    <chr> <chr>   <int>
-    ##  1 2017  Q1          1
-    ##  2 <NA>  Q2          9
-    ##  3 <NA>  Q3          2
+    ##  1 2017  Q1         10
+    ##  2 <NA>  Q2          5
+    ##  3 <NA>  Q3          1
     ##  4 <NA>  Q4          4
-    ##  5 2018  Q1         10
-    ##  6 <NA>  Q2          6
+    ##  5 2018  Q1          7
+    ##  6 <NA>  Q2          3
     ##  7 <NA>  Q3          8
-    ##  8 <NA>  Q4         12
-    ##  9 2019  Q1          7
-    ## 10 <NA>  Q2          5
-    ## 11 <NA>  Q3          3
-    ## 12 <NA>  Q4         11
+    ##  8 <NA>  Q4          6
+    ##  9 2019  Q1         12
+    ## 10 <NA>  Q2         11
+    ## 11 <NA>  Q3          9
+    ## 12 <NA>  Q4          2
 
 ------------------------------------------------------------------------
 
@@ -1054,18 +1054,18 @@ df %>% tidyr::fill(year)
     ## # A tibble: 12 × 3
     ##    year  quarter count
     ##    <chr> <chr>   <int>
-    ##  1 2017  Q1          1
-    ##  2 2017  Q2          9
-    ##  3 2017  Q3          2
+    ##  1 2017  Q1         10
+    ##  2 2017  Q2          5
+    ##  3 2017  Q3          1
     ##  4 2017  Q4          4
-    ##  5 2018  Q1         10
-    ##  6 2018  Q2          6
+    ##  5 2018  Q1          7
+    ##  6 2018  Q2          3
     ##  7 2018  Q3          8
-    ##  8 2018  Q4         12
-    ##  9 2019  Q1          7
-    ## 10 2019  Q2          5
-    ## 11 2019  Q3          3
-    ## 12 2019  Q4         11
+    ##  8 2018  Q4          6
+    ##  9 2019  Q1         12
+    ## 10 2019  Q2         11
+    ## 11 2019  Q3          9
+    ## 12 2019  Q4          2
 
 ## Removing rows with missing values from a dataframe
 
@@ -1221,13 +1221,14 @@ print(paste("The table is", n_rows, "rows by", n_cols, "cols, making", n_rows * 
     ## [1] "The table is 3563 rows by 3 cols, making 10689 cells"
 
 The data represent fake frequencies of offences from 2016 to 2020,
-represented by real offence codes. If an offence was prosecuted in a
-year, there is a corresponding line in this data table, with the offence
-code indicated by the `offence_code` column, the year indicated by the
-`year` column, and the `count` column representing the number of times
-the offence was prosecuted. If an offence was not prosecuted in a year,
-the corresponding combination of `year` and `offence` does not exist.
-The table has been sorted by year and offence code.
+represented by real Home Office offence codes. If an offence was
+prosecuted in a year, there is a corresponding line in this data table,
+with the offence code indicated by the `offence_code` column, the year
+indicated by the `year` column, and the `count` column representing the
+number of times the offence was prosecuted. If an offence was not
+prosecuted in a year, the corresponding combination of `year` and
+`offence` does not exist. The table has been sorted by year and offence
+code.
 
 ------------------------------------------------------------------------
 
@@ -1273,9 +1274,12 @@ want to make new columns based on `year`, and populate it with the
 values from `count`.
 
 Remember that the data are sorted first by year, and then by offence? If
-we imagine each year as a stack of data, what we’re effectively doing
-here is taking the count data for each stack and putting them in their
-own column.
+we imagine each year as a stack of data, and the table containing one
+stack for each year, then what we’re effectively doing here is taking
+the count data for each stack and putting them in their own column. We
+end up with a table that has one row per offence code, and one column
+for each year. There are fewer cells in total, although the same data
+are represented in both tables.
 
 ------------------------------------------------------------------------
 
@@ -1313,7 +1317,7 @@ When transforming count data like this we may have legitimate good
 reason to replace our NAs with 0s, which we can do with `values_fill()`:
 
 ``` r
-# filling in NAs with 0
+# replacing NAs with 0s
 wide_annual_offences <- annual_offences %>%
   tidyr::pivot_wider(
     names_from = 'year',
@@ -1342,12 +1346,12 @@ column that adds up yearly totals across each column that has count
 data:
 
 ``` r
-#starting by mapping a single month 
+# Creating a new column from the ones we've created
 wide_annual_offences_with_totals <- wide_annual_offences %>%
   dplyr::mutate(
     count_2016_2020 =
-      rowSums(dplyr::across(dplyr::starts_with("count")))
-  )
+      rowSums(dplyr::across(c('count_2016', 'count_2017','count_2018','count_2019','count_2020')))
+    )
 head(wide_annual_offences_with_totals)
 ```
 
@@ -1374,7 +1378,7 @@ rather than the default behaviour of rounding to the nearest whole
 number.
 
 ``` r
-#mapping all weeks to one variable called "weeks" 
+# passing an auxiliary function to `pivot_wider()`
 wide_annual_offences_rounded <- annual_offences %>%
   tidyr::pivot_wider(
     names_from = 'year',
@@ -1432,6 +1436,7 @@ We use the function `pivot_longer()` for this. You can pass column names
 to it like this:
 
 ``` r
+# basic transformation of a table into long format
 long_annual_offences <- wide_annual_offences %>%
   tidyr::pivot_longer(
     cols = c('count_2016', 'count_2017', 'count_2018', 'count_2019', 'count_2020')
@@ -1452,9 +1457,10 @@ head(long_annual_offences)
 ------------------------------------------------------------------------
 
 Or, as our column names are conveniently named with a prefix, we can use
-`starts_with()` from `dplyr` again:
+`starts_with()` from `dplyr`:
 
 ``` r
+# identifying columns using `starts_with()`
 long_annual_offences <- wide_annual_offences %>%
   tidyr::pivot_longer(
     cols = dplyr::starts_with('count')
@@ -1475,8 +1481,14 @@ head(long_annual_offences)
 ------------------------------------------------------------------------
 
 Essentially, these data are the same as what we started with, but there
-are some differences we need to iron out in order to get back where we
-started.
+are some differences.
+
+``` r
+# checking if the original table and working table are identical
+identical(long_annual_offences, annual_offences)
+```
+
+    ## [1] FALSE
 
 ``` r
 head(annual_offences, 3)
@@ -1500,22 +1512,25 @@ head(long_annual_offences, 3)
     ## 2 00101        count_2017   188
     ## 3 00101        count_2018   177
 
-``` r
-identical(long_annual_offences, annual_offences)
-```
-
-    ## [1] FALSE
-
 ------------------------------------------------------------------------
 
-There are several differences, which we can correct via arguments to
-`pivot_wider()` and some `dplyr` functions.
+In fact, there are *six* differences between these tables. Have a look
+yourself, and put suggestions in the chat as to what these might be.
+Then we’ll cover how to correct these differences and make our working
+table identical to the original table.
+
+Thankfully we can iron out these differences through a combination of
+amending our call to `pivot_wider()` and passing the result to some
+`dplyr` functions.
+
+------------------------------------------------------------------------
 
 First, the default column name `value` has been assigned to our count,
 which we correct with the argument `values_to`, giving it the label we
 see in the original table:
 
 ``` r
+# specifying a name for the `values` column
 long_annual_offences <- wide_annual_offences %>%
   tidyr::pivot_longer(
     cols = dplyr::starts_with('count'),
@@ -1547,6 +1562,7 @@ when we want `year` to indicate the years. We correct this with an
 equivalent argument:
 
 ``` r
+# specifying a name for the `names` column
 long_annual_offences <- wide_annual_offences %>%
   tidyr::pivot_longer(
     cols = dplyr::starts_with('count'),
@@ -1577,6 +1593,7 @@ identical(long_annual_offences, annual_offences)
 We also want to remove those prefixes:
 
 ``` r
+# providing substring prefix to remove from column names before using them in our combined `names` column
 long_annual_offences <- wide_annual_offences %>%
   tidyr::pivot_longer(
     cols = dplyr::starts_with('count'),
@@ -1605,8 +1622,9 @@ identical(long_annual_offences, annual_offences)
 
 ------------------------------------------------------------------------
 
-Still more to do! We have more rows in our new table, and that’s because
-of those year/offence combinations where there are no incidences.
+Still more to do! We have the right number of columns in our new table,
+but we have more rows than we should. That’s because of those
+year/offence combinations where there are no incidences.
 
 ``` r
 n_rows <- dim(annual_offences)[1]
@@ -1629,6 +1647,7 @@ print(paste("Our working table is", n_rows, "rows by", n_cols, "cols, making", n
 Let’s get `dplyr` involved, and filter these out:
 
 ``` r
+# Filtering out rows with no offences
 long_annual_offences <- wide_annual_offences %>%
   tidyr::pivot_longer(
     cols = dplyr::starts_with('count'),
@@ -1662,6 +1681,7 @@ Finally, we use `dplyr` to: 1) fix data types and reorder columns with
 `transmute()`, 2) order rows with `arrange()`:
 
 ``` r
+# Use `dplyr` functions to do some final tidying
 long_annual_offences <- wide_annual_offences %>%
   tidyr::pivot_longer(
     cols = dplyr::starts_with('count'),
@@ -1724,10 +1744,10 @@ long format data. Now you can have a go yourself in the exercises below!
 
 ### Exercise 1
 
-You have received summary tables showing quarterly totals of adult
-reoffenders in England and Wales, beginning in 2010 quarter two. The
-data are split by number of previous offences of the offender prior to
-their current offence.
+You have received a summary table showing quarterly totals of adult
+reoffenders in England and Wales, beginning in the second quarter of
+2010. The data are split by number of previous offences of the offender
+prior to their current offence.
 
 Read in the data:
 
@@ -1736,19 +1756,18 @@ reoffending_real <- Rs3tools::s3_path_to_full_df(
     s3_path = "s3://alpha-r-training/intro-r-extension/adult_reoff_by_prev_off_number_2.csv")
 ```
 
-This data table is in wide format, but if you were to plot the data with
-`ggplot2`, you would need to put it in long format.
-
-1)  Put the data in long format
-2)  Remove relevant prefixes
-3)  Pass the labels ‘quarter’ and ‘count’ to the appropriate arguments
-    to name the columns in your long format table.
-
-------------------------------------------------------------------------
+1)  Examine this data table. Would you describe it as being in wide or
+    long format?
+2)  Is it more ‘machine readable’ or ‘human readable’?
+3)  What, if anything, would you need to do to the data before passing
+    it to be read for plotting by functions from a package like
+    `ggplot2`?
 
 Note, these are real data on reoffending, publicly available, derived
 from the table
 [here](https://www.gov.uk/government/statistics/proven-reoffending-statistics-april-to-june-2021).
+
+------------------------------------------------------------------------
 
 Here’s a preview of the data table:
 
@@ -1803,13 +1822,22 @@ head(reoffending_real)
 
 ### Exercise 2
 
+1)  Put the data into long format using the appropriate function.
+2)  Remove relevant prefixes.
+3)  Pass the labels ‘quarter’ and ‘count’ to the appropriate arguments
+    to name the columns in your long format table.
+
+------------------------------------------------------------------------
+
+### Exercise 3
+
 Your project manager likes the resulting plot, but wants to be able to
 see trends in counts over time more easily. Going from the long format
 table:
 
-1)  Put the data back into wide format
-2)  Add a prefix of your choice to the new columns you create
-3)  Round the values to the nearest thousand
+1)  Put the data back into wide format.
+2)  Add a prefix of your choice to the new columns you create.
+3)  Round the values to the nearest thousand.
 
 ------------------------------------------------------------------------
 

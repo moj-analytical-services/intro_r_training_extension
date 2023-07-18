@@ -317,7 +317,7 @@ wide_annual_offences <- annual_offences %>%
   )
 head(wide_annual_offences)
 
-# filling in NAs with 0
+# replacing NAs with 0s
 wide_annual_offences <- annual_offences %>%
   tidyr::pivot_wider(
     names_from = 'year',
@@ -327,15 +327,15 @@ wide_annual_offences <- annual_offences %>%
   )
 head(wide_annual_offences)
 
-#starting by mapping a single month 
+# Creating a new column from the ones we've created
 wide_annual_offences_with_totals <- wide_annual_offences %>%
   dplyr::mutate(
     count_2016_2020 =
-      rowSums(dplyr::across(dplyr::starts_with("count")))
-  )
+      rowSums(dplyr::across(c('count_2016', 'count_2017','count_2018','count_2019','count_2020')))
+    )
 head(wide_annual_offences_with_totals)
 
-#mapping all weeks to one variable called "weeks" 
+# passing an auxiliary function to `pivot_wider()`
 wide_annual_offences_rounded <- annual_offences %>%
   tidyr::pivot_wider(
     names_from = 'year',
@@ -349,23 +349,27 @@ head(wide_annual_offences_rounded)
 head(wide_annual_offences, 3)
 head(annual_offences, 3)
 
+# basic transformation of a table into long format
 long_annual_offences <- wide_annual_offences %>%
   tidyr::pivot_longer(
     cols = c('count_2016', 'count_2017', 'count_2018', 'count_2019', 'count_2020')
   )
 head(long_annual_offences)
 
+# identifying columns using `starts_with()`
 long_annual_offences <- wide_annual_offences %>%
   tidyr::pivot_longer(
     cols = dplyr::starts_with('count')
   )
 head(long_annual_offences)
 
+# checking if the original table and working table are identical
+identical(long_annual_offences, annual_offences)
+
 head(annual_offences, 3)
 head(long_annual_offences, 3)
 
-identical(long_annual_offences, annual_offences)
-
+# specifying a name for the `values` column
 long_annual_offences <- wide_annual_offences %>%
   tidyr::pivot_longer(
     cols = dplyr::starts_with('count'),
@@ -375,6 +379,7 @@ head(long_annual_offences)
 
 identical(long_annual_offences, annual_offences)
 
+# specifying a name for the `names` column
 long_annual_offences <- wide_annual_offences %>%
   tidyr::pivot_longer(
     cols = dplyr::starts_with('count'),
@@ -385,6 +390,7 @@ head(long_annual_offences)
 
 identical(long_annual_offences, annual_offences)
 
+# providing substring prefix to remove from column names before using them in our combined `names` column
 long_annual_offences <- wide_annual_offences %>%
   tidyr::pivot_longer(
     cols = dplyr::starts_with('count'),
@@ -405,6 +411,7 @@ n_cols <- dim(long_annual_offences)[2]
 print(paste("Our working table is", n_rows, "rows by", n_cols, "cols, making", n_rows * n_cols, "cells", sep = " "))
 
 
+# Filtering out rows with no offences
 long_annual_offences <- wide_annual_offences %>%
   tidyr::pivot_longer(
     cols = dplyr::starts_with('count'),
@@ -418,6 +425,7 @@ nrow(long_annual_offences) == nrow(annual_offences)
 
 identical(long_annual_offences, annual_offences)
 
+# Use `dplyr` functions to do some final tidying
 long_annual_offences <- wide_annual_offences %>%
   tidyr::pivot_longer(
     cols = dplyr::starts_with('count'),

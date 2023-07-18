@@ -42,7 +42,7 @@ fruit %>% tidyr::replace_na(list(Cost = "Unknown",
                                  Quantity = 0))
 
 
-# Reshaping - solution to exercise 1
+# Reshaping - solution to exercise 2
 reoffending_real_long <- reoffending_real %>%
   tidyr::pivot_longer(
     cols = dplyr::starts_with('total'),
@@ -53,7 +53,7 @@ reoffending_real_long <- reoffending_real %>%
 
 head(reoffending_real_long)
 
-# Reshaping - solution to exercise 2
+# Reshaping - solution to exercise 3
 reoffending_real_wide <- reoffending_real_long %>%
   tidyr::pivot_wider(
     names_from = 'quarter',
