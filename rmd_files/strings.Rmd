@@ -280,7 +280,7 @@ In the first example only the first match in each string has been replaced with 
 The column names of a table in an earlier exercise are: `offence_code`, `count_2016`, `count_2017`, `count_2018`, `count_2019`, `count_2020`.
 
 
-Using only functions covered in this part of the course, find the most efficient way to code this from scratch as:
+Using only `stringr::str_c()` and `c()`, find the most efficient way to code this from scratch as:
 a) A vector of strings
 b) A single string, with column names separated by a comma and a space
 
@@ -294,7 +294,8 @@ The 'billboard' data set from the `tidyr` package contains US weekly music sales
 
 Extract its column names with `colnames(tidyr::billboard)`, and return an integer corresponding to the number of columns that contain `wk` ('week') in their names.
 
-**Hint:** Remember that booleans have numeric value (`TRUE == 1`, `FALSE == 0`)
+**Hint:** You may find the function `stringr::str_detect()` useful here.
+**Hint:** Remember that booleans have numeric value (`TRUE == 1`, `FALSE == 0`).
 
 ---
 
