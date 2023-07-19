@@ -294,6 +294,7 @@ The 'billboard' data set from the `tidyr` package contains US weekly music sales
 
 Extract its column names with `colnames(tidyr::billboard)`, and return an integer corresponding to the number of columns that contain `wk` ('week') in their names.
 
+**Hint:** Remember that booleans have numeric value (`TRUE == 1`, `FALSE == 0`)
 
 ---
 
