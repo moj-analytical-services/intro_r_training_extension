@@ -284,7 +284,7 @@ Using only functions covered in this part of the course, find the most efficient
 a) A vector of strings
 b) A single string, with column names separated by a comma and a space
 
-**Hint:** You may want to create an object in the first part of the question, and recycle it for the second part.
+**Hint:** You may want to create a variable in the first part of the question, and recycle it for the second part.
 
 ---
 
