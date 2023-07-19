@@ -1028,18 +1028,18 @@ df
     ## # A tibble: 12 × 3
     ##    year  quarter count
     ##    <chr> <chr>   <int>
-    ##  1 2017  Q1         10
-    ##  2 <NA>  Q2          5
+    ##  1 2017  Q1          8
+    ##  2 <NA>  Q2          6
     ##  3 <NA>  Q3          1
-    ##  4 <NA>  Q4          4
-    ##  5 2018  Q1          7
-    ##  6 <NA>  Q2          3
-    ##  7 <NA>  Q3          8
-    ##  8 <NA>  Q4          6
-    ##  9 2019  Q1         12
-    ## 10 <NA>  Q2         11
-    ## 11 <NA>  Q3          9
-    ## 12 <NA>  Q4          2
+    ##  4 <NA>  Q4          7
+    ##  5 2018  Q1          9
+    ##  6 <NA>  Q2         12
+    ##  7 <NA>  Q3         11
+    ##  8 <NA>  Q4          5
+    ##  9 2019  Q1          2
+    ## 10 <NA>  Q2         10
+    ## 11 <NA>  Q3          3
+    ## 12 <NA>  Q4          4
 
 ------------------------------------------------------------------------
 
@@ -1054,18 +1054,18 @@ df %>% tidyr::fill(year)
     ## # A tibble: 12 × 3
     ##    year  quarter count
     ##    <chr> <chr>   <int>
-    ##  1 2017  Q1         10
-    ##  2 2017  Q2          5
+    ##  1 2017  Q1          8
+    ##  2 2017  Q2          6
     ##  3 2017  Q3          1
-    ##  4 2017  Q4          4
-    ##  5 2018  Q1          7
-    ##  6 2018  Q2          3
-    ##  7 2018  Q3          8
-    ##  8 2018  Q4          6
-    ##  9 2019  Q1         12
-    ## 10 2019  Q2         11
-    ## 11 2019  Q3          9
-    ## 12 2019  Q4          2
+    ##  4 2017  Q4          7
+    ##  5 2018  Q1          9
+    ##  6 2018  Q2         12
+    ##  7 2018  Q3         11
+    ##  8 2018  Q4          5
+    ##  9 2019  Q1          2
+    ## 10 2019  Q2         10
+    ## 11 2019  Q3          3
+    ## 12 2019  Q4          4
 
 ## Removing rows with missing values from a dataframe
 
@@ -1775,48 +1775,42 @@ Here’s a preview of the data table:
 head(reoffending_real)
 ```
 
-    ##                    prev_conv_n total_2010_Q2 total_2010_Q3 total_2010_Q4 total_2011_Q1 total_2011_Q2
-    ## 1         No previous offences         42165         42427         41106         40870         39092
-    ## 2     1 to 2 previous offences         26905         27522         26239         26455         25318
-    ## 3     3 to 6 previous offences         24549         25467         24309         24864         24264
-    ## 4    7 to 10 previous offences         13217         13985         13230         13443         13198
-    ## 5 11 or more previous offences         51428         53846         52304         52659         52213
-    ##   total_2011_Q3 total_2011_Q4 total_2012_Q1 total_2012_Q2 total_2012_Q3 total_2012_Q4 total_2013_Q1
-    ## 1         39411         37792         36869         34897         35939         34615         33332
-    ## 2         25696         24729         24527         22546         23663         22255         21621
-    ## 3         24586         23181         23817         21886         22625         21319         21230
-    ## 4         13472         12770         13387         12269         12563         11859         11813
-    ## 5         54824         51638         53484         50015         51921         49219         48893
-    ##   total_2013_Q2 total_2013_Q3 total_2013_Q4 total_2014_Q1 total_2014_Q2 total_2014_Q3 total_2014_Q4
-    ## 1         32526         32955         33405         33268         31098         31313         30775
-    ## 2         21157         21776         21151         21265         19631         20082         19357
-    ## 3         20683         21248         20598         20778         19459         19785         18704
-    ## 4         11753         12094         11633         11744         11062         11204         10731
-    ## 5         49361         50603         49040         49920         47523         48618         46296
-    ##   total_2015_Q1 total_2015_Q2 total_2015_Q3 total_2015_Q4 total_2016_Q1 total_2016_Q2 total_2016_Q3
-    ## 1         30587         29624         29254         28663         27813         26888         25753
-    ## 2         19732         18582         18661         18108         17741         16802         16022
-    ## 3         18981         18425         18394         17966         17514         17006         16161
-    ## 4         11105         10838         10580         10357         10262          9962          9546
-    ## 5         46641         45963         45455         45593         45249         44399         42993
-    ##   total_2016_Q4 total_2017_Q1 total_2017_Q2 total_2017_Q3 total_2017_Q4 total_2018_Q1 total_2018_Q2
-    ## 1         24828         25662         23376         22952         23332         23436         21982
-    ## 2         15170         15678         14319         14005         13689         13796         13519
-    ## 3         15470         16004         15123         14499         13986         14359         13846
-    ## 4          9069          9453          8903          8677          8222          8392          8300
-    ## 5         41271         43572         41272         41006         39503         40151         38786
-    ##   total_2018_Q3 total_2018_Q4 total_2019_Q1 total_2019_Q2 total_2019_Q3 total_2019_Q4 total_2020_Q1
-    ## 1         21524         21433         22358         21407         21423         21049         20309
-    ## 2         12868         12680         13370         12685         12644         11886         12057
-    ## 3         13474         13145         13635         12932         12937         12366         12229
-    ## 4          7925          7901          8107          7764          7733          7542          7170
-    ## 5         38290         37297         37433         36497         36135         34274         33492
-    ##   total_2020_Q2 total_2020_Q3 total_2020_Q4 total_2021_Q1 total_2021_Q2
-    ## 1          8067         18382         19566         17481         17700
-    ## 2          4992         11783         12637         11599         11323
-    ## 3          5363         12258         13129         12279         12257
-    ## 4          3209          7301          7865          7217          7245
-    ## 5         18066         32028         33953         31702         31657
+    ##                    prev_conv_n total_2010_Q2 total_2010_Q3 total_2010_Q4 total_2011_Q1 total_2011_Q2 total_2011_Q3 total_2011_Q4
+    ## 1         No previous offences         42165         42427         41106         40870         39092         39411         37792
+    ## 2     1 to 2 previous offences         26905         27522         26239         26455         25318         25696         24729
+    ## 3     3 to 6 previous offences         24549         25467         24309         24864         24264         24586         23181
+    ## 4    7 to 10 previous offences         13217         13985         13230         13443         13198         13472         12770
+    ## 5 11 or more previous offences         51428         53846         52304         52659         52213         54824         51638
+    ##   total_2012_Q1 total_2012_Q2 total_2012_Q3 total_2012_Q4 total_2013_Q1 total_2013_Q2 total_2013_Q3 total_2013_Q4 total_2014_Q1
+    ## 1         36869         34897         35939         34615         33332         32526         32955         33405         33268
+    ## 2         24527         22546         23663         22255         21621         21157         21776         21151         21265
+    ## 3         23817         21886         22625         21319         21230         20683         21248         20598         20778
+    ## 4         13387         12269         12563         11859         11813         11753         12094         11633         11744
+    ## 5         53484         50015         51921         49219         48893         49361         50603         49040         49920
+    ##   total_2014_Q2 total_2014_Q3 total_2014_Q4 total_2015_Q1 total_2015_Q2 total_2015_Q3 total_2015_Q4 total_2016_Q1 total_2016_Q2
+    ## 1         31098         31313         30775         30587         29624         29254         28663         27813         26888
+    ## 2         19631         20082         19357         19732         18582         18661         18108         17741         16802
+    ## 3         19459         19785         18704         18981         18425         18394         17966         17514         17006
+    ## 4         11062         11204         10731         11105         10838         10580         10357         10262          9962
+    ## 5         47523         48618         46296         46641         45963         45455         45593         45249         44399
+    ##   total_2016_Q3 total_2016_Q4 total_2017_Q1 total_2017_Q2 total_2017_Q3 total_2017_Q4 total_2018_Q1 total_2018_Q2 total_2018_Q3
+    ## 1         25753         24828         25662         23376         22952         23332         23436         21982         21524
+    ## 2         16022         15170         15678         14319         14005         13689         13796         13519         12868
+    ## 3         16161         15470         16004         15123         14499         13986         14359         13846         13474
+    ## 4          9546          9069          9453          8903          8677          8222          8392          8300          7925
+    ## 5         42993         41271         43572         41272         41006         39503         40151         38786         38290
+    ##   total_2018_Q4 total_2019_Q1 total_2019_Q2 total_2019_Q3 total_2019_Q4 total_2020_Q1 total_2020_Q2 total_2020_Q3 total_2020_Q4
+    ## 1         21433         22358         21407         21423         21049         20309          8067         18382         19566
+    ## 2         12680         13370         12685         12644         11886         12057          4992         11783         12637
+    ## 3         13145         13635         12932         12937         12366         12229          5363         12258         13129
+    ## 4          7901          8107          7764          7733          7542          7170          3209          7301          7865
+    ## 5         37297         37433         36497         36135         34274         33492         18066         32028         33953
+    ##   total_2021_Q1 total_2021_Q2
+    ## 1         17481         17700
+    ## 2         11599         11323
+    ## 3         12279         12257
+    ## 4          7217          7245
+    ## 5         31702         31657
 
 ------------------------------------------------------------------------
 
@@ -2025,8 +2019,8 @@ string_vector2 <- c("1", "2", "3", "4", "5")
 stringr::str_c(string_vector1, string_vector2, sep=" - ")
 ```
 
-    ## Warning in stri_c(..., sep = sep, collapse = collapse, ignore_null = TRUE): longer object length is not a
-    ## multiple of shorter object length
+    ## Warning in stri_c(..., sep = sep, collapse = collapse, ignore_null = TRUE): longer object length is not a multiple of shorter object
+    ## length
 
     ## [1] "A - 1" "B - 2" "C - 3" "A - 4" "B - 5"
 
@@ -2241,6 +2235,33 @@ have been replaced.
 
 ### Exercise 1
 
+The column names of a table in an earlier exercise are: `offence_code`,
+`count_2016`, `count_2017`, `count_2018`, `count_2019`, `count_2020`.
+
+Using only `stringr::str_c()` and `c()`, find the most efficient way to
+code this from scratch as: a) A vector of strings b) A single string,
+with column names separated by a comma and a space
+
+**Hint:** You may want to create a variable in the first part of the
+question, and recycle it for the second part.
+
+### Exercise 2
+
+The ‘billboard’ data set from the `tidyr` package contains US weekly
+music sales data.
+
+Extract its column names with `colnames(tidyr::billboard)`, and return
+an integer corresponding to the number of columns that contain `wk`
+(‘week’) in their names.
+
+**Hint:** You may find the function `stringr::str_detect()` useful here.
+**Hint:** Remember that booleans have numeric value (`TRUE == 1`,
+`FALSE == 0`).
+
+------------------------------------------------------------------------
+
+### Exercise 3
+
 Remove all spaces from the following string:
 
 ``` r
@@ -2249,6 +2270,10 @@ string <- "The quick brown fox jumps over the lazy dog."
 
 **Hint:** You can remove a matched pattern by replacing it with an empty
 string (`""`).
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
 
 ------------------------------------------------------------------------
 

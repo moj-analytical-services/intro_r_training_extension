@@ -286,7 +286,6 @@ b) A single string, with column names separated by a comma and a space
 
 **Hint:** You may want to create a variable in the first part of the question, and recycle it for the second part.
 
----
 
 ### Exercise 2
 

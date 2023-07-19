@@ -66,5 +66,26 @@ head(reoffending_real_wide)
 
 
 # Strings - solution to exercise 1
+colname_vector <- c("offence_code", stringr::str_c("count_20", c("16", "17", "18", "19", "20")))
+colname_vector
+colname_string <- stringr::str_c(colname_vector, collapse = ", ")
+colname_string
+
+# Strings - solution to exercise 2
+sum(
+  stringr::str_detect(
+    string = colnames(tidyr::billboard),
+    pattern = "wk"))
+
+# or, breaking it down:
+bb_colnames <- colnames(tidyr::billboard)
+wk_col <- stringr::str_detect(
+  string = bb_colnames,
+  pattern = "wk")
+sum(wk_col)
+
+
+# Strings - solution to exercise 3
 string <- stringr::str_replace_all(string, " ", "")
 string
+
