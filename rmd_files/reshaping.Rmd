@@ -337,6 +337,7 @@ You have received a summary table showing quarterly totals of adult reoffenders 
 Read in the data:
 
 ```{r, purl=purl_example_code}
+# Example data for Reshaping exercises
 reoffending_real <- Rs3tools::s3_path_to_full_df(
     s3_path = "s3://alpha-r-training/intro-r-extension/adult_reoff_by_prev_off_number_2.csv")
 ```
@@ -363,7 +364,6 @@ head(reoffending_real)
   b) Remove relevant prefixes.
   c) Pass the labels 'quarter' and 'count' to the appropriate arguments to name the columns in your long format table.
 
----
 
 ### Exercise 3
 
@@ -372,6 +372,16 @@ Your project manager likes the resulting plot, but wants to be able to see trend
  a) Put the data back into wide format.
  b) Add a prefix of your choice to the new columns you create.
  c) Round the values to the nearest thousand.
+
+---
+
+```{r, include=show_solution, purl=purl_solutions}
+# Reshaping - solution to exercise 1
+
+# 1.1 The data table is in wide format
+# 1.2 It is more 'human readable'
+# 1.3 Convert it to long format
+```
 
 ---
 

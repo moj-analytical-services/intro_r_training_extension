@@ -136,7 +136,7 @@ for (i in data) {
 
 There are cases where the size of an output from a loop is not known beforehand. For example, this might be because different iterations result in outputs of different lengths.
 
-Let's say we want to combine segments of a dataset, and we don't know in advance how many segments there are or how many rows they have. There is a shared folder prepared in the alpha-r-training s3 bucket, which contains some data for us to read in and combine together. First we need to get a list of files to read in, which we can do using the `s3_ls()` function from botor:
+Let's say we want to combine segments of a dataset, and we don't know in advance how many segments there are or how many rows they have. There is a shared folder prepared in the alpha-r-training s3 bucket, which contains some data for us to read in and combine together. First we need to get a list of files to read in, which we can do using the `list_files_in_buckets()` function from Rs3tools:
 
 ```{r, message=F, warning=F, purl=purl_example_code}
 # Get dataframe with all available files/folders from an s3 path
@@ -172,7 +172,7 @@ fruit
 
 By doing this we've combined together various segments of a dataset, without needing to know how many segments there are or how many rows are in each segment beforehand.
 
-Note: We've introduced a type of R object called a list in this example. Lists are type of vector that allow us to put a whole dataframe as an element in the list. Compare this to the vectors we've met before, known as 'atomic vectors', where the elements can only contain a single value and they all need to be the same type (numeric, character, etc). The reason for doing it this way is because it's more memory efficient to add the dataframes to a list and use `bind_rows()` afterwards compared to appending the dataframes in each loop iteration.
+Note: We've introduced a type of R object called a list in this example. Lists are a type of vector that allow us to put a whole dataframe as an element in the list. Compare this to the vectors we've met before, known as 'atomic vectors', where the elements can only contain a single value and they all need to be the same type (numeric, character, etc). The reason for doing it this way is because it's more memory efficient to add the dataframes to a list and use `bind_rows()` afterwards compared to appending the dataframes in each loop iteration.
 
 
 ## While loops

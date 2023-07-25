@@ -42,6 +42,12 @@ fruit %>% tidyr::replace_na(list(Cost = "Unknown",
                                  Quantity = 0))
 
 
+# Reshaping - solution to exercise 1
+
+# 1.1 The data table is in wide format
+# 1.2 It is more 'human readable'
+# 1.3 Convert it to long format
+
 # Reshaping - solution to exercise 2
 reoffending_real_long <- reoffending_real %>%
   tidyr::pivot_longer(
@@ -68,7 +74,7 @@ head(reoffending_real_wide)
 # Strings - solution to exercise 1
 colname_vector <- c("offence_code", stringr::str_c("count_20", c("16", "17", "18", "19", "20")))
 colname_vector
-colname_string <- stringr::str_c(colname_vector, collapse = ", ")
+colname_string <- stringr::str_c(colname_vector, collapse=", ")
 colname_string
 
 # Strings - solution to exercise 2

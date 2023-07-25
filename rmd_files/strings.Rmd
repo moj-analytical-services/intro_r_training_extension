@@ -65,7 +65,7 @@ There are two optional arguments, `sep` and `collapse` that can be used to modif
 
 ```{r, purl=purl_example_code}
 # Using custom separator
-stringr::str_c("some", "space", "separated", "strings", sep = " ")
+stringr::str_c("some", "space", "separated", "strings", sep=" ")
 ```
 
 ---
@@ -106,7 +106,7 @@ It can also combine a single string with a vector of strings, like so:
 
 ```{r, purl=purl_example_code}
 # The single string will be 'recycled' to match the length of the vector
-stringr::str_c("a", c("b", "c", "d"), sep = " ")
+stringr::str_c("a", c("b", "c", "d"), sep=" ")
 ```
 
 Compare this with what happens when we combine these strings with `c()` :
@@ -281,6 +281,7 @@ The column names of a table in an earlier exercise are: `offence_code`, `count_2
 
 
 Using only `stringr::str_c()` and `c()`, find the most efficient way to code this from scratch as:
+
 a) A vector of strings
 b) A single string, with column names separated by a comma and a space
 
@@ -314,7 +315,7 @@ string <- "The quick brown fox jumps over the lazy dog."
 # Strings - solution to exercise 1
 colname_vector <- c("offence_code", stringr::str_c("count_20", c("16", "17", "18", "19", "20")))
 colname_vector
-colname_string <- stringr::str_c(colname_vector, collapse = ", ")
+colname_string <- stringr::str_c(colname_vector, collapse=", ")
 colname_string
 ```
 
