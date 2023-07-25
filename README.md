@@ -4,20 +4,24 @@ Introduction to R extension
 This repository is for the Introduction to R+ course offered by the Data
 & Analysis R Training Group.
 
-The session is intended to be accessible to anyone who is familiar with
-the content of the [Introduction to
+The session is periodically run over Teams, and is intended to be
+accessible to anyone who is familiar with the content of the
+[Introduction to
 R](https://github.com/moj-analytical-services/IntroRTraining) training
-session.
-
-If you have any feedback on the content, please get in touch!
+course. Alternatively, you can go through this material in your own
+time - all the notes are available below and you can also find links to
+recordings of previous sessions
+[here](https://moj-analytical-services.github.io/ap-tools-training/ITG.html#ITG).
+If you work through the material by yourself please leave feedback about
+the material [here](https://airtable.com/shr9u2OJB2pW8Y0Af).
 
 ## Contents
 
 -   [Pre-material](#pre-material)
 -   [Learning outcomes](#learning-outcomes)
 -   [Conditional statements](#conditional-statements)
--   [Handling missing data](#handling-missing-data)
 -   [Iteration](#iteration)
+-   [Handling missing data](#handling-missing-data)
 -   [Reshaping data](#reshaping-data)
 -   [String manipulation](#string-manipulation)
 -   [Further reading](#further-reading)
@@ -543,8 +547,8 @@ Let’s say we want to combine segments of a dataset, and we don’t know in
 advance how many segments there are or how many rows they have. There is
 a shared folder prepared in the alpha-r-training s3 bucket, which
 contains some data for us to read in and combine together. First we need
-to get a list of files to read in, which we can do using the `s3_ls()`
-function from botor:
+to get a list of files to read in, which we can do using the
+`list_files_in_buckets()` function from Rs3tools:
 
 ``` r
 # Get dataframe with all available files/folders from an s3 path
@@ -600,7 +604,7 @@ without needing to know how many segments there are or how many rows are
 in each segment beforehand.
 
 Note: We’ve introduced a type of R object called a list in this example.
-Lists are type of vector that allow us to put a whole dataframe as an
+Lists are a type of vector that allow us to put a whole dataframe as an
 element in the list. Compare this to the vectors we’ve met before, known
 as ‘atomic vectors’, where the elements can only contain a single value
 and they all need to be the same type (numeric, character, etc). The
@@ -1028,18 +1032,18 @@ df
     ## # A tibble: 12 × 3
     ##    year  quarter count
     ##    <chr> <chr>   <int>
-    ##  1 2017  Q1          8
-    ##  2 <NA>  Q2          6
-    ##  3 <NA>  Q3          1
-    ##  4 <NA>  Q4          7
-    ##  5 2018  Q1          9
-    ##  6 <NA>  Q2         12
-    ##  7 <NA>  Q3         11
-    ##  8 <NA>  Q4          5
-    ##  9 2019  Q1          2
-    ## 10 <NA>  Q2         10
-    ## 11 <NA>  Q3          3
-    ## 12 <NA>  Q4          4
+    ##  1 2017  Q1          9
+    ##  2 <NA>  Q2         11
+    ##  3 <NA>  Q3          3
+    ##  4 <NA>  Q4          6
+    ##  5 2018  Q1         10
+    ##  6 <NA>  Q2          7
+    ##  7 <NA>  Q3          5
+    ##  8 <NA>  Q4          1
+    ##  9 2019  Q1          8
+    ## 10 <NA>  Q2          4
+    ## 11 <NA>  Q3          2
+    ## 12 <NA>  Q4         12
 
 ------------------------------------------------------------------------
 
@@ -1054,18 +1058,18 @@ df %>% tidyr::fill(year)
     ## # A tibble: 12 × 3
     ##    year  quarter count
     ##    <chr> <chr>   <int>
-    ##  1 2017  Q1          8
-    ##  2 2017  Q2          6
-    ##  3 2017  Q3          1
-    ##  4 2017  Q4          7
-    ##  5 2018  Q1          9
-    ##  6 2018  Q2         12
-    ##  7 2018  Q3         11
-    ##  8 2018  Q4          5
-    ##  9 2019  Q1          2
-    ## 10 2019  Q2         10
-    ## 11 2019  Q3          3
-    ## 12 2019  Q4          4
+    ##  1 2017  Q1          9
+    ##  2 2017  Q2         11
+    ##  3 2017  Q3          3
+    ##  4 2017  Q4          6
+    ##  5 2018  Q1         10
+    ##  6 2018  Q2          7
+    ##  7 2018  Q3          5
+    ##  8 2018  Q4          1
+    ##  9 2019  Q1          8
+    ## 10 2019  Q2          4
+    ## 11 2019  Q3          2
+    ## 12 2019  Q4         12
 
 ## Removing rows with missing values from a dataframe
 
@@ -1752,6 +1756,7 @@ prior to their current offence.
 Read in the data:
 
 ``` r
+# Example data for Reshaping exercises
 reoffending_real <- Rs3tools::s3_path_to_full_df(
     s3_path = "s3://alpha-r-training/intro-r-extension/adult_reoff_by_prev_off_number_2.csv")
 ```
@@ -1821,8 +1826,6 @@ head(reoffending_real)
 3)  Pass the labels ‘quarter’ and ‘count’ to the appropriate arguments
     to name the columns in your long format table.
 
-------------------------------------------------------------------------
-
 ### Exercise 3
 
 Your project manager likes the resulting plot, but wants to be able to
@@ -1832,6 +1835,8 @@ table:
 1)  Put the data back into wide format.
 2)  Add a prefix of your choice to the new columns you create.
 3)  Round the values to the nearest thousand.
+
+------------------------------------------------------------------------
 
 ------------------------------------------------------------------------
 
@@ -1939,7 +1944,7 @@ define a separator to put between the strings when they’re combined:
 
 ``` r
 # Using custom separator
-stringr::str_c("some", "space", "separated", "strings", sep = " ")
+stringr::str_c("some", "space", "separated", "strings", sep=" ")
 ```
 
     ## [1] "some space separated strings"
@@ -1992,7 +1997,7 @@ It can also combine a single string with a vector of strings, like so:
 
 ``` r
 # The single string will be 'recycled' to match the length of the vector
-stringr::str_c("a", c("b", "c", "d"), sep = " ")
+stringr::str_c("a", c("b", "c", "d"), sep=" ")
 ```
 
     ## [1] "a b" "a c" "a d"
@@ -2239,8 +2244,10 @@ The column names of a table in an earlier exercise are: `offence_code`,
 `count_2016`, `count_2017`, `count_2018`, `count_2019`, `count_2020`.
 
 Using only `stringr::str_c()` and `c()`, find the most efficient way to
-code this from scratch as: a) A vector of strings b) A single string,
-with column names separated by a comma and a space
+code this from scratch as:
+
+1)  A vector of strings
+2)  A single string, with column names separated by a comma and a space
 
 **Hint:** You may want to create a variable in the first part of the
 question, and recycle it for the second part.
@@ -2285,7 +2292,7 @@ string (`""`).
 
 -   [Bonus
     examples](https://github.com/moj-analytical-services/intro_r_training_extension#bonus-examples)
--   [R for Data Science](https://r4ds.had.co.nz)
+-   [R for Data Science](https://r4ds.hadley.nz)
 -   [Advanced R](https://adv-r.hadley.nz)
 -   [Tidyverse website](https://www.tidyverse.org)
 -   [Tidyverse style guide](https://style.tidyverse.org/) (has some

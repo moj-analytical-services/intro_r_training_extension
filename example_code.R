@@ -446,6 +446,7 @@ head(long_annual_offences, 3)
 
 identical(long_annual_offences, annual_offences)
 
+# Example data for Reshaping exercises
 reoffending_real <- Rs3tools::s3_path_to_full_df(
     s3_path = "s3://alpha-r-training/intro-r-extension/adult_reoff_by_prev_off_number_2.csv")
 
@@ -477,7 +478,7 @@ stringr::str_length(string_vector)
 stringr::str_c("some", "strings", "to", "combine")
 
 # Using custom separator
-stringr::str_c("some", "space", "separated", "strings", sep = " ")
+stringr::str_c("some", "space", "separated", "strings", sep=" ")
 
 # Collapsing a character vector into a single string
 vector_to_collapse <- c("some", "strings", "to", "combine")
@@ -494,7 +495,7 @@ string_vector2 <- c("1", "2", "3", "4")
 stringr::str_c(string_vector1, string_vector2, sep=" - ", collapse=" ")
 
 # The single string will be 'recycled' to match the length of the vector
-stringr::str_c("a", c("b", "c", "d"), sep = " ")
+stringr::str_c("a", c("b", "c", "d"), sep=" ")
 
 # Combining strings into a single vector with c() 
 c("a", c("b", "c", "d"))
