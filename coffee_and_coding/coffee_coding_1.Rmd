@@ -55,7 +55,7 @@ First, we need to load a few packages:
 
 ```{r message=F, warning=F, purl=purl_example_code}
 # Load packages
-library(botor) # Used to help R interact with s3 cloud storage
+library(Rs3tools) # Used to help R interact with s3 cloud storage
 library(dplyr) # Used for data manipulation
 library(readr) # Used to help read in data
 ```
