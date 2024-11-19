@@ -65,7 +65,7 @@ reoffending_real_wide <- reoffending_real_long %>%
     names_from = 'quarter',
     values_from = 'count',
     names_prefix = 'count_',
-    values_fn = ~ round(.x, -3)
+    values_fn = list(count = ~ round(.x, -3))
   )
 
 head(reoffending_real_wide)

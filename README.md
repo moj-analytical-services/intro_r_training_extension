@@ -17,16 +17,16 @@ the material [here](https://airtable.com/shr9u2OJB2pW8Y0Af).
 
 ## Contents
 
--   [Pre-material](#pre-material)
--   [Learning outcomes](#learning-outcomes)
--   [Conditional statements](#conditional-statements)
--   [Iteration](#iteration)
--   [Handling missing data](#handling-missing-data)
--   [Reshaping data](#reshaping-data)
--   [String manipulation](#string-manipulation)
--   [Further reading](#further-reading)
--   [Bonus examples](#bonus-examples)
--   [Appendix](#appendix)
+- [Pre-material](#pre-material)
+- [Learning outcomes](#learning-outcomes)
+- [Conditional statements](#conditional-statements)
+- [Iteration](#iteration)
+- [Handling missing data](#handling-missing-data)
+- [Reshaping data](#reshaping-data)
+- [String manipulation](#string-manipulation)
+- [Further reading](#further-reading)
+- [Bonus examples](#bonus-examples)
+- [Appendix](#appendix)
 
 ## Pre-material
 
@@ -81,13 +81,13 @@ same piece of code.
 
 ### By the end of this session you should know how to:
 
--   Change what the code does based on a condition
--   Classify values in a dataframe, based on a set of conditions
--   Read and combine data from multiple csv files
--   Easily apply a function to multiple columns in a dataframe
--   Deal with missing values in a dataframe
--   Reshape dataframes
--   Search for a string pattern in a dataframe
+- Change what the code does based on a condition
+- Classify values in a dataframe, based on a set of conditions
+- Read and combine data from multiple csv files
+- Easily apply a function to multiple columns in a dataframe
+- Deal with missing values in a dataframe
+- Reshape dataframes
+- Search for a string pattern in a dataframe
 
 ## Before we start
 
@@ -915,7 +915,7 @@ df <- tibble::tibble(
 df %>% replace(is.na(.), 0)
 ```
 
-    ## # A tibble: 5 × 2
+    ## # A tibble: 5 x 2
     ##       x     y
     ##   <dbl> <dbl>
     ## 1     0    18
@@ -980,7 +980,7 @@ event_dates <- tibble::tibble(
 event_dates
 ```
 
-    ## # A tibble: 6 × 3
+    ## # A tibble: 6 x 3
     ##   event_id date       new_date  
     ##      <dbl> <chr>      <chr>     
     ## 1        0 2016-04-13 2016-08-16
@@ -1001,7 +1001,7 @@ event_dates %>%
   dplyr::mutate(new_date = dplyr::coalesce(new_date, date))
 ```
 
-    ## # A tibble: 6 × 3
+    ## # A tibble: 6 x 3
     ##   event_id date       new_date  
     ##      <dbl> <chr>      <chr>     
     ## 1        0 2016-04-13 2016-08-16
@@ -1029,21 +1029,21 @@ df$year[duplicated(df$year)] <- NA # This removes repeated row labels
 df
 ```
 
-    ## # A tibble: 12 × 3
+    ## # A tibble: 12 x 3
     ##    year  quarter count
     ##    <chr> <chr>   <int>
-    ##  1 2017  Q1          9
-    ##  2 <NA>  Q2         11
-    ##  3 <NA>  Q3          3
-    ##  4 <NA>  Q4          6
-    ##  5 2018  Q1         10
-    ##  6 <NA>  Q2          7
-    ##  7 <NA>  Q3          5
-    ##  8 <NA>  Q4          1
-    ##  9 2019  Q1          8
-    ## 10 <NA>  Q2          4
-    ## 11 <NA>  Q3          2
-    ## 12 <NA>  Q4         12
+    ##  1 2017  Q1          7
+    ##  2 <NA>  Q2          4
+    ##  3 <NA>  Q3          5
+    ##  4 <NA>  Q4          2
+    ##  5 2018  Q1         11
+    ##  6 <NA>  Q2          9
+    ##  7 <NA>  Q3          3
+    ##  8 <NA>  Q4         12
+    ##  9 2019  Q1          1
+    ## 10 <NA>  Q2         10
+    ## 11 <NA>  Q3          6
+    ## 12 <NA>  Q4          8
 
 ------------------------------------------------------------------------
 
@@ -1055,21 +1055,21 @@ be used like this:
 df %>% tidyr::fill(year)
 ```
 
-    ## # A tibble: 12 × 3
+    ## # A tibble: 12 x 3
     ##    year  quarter count
     ##    <chr> <chr>   <int>
-    ##  1 2017  Q1          9
-    ##  2 2017  Q2         11
-    ##  3 2017  Q3          3
-    ##  4 2017  Q4          6
-    ##  5 2018  Q1         10
-    ##  6 2018  Q2          7
-    ##  7 2018  Q3          5
-    ##  8 2018  Q4          1
-    ##  9 2019  Q1          8
-    ## 10 2019  Q2          4
-    ## 11 2019  Q3          2
-    ## 12 2019  Q4         12
+    ##  1 2017  Q1          7
+    ##  2 2017  Q2          4
+    ##  3 2017  Q3          5
+    ##  4 2017  Q4          2
+    ##  5 2018  Q1         11
+    ##  6 2018  Q2          9
+    ##  7 2018  Q3          3
+    ##  8 2018  Q4         12
+    ##  9 2019  Q1          1
+    ## 10 2019  Q2         10
+    ## 11 2019  Q3          6
+    ## 12 2019  Q4          8
 
 ## Removing rows with missing values from a dataframe
 
@@ -1204,7 +1204,7 @@ annual_offences <-
 head(annual_offences)
 ```
 
-    ## # A tibble: 6 × 3
+    ## # A tibble: 6 x 3
     ##    year offence_code count
     ##   <int> <chr>        <int>
     ## 1  2016 00101          219
@@ -1252,7 +1252,7 @@ wide_annual_offences <- annual_offences %>%
 head(wide_annual_offences)
 ```
 
-    ## # A tibble: 6 × 6
+    ## # A tibble: 6 x 6
     ##   offence_code `2016` `2017` `2018` `2019` `2020`
     ##   <chr>         <int>  <int>  <int>  <int>  <int>
     ## 1 00101           219    188    177    154    122
@@ -1305,7 +1305,7 @@ wide_annual_offences <- annual_offences %>%
 head(wide_annual_offences)
 ```
 
-    ## # A tibble: 6 × 6
+    ## # A tibble: 6 x 6
     ##   offence_code count_2016 count_2017 count_2018 count_2019 count_2020
     ##   <chr>             <int>      <int>      <int>      <int>      <int>
     ## 1 00101               219        188        177        154        122
@@ -1332,7 +1332,7 @@ wide_annual_offences <- annual_offences %>%
 head(wide_annual_offences)
 ```
 
-    ## # A tibble: 6 × 6
+    ## # A tibble: 6 x 6
     ##   offence_code count_2016 count_2017 count_2018 count_2019 count_2020
     ##   <chr>             <int>      <int>      <int>      <int>      <int>
     ## 1 00101               219        188        177        154        122
@@ -1359,7 +1359,7 @@ wide_annual_offences_with_totals <- wide_annual_offences %>%
 head(wide_annual_offences_with_totals)
 ```
 
-    ## # A tibble: 6 × 7
+    ## # A tibble: 6 x 7
     ##   offence_code count_2016 count_2017 count_2018 count_2019 count_2020 count_2016_2020
     ##   <chr>             <int>      <int>      <int>      <int>      <int>           <dbl>
     ## 1 00101               219        188        177        154        122             860
@@ -1389,12 +1389,12 @@ wide_annual_offences_rounded <- annual_offences %>%
     values_from = 'count',
     names_prefix = 'count_',
     values_fill = 0,
-    values_fn = ~ round(.x, digits = -1)
+    values_fn = list(count = ~round(.x, digits = -1))
   )
 head(wide_annual_offences_rounded)
 ```
 
-    ## # A tibble: 6 × 6
+    ## # A tibble: 6 x 6
     ##   offence_code count_2016 count_2017 count_2018 count_2019 count_2020
     ##   <chr>             <dbl>      <dbl>      <dbl>      <dbl>      <dbl>
     ## 1 00101               220        190        180        150        120
@@ -1416,7 +1416,7 @@ here?
 head(wide_annual_offences, 3)
 ```
 
-    ## # A tibble: 3 × 6
+    ## # A tibble: 3 x 6
     ##   offence_code count_2016 count_2017 count_2018 count_2019 count_2020
     ##   <chr>             <int>      <int>      <int>      <int>      <int>
     ## 1 00101               219        188        177        154        122
@@ -1427,7 +1427,7 @@ head(wide_annual_offences, 3)
 head(annual_offences, 3)
 ```
 
-    ## # A tibble: 3 × 3
+    ## # A tibble: 3 x 3
     ##    year offence_code count
     ##   <int> <chr>        <int>
     ## 1  2016 00101          219
@@ -1448,7 +1448,7 @@ long_annual_offences <- wide_annual_offences %>%
 head(long_annual_offences)
 ```
 
-    ## # A tibble: 6 × 3
+    ## # A tibble: 6 x 3
     ##   offence_code name       value
     ##   <chr>        <chr>      <int>
     ## 1 00101        count_2016   219
@@ -1472,7 +1472,7 @@ long_annual_offences <- wide_annual_offences %>%
 head(long_annual_offences)
 ```
 
-    ## # A tibble: 6 × 3
+    ## # A tibble: 6 x 3
     ##   offence_code name       value
     ##   <chr>        <chr>      <int>
     ## 1 00101        count_2016   219
@@ -1498,7 +1498,7 @@ identical(long_annual_offences, annual_offences)
 head(annual_offences, 3)
 ```
 
-    ## # A tibble: 3 × 3
+    ## # A tibble: 3 x 3
     ##    year offence_code count
     ##   <int> <chr>        <int>
     ## 1  2016 00101          219
@@ -1509,7 +1509,7 @@ head(annual_offences, 3)
 head(long_annual_offences, 3)
 ```
 
-    ## # A tibble: 3 × 3
+    ## # A tibble: 3 x 3
     ##   offence_code name       value
     ##   <chr>        <chr>      <int>
     ## 1 00101        count_2016   219
@@ -1543,7 +1543,7 @@ long_annual_offences <- wide_annual_offences %>%
 head(long_annual_offences)
 ```
 
-    ## # A tibble: 6 × 3
+    ## # A tibble: 6 x 3
     ##   offence_code name       count
     ##   <chr>        <chr>      <int>
     ## 1 00101        count_2016   219
@@ -1576,7 +1576,7 @@ long_annual_offences <- wide_annual_offences %>%
 head(long_annual_offences)
 ```
 
-    ## # A tibble: 6 × 3
+    ## # A tibble: 6 x 3
     ##   offence_code year       count
     ##   <chr>        <chr>      <int>
     ## 1 00101        count_2016   219
@@ -1608,7 +1608,7 @@ long_annual_offences <- wide_annual_offences %>%
 head(long_annual_offences)
 ```
 
-    ## # A tibble: 6 × 3
+    ## # A tibble: 6 x 3
     ##   offence_code year  count
     ##   <chr>        <chr> <int>
     ## 1 00101        2016    219
@@ -1710,7 +1710,7 @@ What do they both look like now?
 head(annual_offences, 3)
 ```
 
-    ## # A tibble: 3 × 3
+    ## # A tibble: 3 x 3
     ##    year offence_code count
     ##   <int> <chr>        <int>
     ## 1  2016 00101          219
@@ -1721,7 +1721,7 @@ head(annual_offences, 3)
 head(long_annual_offences, 3)
 ```
 
-    ## # A tibble: 3 × 3
+    ## # A tibble: 3 x 3
     ##    year offence_code count
     ##   <int> <chr>        <int>
     ## 1  2016 00101          219
@@ -1780,42 +1780,36 @@ Here’s a preview of the data table:
 head(reoffending_real)
 ```
 
-    ##                    prev_conv_n total_2010_Q2 total_2010_Q3 total_2010_Q4 total_2011_Q1 total_2011_Q2 total_2011_Q3 total_2011_Q4
-    ## 1         No previous offences         42165         42427         41106         40870         39092         39411         37792
-    ## 2     1 to 2 previous offences         26905         27522         26239         26455         25318         25696         24729
-    ## 3     3 to 6 previous offences         24549         25467         24309         24864         24264         24586         23181
-    ## 4    7 to 10 previous offences         13217         13985         13230         13443         13198         13472         12770
-    ## 5 11 or more previous offences         51428         53846         52304         52659         52213         54824         51638
-    ##   total_2012_Q1 total_2012_Q2 total_2012_Q3 total_2012_Q4 total_2013_Q1 total_2013_Q2 total_2013_Q3 total_2013_Q4 total_2014_Q1
-    ## 1         36869         34897         35939         34615         33332         32526         32955         33405         33268
-    ## 2         24527         22546         23663         22255         21621         21157         21776         21151         21265
-    ## 3         23817         21886         22625         21319         21230         20683         21248         20598         20778
-    ## 4         13387         12269         12563         11859         11813         11753         12094         11633         11744
-    ## 5         53484         50015         51921         49219         48893         49361         50603         49040         49920
-    ##   total_2014_Q2 total_2014_Q3 total_2014_Q4 total_2015_Q1 total_2015_Q2 total_2015_Q3 total_2015_Q4 total_2016_Q1 total_2016_Q2
-    ## 1         31098         31313         30775         30587         29624         29254         28663         27813         26888
-    ## 2         19631         20082         19357         19732         18582         18661         18108         17741         16802
-    ## 3         19459         19785         18704         18981         18425         18394         17966         17514         17006
-    ## 4         11062         11204         10731         11105         10838         10580         10357         10262          9962
-    ## 5         47523         48618         46296         46641         45963         45455         45593         45249         44399
-    ##   total_2016_Q3 total_2016_Q4 total_2017_Q1 total_2017_Q2 total_2017_Q3 total_2017_Q4 total_2018_Q1 total_2018_Q2 total_2018_Q3
-    ## 1         25753         24828         25662         23376         22952         23332         23436         21982         21524
-    ## 2         16022         15170         15678         14319         14005         13689         13796         13519         12868
-    ## 3         16161         15470         16004         15123         14499         13986         14359         13846         13474
-    ## 4          9546          9069          9453          8903          8677          8222          8392          8300          7925
-    ## 5         42993         41271         43572         41272         41006         39503         40151         38786         38290
-    ##   total_2018_Q4 total_2019_Q1 total_2019_Q2 total_2019_Q3 total_2019_Q4 total_2020_Q1 total_2020_Q2 total_2020_Q3 total_2020_Q4
-    ## 1         21433         22358         21407         21423         21049         20309          8067         18382         19566
-    ## 2         12680         13370         12685         12644         11886         12057          4992         11783         12637
-    ## 3         13145         13635         12932         12937         12366         12229          5363         12258         13129
-    ## 4          7901          8107          7764          7733          7542          7170          3209          7301          7865
-    ## 5         37297         37433         36497         36135         34274         33492         18066         32028         33953
-    ##   total_2021_Q1 total_2021_Q2
-    ## 1         17481         17700
-    ## 2         11599         11323
-    ## 3         12279         12257
-    ## 4          7217          7245
-    ## 5         31702         31657
+    ##                    prev_conv_n total_2010_Q2 total_2010_Q3 total_2010_Q4 total_2011_Q1 total_2011_Q2 total_2011_Q3 total_2011_Q4 total_2012_Q1
+    ## 1         No previous offences         42165         42427         41106         40870         39092         39411         37792         36869
+    ## 2     1 to 2 previous offences         26905         27522         26239         26455         25318         25696         24729         24527
+    ## 3     3 to 6 previous offences         24549         25467         24309         24864         24264         24586         23181         23817
+    ## 4    7 to 10 previous offences         13217         13985         13230         13443         13198         13472         12770         13387
+    ## 5 11 or more previous offences         51428         53846         52304         52659         52213         54824         51638         53484
+    ##   total_2012_Q2 total_2012_Q3 total_2012_Q4 total_2013_Q1 total_2013_Q2 total_2013_Q3 total_2013_Q4 total_2014_Q1 total_2014_Q2 total_2014_Q3
+    ## 1         34897         35939         34615         33332         32526         32955         33405         33268         31098         31313
+    ## 2         22546         23663         22255         21621         21157         21776         21151         21265         19631         20082
+    ## 3         21886         22625         21319         21230         20683         21248         20598         20778         19459         19785
+    ## 4         12269         12563         11859         11813         11753         12094         11633         11744         11062         11204
+    ## 5         50015         51921         49219         48893         49361         50603         49040         49920         47523         48618
+    ##   total_2014_Q4 total_2015_Q1 total_2015_Q2 total_2015_Q3 total_2015_Q4 total_2016_Q1 total_2016_Q2 total_2016_Q3 total_2016_Q4 total_2017_Q1
+    ## 1         30775         30587         29624         29254         28663         27813         26888         25753         24828         25662
+    ## 2         19357         19732         18582         18661         18108         17741         16802         16022         15170         15678
+    ## 3         18704         18981         18425         18394         17966         17514         17006         16161         15470         16004
+    ## 4         10731         11105         10838         10580         10357         10262          9962          9546          9069          9453
+    ## 5         46296         46641         45963         45455         45593         45249         44399         42993         41271         43572
+    ##   total_2017_Q2 total_2017_Q3 total_2017_Q4 total_2018_Q1 total_2018_Q2 total_2018_Q3 total_2018_Q4 total_2019_Q1 total_2019_Q2 total_2019_Q3
+    ## 1         23376         22952         23332         23436         21982         21524         21433         22358         21407         21423
+    ## 2         14319         14005         13689         13796         13519         12868         12680         13370         12685         12644
+    ## 3         15123         14499         13986         14359         13846         13474         13145         13635         12932         12937
+    ## 4          8903          8677          8222          8392          8300          7925          7901          8107          7764          7733
+    ## 5         41272         41006         39503         40151         38786         38290         37297         37433         36497         36135
+    ##   total_2019_Q4 total_2020_Q1 total_2020_Q2 total_2020_Q3 total_2020_Q4 total_2021_Q1 total_2021_Q2
+    ## 1         21049         20309          8067         18382         19566         17481         17700
+    ## 2         11886         12057          4992         11783         12637         11599         11323
+    ## 3         12366         12229          5363         12258         13129         12279         12257
+    ## 4          7542          7170          3209          7301          7865          7217          7245
+    ## 5         34274         33492         18066         32028         33953         31702         31657
 
 ------------------------------------------------------------------------
 
@@ -2024,8 +2018,7 @@ string_vector2 <- c("1", "2", "3", "4", "5")
 stringr::str_c(string_vector1, string_vector2, sep=" - ")
 ```
 
-    ## Warning in stri_c(..., sep = sep, collapse = collapse, ignore_null = TRUE): longer object length is not a multiple of shorter object
-    ## length
+    ## Warning in stri_c(..., sep = sep, collapse = collapse, ignore_null = TRUE): longer object length is not a multiple of shorter object length
 
     ## [1] "A - 1" "B - 2" "C - 3" "A - 4" "B - 5"
 
@@ -2121,15 +2114,15 @@ There’s a common syntax for defining the patterns to match that can be
 used across multiple programming languages. Here are a few patterns to
 get started with:
 
--   `[A-Za-z]` — All uppercase and lowercase letters
--   `[0-9]` — All numbers
--   `[A-Za-z0-9]` — All letters and all numbers
--   `\\s` — A single space
--   `^a` — Begins with ‘a’
--   `a$` — Ends with ‘a’
--   `[^a]` — Anything other than ‘a’
--   `\\b` — A word boundary (e.g. a space, punctuation mark or the
-    start/end of a string)
+- `[A-Za-z]` — All uppercase and lowercase letters
+- `[0-9]` — All numbers
+- `[A-Za-z0-9]` — All letters and all numbers
+- `\\s` — A single space
+- `^a` — Begins with ‘a’
+- `a$` — Ends with ‘a’
+- `[^a]` — Anything other than ‘a’
+- `\\b` — A word boundary (e.g. a space, punctuation mark or the
+  start/end of a string)
 
 R also contains some pre-built regex classes that you might also
 encounter, for example `[:alpha:]` to match any letters and `[:digit:]`
@@ -2290,47 +2283,47 @@ string (`""`).
 
 ### General
 
--   [Bonus
-    examples](https://github.com/moj-analytical-services/intro_r_training_extension#bonus-examples)
--   [R for Data Science](https://r4ds.hadley.nz)
--   [Advanced R](https://adv-r.hadley.nz)
--   [Tidyverse website](https://www.tidyverse.org)
--   [Tidyverse style guide](https://style.tidyverse.org/) (has some
-    guidance on choosing function and argument names)
--   [MoJ Analytical Platform
-    Guidance](https://user-guidance.services.alpha.mojanalytics.xyz)
--   [MoJ coding
-    standards](https://moj-analytical-services.github.io/our-coding-standards/)
+- [Bonus
+  examples](https://github.com/moj-analytical-services/intro_r_training_extension#bonus-examples)
+- [R for Data Science](https://r4ds.hadley.nz)
+- [Advanced R](https://adv-r.hadley.nz)
+- [Tidyverse website](https://www.tidyverse.org)
+- [Tidyverse style guide](https://style.tidyverse.org/) (has some
+  guidance on choosing function and argument names)
+- [MoJ Analytical Platform
+  Guidance](https://user-guidance.services.alpha.mojanalytics.xyz)
+- [MoJ coding
+  standards](https://moj-analytical-services.github.io/our-coding-standards/)
 
 ------------------------------------------------------------------------
 
 ### Conditional statements
 
--   [Advanced R - choices
-    section](https://adv-r.hadley.nz/control-flow.html#choices)
+- [Advanced R - choices
+  section](https://adv-r.hadley.nz/control-flow.html#choices)
 
 ### Iteration
 
--   [R for Data Science - iteration
-    chapter](https://r4ds.had.co.nz/iteration.html)
--   [Advanced R - loops
-    section](https://adv-r.hadley.nz/control-flow.html#loops)
+- [R for Data Science - iteration
+  chapter](https://r4ds.had.co.nz/iteration.html)
+- [Advanced R - loops
+  section](https://adv-r.hadley.nz/control-flow.html#loops)
 
 ### Reshaping data
 
--   [Tidyverse website - pivoting
-    section](https://tidyr.tidyverse.org/dev/articles/pivot.html)
--   [R for Data Science - pivoting
-    chapter](https://r4ds.had.co.nz/tidy-data.html#pivoting)
+- [Tidyverse website - pivoting
+  section](https://tidyr.tidyverse.org/dev/articles/pivot.html)
+- [R for Data Science - pivoting
+  chapter](https://r4ds.had.co.nz/tidy-data.html#pivoting)
 
 ### Strings and regex
 
--   [R for Data Science - strings
-    chapter](https://r4ds.had.co.nz/strings.html)
--   [stringr and regex
-    cheatsheet](https://evoldyn.gitlab.io/evomics-2018/ref-sheets/R_strings.pdf)
--   [Regex Coffee & Coding
-    session](https://github.com/moj-analytical-services/Coffee-and-Coding/tree/master/2019-03-13%20Regex)
+- [R for Data Science - strings
+  chapter](https://r4ds.had.co.nz/strings.html)
+- [stringr and regex
+  cheatsheet](https://evoldyn.gitlab.io/evomics-2018/ref-sheets/R_strings.pdf)
+- [Regex Coffee & Coding
+  session](https://github.com/moj-analytical-services/Coffee-and-Coding/tree/master/2019-03-13%20Regex)
 
 # Bonus examples
 
@@ -2354,7 +2347,7 @@ offenders_summary <- offenders %>%
 offenders_summary
 ```
 
-    ## # A tibble: 12 × 3
+    ## # A tibble: 12 x 3
     ## # Groups:   REGION [4]
     ##    REGION SENTENCE    offender_count
     ##    <chr>  <chr>                <int>
@@ -2388,7 +2381,7 @@ offenders_summary <- offenders_summary %>%
 offenders_summary
 ```
 
-    ## # A tibble: 4 × 4
+    ## # A tibble: 4 x 4
     ## # Groups:   REGION [4]
     ##   REGION Court_order `Prison_<12m` `Prison_12m+`
     ##   <chr>        <int>         <int>         <int>
@@ -2417,7 +2410,7 @@ offenders_summary <- offenders_summary %>%
 offenders_summary
 ```
 
-    ## # A tibble: 12 × 3
+    ## # A tibble: 12 x 3
     ## # Groups:   REGION [4]
     ##    REGION SENTENCE    offender_count
     ##    <chr>  <chr>                <int>
@@ -2480,7 +2473,7 @@ time_series$Offence.Type[duplicated(time_series$Offence.Type)] <- NA
 time_series
 ```
 
-    ## # A tibble: 22 × 7
+    ## # A tibble: 22 x 7
     ##    Offence.Type       Offence.Group                           `2014` `2015` `2016` `2017` `2018`
     ##    <chr>              <chr>                                    <int>  <int>  <int>  <int>  <int>
     ##  1 01 Indictable only 01 Violence against the person            7447   6930   6724   7233   6602
@@ -2510,7 +2503,7 @@ time_series_with_total$Total <- total
 time_series_with_total
 ```
 
-    ## # A tibble: 22 × 8
+    ## # A tibble: 22 x 8
     ##    Offence.Type       Offence.Group                           `2014` `2015` `2016` `2017` `2018` Total
     ##    <chr>              <chr>                                    <int>  <int>  <int>  <int>  <int> <int>
     ##  1 01 Indictable only 01 Violence against the person            7447   6930   6724   7233   6602 34936
@@ -2539,7 +2532,7 @@ time_series <- time_series %>% tidyr::fill(Offence.Type)
 time_series
 ```
 
-    ## # A tibble: 22 × 7
+    ## # A tibble: 22 x 7
     ##    Offence.Type       Offence.Group                           `2014` `2015` `2016` `2017` `2018`
     ##    <chr>              <chr>                                    <int>  <int>  <int>  <int>  <int>
     ##  1 01 Indictable only 01 Violence against the person            7447   6930   6724   7233   6602
@@ -2564,7 +2557,7 @@ time_series_long <- time_series %>%
 time_series_long
 ```
 
-    ## # A tibble: 110 × 4
+    ## # A tibble: 110 x 4
     ##    Offence.Type       Offence.Group                  year  count
     ##    <chr>              <chr>                          <chr> <int>
     ##  1 01 Indictable only 01 Violence against the person 2014   7447
@@ -2594,7 +2587,7 @@ totals <- time_series_long %>%
 totals
 ```
 
-    ## # A tibble: 22 × 3
+    ## # A tibble: 22 x 3
     ## # Groups:   Offence.Type [5]
     ##    Offence.Type       Offence.Group                           Total
     ##    <chr>              <chr>                                   <int>
@@ -2619,7 +2612,7 @@ time_series <- dplyr::left_join(time_series, totals, by=c("Offence.Type", "Offen
 time_series
 ```
 
-    ## # A tibble: 22 × 8
+    ## # A tibble: 22 x 8
     ##    Offence.Type       Offence.Group                           `2014` `2015` `2016` `2017` `2018` Total
     ##    <chr>              <chr>                                    <int>  <int>  <int>  <int>  <int> <int>
     ##  1 01 Indictable only 01 Violence against the person            7447   6930   6724   7233   6602 34936

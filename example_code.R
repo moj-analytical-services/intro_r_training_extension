@@ -342,7 +342,7 @@ wide_annual_offences_rounded <- annual_offences %>%
     values_from = 'count',
     names_prefix = 'count_',
     values_fill = 0,
-    values_fn = ~ round(.x, digits = -1)
+    values_fn = list(count = ~round(.x, digits = -1))
   )
 head(wide_annual_offences_rounded)
 
