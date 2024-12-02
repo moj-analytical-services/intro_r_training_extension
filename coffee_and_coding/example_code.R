@@ -1,5 +1,5 @@
 # Load packages
-library(botor) # Used to help R interact with s3 cloud storage
+library(Rs3tools) # Used to help R interact with s3 cloud storage
 library(dplyr) # Used for data manipulation
 library(readr) # Used to help read in data
 
@@ -41,9 +41,8 @@ x <- c(0, 74, 0, 8, 23, 15, 3, 0, -1, 9)
 dplyr::if_else(x > 0, 1, 0)
 
 # First read and preview the data
-offenders <- botor::s3_read(
-  "s3://alpha-r-training/intro-r-training/Offenders_Chicago_Police_Dept_Main.csv", read.csv
-)
+offenders <- Rs3tools::read_using(read.csv,
+                                  "s3://alpha-r-training/intro-r-training/Offenders_Chicago_Police_Dept_Main.csv")
 str(offenders)
 
 # Now use mutate to add the new column
@@ -137,7 +136,7 @@ for (i in data) {
 }
 
 # Get dataframe with all available files/folders from an s3 path
-files <- botor::s3_ls("s3://alpha-r-training/intro-r-extension")
+files <- Rs3tools::list_files_in_buckets("s3://alpha-r-training/intro-r-extension")
 
 # Get a list of csv file names
 files <- files %>%
@@ -151,7 +150,7 @@ fruit_list <- vector("list", length(files))
 
 # Loop over each file, and add the data to a list
 for (i in seq_along(files)) {
-  fruit_list[[i]] <- botor::s3_read(files[i], readr::read_csv, show_col_types = FALSE)
+  fruit_list[[i]] <- Rs3tools::read_using(readr::read_csv,files[i], show_col_types = FALSE)
 }
 
 # Combine the list of dataframes into a single dataframe
