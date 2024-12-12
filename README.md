@@ -44,7 +44,7 @@ Before the session, please make sure that -
     [here](https://user-guidance.services.alpha.mojanalytics.xyz/github.html#r-studio))
 5.  You have installed the required packages by entering the following
     commands in the Console window in RStudio (after following step 4,
-    above): `install.packages("renv")` followed by `renv::restore()`
+    above): `install.packages("renv")` followed by `renv::restore()` and enter 'y' if the Console asks you any questions
 
 If you have any problems with the above please get in touch with the
 course organisers or ask for help on either the
