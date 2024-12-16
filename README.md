@@ -42,9 +42,10 @@ Before the session, please make sure that -
 4.  You have cloned this repository (instructions are in the Analytical
     Platform User Guidance if you follow step 1
     [here](https://user-guidance.services.alpha.mojanalytics.xyz/github.html#r-studio))
-5.  You have installed the required packages by entering the following
-    commands in the Console window in RStudio (after following step 4,
-    above): `install.packages("renv")` followed by `renv::restore()` and enter 'y' if the Console asks you any questions such as `Would you like to activate this project before restore? [Y/n]`
+5.  Set up {renv} and installed the required packages using the following steps:
+       * Run `install.packages("renv")`.
+       * Run `renv::restore()`. You will informed that project is not activated and given several options. Select the option to `Activate the project and use the project library` (exact wording my differ). The set-up will take some time.
+       * Run `renv::restore()` again to install the required packages repsonding `y` when prompted.
 
 If you have any problems with the above please get in touch with the
 course organisers or ask for help on either the
