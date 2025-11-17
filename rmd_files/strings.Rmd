@@ -120,14 +120,14 @@ c("a", c("b", "c", "d"))
 
 It's worth noting what happens if you pass vectors of different lengths to `str_c()`:
 
-```{r, purl=purl_example_code}
+```{r, purl=purl_example_code, error=TRUE}
 # Combining vectors of different lengths
 string_vector1 <- c("A", "B", "C")
 string_vector2 <- c("1", "2", "3", "4", "5")
 stringr::str_c(string_vector1, string_vector2, sep=" - ")
 ```
 
-The code produces a warning but otherwise runs. In the output, you can see that the elements of the shorter vector have been repeated when combined with the additional elements of the longer vector.
+The code should produce an error, but older versions of `stringr` may give and warning and carry on running. If the code runs without error, in the output you might see that the elements of the shorter vector have been repeated when combined with the additional elements of the longer vector.
 
 
 ## Extracting and replacing substrings
