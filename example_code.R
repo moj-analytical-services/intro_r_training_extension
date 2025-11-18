@@ -500,10 +500,12 @@ stringr::str_c("a", c("b", "c", "d"), sep=" ")
 # Combining strings into a single vector with c() 
 c("a", c("b", "c", "d"))
 
+try({
 # Combining vectors of different lengths
 string_vector1 <- c("A", "B", "C")
 string_vector2 <- c("1", "2", "3", "4", "5")
 stringr::str_c(string_vector1, string_vector2, sep=" - ")
+})
 
 # Extracting substrings based on the position within the string
 x <- c("First value", "Second value", "Third value")
